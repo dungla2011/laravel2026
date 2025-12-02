@@ -18,9 +18,13 @@ yarn-error.log
 *.zip
 *.mp3
 *.mp4
+.git_lab/
+.git/objects/pack/
 
 # Ignore submodule changes
-# public/tool/doing
-# resources/views/index/000
-# vendor/lad-lib/laravel
+public/tool/doing
+resources/views/index/000
+vendor/lad-lib/laravel
+vendor/yourcompany/cost-management/
+
 vendor/yourcompany/cost-management/
