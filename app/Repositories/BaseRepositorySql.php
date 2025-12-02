@@ -1592,7 +1592,7 @@ class BaseRepositorySql implements BaseRepositoryInterface
                 $haveChange = 1;
             }
 
-            if (array_key_exists('id_news', $param)) { 
+            if (array_key_exists('id_news', $param)) {
                 $tmp = $param['id_news'];
                 if ($tmp && ! BlockUi::find($tmp)) {
                     return rtJsonApiError("Not found BlockUi: $tmp");

@@ -63,6 +63,12 @@ class DemoTbl_Meta extends MetaOfTableInDb
 //        ];
     }
 
+
+    public function getMapFieldAndDesc()
+    {
+        return parent::getMapFieldAndDesc();
+    }
+
     //Join với 1 bảng khác
     public function getJoinField()
     {
