@@ -92,7 +92,7 @@ $tk = User::where("email", 'admin@abc.com')->first()->getUserToken();
         //Khi không có quyền, thì trả lại sẽ > 200
 
         dump("Status HTTP:" . $res->status());
-        dump("CONT ". substr($res->getContent(), 0 ,500);
+        dump("CONT ". substr($res->getContent(), 0 ,500));
 
         self::assertTrue($res->status() != 200, ' status = '.$res->status());
 
