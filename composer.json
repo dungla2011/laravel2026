@@ -13,6 +13,14 @@
         {
             "type": "path",
             "url": "./packages/mongocrud"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/dungla2011/lad-lib-common.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/dungla2011/lad-lib-laravel.git"
         }
     ],
     "require": {
