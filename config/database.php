@@ -70,7 +70,7 @@ if ((isCli() && gethostname() == 'DESKTOP-VFQHFQS')
 
     // die("1111");
 
-    $hostname = 'localhost';
+    $hostname = '127.0.0.1';  // Use TCP instead of Unix socket
     $dbDriver = 'sqlite';
     $dbConnection = 'sqlite';
     $dbDriver = 'mysql';
