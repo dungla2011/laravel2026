@@ -15,4 +15,8 @@ yarn-error.log
 /.idea
 /.vscode
 
-
+# Ignore submodule changes
+# public/tool/doing
+# resources/views/index/000
+# vendor/lad-lib/laravel
+vendor/yourcompany/cost-management/
