@@ -60,6 +60,12 @@ jobs:
       - name: Generate app key
         run: php artisan key:generate
 
+      - name: Test database connection
+        run: |
+          mysql -h 127.0.0.1 -u root -e "SELECT 1;"
+          php artisan migrate --env=testing --no-interaction || true
+          php artisan db:seed --env=testing --no-interaction || true
+
       - name: Start Laravel development server
         run: php artisan serve --host 127.0.0.1 --port 8000 &
         
