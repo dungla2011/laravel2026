@@ -54,6 +54,11 @@ jobs:
       - name: Copy .env.testing
         run: cp .env.testing .env
 
+      - name: Update database config for CI
+        run: |
+          sed -i "s|unix_socket=.*|unix_socket=|g" .env
+          sed -i "s|DB_HOST=.*|DB_HOST=127.0.0.1|g" .env
+
       - name: Install dependencies
         run: composer install --no-interaction --prefer-dist --optimize-autoloader --ignore-platform-req=ext-mongodb
 
@@ -63,8 +68,7 @@ jobs:
       - name: Test database connection
         run: |
           mysql -h 127.0.0.1 -u root -e "SELECT 1;"
-          php artisan migrate --env=testing --no-interaction || true
-          php artisan db:seed --env=testing --no-interaction || true
+          php artisan tinker --execute="DB::connection()->select('select 1');" || true
 
       - name: Start Laravel development server
         run: php artisan serve --host 127.0.0.1 --port 8000 &

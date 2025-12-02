@@ -208,7 +208,7 @@ $common_connection = [
     'database' => $dbName,
     'username' => $user,
     'password' => $pw,
-    'unix_socket' => env('DB_SOCKET', ''),
+    'unix_socket' => (env('APP_ENV') === 'testing') ? '' : env('DB_SOCKET', ''),
     'charset' => 'utf8mb4',
     'collation' => 'utf8mb4_unicode_ci',
     'prefix' => '',
