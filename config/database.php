@@ -56,7 +56,12 @@ $user = null;
 $pw = null;
 
 //Nếu là localhost domain truy cập, và app url local, thì db local:
-if ((isCli() && gethostname() == 'DESKTOP-VFQHFQS') || ($domainName == 'localhost' && env('APP_URL') == 'http://localhost:8000')) {
+if ((isCli() && gethostname() == 'DESKTOP-VFQHFQS')
+    ||
+    ($domainName == 'localhost' && env('APP_URL') == 'http://localhost:8000')
+    ||
+    ($domainName == '127.0.0.1' && env('APP_URL') == 'http://localhost:8000')
+) {
     // $hostname = '127.0.0.1';
     // $user = 'root';
     // $pw = '';
