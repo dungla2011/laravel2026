@@ -36,7 +36,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
-          extensions: mysql, mbstring, json, curl, bcmath, mongodb
+          extensions: mysql, mbstring, json, curl, bcmath
           coverage: xdebug
 
       - name: Setup test database
@@ -48,7 +48,7 @@ jobs:
         run: cp .env.testing .env
 
       - name: Install dependencies
-        run: composer install --no-interaction --prefer-dist --optimize-autoloader
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader --ignore-platform-req=ext-mongodb
 
       - name: Generate app key
         run: php artisan key:generate
