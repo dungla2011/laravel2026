@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test LocalStorage Dropdown</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 30px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .test-section {
+            margin: 25px 0;
+        }
+        .test-section h3 {
+            color: #007bff;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"] {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        input:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0,123,255,0.3);
+        }
+        .info {
+            background: #e3f2fd;
+            padding: 12px;
+            border-radius: 4px;
+            margin-top: 10px;
+            font-size: 13px;
+            color: #1976d2;
+        }
+        .debug-section {
+            margin-top: 30px;
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 4px;
+            border-left: 4px solid #ff9800;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .ls-output {
+            background: #272822;
+            color: #f8f8f2;
+            padding: 12px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+            overflow-x: auto;
+            margin-top: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+
+<div class="test-container">
+    <h1>🧪 Test LocalStorage Dropdown</h1>
+    
+    <div class="test-section">
+        <h3>📝 Input Fields (focus để thấy dropdown)</h3>
+        <form id="testForm">
+            <label>First Name:</label>
+            <input type="text" id="first_name" placeholder="Nhập tên...">
+            
+            <label>Last Name:</label>
+            <input type="text" id="last_name" placeholder="Nhập họ...">
+            
+            <label>Email:</label>
+            <input type="email" id="email" placeholder="Nhập email...">
+            
+            <label>Phone:</label>
+            <input type="tel" id="phone" placeholder="Nhập điện thoại...">
+        </form>
+        
+        <div class="info">
+            💡 Gõ giá trị vào input, sau đó blur (nhấn Tab hoặc click ra ngoài). Khi focus lại, sẽ thấy dropdown list những giá trị cũ.
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h3>🛠️ Debug Tools</h3>
+        <button onclick="showStorage()">📊 Show LocalStorage</button>
+        <button onclick="clearTestStorage()">🗑️ Clear All Storage</button>
+        <button onclick="addTestData()">➕ Add Test Data</button>
+        
+        <div id="storageOutput" class="ls-output" style="display: none;"></div>
+    </div>
+    
+    <div class="info">
+        📌 Mở DevTools Console (F12) để xem logs chi tiết
+    </div>
+</div>
+
+<!-- FormLocalStorage Class -->
+<script>
+    /**
+     * LocalStorage Manager cho form input values
+     * Hiển thị dropdown các giá trị cũ khi focus
+     */
+    class FormLocalStorage {
+        constructor(formId = 'testForm', storagePrefix = 'test_form_') {
+            this.formId = formId;
+            this.storagePrefix = storagePrefix;
+            this.form = document.getElementById(formId);
+            this.datalistContainer = null;
+            
+            if (!this.form) {
+                console.error(`❌ Form #${formId} không tìm thấy`);
+                return;
+            }
+            
+            this.init();
+        }
+        
+        init() {
+            console.log('🚀 FormLocalStorage.init() called');
+            
+            // Create container trước
+            this.createDatalistContainer();
+            
+            // Attach listeners sau
+            this.attachChangeListeners();
+            
+            console.log('✅ FormLocalStorage initialized successfully');
+        }
+        
+        /**
+         * Tạo container cho datalist dropdown
+         */
+        createDatalistContainer() {
+            if (document.getElementById('formDatalistContainer')) {
+                this.datalistContainer = document.getElementById('formDatalistContainer');
+                console.log('ℹ️ Container already exists, reusing');
+                return;
+            }
+            
+            const container = document.createElement('div');
+            container.id = 'formDatalistContainer';
+            container.style.cssText = `
+                position: fixed;
+                display: none;
+                background: white;
+                border: 2px solid #007bff;
+                border-radius: 4px;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+                z-index: 99999;
+                max-height: 300px;
+                overflow-y: auto;
+                min-width: 250px;
+                padding: 0;
+                margin: 0;
+            `;
+            document.body.appendChild(container);
+            this.datalistContainer = container;
+            console.log('✅ Container created and appended to body');
+        }
+        
+        /**
+         * Gắn event listener cho tất cả input để auto-save + show dropdown
+         */
+        attachChangeListeners() {
+            const inputs = this.form.querySelectorAll(
+                'input[type="text"], input[type="email"], input[type="tel"], input[type="number"]'
+            );
+            
+            console.log(`🔗 Found ${inputs.length} input fields to attach listeners`);
+            
+            inputs.forEach((input, idx) => {
+                if (!input.id) {
+                    console.warn(`⚠️ Input ${idx} không có ID, bỏ qua`);
+                    return;
+                }
+                
+                console.log(`✅ Attaching listeners to: #${input.id}`);
+                
+                // Save on input
+                input.addEventListener('input', (e) => {
+                    this.saveFieldValue(input);
+                });
+                
+                // Show dropdown on focus
+                input.addEventListener('focus', (e) => {
+                    console.log(`🎯 FOCUS event on #${input.id}`);
+                    this.showHistoryDropdown(input);
+                });
+                
+                // Hide dropdown on blur
+                input.addEventListener('blur', (e) => {
+                    console.log(`💫 BLUR event on #${input.id}`);
+                    setTimeout(() => {
+                        this.hideHistoryDropdown();
+                    }, 150);
+                });
+                
+                // Handle arrow key navigation
+                input.addEventListener('keydown', (e) => {
+                    this.handleKeyNavigation(e);
+                });
+            });
+        }
+        
+        /**
+         * Save một field vào LocalStorage + history
+         */
+        saveFieldValue(input) {
+            if (!input.id) return;
+            
+            const key = this.storagePrefix + input.id;
+            const value = input.value.trim();
+            
+            if (value) {
+                // Add to history
+                this.addToHistory(key, value);
+                console.log(`✅ Saved: ${input.id} = "${value}"`);
+            } else {
+                localStorage.removeItem(key);
+            }
+        }
+        
+        /**
+         * Thêm giá trị vào history
+         */
+        addToHistory(key, value) {
+            const historyKey = key + '_history';
+            let history = JSON.parse(localStorage.getItem(historyKey) || '[]');
+            
+            // Loại bỏ duplicate
+            history = history.filter(v => v !== value);
+            
+            // Thêm vào đầu (mới nhất trước)
+            history.unshift(value);
+            
+            // Giữ tối đa 10 items
+            history = history.slice(0, 10);
+            
+            localStorage.setItem(historyKey, JSON.stringify(history));
+            console.log(`📦 Updated history for ${key}:`, history);
+        }
+        
+        /**
+         * Lấy lịch sử các giá trị đã nhập
+         */
+        getFieldHistory(key) {
+            const historyKey = key + '_history';
+            const history = JSON.parse(localStorage.getItem(historyKey) || '[]');
+            return Array.isArray(history) ? history : [];
+        }
+        
+        /**
+         * Hiển thị dropdown với history khi focus
+         */
+        showHistoryDropdown(input) {
+            if (!input.id) {
+                console.warn('❌ Input không có ID');
+                return;
+            }
+            
+            const key = this.storagePrefix + input.id;
+            const historyKey = key + '_history';
+            const history = this.getFieldHistory(key);
+            
+            console.log(`🔍 Looking for key: ${historyKey}`);
+            console.log(`📦 History found:`, history);
+            
+            if (history.length === 0) {
+                console.log(`ℹ️ No history for ${input.id}`);
+                this.hideHistoryDropdown();
+                return;
+            }
+            
+            // Create dropdown items
+            const container = this.datalistContainer;
+            if (!container) {
+                console.error('❌ Container không tồn tại!');
+                return;
+            }
+            
+            container.innerHTML = '';
+            console.log(`🎨 Creating ${history.length} items`);
+            
+            history.forEach((value, index) => {
+                const item = document.createElement('div');
+                item.style.cssText = `
+                    padding: 12px 15px;
+                    cursor: pointer;
+                    border-bottom: 1px solid #e0e0e0;
+                    font-size: 14px;
+                    transition: background 0.15s ease;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                `;
+                item.textContent = value;
+                item.dataset.index = index;
+                item.className = 'history-item';
+                
+                item.addEventListener('mouseenter', () => {
+                    item.style.background = '#e3f2fd';
+                    item.style.color = '#007bff';
+                });
+                
+                item.addEventListener('mouseleave', () => {
+                    item.style.background = 'white';
+                    item.style.color = 'black';
+                });
+                
+                item.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    input.value = value;
+                    this.hideHistoryDropdown();
+                    input.dispatchEvent(new Event('input', { bubbles: true }));
+                    input.focus();
+                    console.log(`✅ Filled ${input.id} with: "${value}"`);
+                });
+                
+                container.appendChild(item);
+            });
+            
+            // Position dropdown
+            const rect = input.getBoundingClientRect();
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+            
+            container.style.left = (rect.left + scrollLeft) + 'px';
+            container.style.top = (rect.bottom + scrollTop + 2) + 'px';
+            container.style.width = rect.width + 'px';
+            container.style.display = 'block';
+            
+            console.log(`✨ Dropdown shown with position:`, {
+                left: rect.left + scrollLeft,
+                top: rect.bottom + scrollTop + 2,
+                width: rect.width
+            });
+        }
+        
+        /**
+         * Ẩn dropdown
+         */
+        hideHistoryDropdown() {
+            if (this.datalistContainer) {
+                this.datalistContainer.style.display = 'none';
+                console.log('🙈 Dropdown hidden');
+            }
+        }
+        
+        /**
+         * Handle keyboard navigation
+         */
+        handleKeyNavigation(e) {
+            if (e.key === 'Escape') {
+                this.hideHistoryDropdown();
+            }
+        }
+        
+        /**
+         * Clear tất cả storage
+         */
+        clearStorage() {
+            const keys = Object.keys(localStorage);
+            keys.forEach(key => {
+                if (key.startsWith(this.storagePrefix)) {
+                    localStorage.removeItem(key);
+                }
+            });
+            console.log('🗑️ Form data cleared from LocalStorage');
+        }
+        
+        /**
+         * Export dữ liệu dưới dạng JSON (debug)
+         */
+        exportData() {
+            const data = {};
+            const keys = Object.keys(localStorage);
+            
+            keys.forEach(key => {
+                if (key.startsWith(this.storagePrefix)) {
+                    data[key.replace(this.storagePrefix, '')] = localStorage.getItem(key);
+                }
+            });
+            
+            return data;
+        }
+    }
+    
+    // Initialize khi DOM ready
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('🚀 DOM Ready - Initializing');
+        
+        const formStorage = new FormLocalStorage('testForm', 'test_form_');
+        window.testFormStorage = formStorage;
+        
+        console.log('✅ All initialized! Check console for detailed logs.');
+        console.log('💡 window.testFormStorage available for debugging');
+    });
+    
+    // Helper functions
+    function showStorage() {
+        const output = document.getElementById('storageOutput');
+        const data = {};
+        
+        for (let key in localStorage) {
+            if (key.startsWith('test_form_')) {
+                data[key] = localStorage.getItem(key);
+            }
+        }
+        
+        output.textContent = JSON.stringify(data, null, 2);
+        output.style.display = 'block';
+    }
+    
+    function clearTestStorage() {
+        localStorage.clear();
+        console.log('✅ LocalStorage cleared');
+        location.reload();
+    }
+    
+    function addTestData() {
+        localStorage.setItem('test_form_first_name_history', JSON.stringify([
+            'Nguyễn Văn A',
+            'Hoàng Văn B',
+            'Trần Văn C'
+        ]));
+        localStorage.setItem('test_form_email_history', JSON.stringify([
+            'test@example.com',
+            'user@domain.com'
+        ]));
+        console.log('✅ Test data added');
+        location.reload();
+    }
+</script>
+
+</body>
+</html>

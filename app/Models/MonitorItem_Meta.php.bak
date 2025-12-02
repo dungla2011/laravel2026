@@ -1,0 +1,697 @@
+<?php
+
+namespace App\Models;
+
+use App\Components\Helper1;
+use LadLib\Common\Database\MetaOfTableInDb;
+use Illuminate\Support\Facades\DB;
+
+/**
+ * ABC123
+ *
+ * @param  null  $objData
+ */
+class MonitorItem_Meta extends MetaOfTableInDb
+{
+    public static $api_url_admin = '/api/monitor-item';
+
+    public static $web_url_admin = '/admin/monitor-item';
+
+    public static $api_url_member = '/api/member-monitor-item';
+
+    public static $web_url_member = '/member/monitor-item';
+
+    //public static $folderParentClass = MonitorItemFolderTbl::class;
+    public static $modelClass = MonitorItem::class;
+
+    /**
+     * @return MetaOfTableInDb
+     */
+    public function getHardCodeMetaObj($field)
+    {
+        $objMeta = new MetaOfTableInDb();
+        if ($field == 'status' || $field == 'enable' || $field == 'allow_alert_for_consecutive_error') {
+            $objMeta->dataType = DEF_DATA_TYPE_STATUS;
+        }
+        if ($field == 'last_check_status') {
+            $objMeta->dataType = DEF_DATA_TYPE_IS_ERROR_STATUS;
+        }
+
+        if ($field == 'type' || $field == 'check_interval_seconds') {
+            $objMeta->dataType = DEF_DATA_TYPE_HTML_SELECT_OPTION;
+        }
+        if ($field == '_mount_alert_id') {
+            $objMeta->dataType = DEF_DATA_TYPE_HTML_SELECT_OPTION_MULTI_VALUE;
+        }
+
+
+        if ($field == 'tag_list_id') {
+            $objMeta->join_api_field = 'name';
+            //          $objMeta->join_func = 'joinTags';
+            //MonitorItem edit, tag sẽ ko update được?
+            $objMeta->join_relation_func = 'joinTags';
+            $objMeta->join_api = '/api/tags/search';
+            $objMeta->dataType = DEF_DATA_TYPE_ARRAY_NUMBER;
+        }
+
+        return $objMeta;
+    }
+
+    public function getFieldShowDependency($field) {
+
+        if($field == 'result_valid' || $field == 'result_error'){
+            return ['type' => ['web_content', 'abc123']];
+        }
+
+        if($field == 'stopTo'){
+            return ['enable' => [1]];
+        }
+
+
+    }
+
+    function _last_check_status($obj, $val, $field){
+        if($val == 1)
+            return "✅";
+        if($val == -1)
+            return "❌";
+        return "_";
+    }
+
+    public function getDefaultValue($field)
+    {
+        if($field == 'enable'){
+            return 1;
+        }
+        return null;
+    }
+
+    function getExtraFieldTypeMobile($field)
+    {
+        if($field == '_last_check_time'){
+            return 'time_to_now_seconds';
+        }
+
+    }
+
+    function _last_check_time($obj, $val, $field){
+        if($obj->last_check_time)
+            return (time() - strtotime($obj->last_check_time));
+        return 0;
+    }
+
+    function _type($obj, $val, $field)
+    {
+        $user = getCurrentUserId(1);
+
+        $lang = $user->language ?? '';
+        if(!$lang || $lang != 'vi'){
+            $arr = [
+                0 => '-Select-',
+                'ping_web' => 'Check Web Server running',
+                'ping_icmp' => 'Ping Server',
+                'web_content' => 'Check Web content',
+                'ssl_expired_check' => 'SSL Certificate Expired Check',
+                'open_port_tcp_then_error' => 'Alert if Open Port TCP',
+                'open_port_tcp_then_valid' => 'Alert if Not Open Port TCP',
+            ];
+
+        }
+        else
+            $arr = [
+                0 => '-Chọn-',
+                'ping_web' => 'Web Server hoạt động',
+                'ping_icmp' => 'Ping Server',
+                'web_content' => 'Nội dung Web',
+                'ssl_expired_check' => 'Chứng chỉ số Web hết hạn',
+                'open_port_tcp_then_error' => 'Báo lỗi Mở Port TCP',
+                'open_port_tcp_then_valid' => 'Báo lỗi Không mở Port TCP',
+            ];
+
+        return $arr;
+
+    }
+
+    function getExtraFieldMobile()
+    {
+//        return [
+//            'after_field' => 'check_interval_seconds',
+//            'field_info' =>  '{
+//                "field_name": "alert_info",
+//                "description": "Thông tin cảnh báo",
+//                "data_type": "varchar(255)",
+//                "editable": "yes",
+//                "show_in_api_edit_one": "yes",
+//                "show_in_api_list": "no",
+//                "show_dependency": null,
+//                "show_mobile_field": "yes",
+//                "select_option_value": {
+//                    "0": "-Chọn-",
+//                    "10": "10 Giây",
+//                    "60": "60 Giây",
+//                    "300": "5 Phút",
+//                },
+//                "required": "yes"
+//            }',
+//        ];
+    }
+
+    function _check_interval_seconds($obj, $val, $field)
+    {
+        $lang = $user->language ?? '';
+        if(!$lang || $lang != 'vi'){
+            $arr = [
+            0 => '-Select-',
+            10 => '10 seconds',
+            60 => '60 seconds',
+//            180 => '180 Giây',
+            300 => '5 minutes',
+            900 => '15 minutes',
+            1800 => '30 minutes',
+            3600 => '60 minutes',
+            3*3600 => '3 hours',
+            6*3600 => '6 hours',
+            12*3600 => '12 hours',
+            24*3600 => '24 hours',
+                ];
+        }else
+        $arr = [
+            0 => '-Chọn-',
+            10 => '10 Giây',
+            60 => '60 Giây',
+//            180 => '180 Giây',
+            300 => '5 Phút',
+            900 => '15 phút',
+            1800 => '30 phút',
+            3600 => '60 phút',
+            3*3600 => '3 Giờ',
+            6*3600 => '6 Giờ',
+            12*3600 => '12 Giờ',
+            24*3600 => '24 Giờ',
+        ];
+        if(!isAdminCookie()){
+            //Remove key = 10;
+            unset($arr[10]);
+        }
+
+        return $arr;
+
+    }
+
+    public function setDefaultValue($field)
+    {
+        if ($field == 'enable') {
+            return 1;
+        }
+        if ($field == 'check_interval_seconds') {
+            return 300;
+        }
+
+    }
+
+    public function extraCssInclude()
+    {
+        ?>
+        <style>
+        /*            Get selector of data-table-field */
+
+            label {
+                display: inline;
+                font-weight: normal!important;
+            }
+
+            i.change_status_item.allow_alert_for_consecutive_error {
+                color: green;
+            }
+
+            [data-table-field='last_check_status']{
+                text-align: center;
+            }
+            .input_value_to_post.count_online,.input_value_to_post.count_offline, .input_value_to_post.last_check_status  {
+                text-align: center;
+            }
+
+
+            .input_value_to_post.readonly.last_check_status{
+                display: none;
+                text-align: center;
+            }
+        </style>
+        <?php
+    }
+
+    public function extraCssIncludeEdit()
+    {
+        ?>
+        <style>
+            /*            Get selector of data-table-field */
+            .input_value_to_post.readonly.last_check_status{
+                display: none;
+                text-align: center;
+            }
+        </style>
+        <?php
+    }
+
+    public function getMobileAction($field)
+    {
+        if($field == '_mount_alert_id'){
+            return [
+                'text_info'=> "+ Edit",
+                'action_cmd' => "open_config",
+            ];
+        }
+
+    }
+
+    function getPreHtmlValueEditField($objData, $field)
+    {
+        if ($field == 'type') {
+
+            ?>
+            <div class="guide_for_type">
+
+            </div>
+            <?php
+
+        }
+    }
+
+    function _mount_alert_id($objData){
+
+        $uid = getCurrentUserId();
+        if($objData) {
+            $objData->refresh();
+            $uid = $objData->user_id;
+        }
+
+
+        // Tìm các MonitorItem của user này
+        $userMonitorItems = MonitorItem::where("user_id", $uid)->pluck('id')->toArray();
+
+        // Tìm các MonitorConfig của user này
+        $userMonitorConfigs = MonitorConfig::where("user_id", $uid)->get();
+
+
+//        echo "<pre> >>> " . __FILE__ . "(" . __LINE__ . ")<br/>";
+//        print_r($userMonitorConfigs->toArray());
+//        echo "</pre>";
+//        die();
+
+        // Lấy ID của MonitorItem hiện tại đang edit
+        $currentItemId = $objData->id ?? null;
+
+        // Nếu không có item hiện tại hoặc item không thuộc về user này
+        if (!$currentItemId || !in_array($currentItemId, $userMonitorItems)) {
+//            return "<p>Tạo xong rồi tiếp tục lựa chọn cảnh báo.</p>";
+        }
+
+        // Tìm các alert đã được gán cho item hiện tại
+        $attachedAlerts = DB::table('monitor_and_configs')
+            ->where('monitor_item_id', $currentItemId)
+            ->pluck('config_id')
+            ->toArray();
+
+//        echo "<pre> >>> " . __FILE__ . "(" . __LINE__ . ")<br/>";
+//        print_r($attachedAlerts);
+//        echo "</pre>";
+//        die();
+        $str = "";
+        $mmSelectForMobile = [];
+        $mmSelectForMobile[0] = "-Chọn Kiểu Alert-";
+        $tmp = [];
+        if($userMonitorConfigs->count() > 0){
+            foreach ($userMonitorConfigs as $config){
+                // Kiểm tra xem config này đã được gán cho item hiện tại chưa
+                $isChecked = in_array($config->id, $attachedAlerts) ? 'checked' : '';
+
+                if($isChecked)
+                    $tmp[] = $config->id;
+
+                $mmSelectForMobile[$config->id] = $config->name;
+
+                $str .= "<p data-code-pos='ppp17572322830151' class='monitor_item' style='margin: 5px; white-space: nowrap;  overflow: hidden; '>
+<label>
+<input id='monitor_config_id_$config->id' class='monitor_config_id' value='$config->id' type='checkbox' $isChecked>  &nbsp" . strip_tags($config->name) ."</label>
+&nbsp
+<a href='/member/monitor-config/edit/$config->id'>
+<i class='fa fa-external-link-alt' style='color: royalblue'></i>
+</a>
+</p>
+";
+            }
+        } else {
+            $str = "<p> Chưa có cấu hình alert nào. <a href='/member/monitor-config' target='_blank'>Tạo mới</a></p>";
+        }
+
+//        return $mmSelectForMobile;
+//        if(request('field_details')){
+//            die("xxx");
+//        }
+
+        //Nếu Header có chứa 'X-API-Key' = glx_mobile
+
+
+        //Nếu user agent có chứa chuỗi mobile_glx thì
+        if(request('field_details'))
+        {
+//            die("xxxx");
+            return $mmSelectForMobile;
+        }
+        if(request()->header('X-API-Key') === 'glx_mobile')
+        {
+          return $tmp;
+        }
+        if(!$objData)
+            return '';
+
+        return "<div data-code-pos='ppp17572323515651' data-id='$objData->id' class='alert_zone' style='padding: 5px'>" . $str ."</div>" ;
+    }
+
+    public function extraJsInclude()
+    {
+
+        $uid = getCurrentUserId();
+        $monitor = MonitorSetting::where("user_id", $uid)->first();
+
+        $this->extraJsIncludeEdit(null);
+
+        ?>
+
+
+
+        <script>
+
+            $(function() {
+
+
+
+                $(".change_status_item").on('click', function () {
+
+                });
+
+                $(".change_status_item").on('click', function () {
+                    console.log("Change status item2 ...");
+
+                    //Tìm cha gần nhất của nó có data-id='id' và lấy ra id
+                    let id = $(this).closest("div.divTable2Cell").data('id');
+                    if(id)
+                        clsTableMngJs.saveOneIdTable(id)
+
+
+                });
+
+                function stopAlertToNHour(nHour){
+
+                    let url = '/api/member-monitor-setting/update/<?php echo $monitor->id ?? "" ?>'
+                    let data = {
+                        global_stop_alert_to: nHour
+                    }
+                    $.post(url, data, function(response){
+                        if(response.code && response.code > 0){
+                            toastr.success("Cập nhật thành công");
+
+
+
+                            const apiUrl1 = `/api/member-monitor-setting/get/<?php echo $monitor->id ?? ""  ?>`;
+                            console.log("apiUrl1=", apiUrl1);
+                            $.get(apiUrl1).done(function(response1){
+                                if(response1.code && response1.code > 0){
+                                    if(response1.payload){
+                                        console.log("response1.payload=", response1.payload);
+                                        if(!response1.payload.global_stop_alert_to)
+                                            response1.payload.global_stop_alert_to = "0"
+                                        $("#global_stop_alert_to").html(response1.payload.global_stop_alert_to)
+                                    }
+                                }
+                            });
+
+
+                        } else {
+                            toastr.error(response.message || "Có lỗi xảy ra, không thể cập nhật");
+                        }
+                    }).fail(function(xhr, status, error) {
+                        console.error('API Error:', xhr);
+
+                        let errorMessage = 'Lỗi kết nối API';
+
+                        // Kiểm tra nếu có response JSON từ server
+                        if (xhr.responseJSON) {
+                            errorMessage = xhr.responseJSON.message || xhr.responseJSON.payload || errorMessage;
+                        } else if (xhr.responseText) {
+                            try {
+                                const errorData = JSON.parse(xhr.responseText);
+                                errorMessage = errorData.message || errorData.payload || errorMessage;
+                            } catch (e) {
+                                errorMessage = xhr.responseText;
+                            }
+                        } else {
+                            errorMessage += ': ' + error;
+                        }
+
+                        toastr.error(errorMessage);
+                    });
+
+                }
+
+                $("#stop_alert_time").on('change', function (){
+
+                    console.log("Change...");
+
+                    let val = parseInt($(this).val());
+
+                    stopAlertToNHour(val);
+
+
+                })
+
+                // Xử lý nút cộng trừ giờ
+                $('#increase-hours').click(function() {
+                    let currentValue = parseInt($('#stop_alert_time').val()) || 0;
+                    if (currentValue < 100) {
+                        let newValue = currentValue + 1;
+                        $('#stop_alert_time').val(newValue);
+                        stopAlertToNHour(newValue);
+                    }
+                });
+
+                $('#decrease-hours').click(function() {
+                    let currentValue = parseInt($('#stop_alert_time').val()) || 0;
+                    if (currentValue > 0) {
+                        let newValue = currentValue - 1;
+                        $('#stop_alert_time').val(newValue);
+                        stopAlertToNHour(newValue);
+                    }
+                });
+
+                // Validate input khi người dùng nhập trực tiếp
+                $('#stop_alert_time').on('input blur', function() {
+                    let value = parseInt($(this).val());
+                    if (isNaN(value) || value < 0) {
+                        $(this).val(0);
+                    } else if (value > 100) {
+                        $(this).val(100);
+                    }
+                });
+            });
+
+        </script>
+        <?php
+    }
+
+    public function extraContentIndex1($v1 = null, $v2 = null, $v3 = null)
+    {
+        if(Helper1::isAdminModule())
+            return;
+
+        $uid = getCurrentUserId();
+        $nHour = 0;
+        if(!$monitor = MonitorSetting::where("user_id", $uid)->first()){
+            $monitor = new MonitorSetting();
+            $monitor->user_id = $uid;
+            $monitor->save();
+        }
+        if($monitor = MonitorSetting::where("user_id", $uid)->first()){
+                if($monitor->global_stop_alert_to && strtotime($monitor->global_stop_alert_to) > time())
+                    $nHour = ceil((strtotime($monitor->global_stop_alert_to) - time())/3600);
+        }
+        else{
+            return;
+        }
+
+
+        ?>
+        <div style="border: 1px solid #ccc; background-color: white;font-size: 90%;" class="m-2 p-2 px-3">
+            <div class="d-flex align-items-center">
+                <span class="">Dừng tất cả cảnh báo tới:</span>
+                <div class="input-group mx-2" style="width: 120px;">
+                    <button class="btn btn-primary btn-sm" type="button" id="decrease-hours">-</button>
+                    <input id="stop_alert_time" type="number" class="form-control form-control-sm text-center"
+                           value="<?php echo  $nHour ?>" min="0" max="100" style="width: 30px;">
+                    <button class="btn btn-primary btn-sm" type="button" id="increase-hours">+</button>
+                </div>
+                <span class="">giờ nữa
+                    <span style="font-size: 90%;color: white; background-color: #0069d9; padding: 2px 8px; margin-left: 10px; border-radius: 5px">
+                    <?php
+                    {
+                    ?>
+
+
+                    <?php echo "<span id='global_stop_alert_to' style='color: '>" . ($monitor->global_stop_alert_to ? date("H:i d-m-Y",strtotime($monitor->global_stop_alert_to)) : '0') . "<span>" ?>
+
+                    <?php
+                    }
+
+                    ?>
+                        </span>
+                </span>
+
+
+            </div>
+            <div class="pt-2">
+                <i>
+            (Dừng gửi các cảnh báo của tất cả các giám sát khi cần thiết, ví dụ khi bạn đã biết và tránh bị làm phiền, và sẽ cảnh báo lại khi hết thời gian dừng)
+                </i>
+            </div>
+<!--            <strong>Hướng dẫn:</strong>-->
+<!--            <ul>-->
+<!--                <li>Trước khi tạo Monitor Item, bạn cần tạo các cấu hình Alert trong mục <a href="/member/monitor-config" target="_blank">Quản lý Alert</a>.</li>-->
+<!--                <li>Mỗi Monitor Item có thể gán nhiều cấu hình Alert để nhận thông báo khi có sự cố.</li>-->
+<!--                <li>Sau khi tạo Monitor Item, hệ thống sẽ tự động kiểm tra theo chu kỳ bạn đã chọn và gửi thông báo qua các kênh đã cấu hình.</li>-->
+<!--                <li>Đảm bảo rằng các thông tin liên hệ (email, số điện thoại, Telegram, webhook) trong cấu hình Alert là chính xác để nhận được thông báo kịp thời.</li>-->
+<!--            </ul>-->
+        </div>
+        <?php
+    }
+
+    function extraJsIncludeEdit($objData = null)
+    {
+
+        ?>
+
+        <script>
+        $(document).ready(function() {
+
+
+            function checkTypeOPT(){
+                let val = $(".sl_option.type").val();
+                if(val != 'web_content'){
+                    console.log(" Not web content..");
+                    $('div.divTable2Row.result_error').hide();
+                    $('div.divTable2Row.result_valid').hide();
+                }
+                else{
+                    $('div.divTable2Row.result_error').show();
+                    $('div.divTable2Row.result_valid').show();
+                }
+            }
+            checkTypeOPT();
+            $(".sl_option.type").change(function (){
+                checkTypeOPT();
+            })
+
+            $(".status_edit_one .change_status_item").on('click', function () {
+                console.log("Change status item2 ...");
+
+                clsTableMngJs.saveOneDataTable()
+
+            });
+
+            console.log("Typex=", $('select.sl_option.type').val());
+
+            if($('select.sl_option.type').val() == 'ssl_expired_check'){
+                let checkIntervalSelect = $('select.sl_option.check_interval_seconds');
+                if( checkIntervalSelect.length > 0) {
+                    // checkIntervalSelect.val(43200); // 12 giờ
+                    checkIntervalSelect.prop('disabled', true);
+                    checkIntervalSelect.attr('disabled', true);
+                }
+            }
+
+            // nếu select.sl_option.type chuyển sang giá trị = ssl_expired_check
+            $('select.sl_option.type').on('change', function() {
+                let checkIntervalSelect = $('select.sl_option.check_interval_seconds');
+
+                checkIntervalSelect.prop('disabled', false);
+                const selectedType = $(this).val();
+                if (selectedType === 'ssl_expired_check') {
+                    // Thực hiện hành động khi type là ssl_expired_check
+                    //select.sl_option.check_interval_seconds tự chuyển thành value = 43200 và disabled
+                    if( checkIntervalSelect.length == 0)
+                        return;
+                    checkIntervalSelect.val(43200); // 12 giờ
+                    checkIntervalSelect.prop('disabled', true);
+
+                }
+            });
+
+            // Xử lý khi click vào checkbox monitor_config_id
+            $('input.monitor_config_id').on('change', function() {
+                const alertId = $(this).val();
+                // Tim div.alert_zone gần nhất để get data-id
+                const objDataId = $(this).closest('div.alert_zone').data('id');
+                const isChecked = $(this).is(':checked');
+
+                console.log('Monitor Alert ID:', alertId);
+                console.log('Object Data ID1:', objDataId);
+                console.log('Is Checked:', isChecked);
+
+                // Tạo URL API
+                let apiUrl = `/api/member-monitor-item/update_alert?config_id=${alertId}&monitor_item_id=${objDataId}&action=${isChecked ? 'add' : 'remove'}`;
+
+                <?php
+                if(Helper1::isAdminModule()){
+                ?>
+                // apiUrl = `/api/member-monitor-item/update_alert?config_id=${alertId}&monitor_item_id=${objDataId}&action=${isChecked ? 'add' : 'remove'}`;
+                <?php
+                }
+                ?>
+                // Gửi GET request
+                $.get(apiUrl)
+                    .done(function(response) {
+                        console.log('API Response:', response);
+                        // Xử lý response thành công
+                        if (response.code && response.code > 0) {
+
+
+                            toastr.success(response.message || 'Cập nhật thành công');
+                        } else {
+                            toastr.error(response.message || 'Có lỗi xảy ra, không thể cập nhật');
+                            // Revert checkbox state nếu thất bại
+                            $(this).prop('checked', !isChecked);
+                        }
+                    }.bind(this))
+                    .fail(function(xhr, status, error) {
+                        console.error('API Error:', xhr);
+
+                        let errorMessage = 'Lỗi kết nối API';
+
+                        // Kiểm tra nếu có response JSON từ server
+                        if (xhr.responseJSON) {
+                            errorMessage = xhr.responseJSON.message || xhr.responseJSON.payload || errorMessage;
+                        } else if (xhr.responseText) {
+                            try {
+                                const errorData = JSON.parse(xhr.responseText);
+                                errorMessage = errorData.message || errorData.payload || errorMessage;
+                            } catch (e) {
+                                errorMessage = xhr.responseText;
+                            }
+                        } else {
+                            errorMessage += ': ' + error;
+                        }
+
+                        toastr.error(errorMessage);
+                        // Revert checkbox state nếu thất bại
+                        $(this).prop('checked', !isChecked);
+                    }.bind(this));
+            });
+        });
+        </script>
+
+
+        <?php
+
+    }
+
+    //...
+}

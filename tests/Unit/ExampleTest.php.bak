@@ -1,0 +1,30 @@
+<?php
+
+namespace Tests\Unit;
+
+use App\Models\User;
+use Facade\FlareClient\Http\Response;
+use Illuminate\Support\Facades\Redirect;
+use PHPUnit\Framework\TestCase;
+
+use PHPUnit\Framework;
+
+
+class ExampleTest extends TestCase
+{
+    /**
+     * A basic test example.
+     *
+     * @return void
+     */
+    public function test_example()
+    {
+
+
+
+    }
+
+
+
+
+}

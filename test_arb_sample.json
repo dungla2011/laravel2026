@@ -1,0 +1,54 @@
+{
+  "welcome": "Welcome to our application",
+  "@welcome": {
+    "description": "Welcome message displayed on home screen"
+  },
+  "hello": "Hello {name}",
+  "@hello": {
+    "description": "Greeting message with name parameter",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "John"
+      }
+    }
+  },
+  "login": "Login",
+  "@login": {
+    "description": "Login button text"
+  },
+  "logout": "Logout",
+  "@logout": {
+    "description": "Logout button text"
+  },
+  "email": "Email",
+  "password": "Password",
+  "forgotPassword": "Forgot Password?",
+  "register": "Register",
+  "confirmPassword": "Confirm Password",
+  "submit": "Submit",
+  "cancel": "Cancel",
+  "save": "Save",
+  "delete": "Delete",
+  "edit": "Edit",
+  "search": "Search",
+  "filter": "Filter",
+  "sort": "Sort",
+  "settings": "Settings",
+  "profile": "Profile",
+  "notifications": "Notifications",
+  "loading": "Loading...",
+  "errorOccurred": "An error occurred",
+  "tryAgain": "Try Again",
+  "noData": "No data available",
+  "itemCount": "{count} items",
+  "@itemCount": {
+    "description": "Number of items",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "compact"
+      }
+    }
+  }
+}

@@ -1,0 +1,28 @@
+<?php
+
+return [
+    'failed' => 'これらの認証情報は当社の記録と一致しません。',
+    'password' => '指定されたパスワードが正しくありません。',
+    'throttle' => 'ログイン試行が多すぎます。 ',
+    'login' => 'ログイン',
+    'login_with' => 'でログイン',
+    'register' => '登録する',
+    'register_with' => 'に登録してください',
+    'logout' => 'ログアウト',
+    'email_or_account' => 'メールまたはアカウント',
+    'username' => 'ユーザー名 (英数字とアンダースコアのみ)',
+    'account' => 'アカウント',
+    'password_field' => 'パスワード',
+    'password_confirmation' => 'パスワードを認証する',
+    'forgot_password' => 'パスワードをお忘れですか',
+    'activate_account' => 'アカウントをアクティブ化する',
+    'home' => '家',
+    'activation_message' => '登録したメールアドレスを入力してアカウントをアクティベートします (登録したがアクティベーションメールを受け取っていない場合)',
+    'enter_email' => 'メールアドレスを入力してください',
+    'email' => '電子メール',
+    'remember_me' => '私を覚えてますか',
+    'submit' => '提出する',
+    'back_to_login' => 'ログインに戻る',
+    'reset_password' => 'パスワードのリセット',
+    'email_reset_password' => 'パスワードを受け取るためのメール',
+];

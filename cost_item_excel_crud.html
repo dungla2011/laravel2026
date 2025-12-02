@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cost Item Management - Excel Style</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f0f0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: #4CAF50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .toolbar {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-bottom: 1px solid #dee2e6;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .table-container {
+            overflow-x: auto;
+            max-height: 80vh;
+        }
+
+        .excel-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        .excel-table th {
+            background: #e9ecef;
+            border: 1px solid #dee2e6;
+            padding: 12px 8px;
+            text-align: center;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .excel-table td {
+            border: 1px solid #dee2e6;
+            padding: 0;
+            height: 35px;
+        }
+
+        .excel-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        .excel-table tr:hover {
+            background-color: #e3f2fd !important;
+        }
+
+        .cell-input {
+            width: 100%;
+            height: 100%;
+            border: none;
+            outline: none;
+            padding: 8px;
+            background: transparent;
+            font-size: 14px;
+        }
+
+        .cell-input:focus {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+        }
+
+        .readonly {
+            background: #e9ecef !important;
+            color: #6c757d;
+        }
+
+        .new-row {
+            background-color: #e8f5e8 !important;
+        }
+
+        .new-row:hover {
+            background-color: #d4edda !important;
+        }
+
+        .row-actions {
+            display: flex;
+            gap: 5px;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+
+        .action-btn {
+            padding: 4px 8px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .save-btn {
+            background: #28a745;
+            color: white;
+        }
+
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+        }
+
+        .status-message {
+            padding: 10px 20px;
+            margin: 10px 20px;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .col-id { width: 80px; }
+        .col-name { width: 200px; }
+        .col-category { width: 150px; }
+        .col-cost { width: 120px; }
+        .col-quantity { width: 100px; }
+        .col-depreciation { width: 120px; }
+        .col-actions { width: 120px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔖 Cost Item Management</h1>
+            <p>Excel-style CRUD Interface</p>
+        </div>
+
+        <div class="toolbar">
+            <button class="btn btn-primary" onclick="loadData()">
+                🔄 Refresh Data
+            </button>
+            <button class="btn btn-success" onclick="saveAll()">
+                💾 Save All Changes
+            </button>
+            <span style="margin-left: auto; color: #6c757d;">
+                Total Items: <span id="itemCount">0</span>
+            </span>
+        </div>
+
+        <div class="status-message" id="statusMessage"></div>
+
+        <div class="table-container">
+            <table class="excel-table">
+                <thead>
+                    <tr>
+                        <th class="col-id">ID</th>
+                        <th class="col-name">Item Name</th>
+                        <th class="col-category">Category</th>
+                        <th class="col-cost">Cost</th>
+                        <th class="col-quantity">Quantity</th>
+                        <th class="col-depreciation">Depreciation</th>
+                        <th class="col-actions">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <tr class="loading">
+                        <td colspan="7">Loading data...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        let data = [];
+        let nextTempId = -1;
+        let changes = new Map();
+
+        // API Base URL - thay đổi theo domain của bạn
+        const API_BASE = '/api/cost-item';
+
+        // Load data from API
+        async function loadData() {
+            try {
+                showStatus('Loading data...', 'info');
+                const response = await fetch(`${API_BASE}/list`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                
+                // Check if API returned success response
+                if (result.code === 1 && result.payload && result.payload.data) {
+                    data = result.payload.data;
+                } else {
+                    throw new Error('Invalid API response format');
+                }
+                
+                renderTable();
+                showStatus(`Data loaded successfully! (${data.length} items)`, 'success');
+            } catch (error) {
+                console.error('Error loading data:', error);
+                showStatus('Error loading data: ' + error.message, 'error');
+                data = [];
+                renderTable();
+            }
+        }
+
+        // Render table
+        function renderTable() {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+
+            // Render existing data
+            data.forEach((item, index) => {
+                tbody.appendChild(createRow(item, index, false));
+            });
+
+            // Add 2 empty rows for new entries initially
+            if (getNewRowsCount() < 2) {
+                const currentNewRows = getNewRowsCount();
+                for (let i = currentNewRows; i < 2; i++) {
+                    tbody.appendChild(createRow({
+                        id: nextTempId--,
+                        item_name: '',
+                        category: '',
+                        cost: '',
+                        quantity: '',
+                        depreciation: ''
+                    }, data.length + i, true));
+                }
+            }
+
+            updateItemCount();
+        }
+
+        // Create table row
+        function createRow(item, index, isNew = false) {
+            const row = document.createElement('tr');
+            row.className = isNew ? 'new-row' : '';
+            row.dataset.index = index;
+            row.dataset.isNew = isNew;
+            row.dataset.id = item.id;
+
+            row.innerHTML = `
+                <td>
+                    <input type="text" class="cell-input readonly" value="${item.id || ''}" readonly>
+                </td>
+                <td>
+                    <input type="text" class="cell-input" value="${item.item_name || ''}" 
+                           onchange="trackChange(this, ${index}, 'item_name')" 
+                           onblur="checkNewRowCompletion(this)">
+                </td>
+                <td>
+                    <input type="text" class="cell-input" value="${item.category || ''}" 
+                           onchange="trackChange(this, ${index}, 'category')"
+                           onblur="checkNewRowCompletion(this)">
+                </td>
+                <td>
+                    <input type="number" class="cell-input" value="${item.cost || ''}" 
+                           onchange="trackChange(this, ${index}, 'cost')"
+                           onblur="checkNewRowCompletion(this)">
+                </td>
+                <td>
+                    <input type="number" class="cell-input" value="${item.quantity || ''}" 
+                           onchange="trackChange(this, ${index}, 'quantity')"
+                           onblur="checkNewRowCompletion(this)">
+                </td>
+                <td>
+                    <input type="number" class="cell-input" value="${item.depreciation || ''}" 
+                           onchange="trackChange(this, ${index}, 'depreciation')"
+                           onblur="checkNewRowCompletion(this)">
+                </td>
+                <td>
+                    <div class="row-actions">
+                        ${isNew ? 
+                            '<button class="action-btn save-btn" onclick="saveNewRow(this)">💾</button>' :
+                            '<button class="action-btn save-btn" onclick="saveRow(this)">💾</button>'
+                        }
+                        <button class="action-btn delete-btn" onclick="deleteRow(this)">🗑️</button>
+                    </div>
+                </td>
+            `;
+
+            return row;
+        }
+
+        // Track changes
+        function trackChange(input, index, field) {
+            const rowId = input.closest('tr').dataset.id;
+            
+            if (!changes.has(rowId)) {
+                changes.set(rowId, {});
+            }
+            
+            changes.get(rowId)[field] = input.value;
+        }
+
+        // Check if new row is completed and add another empty row
+        function checkNewRowCompletion(input) {
+            const row = input.closest('tr');
+            if (row.dataset.isNew === 'true') {
+                const inputs = row.querySelectorAll('.cell-input:not(.readonly)');
+                const hasData = Array.from(inputs).some(inp => inp.value.trim() !== '');
+                
+                if (hasData && getNewRowsCount() < 3) {
+                    // Add new empty row
+                    const tbody = document.getElementById('tableBody');
+                    tbody.appendChild(createRow({
+                        id: nextTempId--,
+                        item_name: '',
+                        category: '',
+                        cost: '',
+                        quantity: '',
+                        depreciation: ''
+                    }, data.length + getNewRowsCount(), true));
+                }
+            }
+        }
+
+        // Get number of new rows
+        function getNewRowsCount() {
+            return document.querySelectorAll('tr[data-is-new="true"]').length;
+        }
+
+        // Save single row
+        async function saveRow(button) {
+            const row = button.closest('tr');
+            const rowId = row.dataset.id;
+            const isNew = row.dataset.isNew === 'true';
+            
+            try {
+                const formData = getRowData(row);
+                
+                if (isNew) {
+                    await saveNewRow(button);
+                } else {
+                    const response = await fetch(`${API_BASE}/update/${rowId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(formData)
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    // Update local data
+                    const index = parseInt(row.dataset.index);
+                    Object.assign(data[index], formData);
+                    changes.delete(rowId);
+                    
+                    showStatus('Row updated successfully!', 'success');
+                }
+            } catch (error) {
+                console.error('Error saving row:', error);
+                showStatus('Error saving row: ' + error.message, 'error');
+            }
+        }
+
+        // Save new row
+        async function saveNewRow(button) {
+            const row = button.closest('tr');
+            
+            try {
+                const formData = getRowData(row);
+                
+                // Validate required fields
+                if (!formData.item_name.trim()) {
+                    showStatus('Item name is required!', 'error');
+                    return;
+                }
+                
+                const response = await fetch(`${API_BASE}/add`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                
+                // Add to local data
+                const newItem = { id: result.id || Date.now(), ...formData };
+                data.push(newItem);
+                
+                // Convert row to regular row
+                row.className = '';
+                row.dataset.isNew = 'false';
+                row.dataset.id = newItem.id;
+                row.querySelector('.readonly').value = newItem.id;
+                
+                showStatus('New item added successfully!', 'success');
+                updateItemCount();
+                
+            } catch (error) {
+                console.error('Error adding new row:', error);
+                showStatus('Error adding new item: ' + error.message, 'error');
+            }
+        }
+
+        // Get row data
+        function getRowData(row) {
+            const inputs = row.querySelectorAll('.cell-input:not(.readonly)');
+            return {
+                item_name: inputs[0].value.trim(),
+                category: inputs[1].value.trim(),
+                cost: parseFloat(inputs[2].value) || 0,
+                quantity: parseFloat(inputs[3].value) || 0,
+                depreciation: parseFloat(inputs[4].value) || 0
+            };
+        }
+
+        // Delete row
+        async function deleteRow(button) {
+            const row = button.closest('tr');
+            const rowId = row.dataset.id;
+            const isNew = row.dataset.isNew === 'true';
+            
+            if (isNew) {
+                // Just remove the row if it's new
+                row.remove();
+                return;
+            }
+            
+            if (!confirm('Are you sure you want to delete this item?')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/delete`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ id: rowId })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                // Remove from local data
+                const index = parseInt(row.dataset.index);
+                data.splice(index, 1);
+                changes.delete(rowId);
+                
+                // Re-render table
+                renderTable();
+                showStatus('Item deleted successfully!', 'success');
+                
+            } catch (error) {
+                console.error('Error deleting row:', error);
+                showStatus('Error deleting item: ' + error.message, 'error');
+            }
+        }
+
+        // Save all changes
+        async function saveAll() {
+            if (changes.size === 0) {
+                showStatus('No changes to save!', 'info');
+                return;
+            }
+            
+            try {
+                const updateData = Array.from(changes.entries()).map(([id, changes]) => ({
+                    id: id,
+                    ...changes
+                }));
+                
+                const response = await fetch(`${API_BASE}/update-multi`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ items: updateData })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                changes.clear();
+                showStatus('All changes saved successfully!', 'success');
+                
+            } catch (error) {
+                console.error('Error saving all changes:', error);
+                showStatus('Error saving changes: ' + error.message, 'error');
+            }
+        }
+
+
+
+        // Show status message
+        function showStatus(message, type) {
+            const statusEl = document.getElementById('statusMessage');
+            statusEl.className = `status-message ${type}`;
+            statusEl.textContent = message;
+            statusEl.style.display = 'block';
+            
+            setTimeout(() => {
+                statusEl.style.display = 'none';
+            }, 5000);
+        }
+
+        // Update item count
+        function updateItemCount() {
+            document.getElementById('itemCount').textContent = data.length;
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadData();
+        });
+
+        // Auto-save every 30 seconds
+        setInterval(() => {
+            if (changes.size > 0) {
+                console.log('Auto-saving changes...');
+                saveAll();
+            }
+        }, 30000);
+    </script>
+</body>
+</html> 

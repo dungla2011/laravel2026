@@ -1,0 +1,28 @@
+<?php
+
+return [
+    'failed' => 'Ces informations d\'identification ne correspondent pas à nos dossiers.',
+    'password' => 'Le mot de passe fourni est incorrect.',
+    'throttle' => 'Trop de tentatives de connexion. ',
+    'login' => 'Se connecter',
+    'login_with' => 'Connectez-vous avec',
+    'register' => 'Registre',
+    'register_with' => 'Inscrivez-vous avec',
+    'logout' => 'Déconnexion',
+    'email_or_account' => 'E-mail ou compte',
+    'username' => 'Nom d\'utilisateur (alphanumérique et trait de soulignement uniquement)',
+    'account' => 'Compte',
+    'password_field' => 'Mot de passe',
+    'password_confirmation' => 'Confirmez le mot de passe',
+    'forgot_password' => 'Mot de passe oublié',
+    'activate_account' => 'Activer le compte',
+    'home' => 'Maison',
+    'activation_message' => 'Entrez votre e-mail d\'enregistrement pour activer le compte (si vous vous êtes inscrit mais n\'avez pas reçu l\'e-mail d\'activation)',
+    'enter_email' => 'Entrez l\'adresse e-mail',
+    'email' => 'E-mail',
+    'remember_me' => 'Souviens-toi de moi',
+    'submit' => 'Soumettre',
+    'back_to_login' => 'Retour à la connexion',
+    'reset_password' => 'Réinitialiser le mot de passe',
+    'email_reset_password' => 'Email pour recevoir le mot de passe',
+];

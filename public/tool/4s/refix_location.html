@@ -1,0 +1,84 @@
+<?php
+define("DEF_TOOL_CMS", 1);
+$_SERVER["SERVER_NAME"] = '4share.vn';
+try
+{
+    require "/var/www/html/public/index.php";
+    $cli = 0;
+    if (isCLI()) {
+        $cli = 1;
+    }
+    function ol1($str) {
+        global $cli;
+        if ($cli)
+            echo "\n$str";
+        else
+            echo "<br>$str";
+        $date = nowy();
+        $fileLog = basename(__FILE__);
+        outputT("/var/glx/weblog/$fileLog.log", $str);
+    }
+
+    if(isset($_GET['location']) && isset($_GET['fid']))
+    {
+        $hostname = $_GET['sv'] ?? '';
+        $location = $_GET['location']  ?? '';
+        $fid      = $_GET['fid']  ?? '';
+        $filesize = $_GET['size']  ?? '';
+
+        $note = trim($_GET['note'] ?? '');
+
+        if(!empty($note))
+            $note = HTS($note);
+
+//        if(substr($hostname,0,2)<>'sv')
+//        {
+//            ob_clean();
+//            echo "ERROR Hostname invalid: $hostname";
+//            return;
+//        }
+
+//        $cret = new CReturnError();
+//        $file = new \Base\ModelCloudFile();
+//
+//        if(!$cret = $file->getOne($fid)){
+//            die("Not found fid refixlocation?");
+//        }
+
+        $fileCl = \App\Models\FileCloud::find($fid);
+        if(!$fileCl){
+            echo "Not found fid refixlocation?";
+            return;
+        }
+
+        if($fileCl->size<>$filesize)
+        {
+            ob_clean();
+            echo "ERROR FILESIZE, $fid: $fileCl->size(DB)<>$filesize";
+            return;
+        }
+        if($fileCl->location1 == $location)
+        {
+            echo "set_new_loc_ok2";
+            return;
+        }
+        else
+        {
+            $tmp = $fileCl->location1;
+            $fileCl->location1 = "$location";
+            $fileCl->addLog("Set new loc: $tmp->$location");
+//            $fileCl->server1 == "$hostname.4share.vn";
+            if($fileCl->save())
+                echo "set_new_loc_ok-$location/$fid";
+            else
+                echo "set_new_loc_fail";
+            return;
+        }
+    }
+    return;
+}
+catch(Exception $e)
+{
+	echo ($e->getMessage() . "/ " . $e->getTraceAsString());
+}
+?>

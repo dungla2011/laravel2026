@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cây Gia Phả</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            overflow: hidden;
+        }
+        .link {
+            fill: none;
+            stroke: #555;
+            stroke-width: 2px;
+        }
+    </style>
+</head>
+<body>
+<script>
+    // Thiết lập các tham số
+    const nodeWidth = 150;
+    const nodeHeight = 100;
+    const horizontalSpacing = 50;
+    const verticalSpacing = 100;
+
+    // Tạo canvas SVG
+    const svg = d3.select("body").append("svg")
+        .attr("width", window.innerWidth)
+        .attr("height", window.innerHeight)
+        .call(d3.zoom().on("zoom", function (event) {
+            svg.attr("transform", event.transform);
+        }))
+        .append("g");
+
+    // Tải dữ liệu cây gia phả
+    fetch("tree.js.data")
+        .then(response => response.json())
+        .then(data => {
+            const rootNodes = data.filter(d => d.parrent_id === 0);
+            if (rootNodes.length > 0) {
+                const fakeRoot = {
+                    id: "root",
+                    name: "Gốc TOP",
+                    children: rootNodes
+                };
+                rootNodes.forEach(node => {
+                    node.children = buildTree(node.id, data);
+                });
+                drawTree(fakeRoot);
+            }
+        });
+
+    function buildTree(parentId, data) {
+        return data.filter(d => d.parrent_id === parentId).map(node => {
+            node.children = buildTree(node.id, data);
+            return node;
+        });
+    }
+
+    function drawTree(data) {
+        const treeLayout = d3.tree().nodeSize([nodeWidth + horizontalSpacing, nodeHeight + verticalSpacing]);
+        const root = d3.hierarchy(data);
+        treeLayout(root);
+
+        // Vẽ các liên kết
+        svg.selectAll(".link")
+            .data(root.links())
+            .enter().append("path")
+            .attr("class", "link")
+            .attr("d", d3.linkHorizontal()
+                .x(d => d.y)
+                .y(d => d.x));
+
+        // Vẽ các nút thành viên
+        const nodes = svg.selectAll(".node")
+            .data(root.descendants())
+            .enter().append("g")
+            .attr("class", "node")
+            .attr("transform", d => `translate(${d.y},${d.x})`);
+
+        // Thêm ảnh và tên vào mỗi nút
+        nodes.append("rect")
+            .attr("width", nodeWidth)
+            .attr("height", nodeHeight)
+            .attr("x", -nodeWidth / 2)
+            .attr("y", -nodeHeight / 2)
+            .attr("fill", "#f8f9fa")
+            .attr("stroke", "#333");
+
+        nodes.append("image")
+            .attr("xlink:href", d => d.data.photo || "https://via.placeholder.com/60x60")
+            .attr("width", 60)
+            .attr("height", 60)
+            .attr("x", -30)
+            .attr("y", -nodeHeight / 2 + 10);
+
+        nodes.append("text")
+            .attr("dy", "2em")
+            .attr("text-anchor", "middle")
+            .text(d => d.data.name);
+    }
+
+    // Toàn màn hình
+    d3.select("body").style("margin", 0).style("overflow", "hidden");
+</script>
+</body>
+</html>

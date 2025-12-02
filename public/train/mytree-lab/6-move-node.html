@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cây Gia Phả</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    .node circle {
+      fill: #69b3a2;
+      stroke: #2b8c8c;
+      stroke-width: 2px;
+    }
+    .node text {
+      font-family: Arial, sans-serif;
+      font-size: 12px;
+      text-anchor: middle;
+    }
+    .link {
+      fill: none;
+      stroke: #ccc;
+      stroke-width: 2px;
+    }
+  </style>
+</head>
+<body>
+  <svg width="1000" height="600"></svg>
+
+  <script>
+    // Dữ liệu phẳng JSON
+     let flatData = [
+      { id: 1, pid: null, name: "Lê Thành Công", spouse_with: null },
+      { id: 2, pid: 1, name: "Lê Đại Gia", spouse_with: 3 },
+      { id: 3, pid: null, name: "Nguyễn Thị Giàu", spouse_with: 2 },
+      { id: 4, pid: 1, name: "Con của vợ 2", spouse_with: null }
+    ];
+
+
+
+    // Hàm chuyển đổi dữ liệu phẳng thành cây phân cấp
+    function buildHierarchy(data) {
+      const idMap = new Map();
+      const root = [];
+      
+      // Khởi tạo các nút
+      data.forEach(d => {
+        idMap.set(d.id, { ...d, children: [] });
+      });
+
+      // Xây dựng cây
+      data.forEach(d => {
+        if (d.pid === null) {
+          root.push(idMap.get(d.id));
+        } else {
+          idMap.get(d.pid).children.push(idMap.get(d.id));
+        }
+      });
+
+      // Xử lý quan hệ hôn nhân (spouse_with)
+      data.forEach(d => {
+        if (d.spouse_with) {
+          const node = idMap.get(d.id);
+          const spouseNode = idMap.get(d.spouse_with);
+          node.children.push({ ...spouseNode, children: [], isSpouse: true });
+        }
+      });
+
+      return root[0]; // Trả về gốc cây
+    }
+
+    // Dữ liệu cây phân cấp
+    const treeData = buildHierarchy(flatData);
+
+    // Kích thước và margin
+    const margin = { top: 20, right: 90, bottom: 30, left: 90 },
+          width = 1000 - margin.left - margin.right,
+          height = 600 - margin.top - margin.bottom;
+
+    const svg = d3.select("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+      .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    const root = d3.hierarchy(treeData);
+
+    const treeLayout = d3.tree().size([height, width]);
+    treeLayout(root);
+
+    // Links
+    const link = svg.selectAll(".link")
+      .data(root.links())
+      .enter().append("path")
+      .attr("class", "link")
+      .attr("d", d3.linkVertical()
+        .x(d => d.x)
+        .y(d => d.y));
+
+    // Nodes
+    const node = svg.selectAll(".node")
+      .data(root.descendants())
+      .enter().append("g")
+      .attr("class", "node")
+      .attr("transform", d => `translate(${d.x},${d.y})`)
+      .call(d3.drag()
+        .on("start", dragstarted)
+        .on("drag", dragged)
+        .on("end", dragended));
+
+    node.append("circle")
+      .attr("r", 5);
+
+    node.append("text")
+      .attr("dy", 3)
+      .attr("x", d => d.children ? -8 : 8)
+      .style("text-anchor", d => d.children ? "end" : "start")
+      .text(d => d.data.name);
+
+    function dragstarted(event, d) {
+      d3.select(this).raise().attr("stroke", "black");
+    }
+
+    function dragged(event, d) {
+      d.x = event.x;
+      d.y = event.y;
+      d3.select(this).attr("transform", `translate(${d.x},${d.y})`);
+      link.attr("d", d3.linkVertical()
+        .x(d => d.x)
+        .y(d => d.y));
+    }
+
+    function dragended(event, d) {
+      d3.select(this).attr("stroke", null);
+    }
+  </script>
+</body>
+</html>

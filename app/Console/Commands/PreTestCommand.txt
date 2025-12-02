@@ -1,0 +1,51 @@
+<?php
+
+namespace App\Console\Commands;
+
+use Illuminate\Console\Command;
+
+class PreTestCommand extends Command
+{
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+//    protected $signature = 'app:pre-test-command';
+    protected $signature = 'testglx';
+
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'Run a command before executing php artisan test';
+
+    /**
+     * Execute the console command.
+     */
+    public function handle()
+    {
+
+        // Run the required command
+//        $this->call('your:required-command');
+
+        //Neu chua dinh  nghia ham deleteFilesWithSubstring:
+        if (!function_exists('deleteFilesWithSubstring')){
+
+
+        }
+
+// Usage
+        $folderPath = sys_get_temp_dir()."/glx_web";
+        $substring = 'glx_cache_meta_api';
+        getch("Enter key to delete ...xtest ..., remove: $folderPath");
+        deleteFilesWithSubstring($folderPath, $substring);
+
+
+
+
+        // Run the test command
+        $this->call('test');
+    }
+}

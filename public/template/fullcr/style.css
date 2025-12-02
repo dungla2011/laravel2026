@@ -1,0 +1,368 @@
+* {
+    box-sizing: border-box;
+    margin: 0px;
+    padding: 0px;
+    /*font-size: 95%;*/
+    /*font-family: Arial, Helvetica, sans-serif*/
+    font-family: 'Roboto', sans-serif;
+    /*font-family: 'Yanone Kaffeesatz', sans-serif;*/
+}
+
+a {
+    text-decoration: none;
+    color: #272727;
+
+}
+
+nav {
+    /*border-bottom: 1px solid #ccc;*/
+}
+
+nav .ul-0 {
+    display: inline-block;
+    /*font-size: 90%;*/
+}
+
+nav ul {
+    padding: 0px;
+    margin: 0px;
+}
+
+nav .ul-0 > li {
+    display: inline-block;
+    /*color: white;*/
+
+}
+
+nav .ul-0 li {
+    position: relative;
+    list-style: none;
+    /*border-bottom: 1px dashed #ccc;*/
+    /*border-left: 1px dashed #ccc;*/
+
+    /*background-color: #eee;*/
+    font-family: 'Afacad', cursive;
+
+}
+nav .ul-0 > li a.have_child:after{
+    /*content: '›';*/
+    /*font-size: 80%;*/
+    /*color: gray*/
+}
+
+.have_child {
+    position: relative;
+}
+.have_child i{
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    /*margin: 5px;*/
+    transform: translateY(-50%);
+}
+.have_child a{
+    margin-right: 5px
+}
+
+nav .ul-0 li a {
+    font-size: 140%;
+    padding: 10px;
+    /*line-height: 20px;*/
+    display: inline-block;
+    /*color: white;*/
+    font-family: 'Afacad', cursive;
+}
+nav .ul-0 li a i{
+    display: block;
+}
+
+nav .ul-0 .sub-menu {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 100%;
+    width: 200px;
+    z-index: 100000;
+    /*background-color: darkblue;*/
+}
+
+nav .ul-0 li:hover > .sub-menu {
+    display: block;
+    transition-delay: 0.1s;
+}
+
+nav .ul-0 > li {
+    border-bottom: 2px solid transparent;
+}
+
+nav .ul-0 > li:hover:not(:first-child):not(:last-child) {
+    /*background-color: #eee;*/
+    border-bottom: 2px solid brown;
+    transition-delay: 0.1s;
+    transition-timing-function: ease-in;
+}
+
+
+nav li:hover > a {
+    font-weight: bold;
+}
+
+nav .ul-0 > li > .sub-menu {
+    top: 48px;
+    left: 0;
+}
+
+nav .ul-0 > li li:hover {
+    background-color: lavender;
+}
+
+.sub-menu {
+    box-shadow: 1px 1px 1px 1px #ccc;
+}
+
+
+.sub-menu li {
+    border-bottom: 1px solid #eee;
+    border-left: 1px solid #eee;
+    background-color: white;
+
+}
+
+nav i.more {
+    display: none;
+    font-size: 130%;
+}
+
+nav.nav-cover {
+    /*background-color: darkblue;*/
+    position: sticky;
+    top: 0px;
+    display: block;
+}
+
+.mobile_button {
+
+    display: none;
+}
+
+div.banner {
+    z-index: 1000;
+    /*!* Để luôn ontop khi kéo xuống*!*/
+    /*position: sticky;*/
+    /*top: 0px;*/
+    display: none;
+    /*background-color: #282828;*/
+    /*color: greenyellow;*/
+    height: 39px;
+    font-size: 120%;
+    padding: 10px;
+
+}
+
+.logo-pc {
+    /*text-align: center;*/
+    /*width: 150px;*/
+}
+
+.logo-pc {
+    padding: 0px !important;
+    padding-right: 10px !important;
+}
+
+.login-pc {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+
+}
+.login-pc a {
+    /*font-size: 90%;*/
+    font-family: 'Afacad', cursive!important;
+}
+.auth_zone {
+    max-width: 500px;
+    margin: 50px auto;
+    border: 1px solid #eee;
+    padding: 30px;
+    border-radius: 10px;
+    background-color: white;
+    box-shadow: 1px 1px 1px 1px #cccccccc;
+}
+
+.slide-home{
+    position: relative;
+    height: 500px;
+    background-image: url('https://thienchualanh.com/wp-content/uploads/2020/04/file-chat-luong-cao.jpg');
+    /*background-image: url('/images/tmp/trung-tam-toan.png');*/
+    /*background-image: url('/images/tmp/baner-toan2.png');*/
+    /*background-image: url('/images/tmp/baner-toan6.png');*/
+    /*background-image: url('/images/tmp/baner-toan9.png');*/
+    /*background-image: url('/images/tmp/baner-toan6.png');*/
+    background-image: url('/images/tmp/board01.jpg');
+
+    background-size: cover;
+    background-position: top;
+
+    background-position: center;
+    /*background-position: bottom;*/
+    background-repeat: no-repeat;
+    z-index: 100;
+}
+
+.slogan i {
+    font-size: 80%;
+}
+.slogan {
+    position: absolute; top: 40%; left: 50%; transform: translate(-50%,-50%);
+    font-size: 180%;
+    width: 80%;
+    text-align: center;
+    /*text-shadow: 1px 1px #aaa;*/
+    color: darkorange;
+    /*color: transparent;*/
+    font-family: 'Sriracha', cursive;
+    /*font-family: 'Charm', cursive;*/
+
+
+}
+
+.clearfix::after {
+    content: "";
+    clear: both;
+    display: table;
+}
+
+@media screen and (max-width: 800px) {
+
+    .slogan {
+        top: 50%; font-size: 100%
+    }
+
+    nav .ul-0 {
+        /*  nav : trở lại block để responsive ok */
+        display: block;
+    }
+
+    .login-pc {
+        display: none;
+    }
+
+    nav .ul-0 .sub-menu {
+        display: none;
+        position: static;
+        /*top: 0;*/
+        /*left: 100%;*/
+        width: 100%;
+        /*background-color: black;*/
+        padding-left: 10px;
+
+    }
+
+    nav .ul-0 li {
+        display: block;
+
+        /*color: white;*/
+        border-left: 0px solid red;
+    }
+
+    nav i.more {
+        display: inline;
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        cursor: pointer;
+        float: right;
+    }
+
+    .mobile_button {
+        display: inline-block;
+        position: absolute;
+        right: 20px;
+        top: 10px
+    }
+
+    div.banner {
+        height: 46px;
+        display: block;
+        position: sticky;
+        top: 0px;
+        /*background-color: lavender;*/
+        border-bottom: 1px solid #ccc;
+    }
+
+    nav.nav-cover {
+        display: none;
+        /*position: static;*/
+    }
+
+    .logo-pc {
+        display: none !important;
+    }
+
+    div.banner {
+        padding: 0px;
+    }
+
+    div.banner img {
+        height: 100%;
+        border: 2px solid white;
+    }
+    .slide-home{
+        height: 200px;
+    }
+
+}
+
+footer {
+    /*position: fixed;*/
+    /*left: 0;*/
+    bottom: 0;
+    width: 100%;
+
+    background-color: #727272;
+    color: white;
+    text-align: center;
+    padding: 10px;
+}
+
+.content {
+    min-height: 500px;
+    padding: 20px;
+    /*background-color: snow;*/
+    border-left: 1px solid snow;
+    border-right: 1px solid snow;
+}
+
+.top-nav-zone{
+    box-shadow: 0px -4px 3px 5px #999999; z-index: 10000; border-bottom: 0px solid #ddd; position: sticky; top: 0px; background-color: white
+}
+.auth_zone input {
+    margin: 10px 0px;
+}
+.auth_zone label {
+    font-size: 90%;
+}
+
+.logo-pc  {
+    margin: 10px; color: darkorange; font-weight: bolder; font-style: italic
+}
+a.logo-mobi {
+    display: inline-block; padding: 10px; color: darkorange; font-weight: bolder; font-style: italic
+}
+a.logo-mobi.bottom {
+    padding: 0px
+}
+
+footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: red;
+    color: white;
+    text-align: center;
+}
+
+.top-nav-zone {
+    border-top: 1px solid #eee;
+}

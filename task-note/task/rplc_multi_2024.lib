@@ -1,0 +1,326 @@
+<?php
+
+define("DEF_TOOL_CMS", 1);
+
+defined('DEF_IGNORE_ANTIDOS') || define('DEF_IGNORE_ANTIDOS', 1);
+define("DEF_CACHE_FILE_DL_INFO", "/mnt/glx/cache/21600/download_link/");
+$_SERVER['HTTP_HOST'] = $_SERVER['SERVER_NAME'] = '4share.vn';
+
+/** 13.12.22
+ * Tạo Bộ đầy đủ API, Amin... cho một model  mới
+ * Clone từ DemoTbl
+ */
+
+use Illuminate\Support\Str;
+use App\Models\FileCloud;
+use App\Models\FileUpload;
+
+
+require '/var/www/html/vendor/autoload.php';
+$app = require_once '/var/www/html/bootstrap/app.php';
+$kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
+$response = $kernel->handle(
+    $request = Illuminate\Http\Request::capture()
+);
+
+check_unique_script();
+
+function ol1($str)
+{
+    $time = nowyh();
+    echo "\n$time - $str";
+    $fileLog = basename(__FILE__);
+    outputT("/var/glx/weblog/$fileLog.log", $str);
+}
+
+
+$lastSvPortFileSv = 16868;
+
+$folderStoreIDReplicating = "/mnt/glx/cache/36000/replicating/";
+if (!file_exists($folderStoreIDReplicating))
+    mkdir($folderStoreIDReplicating, 0755, 1);
+if (!file_exists($folderStoreIDReplicating)) {
+    ol1("Error: can not create $folderStoreIDReplicating");
+    exit(0);
+}
+//file_get_contents ignore certificate check?
+$context = [
+    "ssl" => [ "verify_peer" => false, "verify_peer_name" => false,
+    ],];
+stream_context_set_default($context);
+
+//Tim argv xem cos chuoi revert khong
+$revert = 0;
+$argv = $_SERVER['argv'];
+if (count($argv) > 1) {
+    $str = $argv[1];
+    if ($str == "revert") {
+        $revert = 1;
+    }
+}
+
+if($revert)
+    getch("REVERT = $revert .............");
+
+__BEGIN:
+
+try {
+
+    //Test loop get next server:
+//    $loop = 1;
+//    while (1) {
+//        $loop++;
+//        $mSvDisk = clsReplicateFile::getNextServerDisk();
+//        echo "\n $loop ---> $mSvDisk";
+//    }
+//    exit(0);
+
+    $lastReplicateIDFile = "/var/glx/weblog/lastReplicateID";
+    $lastIDOK = trim(@file_get_contents($lastReplicateIDFile)) ?? 0;
+
+
+    while (1) {
+
+        $lastIDOK -=10000;
+        sss(1);
+        echo("\n-----------------------------------");
+        ol1(" -- Query REP now, LASTID = $lastIDOK  ");
+        echo("\n-----------------------------------");
+
+        if($revert)
+            $result = \App\Models\FileCloud::where("id", '>', ($lastIDOK))->where('size', '<>', 0)->where('server1', null)->orderBy('id', "DESC")->get()->toArray();
+        else
+            $result = \App\Models\FileCloud::where("id", '>', ($lastIDOK))->where('size', '<>', 0)->where('server1', null)->orderBy('id', "ASC")->get()->toArray();
+//        $lastIDOK = 1000; // giả sử $lastIDOK = 1000
+        $totalFile = count($result);
+        ol1(" Total F to REP = $totalFile");
+
+        if ($totalFile == 0) {
+            ol1("Sleep 15 ...");
+            sss(15);
+            continue;
+        }
+//        dump($result);
+        $countFile = 0;
+
+        foreach ($result as $row) {
+            $countFile++;
+            $id = $row['id'];
+            $name = $row['name'];
+            $cfile = \App\Models\FileCloud::find($id);
+            if (!$cfile) {
+                continue;
+            }
+
+            if($cfile->server1){
+                echo "\n Replicate done before, ignore $cfile->id";
+                usleep(100000);
+            }
+
+            if($cfile->replicating_time && $cfile->replicating_time > (time() - 600)){
+                echo "\n Replicatting in db, ignore $cfile->id";
+                usleep(100000);
+                continue;
+            }
+
+            $filepath = $cfile->file_path;
+
+            //Tìm xem FileUpload có link đến file này không, nếu không thì xóa?
+            //và filepath không tồn tại thì xóa
+            if($cfile->created_at > nowyh(time() - _NSECOND_DAY * 10))
+            if (!FileUpload::where("cloud_id", $id)->first() && !file_exists($filepath)) {
+
+                $cfile->addLog("Delete because empty server1 and file not found: $filepath", 1);
+                $cfile->delete();
+                ol1("\n No FileUpload Link to and File not found , delete UID = $cfile->user_id, FID = $cfile->id, $cfile->created_at, $cfile->name");
+//                getch("...");
+                continue;
+            }
+
+            if (!file_exists($filepath) || filesize($filepath) == 0) {
+                ol1("($id,$cfile->created_at ) File not found or empty: $filepath");
+                //Khong xoa fi co the mount chua dung
+
+                //21.2.24 xoa file duoc, vi ko con gi mount nua;
+                if(file_exists("/var/ufile"))
+                    if(disk_total_space("/var/ufile") > 1000 * _GB) {
+                        ol1(" Delete file: $filepath");
+                        $cfile->delete();
+                    }
+                continue;
+            }
+            ol1(" $countFile/$totalFile ---- Start fid: $id, $name");
+            $fsize = filesize($filepath);
+            echo "\n FP = $filepath / Size = " . ByteSize($fsize);
+
+//            continue;
+//            $clu = new \Base\ModelCloudUser();
+//            if ($clu->getOneWhere("userid = $cfile->user_id")) {
+//                if ($clu->disable_replicate) {
+//                    echo "\n Disable replicate user ($cfile->user_id)!";
+//                    continue;
+//                }
+//            }
+
+            $md5 = $cfile->setMD5(1);
+            $crc32 = $cfile->setCRC32(1);
+
+            //Cac file big chua co MD5? Tìm file có md5 trung lap:
+            if ($md5) {
+                //Neu trung MD5 thi gan lai cac file kia va xoa file, continue
+                if (clsReplicateFile::checkIfDuplicateMD5AndReAsign($cfile, $md5)) {
+
+                    $cfile->addLog("Dup md5, Delete file path $filepath", 1);
+                    ol1("Delete file: $filepath");
+                    unlink($filepath);
+                    sss(2);
+                    continue;
+                }
+            }
+
+//            $cfcheck = $cfile->refresh();
+//            if($cfcheck->replicating_time && $cfcheck->replicating_time > (time() - 300)){
+//                echo "\n Replicateting in db, ignore";
+//                continue;
+//            }
+
+            $userFile = \App\Models\User::find($cfile->user_id);
+
+            ol1(" FName = $cfile->name");
+            ol1(" User =  $cfile->user_id / $userFile->email / $userFile->username / Fname: $cfile->name");
+            ol1(" FSize = " . ByteSize($cfile->size));
+            ol1("FID Ready =$id OK, prepaire get remote sv to rep: ");
+
+            SELECT_SERVER:
+
+            ol1("--- SELECT SERVER TO REP1 : ");
+
+            $svAndDisk = clsReplicateFile::getNextServerDiskFree($cfile->size, $revert);
+            if (!$svAndDisk) {
+                ol1("Error: Can not get next server/disk to replicate!");
+                sss(10);
+                continue;
+            }
+
+            [$lastSV, $lastDisk] = explode("/", $svAndDisk);
+
+            ////////////////////////
+
+            if (!$lastSV || !$lastDisk) {
+                ol1("Error: Can not get next server to replicate!");
+                sss(5);
+                continue;
+            }
+
+//            $lastSV =
+
+            /////////////////////////////////////////////
+            //Đã lấy được $lastSV $lastDisk, bắt đầu rep:
+            ol1(" Begin rep: $lastSV/$lastDisk");
+            //Replicate luon qua IP internet:
+            $serverToReplicate = $lastSV;
+
+            $timeout1 = intval($fsize / (20 * _MB));  // x*/MB => Min: x MB/s
+            if ($timeout1 < 15)
+                $timeout1 = 15;
+
+            $data = e_t_h("$serverToReplicate\"$lastDisk\"$filepath\"$cfile->id\"$fsize\"$timeout1");
+            ol1("Begin call Rep: $serverToReplicate\"$lastDisk\"$filepath\"$cfile->id\"$fsize\"$timeout1");
+
+
+            //Nếu nhiều luồng cùng repicate, chặn trùng file replicate ở đây:
+            if($fTmp = FileCloud::find($cfile->id)) {
+                //repilcate 3 tiếng trươncs đây thì ko rep lại
+                if ($fTmp->replicate_time2 && $fTmp->replicate_time2 > (time() - 600)) {
+                    echo "\n Replicatting in db2, ignore $cfile->id";
+                    sleep(1);
+                    continue;
+                }else{
+                    $fTmp->replicate_time2 = time();
+                    $fTmp->addLog("mark Send Socket replicate");
+                    $fTmp->save();
+                }
+            }
+
+            $timeout = 3600 * 2;
+            $old = ini_set('default_socket_timeout', $timeout);
+            ol1("Send Socket Rep CMD \nWaitting for complete Replicate file " . ByteSize($fsize) . ", $cfile->username_ref , Set Timeout = $timeout1(s)");
+
+            $startTimeRep = _timeMs();
+            $ret = SocketSendCMD("replicate#$data", "$serverToReplicate", $lastSvPortFileSv, $timeout1);
+            $dTimeRep = (_timeMs() - $startTimeRep + 1) / 1000;
+            $speedRep = ByteSize($fsize / $dTimeRep);
+            $ByteSize = ByteSize($fsize);
+            if ($dTimeRep >= $timeout1) {
+                //unlink($fileMarkCoping);
+                ol1(" MAY BE ERROR Because Timeout? $dTimeRep >= $timeout1 ");
+                ol1("[4S ERROR]Replicate $serverToReplicate Timeout: Replicate Service error, $serverToReplicate  ", "");
+                sss(2);
+                goto SELECT_SERVER;
+            }
+            ol1("\nDone Rep, Speed = $speedRep/s ($ByteSize in $dTimeRep sec) \n\n Socket receive RET = [$ret]");
+            $ret0 = $ret;
+            $fdel = DEF_CACHE_FILE_DL_INFO . "$cfile->id-*'";
+            if (file_exists($fdel))
+                @exec("rm $fdel");
+            if (!str_contains($ret, "<root>")) {
+                ol1("Client return: Empty Info ---->>> STOP:  ERROR RETURN FROM CLIENT---->>> STOP NOW \nSleep 10s");
+                sss(10);
+            }
+            //$ret = "<root><return>1</return><hdd>$disk</hdd><diskfree>$free</diskfree><disktotal>$total</disktotal><writeable>1</writeable><info></info></root>";
+            $xml = simplexml_load_string($ret);
+            $arr = amstore_xmlobj2array($xml);
+            $return = $arr['return'];
+            $info = $arr['info'];
+
+            ol1("- Client Return Info = '$info', \nRET = # $ret0 #\n"); // /http://$serverOK/replicatefileClient.html?data=$data");
+            ///////B5 kiểm tra trả lại :
+            //Dấu hiệu sync hoàn thành:
+            if ($return == 1) {
+                $lastFID_replicate = $cfile->id;
+                outputW($lastReplicateIDFile, $lastFID_replicate);
+                ol1(" OK ---> Client sync completed, Update Info  ...");
+                //Cập nhật thông tin file vao DB:
+                $cfileUpdate = \App\Models\FileCloud::find($cfile->id);
+                $cfileUpdate->server1 = $lastSV;
+                $cfileUpdate->location1 = $lastDisk;
+                $cfileUpdate->addLog("Replicate : " . nowyh());
+                $cfileUpdate->save();
+
+                //Xóa file sau khi replicate: trong TH file đang được download, OS vẫn keep file inode dù file đã xóa?
+                if (unlink($filepath)) {
+                    ol1(" Unlink file: $filepath ");
+                } else {
+                    ol1(" ERROR ---> Can not Unlink file: $filepath ");
+                }
+                ol1(" OK ---> Update Info file OK, OK ---> Client sync completed ($serverToReplicate)");
+                ol1("-------- END SESSION ---------");
+                $lastRepID = $cfileUpdate->id;
+            } elseif ($return == 2) {
+                ol1("*** Something ERROR?  ,  FID = $cfile->id... - " . nowyh());
+                //Không thấy file để replicate, tiếp tục:
+                //--->File đó ko được replicate, để xử lý về sau
+                //ol1("******** STOP ******** ");
+                sss(10);
+                //return;
+            } elseif ($return == -1) {
+                //Nếu không thể ghi lên đĩa:
+                ol1("[4S ERROR] Replicate $serverToReplicate Service error, Return Unknow error(3)  $ret0 \n $info");
+            } else {
+                ol1("[4S ERROR] Replicate $serverToReplicate Service error, Return Unknow error(2)  $ret0 \n $info");
+                $info = $arr['info'];
+                ol1("**** Client sync error, STOP NOW : $info");
+                sss(5);
+                //Dừng ngay nếu thấy lỗi
+                //return;
+            }
+            //  unlink($fileMarkCoping);
+            ol1(" Done rep: $lastSV/$lastDisk");
+        }
+        sss(10);
+    }
+} catch (Exception $e) {
+    ol1("\n *** Caught exception: " . $e->getMessage() . "\n");
+    sss(10);
+    goto __BEGIN;
+}

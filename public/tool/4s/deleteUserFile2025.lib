@@ -1,0 +1,204 @@
+<?php
+
+/*
+ * Update 02.2025
+ * Review OK: 10.3.2015
+ */
+
+$_SERVER['SERVER_NAME'] = "4share.vn";
+
+require '/var/www/html/vendor/autoload.php';
+$app = require_once '/var/www/html/bootstrap/app.php';
+$kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
+$response = $kernel->handle(
+    $request = Illuminate\Http\Request::capture()
+);
+
+if (!isCli()) {
+    echo "ERROR: NOT CLI!";
+    return;
+}
+
+
+function outputLog($str)
+{
+    global $date, $nolog, $allowDelete;
+    $padReal = "";
+    if ($allowDelete)
+        $padReal = "_real_delete";
+    if (!file_exists("/var/glx/weblog/delete_user_data/"))
+        mkdir("/var/glx/weblog/delete_user_data/");
+    if ($nolog == 0)
+        outputT("/var/glx/weblog/delete_user_data/$date$padReal.log", $str);
+    echo("\n$str");
+}
+
+function outputError($str)
+{
+    global $date;
+    if (!file_exists("/var/glx/weblog/delete_user_data/"))
+        mkdir("/var/glx/weblog/delete_user_data/");
+    outputT("/var/glx/weblog/delete_user_data/$date.error.log", $str);
+    echo("\n$str");
+}
+
+function ol1($str)
+{
+    outputLog($str);
+}
+
+function outFNF($fid)
+{
+    $date = nowy();
+    $file_not_found_list = "/var/glx/weblog/delete_user_data_$date.log";
+    output($file_not_found_list, $fid);
+}
+
+function deleteRealFile($fc, $fid, $sv)
+{
+    $locationFull = \App\Components\U4sHelper::getFileFullPath($fid,$fc->location1);
+//                        getch("... Before del: $locationFull");
+    $retHTTP = SocketSendCMD("deletefile $locationFull", "$sv", 16868);
+
+    ol1(" --- RETURN FROM STORAGE SERVER ($sv Socket): \n    $retHTTP\n");
+
+//                        getch("...after del ");
+    if (strstr($retHTTP, "File found, DELETE OK:") != FALSE) {
+        ol1(" ===> DELETE OK $locationFull");
+
+        $deleteDateOld = $fc->delete_date_real;
+        $fc->delete_date_real = nowyh();
+        $fc->addLog("Delete Real Done $deleteDateOld-> $fc->delete_date_real ");
+        $fc->save();
+        return 1;
+    } else {
+        if (strstr($retHTTP, "ERROR : File found, DELETE NOT OK:") != FALSE) {
+            ol1(" Can not delete file? ");
+        } else if (strstr($retHTTP, "ERROR: delelete file not found:") != FALSE) {
+            ol1(" ===> DELETE ERROR: File not found $locationFull");
+        } else if (strstr($retHTTP, "Location OK, File not found, so may be deleted before:") != FALSE) {
+
+        } else {
+            ol1("***STOP: ERROR: NOT FOUND VALID-RETURN FROM REPLICATE SERVER---> STOP");
+            //return;
+        }
+    }
+    return 0;
+}
+
+
+echo(" Start ......");
+
+/*
+  Xóa các file đã đánh dấu xóa trước đây 1 time
+
+ * Các điều kiện:
+ *  + Chú ý TK Funny, 2 tháng mới xóa file!
+ *  + Các file không phải là save file
+ *  + File mới đánh dấu xóa trong X tuần, thì sẽ ko xóa
+ *  - User thường:
+ *  + (File đánh xóa bởi user Hoặc user hết hạn ) và (file không có lượt donwload trong 1-2 tuần gần nhất, hoặc file có lượt download < N)
+ *  + User chưa hết hạn thì không xóa file
+ *  - Uploader:
+ *  + File đánh dấu xóa bởi uploader và (file không có lượt donwload trong 1-2 tuần gần nhất, hoặc file có lượt download < N)
+ *  + File đánh dấu xóa bởi System và (file không có lượt donwload trong 1-2 tuần gần nhất, hoặc file có lượt download < N)
+ *  + Uploader chưa hết hạn nhưng file bị xóa bởi system thì vẫn xóa file
+ *  - Một số user đặc biệt thì không bị xóa file (trường keepdataforever = 1)
+ *  + Chưa xét trường hợp có link save
+ *
+ */
+$allowDelete = 0;
+$deleteFuture = 0;
+
+$forceDelete = 0;
+
+try {
+
+//Time out for file_get_content:
+    $timeout = 36000; //36000 = 10h
+    $old = ini_set('default_socket_timeout', $timeout);
+
+/////////////////////////////////
+
+    set_time_limit(0);
+
+    $date = date("Y-m-d-H-i-s", time());
+
+    $nolog = 0;
+
+
+//$mSv = \App\Models\CloudServer::where("status",1)->get();
+// CloudServer : gồm cac hàng có 2 trường  [server , proxy],
+    $mSvProxy = \App\Models\CloudServer::pluck('proxy_domain', 'domain')->toArray();
+
+
+    /*
+     *  Lấy ra các file Upload đã bị xoá, trong thời gian gần đây
+     *  Đánh dấu
+     *
+     *
+     */
+
+
+//    $mDel = \App\Models\FileUpload::withTrashed()->where('deleted_at', '>', now()->subMonths(3))->latest()->get();
+    $mDel = \App\Models\FileUpload::withTrashed()->where('deleted_at', '>', now()->subDays(1))->latest()->get();
+
+    $tt = count($mDel);
+
+    echo "\n N DEL = $tt";
+
+    $cc = 0;
+    $foundCloud = 0;
+    $stillNotDelete = 0;
+    $aliveInDisk = 0;
+    $aliveInDiskSize = 0;
+    $nErrorCheckFileAlive = 0;
+    $nFileUploadTrungCloudId = 0;
+    $deleteRealError = $deleteRealDone = 0;
+    foreach ($mDel as $fileDel) {
+        $cc++;
+        ol1("\n $cc/$tt. $fileDel->id, CloudFound: $foundCloud, $fileDel->name");
+        ol1(" nErrorCheckFileAlive = $nErrorCheckFileAlive");
+        ol1(" aliveInDisk = $aliveInDisk,  aliveInDiskSize = ". ByteSize($aliveInDiskSize));
+        ol1(" nFileUploadTrungCloudId = $nFileUploadTrungCloudId");
+        ol1(" deleteRealDone = $deleteRealDone, deleteRealError = $deleteRealError");
+        //Tim xem co file Cloud cua file nay khong, file cloud co id = cloud_id:
+        //Xem co file Upload nao co cloud_id nay khong
+        if(\App\Models\FileUpload::where('cloud_id', $fileDel->cloud_id)->first()){
+            $nFileUploadTrungCloudId++;
+            continue;
+        }
+
+        if($fCloud = \App\Models\FileCloud::where('id', $fileDel->cloud_id)->first()){
+            $foundCloud++;
+            ol1(" FOUND CLOUD: $fCloud->id, Server: $fCloud->server1, (AliveDB = $stillNotDelete, AliveInDisk = $aliveInDisk / $foundCloud), $fCloud->name");
+            if(!$fCloud->delete_date_real){
+                $stillNotDelete++;
+                if($mSvProxy[$fCloud->server1] ?? '')
+                try{
+                    if($ret = \App\Components\U4sHelper::checkDownloadAble_($fileDel->cloud_id, $mSvProxy[$fCloud->server1], $fCloud->location1, -1)){
+                        $aliveInDisk++;
+                        $aliveInDiskSize+=$fCloud->size;
+//                        getch("...");
+                        if(deleteRealFile($fCloud, $fileDel->cloud_id, $mSvProxy[$fCloud->server1])){
+                            $deleteRealDone++;
+                        }
+                        else
+                            $deleteRealError++;
+//                        getch("...1");
+                    }
+                }
+                catch (Exception $e){
+                    $nErrorCheckFileAlive++;
+                    ol1("Exception: ". $e->getMessage());
+                }
+            }
+        }
+
+    }
+
+
+} catch (Exception $e) {
+    ol1('Exception:'. $e->getMessage() . ' / ' . $e->getTraceAsString());
+}
+?>

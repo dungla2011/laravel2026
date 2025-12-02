@@ -1,0 +1,237 @@
+﻿<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Demo Ky so VGCA</title>
+
+    <script type="text/javascript" src="./vgcaplugin.js"></script>
+    <script type="text/javascript" src="./websocket-error-handler.js"></script>
+    <script type="text/javascript">
+
+        function SignFileCallBack1(rv) {
+            var received_msg = JSON.parse(rv);
+            console.log(received_msg);
+            if (received_msg.Status == 0) {
+                //console.log(received_msg);
+                document.getElementById("_signature").value = received_msg.FileName + ":" + received_msg.FileServer + ":" + received_msg.CustomSignatureText + ":" + received_msg.DocumentNumber + ":" + received_msg.DocumentDate;
+                document.getElementById("file1").value = received_msg.FileServer;
+                document.getElementById("file2").value = received_msg.FileServer;
+            } else {
+                document.getElementById("_signature").value = received_msg.Message;
+            }
+        }
+        
+        function exc_sign_approved_with_url(file_url) {
+            // Ký file từ URL server
+            var prms = {};
+
+            prms["FileUploadHandler"] = "https://lad.vn/testing/FileUploadHandler.php";
+            prms["SessionId"] = "";
+            prms["JWTToken"] = "";
+            prms["FileName"] = file_url;  // URL file server
+
+            console.log("Ký file từ URL: " + file_url);
+
+            var json_prms = JSON.stringify(prms);
+            vgca_sign_approved(json_prms, SignFileCallBack1);
+        }
+
+        function exc_sign_approved(url) {
+            var prms = {};
+
+            // prms["FileUploadHandler"] = "http://localhost:8080/FileUploadHandler.aspx";
+            prms["FileUploadHandler"] = "https://lad.vn/testing/FileUploadHandler.php";
+            prms["SessionId"] = "";//xác thực cookies
+			prms["JWTToken"] = "";//xác thực jwt token
+            prms["FileName"] = "";  // Browse file
+
+            console.log("Ký file với browse ", prms["FileName"]);
+
+            var json_prms = JSON.stringify(prms);
+            vgca_sign_approved(json_prms, SignFileCallBack1);
+
+        }
+
+        function exc_sign_approved_with_path(file_path) {
+            // Ký file với đường dẫn cụ thể - KHÔNG browse
+            var prms = {};
+
+            prms["FileUploadHandler"] = "https://lad.vn/testing/FileUploadHandler.php";
+            prms["SessionId"] = "";
+            prms["JWTToken"] = "";
+            prms["FileName"] = file_path;  // Đường dẫn file cụ thể
+
+            var json_prms = JSON.stringify(prms);
+            vgca_sign_approved(json_prms, SignFileCallBack1);
+        }
+
+
+        function testKyFileWithPath() {
+            // Lấy đường dẫn từ input #file1
+            var file_path = document.getElementById("file1").value.trim();
+
+            if (!file_path) {
+                alert("Vui lòng nhập đường dẫn file hoặc URL!");
+                return;
+            }
+
+            console.log("Ký file: " + file_path);
+            exc_sign_approved_with_url(file_path);  // Dùng hàm URL thay vì path
+        }
+
+
+        function exc_sign_issued() {
+            var prms = {};
+
+            prms["FileUploadHandler"] = "http://localhost:8080/FileUploadHandler.aspx";
+            prms["SessionId"] = "";//xác thực cookies
+			prms["JWTToken"] = "";//xác thực jwt token
+            prms["FileName"] = ""; //
+            prms["DocNumber"] = "79";
+            prms["IssuedDate"] = "";
+
+            var json_prms = JSON.stringify(prms);
+
+
+            vgca_sign_issued(json_prms, SignFileCallBack1);
+
+        }
+
+
+
+        function exc_sign_income(url) {
+            var prms = {};
+            var scv = [{ "Key": "abc", "Value": "abc" }];
+
+            prms["FileUploadHandler"] = "http://localhost:8080/FileUploadHandler.aspx";
+            prms["SessionId"] = "";//xác thực cookies
+			prms["JWTToken"] = "";//xác thực jwt token
+            prms["FileName"] = "";
+            prms["MetaData"] = scv;
+
+            var json_prms = JSON.stringify(prms);
+            vgca_sign_income(json_prms, SignFileCallBack1);
+        }
+
+        function exc_comment(url) {
+            var prms = {};
+            var scv = [{ "Key": "abc", "Value": "abc" }];
+
+            prms["FileUploadHandler"] = "http://localhost:8080/FileUploadHandler.aspx";
+            prms["SessionId"] = "";//xác thực cookies
+			prms["JWTToken"] = "";//xác thực jwt token
+            prms["FileName"] = url;
+            prms["MetaData"] = scv;
+
+            var json_prms = JSON.stringify(prms);
+            vgca_comment(json_prms, SignFileCallBack1);
+        }
+
+        function exc_appendix(url) {
+            var prms = {};
+            var scv = [{ "Key": "abc", "Value": "abc" }];
+
+            prms["FileUploadHandler"] = "http://localhost:8080/FileUploadHandler.aspx";
+            prms["SessionId"] = "";//xác thực cookies
+			prms["JWTToken"] = "";//xác thực jwt token
+            prms["FileName"] = "";
+            prms["DocNumber"] = "123/BCY-CTSBMTT";
+            prms["MetaData"] = scv;
+
+            var json_prms = JSON.stringify(prms);
+            vgca_sign_appendix(json_prms, SignFileCallBack1);
+        }
+
+        function exc_sign_copy(url) {
+            var prms = {};
+            var scv = [{ "Key": "abc", "Value": "abc" }];
+
+            prms["FileUploadHandler"] = "http://localhost:8080/FileUploadHandler.aspx";
+            prms["SessionId"] = "";//xác thực cookies
+			prms["JWTToken"] = "";//xác thực jwt token
+            prms["FileName"] = "";
+            prms["DocNumber"] = "123/BCY-CTSBMTT";
+            prms["MetaData"] = scv;
+
+            var json_prms = JSON.stringify(prms);
+            vgca_sign_copy(json_prms, SignFileCallBack1);
+        }
+
+        function exc_sign_files() {
+
+            //format lại chuỗi JSON
+            var txt = document.getElementById("_txtfiles").value;
+            var prms = JSON.parse(txt);
+            var json_prms = JSON.stringify(prms);
+
+            console.log(json_prms);
+
+            vgca_sign_lylich(json_prms, SignFileCallBack1);
+        }
+    </script>
+</head>
+<body>
+    <form id="message_form" runat="server">
+
+        <div id="page-wrapper">
+            <h1>Plugin Demo</h1>
+
+            <p><textarea id="_signature" cols="80" rows="10" readonly></textarea></p>
+
+            <p>
+                <button type="button" id="_Config" onclick="vgca_show_config();">Show config</button> <br />
+            </p>
+            <div>
+
+                <p>
+                <h3>Test ký file Url pdf, vi du : https://lad.vn/testing/files/CongVan1.pdf</h3>
+                    <input type="text" id="file1" size="50" placeholder="Nhập URL pdf" />
+                    <button type="button" id="_testKyFile" onclick="testKyFileWithPath();">Ký File</button>
+                </p>
+
+
+                <p>
+                    <h3>Lãnh đạo ký phê duyệt:</h3>
+                    <input type="text" id="file1" size="50" />
+                    <button type="button" id="_lanhdaoPheduyet" onclick="exc_sign_approved();">Ký phê duyệt</button>
+                </p>
+
+
+                <p>
+                    <h3>Văn thư ký phát hành:</h3>
+                    <input type="text" id="file2" size="50" />
+                    <button type="button" id="_vanthuphathanh" onclick="exc_sign_issued();">Đóng dấu Phát Hành</button>
+                </p>
+                <p>
+                    <h3>Văn thư ký công văn đến:</h3>
+                    <input type="text" id="file3" size="50" />
+                    <button type="button" id="_vanthukycongvanden" onclick="exc_sign_income();">Ký số công văn đến</button>
+                </p>
+                <p>
+                    <h3>Comment:</h3>
+                    <input type="text" id="file3" size="50" />
+                    <button type="button" id="_comment" onclick="exc_comment('');">Add Comment</button>
+                </p>
+
+                <p>
+                    <h3>Phụ lục/ Đính kèm:</h3>
+                    <input type="text" id="file3" size="50" />
+                    <button type="button" id="_comment" onclick="exc_appendix();">Ký tài liệu đính kèm</button>
+                </p>
+                <p>
+                    <h3>Ký số Bản sao điện tử:</h3>
+                    <input type="text" id="file3" size="50" />
+                    <button type="button" id="_Sacomment" onclick="exc_sign_copy();">Sao văn bản điện tử</button>
+                </p>
+                <p>
+                    <h3>Ký số Danh sách file:</h3>
+                <p><textarea id="_txtfiles" cols="80" rows="10"></textarea></p>
+                <button type="button" id="_SignFiles" onclick="exc_sign_files();">Ký Danh sách file!</button>
+                </p>
+            </div>
+
+
+        </div>
+    </form>
+</body>
+</html>

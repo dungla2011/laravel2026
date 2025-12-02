@@ -1,0 +1,125 @@
+<?php
+
+namespace Tests\Feature;
+
+use App\Models\MenuTree;
+use Facebook\WebDriver\WebDriverKeys;
+use Illuminate\Support\Facades\DB;
+use LadLib\Common\Tester\clsTestBase2;
+use Mhor\MediaInfo\Type\Menu;
+use Tests\Browser\DuskTestCaseBase;
+
+/**
+ *  Filter autocomplete top filter
+ *  Edit, Add item
+ */
+class MenuTest extends DuskTestCaseBase
+{
+    protected function hasHeadlessDisabled(): bool
+    {
+        return true;
+
+        return parent::hasHeadlessDisabled();
+    }
+
+    public function testMenuShowCheckBox()
+    {
+        $this->testLoginTrueAcc();
+        $browser = $this->getBrowserLogined();
+        $drv = $this->getDrv();
+        clsTestBase2::$driver = $drv;
+
+        $browser->visit('/admin/menu-tree/tree?pid=4&gid=1&open_all=1');
+
+        sss(3);
+
+        $oneCheck = clsTestBase2::findOneByXPath("//input[@class='check_gid_allow_menu']");
+        $oneCheck1 = clsTestBase2::findOneByXPath("//input[@class='check_open_new_win_menu']");
+
+        self::assertTrue($oneCheck != null);
+        self::assertTrue($oneCheck1 != null);
+
+        $check = $oneCheck->isSelected();
+
+        //Check 1 lần
+        $oneCheck->click();
+        sss(2);
+        $browser->refresh();
+        sss(2);
+
+        $oneCheck = clsTestBase2::findOneByXPath("//input[@class='check_gid_allow_menu']");
+        //Kiểm tra xem đã đổi trạng thái chưa
+        self::assertTrue($oneCheck->isSelected() != $check);
+
+        //Trở lại trạng thái ban đầu
+        $oneCheck->click();
+        sss(2);
+    }
+
+    /**
+     * Tạo menu, và xem ô check có hoạt động không
+     */
+    public function testAddNewMenu()
+    {
+
+        MenuTree::withTrashed()->where('name', 'LIKE', 'test_new_menu.%')->forceDelete();
+        MenuTree::where('name', 'LIKE', 'test_new_menu.%')->forceDelete();
+
+        $this->testLoginTrueAcc();
+        $browser = $this->getBrowserLogined();
+        $drv = $this->getDrv();
+        clsTestBase2::$driver = $drv;
+
+        $browser->visit('/admin/menu-tree/tree?pid=3&gid=1&open_all=1');
+
+        sleep(1);
+        clsTestBase2::findOneByCssSelector('div.root_tree_cls_div span.menu_one_node')->click();
+        usleep(1000);
+        //        clsTestBase2::findOneByCssSelector("ul.context-menu-list.context-menu-root li")->click();
+        clsTestBase2::findOneByXPath("//li[contains(@class, 'context-menu-item')]/span[contains(text(), 'Create')]")->click();
+
+        $name = 'test_new_menu.'.time();
+
+        sleep(1);
+
+        clsTestBase2::findOneByXPath("//input[contains(@class, 'new_name')]")->sendKeys($name)->sendKeys(WebDriverKeys::ENTER);
+
+        //Tìm trong db:
+
+        $menu = MenuTree::where('name', $name)->first();
+        self::assertTrue($menu != null);
+
+        $idf = $menu->id;
+        dump("IDF = $idf");
+
+        $x1 = clsTestBase2::findOneByXPath("//div[@data-tree-node-id='$idf']/span[contains(@class, 'node_extra_info_before_name')]");
+        self::assertTrue($x1 != null);
+        $x2 = clsTestBase2::findOneByXPath("//div[@data-tree-node-id='$idf']/span[contains(@class, 'node_extra_info_after_name')]");
+        self::assertTrue($x2 != null);
+
+        $x1 = clsTestBase2::findOneByXPath("//div[@data-tree-node-id='$idf']/span[contains(@class, 'node_extra_info_before_name')]/input")->click();
+
+        sss(1);
+        $browser->refresh();
+        sss(1);
+        $x1 = clsTestBase2::findOneByXPath("//div[@data-tree-node-id='$idf']/span[contains(@class, 'node_extra_info_before_name')]/input[@type='checkbox' and @checked]");
+        self::assertTrue($x1 != null);
+
+        $x1 = clsTestBase2::findOneByXPath("//div[@data-tree-node-id='$idf']/span[contains(@class, 'node_extra_info_before_name')]/input")->click();
+        sss(1);
+        $browser->refresh();
+        sss(1);
+        $x1 = clsTestBase2::findOneByXPath("//div[@data-tree-node-id='$idf']/span[contains(@class, 'node_extra_info_before_name')]/input[@type='checkbox' and not(@checked)]");
+        self::assertTrue($x1 != null);
+
+    }
+
+    public function testMenu01()
+    {
+
+        $this->assertTrue(true);
+        //Todo: need test menu
+
+        //self::assertTrue(true);
+    }
+}

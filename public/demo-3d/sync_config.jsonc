@@ -1,0 +1,26 @@
+{
+    "online": {
+        // Production environment
+        "type": "ssh",
+        "host": "mytree.vn",
+        "port": 60000,
+        "proxy": false,
+        "username": "lad",
+        "password": "Qa4abcdf34#56345634@563er",
+        // "privateKeyPath": "/your_path/id_rsa",
+        "upload_on_save": true, 
+        // "watch": true,
+        // "build": "yarn build:online",
+        "compress": false,
+        //"remote_unpacked": false,
+        //"delete_remote_compress": true,
+        "upload_to_root": false,
+        "deleteRemote": false,
+        "distPath": [],
+        "remotePath": "/var/www/lad/demo-3d",
+        "excludePath": [],
+        // "downloadPath": "",
+        // "downloadExcludePath": [],
+        "default": true
+    }
+}

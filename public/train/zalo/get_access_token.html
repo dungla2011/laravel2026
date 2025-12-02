@@ -1,0 +1,54 @@
+<?php
+
+//https://developers.zalo.me/docs/social-api/tham-khao/user-access-token-v4
+
+use Zalo\Zalo;
+use Zalo\Util\PKCEUtil;
+
+//error_reporting(E_ALL);
+//ini_set('display_errors', 1);
+
+require_once "/var/www/html/public/index.php";
+
+if (!isDebugIp()) {
+    die("NOT VALID IP");
+}
+//
+//try {
+
+$code_verifier = env('ZALO_CODE_VERIFIER');
+
+$hash = hash('sha256', $code_verifier);
+//    $code_challenge = base64url_encode(pack('H*', $hash));
+$callbackUrl = env('ZALO_CALLBACK_URL');
+$app_id = env('ZALO_APP_ID');
+$app_secret = env('ZALO_APP_SECRET');
+//$code_verifier = PKCEUtil::genCodeVerifier();
+$code_challenge = PKCEUtil::genCodeChallenge($code_verifier);
+
+echo "<br/>\n CODE_VERIFIER: $code_verifier";
+
+$config = array(
+    'app_id' => $app_id,
+    'app_secret' => $app_secret
+);
+$zalo = new Zalo($config);
+
+
+$helper = $zalo->getRedirectLoginHelper();
+$callbackUrl = "https://mytree.vn/train/zalo/zalo_call_back.html";
+$codeChallenge = $code_challenge;
+$state = "1234567890";
+$loginUrl = $helper->getLoginUrl($callbackUrl, $codeChallenge, $state); // This is login url
+
+echo "<br/>\n Click To get AccessToken :";
+echo "<br/>\n <a href='$loginUrl' target='_blank'>
+
+$loginUrl </a>";
+
+
+//
+//}
+//catch (Exception $e) {
+//    echo $e->getMessage();
+//}

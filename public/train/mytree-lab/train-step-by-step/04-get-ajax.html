@@ -1,0 +1,185 @@
+<?php
+
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+require_once "/var/www/html/public/index.php";
+
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vẽ Gia Phả</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        svg {
+            border: 1px solid #ccc;
+            display: block;
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+<svg id="familyTreeSvg" width="1200" height="800"></svg>
+<script>
+
+
+
+    function centerTree(svgElement, treeData) {
+        // Lấy kích thước của SVG container
+        const svgWidth = svgElement.node().getBoundingClientRect().width;
+
+        // Tính toán bounds của cây
+        let minX = Infinity;
+        let maxX = -Infinity;
+        let minY = Infinity;
+        let maxY = -Infinity;
+
+        treeData.descendants().forEach(d => {
+            minX = Math.min(minX, d.x);
+            maxX = Math.max(maxX, d.x);
+            minY = Math.min(minY, d.y);
+            maxY = Math.max(maxY, d.y);
+        });
+
+        // Tính toán độ rộng và cao của cây
+        const treeWidth = maxX - minX;
+
+        // Tính toán offset để căn giữa
+        const xOffset = (svgWidth - treeWidth) / 2 - minX;
+        const yOffset = 100 - minY; // Đặt root cách top 100px
+
+        // Cập nhật vị trí của tất cả các node và đường nối
+        const svgGroup = svgElement.select("g");
+
+        // Cập nhật vị trí các node
+        svgGroup.selectAll(".node")
+            .attr("transform", d => `translate(${d.x + xOffset},${d.y + yOffset})`);
+
+        // Cập nhật vị trí các đường nối
+        svgGroup.selectAll(".link")
+            .attr("x1", d => d.source.x + xOffset)
+            .attr("y1", d => d.source.y + yOffset)
+            .attr("x2", d => d.target.x + xOffset)
+            .attr("y2", d => d.target.y + yOffset);
+
+        return svgGroup;
+    }
+
+    const rootId = 0;
+
+    let data = [
+        { "id": 2576, "name": "Root Node", "parent_id": null, "married_with": null },
+        { "id": 2598, "name": "La Thi Hoa", "parent_id": 2576, "married_with": 2597 },
+        { "id": 2597, "name": "Le Van Vinh", "parent_id": 2576, "married_with": null },
+        { "id": 2586, "name": "Le Van Thang", "parent_id": 2597, "married_with": null },
+        { "id": 2587, "name": "Pham Thi Loi", "parent_id": 2597, "married_with": 2586 },
+        { "id": 2580, "name": "Pham Thi Loi1", "parent_id": 2597, "married_with": 2586 },
+        { "id": 2599, "name": "Le Van Vui", "parent_id": 2597, "married_with": null },
+        { "id": 2599, "name": "Pham Thi Loi2", "parent_id": 2597, "married_with": 2586 },
+        { "id": 2602, "name": "Tran Thi Tuoi", "parent_id": 2597, "married_with": 2599 },
+        { "id": 2849, "name": "Le Thong Nhat", "parent_id": 2597, "married_with": null },
+        { "id": 2588, "name": "Le Van Dong", "parent_id": 2586, "married_with": null },
+        { "id": 5545, "name": "Le Van Mai", "parent_id": 2586, "married_with": null },
+        { "id": 2600, "name": "Le Van The", "parent_id": 2599, "married_with": null },
+        { "id": 2601, "name": "Le Thi Gioi", "parent_id": 2599, "married_with": null },
+        { "id": 2605, "name": "Le Van Ky", "parent_id": 2599, "married_with": null },
+        { "id": 2606, "name": "Le Thi Dieu", "parent_id": 2599, "married_with": null }
+    ];
+
+    let link = 'https://mytree.vn/train/mytree-lab/train-step-by-step/data.php?id=zc327648'
+    let link = 'https://mytree.vn/train/mytree-lab/train-step-by-step/data.php?id=wn930996'
+
+    console.log("LINK = " + link);
+
+    fetch(link)
+        .then(response => response.json())
+        .then(json => {
+            data = json;
+
+            console.log("Data API = ", data);
+
+
+
+    // Tham số cấu hình
+    const nodeWidth = 80;
+    const nodeHeight = 40;
+    const horizontalSpacing = 50;
+    const verticalSpacing = 50;
+
+    // Tạo cấu trúc cây từ danh sách
+    function buildTree(data, rootId) {
+        const idToNode = {};
+        data.forEach(node => {
+            idToNode[node.id] = { ...node, children: [] };
+        });
+
+        data.forEach(node => {
+            if (idToNode[node.parent_id]) {
+                idToNode[node.parent_id].children.push(idToNode[node.id]);
+            }
+        });
+
+        return idToNode[rootId] || null;
+    }
+
+    const root = buildTree(data, rootId);
+
+    // Chuyển đổi dữ liệu sang định dạng D3 tree
+    const treeData = d3.hierarchy(root, d => d.children);
+    const treeLayout = d3.tree().nodeSize([nodeWidth + horizontalSpacing, nodeHeight + verticalSpacing]);
+    treeLayout(treeData);
+
+    const svg = d3.select("#familyTreeSvg")
+        .call(d3.zoom().on("zoom", (event) => {
+            svgGroup.attr("transform", event.transform);
+        }));
+
+    const svgGroup = svg.append("g");
+
+    // Vẽ các đường nối
+    svgGroup.selectAll(".link")
+        .data(treeData.links())
+        .enter()
+        .append("line")
+        .attr("class", "link")
+        .attr("x1", d => d.source.x + 200)
+        .attr("y1", d => d.source.y + 50)
+        .attr("x2", d => d.target.x + 200)
+        .attr("y2", d => d.target.y + 50)
+        .attr("stroke", "#ccc");
+
+    // Vẽ các node
+    const nodes = svgGroup.selectAll(".node")
+        .data(treeData.descendants())
+        .enter()
+        .append("g")
+        .attr("class", "node")
+        .attr("transform", d => `translate(${d.x + 200},${d.y + 50})`);
+
+    nodes.append("rect")
+        .attr("width", nodeWidth)
+        .attr("height", nodeHeight)
+        .attr("x", -nodeWidth / 2)
+        .attr("y", -nodeHeight / 2)
+        .attr("fill", "#fff")
+        .attr("stroke", "#000");
+
+    nodes.append("text")
+        .attr("text-anchor", "middle")
+        .attr("dy", "5")
+        .text(d => d.data.name);
+
+
+
+
+            centerTree(svg, treeData);
+
+        });
+
+</script>
+</body>
+</html>

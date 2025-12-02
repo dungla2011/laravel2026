@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitor Timeline Widget - Demo</title>
+    <link rel="stylesheet" href="css/monitor-timeline.css">
+
+</head>
+<body>
+<!-- Include CSS và JS -->
+<link rel="stylesheet" href="css/monitor-timeline.css">
+<script src="js/monitor-timeline.js"></script>
+
+<!-- HTML đơn giản -->
+<div id="my-timeline" data-auto-init="monitor-timeline"
+     data-api-url="/api/monitor-graph/uptime"
+     data-monitor-name="Web Server Production"
+     data-monitor-id="8"
+     data-url-edit="/member/monitor-item/edit/8"
+     data-period="24h"
+     data-height="20">
+</div>
+
+</body>
+</html>

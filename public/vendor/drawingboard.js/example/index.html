@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<title>Drawingboard.js: a simple canvas based drawing app that you can integrate easily on your website.</title>
+		<meta name="description" content="">
+		<meta name="viewport" content="width=device-width">
+
+		<link rel="stylesheet" href="prism.css">
+		<link rel="stylesheet" href="website.css">
+
+
+		<!-- in a production environment, you can include the minified css. It contains the css of the board and the default controls (size, nav, colors):
+		<link rel="stylesheet" href="../dist/drawingboard.min.css"> -->
+		<link rel="stylesheet" href="../css/drawingboard.css">
+
+		<style>
+		/*
+		* drawingboards styles: set the board dimensions you want with CSS
+		*/
+		.board {
+			margin: 0 auto;
+                /*width: 400px;*/
+                /*height: 400px;*/
+		}
+		</style>
+
+
+		<style data-example="5">
+			#title-board {
+				width: 80%;
+				height: 400px;
+			}
+			#title-board .drawing-board-canvas-wrapper {
+				border: none;
+				margin: 0;
+			}
+		</style>
+
+		<style data-example="6">
+			#transparent-board {
+                width: 100%;
+                height: 800px;
+			}
+
+			#transparent-board .drawing-board-canvas-wrapper {
+				border: 1px solid gray;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="container">
+
+			<div >
+				<div class="board" id="transparent-board"></div>
+			</div>
+
+		</div>
+
+		<!-- jquery is required - zepto might do the trick too -->
+		<script src="../bower_components/jquery/dist/jquery.min.js"></script>
+		<script src="../bower_components/simple-undo/lib/simple-undo.js"></script>
+
+		<!-- in a production environment, just include the minified script. It contains the board and the default controls (size, nav, colors, download): -->
+		<!--<script src="../dist/drawingboard.min.js"></script>-->
+
+		<script src="../js/utils.js"></script>
+		<script src="../js/board.js"></script>
+		<script src="../js/controls/control.js"></script>
+		<script src="../js/controls/color.js"></script>
+		<script src="../js/controls/drawingmode.js"></script>
+		<script src="../js/controls/navigation.js"></script>
+		<script src="../js/controls/size.js"></script>
+		<script src="../js/controls/download.js"></script>
+
+		<script>
+			//the "filler" mode currently doesn't work with transparent boards...
+			//keeping default controls, replacing the DrawingMode one with a filler-less version
+			var transparentBoardControls = DrawingBoard.Board.defaultOpts.controls.slice();
+			transparentBoardControls.splice(DrawingBoard.Board.defaultOpts.controls.indexOf('DrawingMode'), 1, { DrawingMode: { filler: false } });
+			var transparentBoard = new DrawingBoard.Board('transparent-board', {
+				background: false,
+				controls: transparentBoardControls
+			});
+		</script>
+
+
+	</body>
+</html>

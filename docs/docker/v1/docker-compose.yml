@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: my_web
+    ports:
+      - "8080:80"
+    volumes:
+      - ./web_code:/var/www/html               # Mount mã nguồn Laravel
+      - ./var_glx:/var/glx                 # Mount thư mục host /var/glx vào container
+      - ./logs/apache2:/var/log/apache2   # Mount log Apache ra host
+      - ./config/php.ini:/usr/local/etc/php/php.ini  # Mount php.ini vào container web
+#    working_dir: /var/www/html/
+    depends_on:
+      - db_glx
+
+  db_glx:
+    image: mysql:8.0
+    container_name: my_db
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql_data:/var/lib/mysql       # Dữ liệu MySQL
+      - ./logs/mysql:/var/log/mysql       # Log MySQL ra host
+    environment:
+      UPLOAD_LIMIT: 100M          # Tăng giới hạn tải lên tệp
+      MYSQL_ROOT_PASSWORD: Qaz@12abc_000
+      MYSQL_DATABASE: glx_test1
+      MYSQL_USER: for_sync
+      MYSQL_PASSWORD: Qaz@12abc_000
+    command: >
+        --character-set-server=utf8mb4
+        --collation-server=utf8mb4_unicode_ci
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: phpmyadmin
+    ports:
+      - "8081:80"                         # Truy cập phpMyAdmin tại http://<IP-HOST>:8081
+    volumes:
+      - ./config/php.ini:/usr/local/etc/php/php.ini  # Mount php.ini vào container phpmyadmin
+    environment:
+      PMA_HOST: db_glx                        # Hostname của MySQL (phải khớp với tên dịch vụ)
+      PMA_PORT: 3306                      # Cổng của MySQL
+      UPLOAD_LIMIT: 100M          # Tăng giới hạn tải lên tệp
+
+    depends_on:
+      - db_glx

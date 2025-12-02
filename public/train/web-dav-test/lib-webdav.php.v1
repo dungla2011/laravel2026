@@ -1,0 +1,148 @@
+<?php
+
+
+function ol3($str)
+{
+    file_put_contents("/var/glx/weblog/dav1.log", date("Y-m-d H:i:s").$str . "\n", FILE_APPEND);
+}
+
+class RemoteFile extends \Sabre\DAV\File {
+    private $path;
+
+    function __construct($path) {
+        $this->path = $path;
+    }
+
+    function getName() {
+        return basename($this->path);
+    }
+
+    function get() {
+        $fid  = file_get_contents($this->path);
+        if($file = \App\Models\FileUpload::find($fid)){
+            if($fileCl = \App\Models\FileCloud::find($file->cloud_id))
+            if(file_exists($fileCl->file_path))
+                return file_get_contents($fileCl->file_path);
+//            return $file->file_path;
+        }
+        // Replace this with a call to your API
+        return @file_get_contents($this->path);
+    }
+
+    function getSize() {
+        // Replace this with a call to your API
+//        return 1;
+        $fid  = file_get_contents($this->path);
+        if($file = \App\Models\FileUpload::find($fid)){
+            return $file->file_size;
+        }
+        return 0;
+//        return @filesize($this->path);
+    }
+}
+
+class RemoteDirectory extends \Sabre\DAV\Collection {
+    private $path;
+    private $userId;
+
+    function __construct($path, $uid = 0) {
+        ol3("__construct Of $path");
+        $sid = \App\Models\SiteMng::getSiteId();
+        $path = trim($path);
+//        echo "<br/>\n PATHx = $path";
+        $this->userId = $uid;
+        if($path == '/' || !$path)
+            $this->path = "/share/dav/siteid_$sid/$uid";
+        else
+        {
+            //$this->path = "/share/dav/$uid" . $path;
+            $this->path .=  $path;
+        }
+    }
+
+    function getName() {
+        return basename($this->path);
+    }
+
+    public function createDirectory($name)
+    {
+
+        $newPath = $this->path.'/'.$name;
+//        die("xxxx $newPath");
+        mkdir($newPath);
+        clearstatcache(true, $newPath);
+    }
+
+    function getChildren() {
+
+        ol3("GetChild Of $this->path");
+//        $this->path = str_replace('//', '/', $this->path);
+//        echo "<br/>\n GetChild Of $this->path";
+        $uid = $this->userId;
+        $path = $this->path;
+
+//        if(0)
+        {
+            $foldId = 0;
+
+//            $path = "/share/dav/$uid".$path;
+            if(file_exists($path . '.id'))
+                $foldId = file_get_contents($path . '.id');
+
+//            echo "<br/>\n Fod = $foldId";
+
+            if(!file_exists($path))
+                mkdir($path, 0777, true);
+    //        die();
+            $pathThis = $path;
+
+            $fold = new \App\Models\FolderFile();
+            $fold->id = $foldId;
+            $mm = $fold->getChildren($uid);
+
+//            dump($mm);
+//            die();
+
+            //Tạo các folder và file bên trong thư mục $this->path
+            foreach ($mm AS $obj){
+                if($obj->isFile){
+                    file_put_contents($pathThis . '/' . $obj->name, $obj->id);
+                }
+                else {
+                    $fold = $pathThis . '/' . $obj->name;
+                    if(!file_exists($fold))
+                        mkdir($fold, 0777, true);
+                    file_put_contents($fold . '.id', $obj->id);
+                }
+            }
+        }
+
+
+        // Replace this with a call to your API
+        $children = [];
+        foreach (scandir($path) as $file) {
+
+            if(str_ends_with($file, '.id'))
+                continue;
+
+            if ($file === '.' || $file === '..') continue;
+            $children[] = is_dir($path . '/' . $file)
+                ? new RemoteDirectory($path . '/' . $file)
+                : new RemoteFile($path . '/' . $file);
+        }
+        return $children;
+    }
+
+    function childExists($name) {
+        // Replace this with a call to your API
+        return file_exists($this->path . '/' . $name);
+    }
+
+//    function getChild($name) {
+//        // Replace this with a call to your API
+//        $path = $this->path . '/' . $name;
+//        return is_dir($path)
+//            ? new RemoteDirectory($path, $this->userId)
+//            : new RemoteFile($path);
+//    }
+}

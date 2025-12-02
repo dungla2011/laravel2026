@@ -1,0 +1,28 @@
+<?php
+
+return [
+    'failed' => 'Diese Anmeldeinformationen stimmen nicht mit unseren Unterlagen überein.',
+    'password' => 'Das angegebene Passwort ist falsch.',
+    'throttle' => 'Zu viele Anmeldeversuche. ',
+    'login' => 'Login',
+    'login_with' => 'Melden Sie sich an mit',
+    'register' => 'Registrieren',
+    'register_with' => 'Registrieren Sie sich bei',
+    'logout' => 'Abmelden',
+    'email_or_account' => 'E-Mail oder Konto',
+    'username' => 'Benutzername (nur alphanumerisch und Unterstrich)',
+    'account' => 'Konto',
+    'password_field' => 'Passwort',
+    'password_confirmation' => 'Passwort bestätigen',
+    'forgot_password' => 'Passwort vergessen',
+    'activate_account' => 'Konto aktivieren',
+    'home' => 'Heim',
+    'activation_message' => 'Geben Sie Ihre registrierte E-Mail-Adresse ein, um das Konto zu aktivieren (falls Sie sich registriert haben, aber die Aktivierungs-E-Mail nicht erhalten haben).',
+    'enter_email' => 'Geben Sie die E-Mail-Adresse ein',
+    'email' => 'E-Mail',
+    'remember_me' => 'Erinnere dich an mich',
+    'submit' => 'Einreichen',
+    'back_to_login' => 'Zurück zum Anmelden',
+    'reset_password' => 'Passwort zurücksetzen',
+    'email_reset_password' => 'E-Mail, um das Passwort zu erhalten',
+];

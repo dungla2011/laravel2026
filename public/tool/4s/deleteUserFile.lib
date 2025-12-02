@@ -1,0 +1,268 @@
+<?php
+
+/*
+ * Update 02.2025
+ * Review OK: 10.3.2015
+ */
+
+$_SERVER['SERVER_NAME'] = "4share.vn";
+
+require_once "/var/www/html/public/index.php";;
+
+if (!isCli()) {
+    echo "ERROR: NOT CLI!";
+    return;
+}
+
+echo (" Start ...");
+
+/*
+  Xóa các file đã đánh dấu xóa trước đây 1 time
+
+ * Các điều kiện:
+ *  + Chú ý TK Funny, 2 tháng mới xóa file!
+ *  + Các file không phải là save file
+ *  + File mới đánh dấu xóa trong X tuần, thì sẽ ko xóa
+ *  - User thường:
+ *  + (File đánh xóa bởi user Hoặc user hết hạn ) và (file không có lượt donwload trong 1-2 tuần gần nhất, hoặc file có lượt download < N)
+ *  + User chưa hết hạn thì không xóa file
+ *  - Uploader:
+ *  + File đánh dấu xóa bởi uploader và (file không có lượt donwload trong 1-2 tuần gần nhất, hoặc file có lượt download < N)
+ *  + File đánh dấu xóa bởi System và (file không có lượt donwload trong 1-2 tuần gần nhất, hoặc file có lượt download < N)
+ *  + Uploader chưa hết hạn nhưng file bị xóa bởi system thì vẫn xóa file
+ *  - Một số user đặc biệt thì không bị xóa file (trường keepdataforever = 1)
+ *  + Chưa xét trường hợp có link save
+ *
+ */
+$allowDelete = 0;
+$deleteFuture = 0;
+
+$forceDelete = 0;
+
+try {
+
+//Time out for file_get_content:
+    $timeout = 36000; //36000 = 10h
+    $old = ini_set('default_socket_timeout', $timeout);
+
+/////////////////////////////////
+
+    set_time_limit(0);
+
+    $date = date("Y-m-d-H-i-s", time());
+
+    $nolog = 0;
+
+    function outputLog($str) {
+        global $date, $nolog, $allowDelete;
+        $padReal = "";
+        if ($allowDelete)
+            $padReal = "_real_delete";
+        if (!file_exists("/var/glx/weblog/delete_user_data/"))
+            mkdir("/var/glx/weblog/delete_user_data/");
+        if ($nolog == 0)
+            outputT("/var/glx/weblog/delete_user_data/$date$padReal.log", $str);
+        echo ("\n$str");
+    }
+
+    function outputError($str) {
+        global $date;
+        if (!file_exists("/var/glx/weblog/delete_user_data/"))
+            mkdir("/var/glx/weblog/delete_user_data/");
+        outputT("/var/glx/weblog/delete_user_data/$date.error.log", $str);
+        echo "\n$str";
+    }
+
+    function ol1($str) {
+        outputLog($str);
+    }
+
+    function outFNF($fid) {
+        $date = nowy();
+        $file_not_found_list = "/var/glx/weblog/delete_user_data_$date.log";
+        output($file_not_found_list, $fid);
+    }
+
+
+    function getListFileAlive()
+    {
+
+//List all File:
+        $fileSv96 = file("/var/glx/weblog/sv96.all_file_sizes.log.2025-02-07-08-27-50");
+        $fileSv18 = file("/var/glx/weblog/sv18.all_file_sizes.log.2025-02-07-08-28-01");
+//Join 2 array
+        $fileSv = array_merge($fileSv96, $fileSv18);
+
+        $cc = 0;
+
+        $mmFid = [];
+
+        foreach ($fileSv AS $line) {
+            $cc++;
+            $line = trim($line);
+            ol1(" $cc . $line \n");
+
+            if (!str_starts_with($line, "sv"))
+                continue;
+            if (!str_contains($line, "|"))
+                continue;
+            [$sv, $filePath, $size] = explode("|", $line);
+            $sv = "$sv.4share.vn";
+
+            $location = explode("/", $filePath)[2];
+            $fid = basename($filePath);
+            ol1(" location = $location, size = $size, sv = $sv, filePath = $filePath, fid = $fid");
+            if (!is_numeric($fid))
+                continue;
+
+            $mmFid[] = $fid;
+        }
+
+        return $mmFid;
+
+    }
+
+
+
+    //$mSv = \App\Models\CloudServer::where("status",1)->get();
+    // CloudServer : gồm cac hàng có 2 trường  [server , proxy],
+    // Hãy lấy ra mảng này
+    $mSvProxy = \App\Models\CloudServer::pluck('proxy_domain', 'domain')->toArray();
+
+
+
+    $fileAlive = "/var/glx/weblog/tmp_file_alive.log";
+    if (file_exists($fileAlive)) {
+        $mFidAlive = unserialize(file_get_contents($fileAlive));
+    } else
+    {
+        $mFidAlive = getListFileAlive();
+        file_put_contents("$fileAlive", serialize($mFidAlive));
+    }
+    getch("Count FID alive = " . count($mFidAlive) . " ...");
+
+    $mFidAlive2 = array_flip($mFidAlive);
+
+
+    $listDelete1 = '';
+    $listDelete2 = '';
+    //List all File:
+
+    //Tim tat cac cac file chua bị xoa trong db
+    $mm = \App\Models\FileCloud::select(["id", 'created_at', 'size'])->whereNull("delete_date_real")->get();
+    $total = count($mm);
+
+    $cc = 0;
+    $nDelete = 0;
+    $sizeDel = 0;
+    $nCanDelete = 0;
+    $sizeCalDel = 0;
+
+    foreach ($mm as $m) {
+        $cc++;
+        $fid = $m->id;
+        $time = nowyh(strtotime($m->created_at));
+
+        ol1("$cc/$total. FID = $fid , $time, nDelete = $nDelete , ". ByteSize($sizeDel) . " NCan Del = $nCanDelete / " . ByteSize($sizeCalDel));
+
+        if($time > "2025-02-05 00:00:00"){
+            ol1(" -> Ignore up load gan day! $time");
+            continue;
+        }
+
+        //Tìm tất cả các file link đến cloudId này, neu ko co thi xoa file real
+        if(!$f = \App\Models\FileUpload::where("cloud_id", $fid)->first()){
+            $nDelete++;
+            $sizeDel+=$m->size;
+            $listDelete1.= "$fid,";
+            continue;
+        }
+
+        //Nếu mảng lookup không có fid này thì xóa file này trong DB, nghĩa là set delete_date_real = time
+        if (!isset($mFidAlive2[$fid])) {
+            ol1(" -> NOT FOUND IN FILE ALIVE!");
+//            $nCanDelete++;
+//            $listDelete2.= "$fid,";
+//            $sizeCalDel+=$m->size;
+        }
+
+        if(0)
+        if(!in_array($fid, $mFidAlive)){
+            ol1(" -> NOT FOUND IN FILE ALIVE!");
+            $nCanDelete++;
+            $sizeCalDel+=$m->size;
+        }
+
+
+    }
+
+    ol1("\n List Delete1 : $listDelete1");;
+    ol1("\n List Delete2 : $listDelete2");;
+
+    $mFc = explode(",",$listDelete1);
+
+    $countFileFound = 0;
+    $countFileError = 0;
+    $sizeFound = 0;
+
+    $cc = 0;
+    $tt = count($mFc);
+    foreach ($mFc AS $fid){
+        if($fc = \App\Models\FileCloud::find($fid)){
+            $cc++;
+            ol1(" $cc/$tt ,  countFileFound = $countFileFound, countFileError = $countFileError, sizeFound = ". ByteSize($sizeFound));
+            if($fc->server1) {
+                $sv = $mSvProxy[$fc->server1];
+                $loc = $fc->location1;
+                try{
+                    if($ret = \App\Components\U4sHelper::checkDownloadAble_($fid, $sv, $loc, $fc->size)){
+                        echo "\n FOUND To Delete: $fc->id, $fc->server1, $fc->location1";
+                        $countFileFound++;
+                        $sizeFound+=$fc->size;
+
+                        $locationFull = \App\Components\U4sHelper::getFileFullPath($fid,$fc->location1);
+//                        getch("... Before del: $locationFull");
+                        $retHTTP = SocketSendCMD("deletefile $locationFull", "$sv", 16868);
+
+                        ol1(" --- RETURN FROM STORAGE SERVER ($sv Socket): \n    $retHTTP\n");
+
+
+//                        getch("...after del ");
+                        if (strstr($retHTTP, "File found, DELETE OK:") != FALSE) {
+                            ol1(" ===> DELETE OK $locationFull");
+
+                            $deleteDateOld = $fc->delete_date_real;
+                            $fc->delete_date_real = nowy();
+                            $fc->addLog("Delete Real Done $deleteDateOld-> $fc->delete_date_real ");
+                            $fc->save();
+                            $totalDeleteOKCount++;
+                            $totalDeleteOKSize+= $fc->size;
+                            $deleteOK = 1;
+
+                        } else {
+                            $totalDeleteCountError++;
+                            if (strstr($retHTTP, "ERROR : File found, DELETE NOT OK:") != FALSE) {
+                                ol1(" Can not delete file? ");
+                            } else if (strstr($retHTTP, "ERROR: delelete file not found:") != FALSE) {
+                                ol1(" ===> DELETE ERROR: File not found $locationFull");
+                            } else if (strstr($retHTTP, "Location OK, File not found, so may be deleted before:") != FALSE) {
+
+                            } else {
+                                ol1("***STOP: ERROR: NOT FOUND VALID-RETURN FROM REPLICATE SERVER---> STOP");
+                                //return;
+                            }
+                        }
+                    }
+                }
+                catch (Exception $e) {
+                    echo "\n NOT FOUND: $fc->id, $fc->server1, $fc->location1";
+                    $countFileError++;
+                }
+            }
+        }
+    }
+
+} catch (Exception $e) {
+    ol1('Exception:', $e->getMessage() . ' / ' . $e->getTraceAsString());
+}
+?>

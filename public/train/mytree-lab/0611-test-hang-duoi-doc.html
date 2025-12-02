@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Family Tree with Rectangular Nodes</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        svg {
+            border: 0px solid;
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .node rect {
+            fill: #fff;
+            stroke: steelblue;
+            stroke-width: 3px;
+        }
+
+        .node text {
+            font: 12px sans-serif;
+            pointer-events: none;
+        }
+
+        .link {
+            fill: none;
+            stroke: #ccc;
+            stroke-width: 2px;
+        }
+    </style>
+</head>
+<body>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script>
+    function buildHierarchy(data, rootId) {
+        var nodesById = {};
+        data.forEach(function(d) {
+            nodesById[d.id] = { ...d, children: [] };
+        });
+        var root = null;
+        data.forEach(function(d) {
+            var node = nodesById[d.id];
+            if (d.parent_id && nodesById[d.parent_id]) {
+                nodesById[d.parent_id].children.push(node);
+            } else if (!d.parent_id || d.parent_id === null || d.parent_id === rootId) {
+                root = node;
+            }
+        });
+        return root;
+    }
+
+    let data = [
+        { "id": 2598, "name": "La Thi Hoa", "parent_id": 2576, "married_with": 2597 },
+        { "id": 2597, "name": "Le Van Vinh", "parent_id": 2576, "married_with": null },
+        { "id": 2586, "name": "Le Van Thang", "parent_id": 2597, "married_with": null },
+        { "id": 2587, "name": "Pham Thi Loi", "parent_id": 2597, "married_with": 2586 },
+        { "id": 2599, "name": "Le Van Vui", "parent_id": 2597, "married_with": null },
+        { "id": 2602, "name": "Tran Thi Tuoi", "parent_id": 2597, "married_with": 2599 },
+        { "id": 2588, "name": "Le Van Dong", "parent_id": 2586, "married_with": null },
+        { "id": 5545, "name": "Le Van Mai", "parent_id": 2586, "married_with": null },
+        { "id": 2600, "name": "Le Van The", "parent_id": 2599, "married_with": null },
+        { "id": 2601, "name": "Le Thi Gioi", "parent_id": 2599, "married_with": null }
+    ];
+
+    var rootId = 2576;
+    var treeData = buildHierarchy(data, rootId);
+
+    var margin = { top: 20, right: 90, bottom: 30, left: 90 },
+        width = 1200 - margin.left - margin.right,
+        height = 800 - margin.top - margin.bottom;
+
+    var svg = d3.select("body").append("svg")
+        .attr("viewBox", `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
+        .attr("preserveAspectRatio", "xMidYMid meet");
+
+    var g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+
+    var treemap = d3.tree()
+        .nodeSize([80, 120])
+        .separation((a, b) => a.parent === b.parent ? 1.5 : 2);
+
+    var root = d3.hierarchy(treeData, d => d.children);
+    treemap(root);
+
+    var link = g.selectAll(".link")
+        .data(root.links())
+        .enter().append("path")
+        .attr("class", "link")
+        .attr("d", d3.linkVertical()
+            .x(d => d.x)
+            .y(d => d.y));
+
+    var node = g.selectAll(".node")
+        .data(root.descendants())
+        .enter().append("g")
+        .attr("class", "node")
+        .attr("transform", d => `translate(${d.x},${d.y})`);
+
+    node.append("rect")
+        .attr("x", d => d.depth === 0 ? -50 : -15)
+        .attr("y", d => d.depth === 0 ? -15 : -50)
+        .attr("width", d => d.depth === 0 ? 100 : 30)
+        .attr("height", d => d.depth === 0 ? 30 : 100)
+        .attr("rx", 4)
+        .attr("ry", 4);
+
+    node.append("text")
+        .attr("dy", ".35em")
+        .attr("text-anchor", d => d.depth === 0 ? "middle" : "start")
+        .attr("transform", d => d.depth === 0 ? null : "rotate(-90)")
+        .text(d => d.data.name);
+</script>
+</body>
+</html>

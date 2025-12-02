@@ -1,0 +1,148 @@
+<?php
+
+require "/var/www/html/public/index.php";
+
+function ol1($str)
+{
+    file_put_contents("/var/glx/weblog/call_back_docx.log", date("Y-m-d H:i:s") . "#" . $str . "\n", FILE_APPEND);
+}
+
+function olSaveDoc($str){
+    file_put_contents("/var/glx/weblog/error_save_file_doc.log", date("Y-m-d H:i:s") . "#" . $str . "\n", FILE_APPEND);
+
+}
+
+ol1("-------------- CAll cb " . $_SERVER['REQUEST_URI'] . " \n * IP = " . $_SERVER['REMOTE_ADDR'] . " \n REAUEST: " . json_encode($_REQUEST));
+ol1(" INPUT: " . json_encode(file_get_contents("php://input")));
+
+try {
+    $json = file_get_contents("php://input");
+    $std = json_decode($json);
+
+    if ($std->status == 2) {
+        try {
+            $key = $std->key ?? '';
+            if(!str_contains($key, '.')){
+                loi("Key not valid $key");
+            }
+            list($fid, $lastChange) = @explode(".", $key);
+            if(!is_numeric($fid))
+                loi("File ID not valid $fid");
+
+            $done = 0;
+            ol1(" ---- Status  = 2, update new content to file '$fid'");
+            //Tìm file upload, và file cloud tương ứng
+            if (!($fileUpload = \App\Models\FileUpload::find($fid)))
+                loi("FileUpload not found $fid");
+            ol1(" ---- Found1 '$fid'");
+
+            if (!($fileCloud = \App\Models\FileCloud::find($fileUpload->cloud_id)))
+                loi("FileCloud not found $fid");
+
+            ol1(" ---- Found2 '$fid'");
+            $fpath = $fileCloud->file_path;
+            if (!$fpath || !file_exists($fpath))
+                loi("File not found $fpath ?");
+
+            $url = $std->url;
+            if (!$cont = @file_get_contents($url))
+                loi("Can not get content url '$url'");
+            ol1(" ---- Save New Content $fpath, '$fid' , $url");
+
+//            $md5Buf = md5($cont);
+
+            //Lấy md5 từ chuỗi sau: md5 nằm trong url:
+            //https://doc6.pm33.net/cache/files/data/123_6723/changes.zip/changes.zip?md5=BCtJQfsvZ_nWMUL1T_Eduw&expires=
+//            $md5 = explode("md5=", $url);
+//            $md5B64 = explode("&", $md5[1]);
+//            $md5B64 = $md5B64[0];
+//            $binary = base64_decode($md5B64);
+//            $md5Url = bin2hex($binary);
+//
+//            if($md5Url != $md5Buf){
+//                loi("Md5 not valid? $md5B64 -> $md5Url != $md5Buf");
+//            }
+//            else{
+//                ol1("Check md5 ok");
+//            }
+
+            //Xử lý tường hợp các FileUpload dùng chung FileCloud này, (vì khi upload lên trùng md5 là chỉ giữ 1 file)
+            //Thì sẽ phải tạo 1 FileCloud khác, kẻo các FileUPload chung bị link vào content không còn đúng
+            //Todo: lad, cần testing cái này
+            /*
+            if($fileUpload->id != $fileCloud->id){
+                ol1(" Need create new Cloud file for $fid");
+
+                //Tạo 1 file Cloud mới nếu chưa có
+                if(!($fileCloud = \App\Models\FileCloud::find($fid))){
+                    $fileCloud = new \App\Models\FileCloud();
+                    $fileCloud->id = $fid;
+                    $fileCloud->save();
+                }
+                $newFilePathUpload = \App\Models\FileCloud::genPathFileCloud($fileUpload->user_id, $fid);
+                @mkdir(dirname($newFilePathUpload));
+                if(!file_exists(dirname($newFilePathUpload))){
+                    loi("Can not create folder for new file $newFilePathUpload");
+                }
+                //Bản backup sẽ copy ra  vị trí mới
+                copy($fpath, "$newFilePathUpload.".time());
+                $fpath = $newFilePathUpload;
+                file_put_contents($newFilePathUpload, $cont);
+                $fileCloud->file_path = $newFilePathUpload;
+                //Gán lại cloud id
+                $fileUpload->cloud_id = $fileCloud->id;
+            }else
+            */
+            {
+                //Backup file
+                rename($fpath, "$fpath.".time());
+                //Dua noi dung moi vao file:
+                file_put_contents($fpath, $cont);
+            }
+
+            if(!file_exists($fpath)){
+                loi("Can not save content to file '$fpath'");
+            }
+            //Tính lại md5
+            $md5New = md5_file($fpath);
+            $fsize = filesize($fpath);
+
+            $fileUpload->addLog("Update content Edit Doc size: $fileUpload->file_size -> $fsize");
+
+            ol1("Update content Edit Doc, size: $fileUpload->file_size -> $fsize");
+
+            $fileUpload->file_size = $fsize;
+
+
+
+            $fileCloud->last_save_doc = nowyh();
+            $fileCloud->addLog("Update CL Edit Doc, size: $fileCloud->size = $fsize, md5: $fileCloud->md5 -> $md5New");
+            $fileCloud->md5 = $md5New;
+            $fileCloud->size = $fsize;
+
+
+            $fileUpload->save();
+            $fileCloud->save();
+        }
+        catch (Exception $e) {
+            ol1(" *** Error: " . $e->getMessage());
+            olSaveDoc(" *** Error: " . $e->getMessage());
+            http_response_code(200);
+            echo json_encode(["error" => 1]);
+            exit;
+        }
+
+        ol1(" ---- Done Save Content '$fid'");
+    }
+
+    ol1(" ---- Done ?");
+
+    http_response_code(200);
+    echo json_encode(["error" => 0]);
+    exit;
+} catch (Exception $e) {
+    ol1(" *** Error: " . $e->getMessage());
+    http_response_code(200);
+    echo json_encode(["error" => 1]);
+    exit;
+}

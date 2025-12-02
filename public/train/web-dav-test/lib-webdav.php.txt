@@ -1,0 +1,679 @@
+<?php
+
+
+use Sabre\DAV\CorePlugin;
+use Sabre\DAV\Exception;
+use Sabre\DAV\FS\File;
+use Sabre\DAV\IMoveTarget;
+use Sabre\DAV\INode;
+use Sabre\DAV\SimpleCollection;
+use Sabre\DAV\Tree;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
+use Sabre\Event\EmitterInterface;
+use Sabre\Event\WildcardEmitterTrait;
+use Sabre\HTTP;
+use Sabre\HTTP\RequestInterface;
+use Sabre\HTTP\ResponseInterface;
+use Sabre\Uri;
+use Sabre\Xml\Writer;
+use Sabre\DAV\Xml;
+use Sabre\DAV;
+
+
+
+class CustomPutPlugin extends DAV\ServerPlugin {
+
+    /**
+     * @var Server2
+     */
+    public $server;
+
+    function __construct(DAV\Server $server)
+    {
+        $this->server = $server;
+    }
+
+    function initialize(DAV\Server $server) {
+        $this->server = $server;
+        // Đăng ký sự kiện sau khi PUT hoặc bất kỳ tệp mới nào được thêm vào
+        $server->on('afterBind', [$this, 'afterPut']);
+        $server->on('afterWriteContent', [$this, 'putDone']);
+    }
+
+    function putDone($path, DAV\IFile $node) {
+
+
+        $pathRoot = $this->server->pathRoot;
+        $uid = $this->server->uid;
+        $fileUpDone = $pathRoot . "/" . $path;
+
+        ol3("\n\n ++++++++++ File upload successful: UID: $uid, $fileUpDone \n");
+
+        $dirName = dirname($fileUpDone);
+
+        $folderID = 0;
+        if(file_exists($dirName . '.id'))
+            $folderID = intval(file_get_contents($dirName . '.id'));
+
+        //Xem file đã tồn tại chưa
+        //Thì move file vào đây
+        $fileFid = $fileUpDone . '.fid';
+        if(file_exists($fileFid) && filesize($fileFid) < 20){
+            $fid = intval(file_get_contents($fileFid));
+            if($file = \App\Models\FileUpload::find($fid)){
+                //Neu cung ten file thi dung la file
+                //Xoa file cu update file moi:
+                if($file->name = basename($fileUpDone) && $fileCloud = \App\Models\FileCloud::find($file->cloud_id)){
+                    $file->file_size = filesize($fileUpDone);
+                    $fileCloud->size = filesize($fileUpDone);
+                    $fileCloud->md5 = md5_file($fileUpDone);
+                    if($fileCloud->save() && $file->save())
+                    {
+                        unlink($fileCloud->file_path);
+                        rename($fileUpDone, $fileCloud->file_path);
+                        touch($fileUpDone);
+                        ol3(" Update content file old -> new : (fid: $fid) $fileCloud->file_path , $fileUpDone");
+                        return;
+                    }
+                }
+            }
+        }
+
+
+        $std = new stdClass();
+        $std->file_name = basename($path);
+        $std->file_size = filesize($fileUpDone);
+        $std->file_path_local_upload_ = $fileUpDone;
+        $std->folder_id = $folderID;
+        $std->user_id = $uid;
+
+
+        ol3(" Upload static: ". serialize($std));
+
+        ol3("\n\n --- Start Up to Cloud $fileUpDone");
+
+        $ret = \App\Http\ControllerApi\FileUploadControllerApi::uploadStatic($std, 1);
+        ol3("\n\n --- End Up to Cloud $fileUpDone");
+//        $ret = $ret->toArray();
+
+        ol3("\n\n --- RET1 " . gettype($ret) . " \n Serial:\n" . serialize($ret[0]?->toArray()??''));
+
+
+        if(is_array($ret) && $ret && ($ret[0] instanceof \App\Models\FileUpload)){
+            $obj0 = $ret[0];
+            ol3("\n\n --- Upload to clound DONE, ID = " . $obj0->id);
+            file_put_contents($fileUpDone, '');
+            file_put_contents($fileUpDone.'.fid', $obj0->id);
+        }
+        else{
+            ol3("\n\n *** Upload to clound fail! " . serialize($ret));
+        }
+
+        // Log the file path indicating the file has been uploaded successfully
+        ol3("\n ++++++++++ End upload to cloud OK: UID: $uid, $pathRoot/$path \n");
+    }
+
+    function afterPut($path) {
+        // Thực hiện kiểm tra hoặc yêu cầu thêm từ client
+        // $path là đường dẫn của file vừa được tải lên
+
+        // Ví dụ: Ghi log hoặc gửi phản hồi đặc biệt cho client yêu cầu commit
+//        error_log("Tệp đã được tải lên: " . $path);
+        ol3("\n\n ------------------ Start upload?: " . $path . "\n\n");
+
+        // Gửi thông báo yêu cầu client gửi thêm yêu cầu khác, nếu cần
+    }
+}
+class CapturePutPlugin extends DAV\ServerPlugin {
+    private $server;
+    function __construct(DAV\Server $server)
+    {
+        $this->server = $server;
+    }
+    function initialize(DAV\Server $server) {
+        $this->server = $server;
+        // Đăng ký sự kiện trước khi lưu file với PUT
+        $server->on('beforeWriteContent', [$this, 'beforePut']);
+    }
+    function beforePut($path, DAV\IFile $node, &$data, &$modified) {
+        // Lấy thông tin từ HTTP headers của yêu cầu PUT
+        $contentLength = $this->server->httpRequest->getHeader('Content-Length');
+        // Ghi log kích thước file
+        ol3("\n\n------ File path: " . $path);
+        ol3("+++Content-Length: " . $contentLength);
+        // Tiếp tục quá trình xử lý PUT (không cần thay đổi dữ liệu)
+        return true;
+    }
+}
+
+class Server2 extends \Sabre\DAV\Server {
+
+    public $uid = 0;
+
+    public $pathRoot;
+    /**
+     * @var Tree2
+     */
+    public $tree;
+
+    public $siteId = 0;
+    public function __construct($treeOrNode = null, HTTP\Sapi $sapi = null)
+    {
+        if ($treeOrNode instanceof Tree2) {
+            $this->tree = $treeOrNode;
+        } elseif ($treeOrNode instanceof INode) {
+            $this->tree = new Tree2($treeOrNode);
+        } elseif (is_array($treeOrNode)) {
+            $root = new SimpleCollection('root', $treeOrNode);
+            $this->tree = new Tree2($root);
+        } elseif (is_null($treeOrNode)) {
+            $root = new SimpleCollection('root');
+            $this->tree = new Tree2($root);
+        } else {
+            throw new Exception('Invalid argument passed to constructor. Argument must either be an instance of Sabre\\DAV\\Tree, Sabre\\DAV\\INode, an array or null');
+        }
+
+        $this->xml = new Xml\Service();
+        $this->sapi = $sapi ?? new HTTP\Sapi();
+        $this->httpResponse = new HTTP\Response();
+        $this->httpRequest = $this->sapi->getRequest();
+        $this->addPlugin(new CorePlugin());
+
+
+    }
+}
+
+class Tree2 extends \Sabre\DAV\Tree{
+    /**
+     * @var
+     */
+    public $server;
+    /**
+     * Deletes a node from the tree.
+     *
+     * @param string $path
+     */
+    public function delete($path)
+    {
+        ol3("Tree2 Delete0 $path");
+
+        $path = trim($path);
+//        echo "<br/>\n PATHx = $path";
+
+        $pathRoot = $this->server->pathRoot;
+        if(!$pathRoot){
+            loi("Tree2: Not path root '$pathRoot");
+        }
+
+        $path = "$pathRoot/". $path;
+//        die("DELETE.....xxx: $path");
+
+        if(is_dir($path)){
+            $fid = 0;
+            if(file_exists($path.".id") && filesize($path.".id") < 20){
+                $fid = intval(file_get_contents($path.'.id'));
+                ol3("Delete Folder ID: $fid");
+                if($folder = \App\Models\FolderFile::find($fid)){
+
+                    if($folder->delete()){
+                        rmdir($path);
+                        unlink($path.'.id');
+                    }
+                    else{
+                        loi(" *** Can not delete folder: $path");
+                    }
+                }
+            }
+            else{
+                loi(" *** Not valid fid file: $path");
+            }
+        }
+        else{
+            $fileFid = $path . '.fid';
+            if(is_file($fileFid) && filesize($fileFid) < 20){
+                $fid = intval(file_get_contents($fileFid));
+                if(\App\Models\FileUpload::find($fid)?->delete()){
+                    unlink($fileFid);
+                    unlink($path);
+                }
+                else
+                    loi(" *** Can not delete file: $path");
+            }
+            else{
+                loi(" *** Not valid FID of $path!");
+            }
+        }
+
+        ol3("Delete done $path");
+//        parent::delete($path);
+    }
+
+    public function move($sourcePath, $destinationPath){
+
+        ol3("MOVEx: $sourcePath -> $destinationPath ");
+
+        parent::move($sourcePath, $destinationPath);
+
+        return;
+
+        $sid = \App\Models\SiteMng::getSiteId();
+        $sourcePath = trim($sourcePath);
+        $destinationPath = trim($destinationPath);
+
+//        echo "<br/>\n PATHx = $path";
+
+        $pathRoot = $this->server->pathRoot;
+        $sourcePath = "$pathRoot/". $sourcePath;
+        $destinationPath = "$pathRoot/". $destinationPath;
+
+        ol3("MOVEx2: $sourcePath -> $destinationPath ");
+
+        $oldName = basename($sourcePath);
+        $newName = basename($destinationPath);
+
+        //Doi ten
+        if(dirname($sourcePath) == dirname($destinationPath)){
+
+            //Nếu là folder, sẽ có id:
+            //            if(file_exists($sourcePath.".id")){
+            if(is_dir($sourcePath) && file_exists($sourcePath.".id")){
+                $fid = intval(file_get_contents($sourcePath.'.id'));
+                if($folder = \App\Models\FolderFile::find($fid)){
+                    $folder->name = $newName;
+                    if($folder->save()) {
+                        rename($sourcePath . ".id", $destinationPath . '.id');
+                        rename($sourcePath, $destinationPath);
+                    }
+                }
+            }
+            elseif(is_file($sourcePath)){
+                if(filesize($sourcePath.'.fid') < 20) {
+                    $fid = intval(file_get_contents($sourcePath.'.fid'));
+                    if ($file = \App\Models\FileUpload::find($fid)) {
+                        $file->name = $newName;
+                        if($file->save()) {
+                            rename($sourcePath . ".fid", $destinationPath . '.fid');
+                            rename($sourcePath, $destinationPath);
+                        }
+                    }
+
+                }
+                else {
+                    ol3(" *** Error, $sourcePath.fid valid, size > 20: " . filesize($sourcePath.'.fid'));
+                }
+            }else{
+                ol3(" *** Error rename, not valid file or folder");
+            }
+
+        }
+
+//
+//
+//        die("MOVEx: $sourcePath -> $destinationPath ");
+//
+//        parent::move($sourcePath, $destinationPath);
+    }
+}
+
+class RemoteFile extends \Sabre\DAV\FS\File {
+    protected $path;
+
+    function __construct($path) {
+//        $this->path = "" . $path . "";
+        $this->path = $path;
+    }
+
+    function getName() {
+        return basename($this->path);
+    }
+
+    public function put($data)
+    {
+        ol3("--- put file $this->path");
+        parent::put($data); // TODO: Change the autogenerated stub
+    }
+
+//    function getProperties($properties) {
+//        $props = parent::getProperties($properties);
+//        $props['{DAV:}write'] = false; // Set the file as readonly
+//        return $props;
+//    }
+
+    function get() {
+
+//        return "11111";
+        $fileFid = $this->path . '.fid';
+
+        if(filesize($fileFid) < 20 && $fid = intval(file_get_contents($fileFid))){
+            ol3("GET FILE: $fid");
+            if ($file = \App\Models\FileUpload::find($fid)) {
+                if ($fileCl = \App\Models\FileCloud::find($file->cloud_id))
+                    if (file_exists($fileCl->file_path)){
+                        return file_get_contents($fileCl->file_path);
+                    }
+//            return $file->file_path;
+            }
+        }
+        else{
+            oll3("*** Error GET FILE: $this->path");
+        }
+//        return '';
+        // Replace this with a call to your API
+        return @file_get_contents($this->path);
+    }
+
+    public function delete()
+    {
+
+        ol3(" --- Delete0 File:  $this->path");
+//        die("DELETE.....xxx");
+        $fileFid = $this->path . '.fid';
+
+        if(is_file($fileFid) && filesize($fileFid) < 20){
+            $fid = intval(file_get_contents($fileFid));
+            if(\App\Models\FileUpload::find($fid)?->delete()){
+                unlink($this->path);
+                ol3(" --- Delete0 File Done: $this->path");
+            }
+        }
+        ol3("delete: Co loi xay ra! ");
+//        parent::delete(); // TODO: Change the autogenerated stub
+
+    }
+
+    function getSize() {
+        // Replace this with a call to your API
+//        return @filesize($this->path);
+//        return 1;
+        $fileFid = $this->path . '.fid';
+        if(is_file($fileFid) && filesize($fileFid) < 20){
+            $fid = intval(file_get_contents($fileFid));
+            if($file = \App\Models\FileUpload::find($fid)){
+                return $file->file_size;
+            }
+        }
+        ol3(" *** Error get size $fileFid");
+        return 0;
+
+    }
+}
+
+//class RemoteDirectory extends \Sabre\DAV\Collection
+class RemoteDirectory extends \Sabre\DAV\FS\Directory
+{
+    protected $path;
+    public $uid;
+    public $pathRoot;
+    function __construct($path, $pathRoot, $uid) {
+//        ol3("__construct Of $path");
+
+        $path =trim($path);
+        $this->pathRoot = $pathRoot;
+        if(!$this->pathRoot){
+            die("RemoteDirectory: Not path root?");
+        }
+
+        $this->uid = $uid;
+
+//        echo "<br/>\n PATHx = $path";
+
+        if($path == '/' || !$path)
+            $this->path = $this->pathRoot;
+        else
+        {
+            //$this->path = "/share/dav/$uid" . $path;
+            $this->path .=  $path;
+        }
+    }
+
+    public function delete()
+    {
+        ol3(" --- Delete1 Directory:  $this->path");
+//        die("DELETE.....xxx1");
+        foreach ($this->getChildren() as $child) {
+            $child->delete();
+        }
+        $fileFid = $this->path . '.id';
+        if(is_dir($this->path)){
+            if(file_exists($fileFid)){
+                $fid = file_get_contents($fileFid);
+                if(\App\Models\FolderFile::find($fid)?->delete()){
+                    rmdir($this->path);
+                    unlink($fileFid);
+                    return;
+                }
+            }
+        }
+        ol3(" *** Error delete folder: $this->path");
+    }
+
+    function getName() {
+        return basename($this->path);
+    }
+
+    public function createFile($name, $data = null)
+    {
+        $newPath = $this->path.'/'.$name;
+        ol3("----------- createFile newPath  = " .  $newPath);
+
+        if(!$this->uid)
+            loi("Not uid!");
+
+        $mt = stream_get_meta_data(($data));
+        $sr = serialize($mt);
+        ol3('Resource type2: ' . $sr);
+
+        //Nếu ko phải dang phpInput, thì sẽ là dạng file upload form bình thường (upWeb)
+        //nếu là dạng PHP input, thì sẽ đưa vào stream, đẩy vào file sau, và ở đây ko biết khi nào file sẽ được up xong!
+        if(str_contains($sr, 'php://input') && str_contains($sr, 'stream')){
+
+            //Hàm này lấy được size data, nhưng lại làm lỗi upload win, ko thành công
+            //như kiểu win phải đợi nên bao ko thanh cong
+//            $data1 = stream_get_contents($data);
+//            ol3('---- Resource fileSize: ' . strlen($data1));
+//            return;
+
+            file_put_contents($newPath, $data);
+            clearstatcache(true, $newPath);
+//            // Lấy kích thước file từ stream
+            $fileSize = filesize($newPath);
+            ol3('---- Resource fileSize: ' . $fileSize);
+            return;
+        }
+
+
+
+        $upDir = ini_get('upload_tmp_dir');
+        if(!$upDir)
+            $upDir =  sys_get_temp_dir();
+
+        $fileUpDone = $upDir . '/upload_dav_' .$this->uid."-". microtime(1);
+        file_put_contents($fileUpDone, $data);
+
+        if(!file_exists($fileUpDone))
+            die("File not found $fileUpDone");
+
+//        die($fileUpDone . ' Size: ' . filesize($fileUpDone));
+
+        $folderID = 0;
+        if(file_exists($this->path . '.id'))
+            $folderID = intval(file_get_contents($this->path . '.id'));
+
+        ol3(" --- upload file to folder: $folderID , $this->path");
+
+        $std = new stdClass();
+        $std->file_name = $name;
+        $std->file_size = filesize($fileUpDone);
+        $std->file_path_local_upload_ = $fileUpDone;
+        $std->folder_id = $folderID;
+        $std->user_id = $this->uid;
+
+        ol3(" Upload static: ". serialize($std));
+
+        $ret = \App\Http\ControllerApi\FileUploadControllerApi::uploadStatic($std);
+//        if($ret->code == 1){
+//            die("DONE!");
+//        }
+        $data = $ret->getData(true) ?? '';
+        $code = $data['code'] ?? '';
+
+        if($code != 1)
+        {
+            loi("Error: Can not upload");
+        }
+
+        if(file_exists($fileUpDone))
+            unlink($fileUpDone);
+//        clearstatcache(true, $fileUpDone);
+    }
+
+    public function createDirectory($name)
+    {
+        ol3("\n\n --- Create folder:");
+        $fidPath = $this->path . '.id';
+        $newPath = $this->path.'/'.$name;
+        ol3("\n\n --- Create folder:  $newPath\n\n");
+
+        $folderId = 0;
+        if(file_exists($fidPath))
+            $folderId = intval(file_get_contents($fidPath));
+
+
+
+        $foldNew = new \App\Models\FolderFile();
+        $foldNew->parent_id = 0;
+        if(\App\Models\FolderFile::find($folderId)){
+            $foldNew->parent_id = $folderId;
+        }
+        $foldNew->user_id = $this->uid;
+        $foldNew->name = $name;
+
+        if($foldNew->save()){
+            file_put_contents($this->path . '/' . $name . '.id', $foldNew->id);
+        }
+
+
+//        die("xxxx $newPath");
+        mkdir($newPath);
+
+        if(!file_exists($newPath)){
+            loi("Can not create folder $newPath");
+        }
+
+        clearstatcache(true, $newPath);
+    }
+
+    function getChildren() {
+
+        $uid = $this->uid;
+
+        if(!$uid)
+            loi("Not uid!");
+
+        ol3("GetChild Of $this->path , $uid");
+//        $this->path = str_replace('//', '/', $this->path);
+//        echo "<br/>\n GetChild Of $this->path";
+
+        $path = $this->path;
+
+//        if(0)
+        {
+            $foldId = 0;
+
+//            $path = "/share/dav/$uid".$path;
+            if(file_exists($path . '.id'))
+                $foldId = file_get_contents($path . '.id');
+
+//            echo "<br/>\n Fod = $foldId";
+
+            if(!file_exists($path))
+                mkdir($path, 0777, true);
+    //        die();
+            $pathThis = $path;
+
+            //Xoa tat ca cac folder hien tai:
+            if(str_contains($pathThis, '/share/dav'))
+                if(!str_contains($pathThis, '..')){
+//                    exec("rm -rf $pathThis/*");
+                }
+
+            $fold = new \App\Models\FolderFile();
+            $fold->id = $foldId;
+            $mm = $fold->getChildren($uid);
+
+//            dump($mm);
+//            die();
+
+            //Tạo các folder và file bên trong thư mục $this->path
+            foreach ($mm AS $obj){
+                if($obj->isFile){
+                    file_put_contents($pathThis . '/' . $obj->name, '');
+                    file_put_contents($pathThis . '/' . $obj->name.'.fid', $obj->id);
+                }
+                else {
+                    $fold = $pathThis . '/' . $obj->name;
+                    if(!file_exists($fold))
+                        mkdir($fold, 0777, true);
+                    file_put_contents($fold . '.id', $obj->id);
+                }
+            }
+        }
+
+        // Replace this with a call to your API
+        $children = [];
+        $cc = 0;
+        foreach (scandir($path) as $file) {
+
+            $cc++;
+            ol3(" $cc --- Scan File : $file");
+
+            if(str_ends_with($file, '.id'))
+                continue;
+            if(str_ends_with($file, '.fid'))
+                continue;
+
+            if ($file === '.' || $file === '..') continue;
+            $children[] = is_dir($path . '/' . $file)
+                ? new RemoteDirectory($path . '/' . $file , $this->pathRoot, $this->uid)
+                : new RemoteFile($path . '/' . $file);
+        }
+        return $children;
+    }
+
+    function childExists($name) {
+        // Replace this with a call to your API
+        return file_exists($this->path . '/' . $name);
+    }
+
+    //Ke thua lai parent, sua chut
+    public function getChild($name)
+    {
+        $path = $this->path.'/'.$name;
+        ol3("getChild path = $path");
+        if (!file_exists($path)) {
+            throw new DAV\Exception\NotFound('File with name '.$path.' could not be located');
+        }
+        if (is_dir($path)) {
+            return new self($path, $this->pathRoot, $this->uid);
+        } else {
+            return new RemoteFile($path);
+        }
+    }
+
+    //Dua ham nay vao lai ko tạo duoc fold:
+    function getChild22($name) {
+
+        // Replace this with a call to your API
+        $path = $this->path . '/' . $name;
+        ol3("getChild path = $path");
+        if(!file_exists($path))
+            return null;
+
+        return is_dir($path)
+            ? new RemoteDirectory($path, $this->pathRoot, $this->uid)
+            : new RemoteFile($path);
+    }
+}

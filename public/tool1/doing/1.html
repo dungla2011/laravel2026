@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Công thức Toán tiểu học từ lớp 1 đến lớp 5</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body { font-family: Arial, sans-serif; background: #f8f9fa; margin: 0; padding: 0; line-height: 1.6; }
+        .container { max-width: 900px; margin: 20px auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); padding: 40px; }
+        h1 { color: #2c3e50; text-align: center; margin-bottom: 20px; font-size: 28px; }
+        h2 { color: #34495e; margin-top: 30px; margin-bottom: 15px; font-size: 22px; border-bottom: 2px solid #3498db; padding-bottom: 5px; }
+        h3 { color: #2980b9; margin-top: 20px; margin-bottom: 10px; font-size: 18px; }
+        h4 { color: #27ae60; margin-top: 15px; margin-bottom: 8px; font-size: 16px; }
+        ul, ol { margin-left: 30px; margin-bottom: 15px; }
+        li { margin-bottom: 5px; }
+        .section { margin-bottom: 30px; }
+        .formula { background: #ecf0f1; padding: 10px 15px; border-radius: 5px; margin: 10px 0; font-family: 'Courier New', monospace; border-left: 4px solid #3498db; }
+        .note { color: #7f8c8d; font-style: italic; margin: 10px 0; }
+        .intro { background: #e8f5e8; padding: 20px; border-radius: 5px; margin-bottom: 30px; border-left: 4px solid #27ae60; }
+        .table-responsive { overflow-x: auto; margin: 15px 0; }
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        th, td { border: 1px solid #bdc3c7; padding: 8px 12px; text-align: center; }
+        th { background: #3498db; color: white; font-weight: bold; }
+        td { background: #ecf0f1; }
+        .highlight { background: #fff3cd; padding: 10px; border-radius: 5px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .important { background: #f8d7da; padding: 10px; border-radius: 5px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        
+        /* CSS cho in ấn A4 */
+        @media print {
+            * { -webkit-print-color-adjust: exact !important; color-adjust: exact !important; }
+            body { background: white !important; margin: 0; padding: 0; font-size: 12px; line-height: 1.4; }
+            .container { max-width: none; margin: 0; padding: 15mm; box-shadow: none; border-radius: 0; }
+            
+            /* Kích thước trang A4 */
+            @page { size: A4; margin: 15mm; }
+            
+            /* Ẩn các phần không cần thiết khi in */
+            .no-print { display: none !important; }
+            
+            /* Điều chỉnh tiêu đề cho in */
+            h1 { font-size: 18px; margin-bottom: 10px; page-break-after: avoid; }
+            h2 { font-size: 16px; margin-top: 15px; margin-bottom: 8px; page-break-after: avoid; border-bottom: 1px solid #333; }
+            h3 { font-size: 14px; margin-top: 10px; margin-bottom: 6px; page-break-after: avoid; }
+            h4 { font-size: 13px; margin-top: 8px; margin-bottom: 5px; page-break-after: avoid; }
+            
+            /* Điều chỉnh khoảng cách */
+            .section { margin-bottom: 15px; }
+            ul, ol { margin-left: 20px; margin-bottom: 8px; }
+            li { margin-bottom: 2px; font-size: 11px; }
+            
+            /* Điều chỉnh bảng cho in */
+            table { font-size: 10px; margin: 8px 0; }
+            th, td { padding: 4px 6px; border: 1px solid #333; }
+            th { background: #f0f0f0 !important; color: #000 !important; }
+            td { background: #fafafa !important; }
+            
+            /* Điều chỉnh các khối đặc biệt */
+            .formula { background: #f8f8f8 !important; padding: 6px 10px; margin: 5px 0; border-left: 2px solid #333; font-size: 11px; }
+            .highlight { background: #f0f0f0 !important; padding: 6px; margin: 5px 0; border-left: 2px solid #666; }
+            .important { background: #f5f5f5 !important; padding: 6px; margin: 5px 0; border-left: 2px solid #000; }
+            .intro { background: #f9f9f9 !important; padding: 10px; margin-bottom: 15px; border-left: 2px solid #333; }
+            .note { color: #666 !important; font-size: 10px; }
+            
+            /* Ngắt trang */
+            .page-break { page-break-before: always; }
+            .page-break-avoid { page-break-inside: avoid; }
+            
+            /* Điều chỉnh mục lục */
+            .toc { font-size: 11px; }
+            .toc li { margin-bottom: 1px; }
+            
+            /* Ẩn link khi in */
+            a[href]:after { content: none !important; }
+        }
+        
+        /* Nút in */
+        .print-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            z-index: 1000;
+        }
+        .print-button:hover {
+            background: #2980b9;
+        }
+        
+        @media print {
+            .print-button { display: none; }
+        }
+    </style>
+</head>
+<body>
+<button class="print-button" onclick="window.print()">🖨️ In tài liệu</button>
+<div class="container">
+    <h1>📚 Công thức Toán tiểu học từ lớp 1 đến lớp 5</h1>
+    
+    <div class="intro">
+        <p><strong>Giới thiệu:</strong> Toán học giúp các em tìm hiểu nhiều lĩnh vực, kỹ năng cần thiết về khoa học công nghệ, nhất là trong thời đại số như ngày nay. Nhằm giúp các em học sinh học tập môn Toán một cách dễ dàng hơn. Luật Minh Khuê đã tổng hợp tất cả các công thức Toán tiểu học đầy đủ từ lớp 1 đến lớp 5 một cách đầy đủ và logic nhất để các em tham khảo nhằm củng cố, nâng cao kiến thức của bản thân.</p>
+    </div>
+
+    <div class="section">
+        <h2>📋 Mục lục</h2>
+        <ol>
+            <li><a href="#so-tu-nhien">Số tự nhiên</a></li>
+            <li><a href="#bon-phep-toan">Bốn phép toán trên số tự nhiên</a>
+                <ul>
+                    <li>Phép cộng</li>
+                    <li>Phép trừ</li>
+                    <li>Phép nhân</li>
+                    <li>Phép chia</li>
+                </ul>
+            </li>
+            <li><a href="#bang-don-vi">Bảng đơn vị đo độ dài, khối lượng, diện tích, thể tích</a></li>
+            <li><a href="#toan-trong-cay">Toán trồng cây</a></li>
+            <li><a href="#day-so-cach-deu">Dãy số cách đều</a></li>
+            <li><a href="#tinh-gia-tri">Tính giá trị của biểu thức</a></li>
+            <li><a href="#phan-so">Phân số</a></li>
+            <li><a href="#phep-toan-phan-so">Cộng, trừ, nhân, chia phân số</a></li>
+            <li><a href="#so-thap-phan">Số thập phân</a></li>
+            <li><a href="#trung-binh-cong">Trung bình cộng</a></li>
+            <li><a href="#tim-hai-so-tong-hieu">Tìm hai số khi biết tổng và hiệu</a></li>
+            <li><a href="#tim-hai-so-tong-ti">Tìm hai số khi biết tổng và tỉ</a></li>
+            <li><a href="#tim-hai-so-hieu-ti">Tìm hai số khi biết hiệu và tỉ</a></li>
+            <li><a href="#ty-so-phan-tram">Tỷ số %</a></li>
+            <li><a href="#hinh-hoc">Hình học</a></li>
+            <li><a href="#chuyen-dong-deu">Chuyển động đều</a></li>
+            <li><a href="#ti-le-thuan-nghich">Tỉ lệ thuận - Tỉ lệ nghịch</a></li>
+        </ol>
+    </div>
+
+    <div class="section" id="so-tu-nhien">
+        <h2>1. 🔢 Số tự nhiên</h2>
+        <ul>
+            <li><strong>Chữ số:</strong> Dùng 10 chữ số: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9</li>
+            <li><strong>Giới hạn:</strong> 0 là số tự nhiên nhỏ nhất. Không có số tự nhiên lớn nhất</li>
+            <li><strong>Số lẻ:</strong> 1, 3, 5, 7, 9, 11, 13, 15, 17,… (hàng đơn vị: 1, 3, 5, 7, 9)</li>
+            <li><strong>Số chẵn:</strong> 2, 4, 6, 8, 10, 12, 14, 16,… (hàng đơn vị: 0, 2, 4, 6, 8)</li>
+            <li>Hai số tự nhiên liên tiếp hơn kém nhau 1 đơn vị</li>
+            <li>Hai số chẵn (lẻ) liên tiếp hơn kém nhau 2 đơn vị</li>
+        </ul>
+        
+        <div class="highlight">
+            <strong>Số lượng số có n chữ số:</strong>
+            <ul>
+                <li>Số có 1 chữ số (0-9): 10 số</li>
+                <li>Số có 2 chữ số (10-99): 90 số</li>
+                <li>Số có 3 chữ số (100-999): 900 số</li>
+                <li>Số có 4 chữ số (1000-9999): 9000 số</li>
+            </ul>
+        </div>
+
+        <div class="note">
+            <strong>Lưu ý:</strong> Trong dãy số tự nhiên liên tiếp: nếu bắt đầu từ số lẻ và kết thúc là số chẵn thì số số hạng là số chẵn. Nếu cùng chẵn hoặc cùng lẻ thì số số hạng là số lẻ.
+        </div>
+    </div>
+
+    <div class="section" id="bon-phep-toan">
+        <h2>2. ➕➖✖️➗ Bốn phép toán trên số tự nhiên</h2>
+        
+        <h3>a. Phép cộng</h3>
+        <ul>
+            <li>Thêm/bớt ở một hoặc nhiều số hạng thì tổng tăng/giảm tương ứng</li>
+            <li>Thêm/bớt ở hai số hạng ngược nhau thì tổng không đổi</li>
+        </ul>
+        
+        <div class="formula">
+            <strong>Công thức phép cộng:</strong><br>
+            1. a + b = b + a (tính chất giao hoán)<br>
+            2. (a + b) + c = a + (b + c) (tính chất kết hợp)<br>
+            3. 0 + a = a + 0 = a<br>
+            4. (a - n) + (b + n) = a + b<br>
+            5. (a - n) + (b - n) = a + b - n × 2<br>
+            6. (a + n) + (b + n) = (a + b) + n × 2
+        </div>
+
+        <div class="highlight">
+            <strong>Quy tắc về tính chẵn lẻ trong phép cộng:</strong>
+            <ul>
+                <li>Tổng các số chẵn là số chẵn</li>
+                <li>Tổng 2 số lẻ là số chẵn</li>
+                <li>Tổng nhiều số lẻ: số số hạng chẵn → tổng chẵn, số số hạng lẻ → tổng lẻ</li>
+                <li>Tổng 1 số chẵn và 1 số lẻ là số lẻ</li>
+            </ul>
+        </div>
+
+        <h3>b. Phép trừ</h3>
+        <ul>
+            <li>Thêm/bớt ở số bị trừ thì hiệu tăng/giảm tương ứng</li>
+            <li>Thêm/bớt ở số trừ thì hiệu giảm/tăng tương ứng</li>
+            <li>Thêm/bớt cùng một số đơn vị ở cả số bị trừ và số trừ thì hiệu không đổi</li>
+        </ul>
+        
+        <div class="formula">
+            <strong>Công thức phép trừ:</strong><br>
+            a - (b + c) = (a - b) - c = (a - c) - b
+        </div>
+
+        <div class="highlight">
+            <strong>Quy tắc về tính chẵn lẻ trong phép trừ:</strong>
+            <ul>
+                <li>Hiệu của 2 số chẵn là số chẵn</li>
+                <li>Hiệu của 2 số lẻ là số chẵn</li>
+                <li>Hiệu của một số chẵn và một số lẻ là số lẻ</li>
+            </ul>
+        </div>
+
+        <h3>c. Phép nhân</h3>
+        <div class="formula">
+            <strong>Công thức phép nhân:</strong><br>
+            1. a × b = b × a (tính chất giao hoán)<br>
+            2. a × (b × c) = (a × b) × c (tính chất kết hợp)<br>
+            3. a × 0 = 0 × a = 0<br>
+            4. a × 1 = 1 × a = a<br>
+            5. a × (b + c) = a × b + a × c (tính chất phân phối)<br>
+            6. a × (b - c) = a × b - a × c
+        </div>
+
+        <div class="highlight">
+            <strong>Quy tắc về tính chẵn lẻ trong phép nhân:</strong>
+            <ul>
+                <li>Tích của các số lẻ là số lẻ</li>
+                <li>Trong tích có ít nhất 1 thừa số chẵn thì tích là số chẵn</li>
+                <li>Có thừa số tận cùng là 5 và có thừa số chẵn → tích tận cùng là 0</li>
+                <li>Có thừa số tận cùng là 5 và các thừa số khác đều lẻ → tích tận cùng là 5</li>
+                <li>Tích các thừa số tận cùng là 1 → tích tận cùng là 1</li>
+                <li>Tích các thừa số tận cùng là 6 → tích tận cùng là 6</li>
+            </ul>
+        </div>
+
+        <h3>d. Phép chia</h3>
+        <div class="important">
+            <strong>Dấu hiệu chia hết:</strong>
+            <ul>
+                <li><strong>Chia hết cho 2:</strong> Chữ số tận cùng là 0, 2, 4, 6, 8</li>
+                <li><strong>Chia hết cho 3:</strong> Tổng các chữ số chia hết cho 3</li>
+                <li><strong>Chia hết cho 4:</strong> Hai chữ số tận cùng tạo thành số chia hết cho 4</li>
+                <li><strong>Chia hết cho 5:</strong> Chữ số tận cùng là 0 hoặc 5</li>
+                <li><strong>Chia hết cho 6:</strong> Vừa chia hết cho 2 vừa chia hết cho 3</li>
+                <li><strong>Chia hết cho 8:</strong> Ba chữ số tận cùng tạo thành số chia hết cho 8</li>
+                <li><strong>Chia hết cho 9:</strong> Tổng các chữ số chia hết cho 9</li>
+            </ul>
+        </div>
+
+        <div class="formula">
+            <strong>Quy tắc phép chia:</strong><br>
+            • 0 ÷ a = 0 (a ≠ 0)<br>
+            • a ÷ 1 = a<br>
+            • a ÷ a = 1 (a ≠ 0)<br>
+            • Gấp/giảm số bị chia n lần, giữ nguyên số chia → thương gấp/giảm n lần<br>
+            • Gấp/giảm số chia n lần, giữ nguyên số bị chia → thương giảm/gấp n lần
+        </div>
+    </div>
+
+    <div class="section" id="bang-don-vi">
+        <h2 class="page-break">3. 📏⚖️ Bảng đơn vị đo độ dài, khối lượng, diện tích, thể tích</h2>
+        
+        <h3>Độ dài</h3>
+        <div class="table-responsive">
+            <table>
+                <tr>
+                    <th>km</th><th>hm</th><th>dam</th><th>m</th><th>dm</th><th>cm</th><th>mm</th>
+                </tr>
+                <tr>
+                    <td>1 km = 10 hm</td>
+                    <td>1 hm = 10 dam</td>
+                    <td>1 dam = 10 m</td>
+                    <td>1 m = 10 dm</td>
+                    <td>1 dm = 10 cm</td>
+                    <td>1 cm = 10 mm</td>
+                    <td>1 mm = 1/10 cm</td>
+                </tr>
+            </table>
+        </div>
+
+        <h3>Khối lượng</h3>
+        <div class="table-responsive">
+            <table>
+                <tr>
+                    <th>tấn</th><th>tạ</th><th>yến</th><th>kg</th><th>hg</th><th>dag</th><th>g</th>
+                </tr>
+                <tr>
+                    <td>1 tấn = 10 tạ</td>
+                    <td>1 tạ = 10 yến</td>
+                    <td>1 yến = 10 kg</td>
+                    <td>1 kg = 10 hg</td>
+                    <td>1 hg = 10 dag</td>
+                    <td>1 dag = 10 g</td>
+                    <td>1 g = 1/10 dag</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="note">
+            <strong>Quy tắc độ dài và khối lượng:</strong> Hai đơn vị liền nhau: đơn vị lớn gấp 10 lần đơn vị bé
+        </div>
+
+        <h3>Diện tích</h3>
+        <div class="table-responsive">
+            <table>
+                <tr>
+                    <th>km²</th><th>hm² (ha)</th><th>dam²</th><th>m²</th><th>dm²</th><th>cm²</th><th>mm²</th>
+                </tr>
+                <tr>
+                    <td>1 km² = 100 hm²</td>
+                    <td>1 hm² = 100 dam²</td>
+                    <td>1 dam² = 100 m²</td>
+                    <td>1 m² = 100 dm²</td>
+                    <td>1 dm² = 100 cm²</td>
+                    <td>1 cm² = 100 mm²</td>
+                    <td>1 mm² = 1/100 cm²</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="note">
+            <strong>Quy tắc diện tích:</strong> Hai đơn vị liền nhau: đơn vị lớn gấp 100 lần đơn vị bé
+        </div>
+
+        <h3>Thể tích</h3>
+        <div class="table-responsive">
+            <table>
+                <tr>
+                    <th>m³</th><th>dm³</th><th>cm³</th>
+                </tr>
+                <tr>
+                    <td>1 m³ = 1000 dm³</td>
+                    <td>1 dm³ = 1 lít = 1000 cm³</td>
+                    <td>1 cm³ = 1/1000 dm³</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="note">
+            <strong>Quy tắc thể tích:</strong> Hai đơn vị liền nhau: đơn vị lớn gấp 1000 lần đơn vị bé
+        </div>
+    </div>
+
+    <div class="section" id="toan-trong-cay">
+        <h2>4. 🌳 Toán trồng cây</h2>
+        <div class="formula">
+            <strong>Các trường hợp trồng cây:</strong><br>
+            • Trồng cây 2 đầu: Số cây = Số khoảng + 1<br>
+            • Trồng cây 1 đầu: Số cây = Số khoảng<br>
+            • Không trồng cây ở 2 đầu: Số cây = Số khoảng - 1<br>
+            • Trồng cây khép kín (hình tròn): Số cây = Số khoảng
+        </div>
+    </div>
+
+    <div class="section" id="day-so-cach-deu">
+        <h2>5. 🔢 Dãy số cách đều</h2>
+        <div class="formula">
+            <strong>Các công thức dãy số cách đều:</strong><br>
+            • TỔNG = (Số đầu + Số cuối) × Số số hạng ÷ 2<br>
+            • SỐ CUỐI = Số đầu + (Số số hạng - 1) × Đơn vị khoảng cách<br>
+            • SỐ ĐẦU = Số cuối - (Số số hạng - 1) × Đơn vị khoảng cách<br>
+            • SỐ SỐ HẠNG = (Số cuối - Số đầu) ÷ Đơn vị khoảng cách + 1<br>
+            • TRUNG BÌNH CỘNG = (Số đầu + Số cuối) ÷ 2
+        </div>
+
+        <div class="note">
+            <strong>Lưu ý:</strong> Nếu dãy có số lẻ số hạng thì số ở giữa bằng trung bình cộng của số đầu và số cuối. Ví dụ: Dãy 1, 3, 5, 7, 9 thì số 5 = (1+9)÷2
+        </div>
+    </div>
+
+    <div class="section" id="tinh-gia-tri">
+        <h2>6. 🧮 Tính giá trị của biểu thức</h2>
+        <div class="important">
+            <strong>Thứ tự thực hiện phép tính:</strong>
+            <ol>
+                <li>Trong ngoặc đơn tính trước, ngoài ngoặc đơn tính sau</li>
+                <li>Nhân, chia trước; cộng, trừ sau</li>
+                <li>Cùng cấp độ: tính từ trái sang phải</li>
+            </ol>
+        </div>
+
+        <div class="formula">
+            <strong>Tính chất phân phối:</strong><br>
+            • a × (b + c) = a × b + a × c<br>
+            • a × (b - c) = a × b - a × c<br>
+            • a - (b + c) = a - b - c
+        </div>
+
+        <div class="highlight">
+            <strong>Mẹo tính nhanh:</strong>
+            <ul>
+                <li>Nhóm các số có tổng tròn chục, tròn trăm</li>
+                <li>Số bị chia = 0 → thương = 0</li>
+                <li>Số bị chia = số chia → thương = 1</li>
+                <li>Số chia = 1 → thương = số bị chia</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section" id="phan-so">
+        <h2 class="page-break">7. ½ Phân số</h2>
+        <div class="formula">
+            <strong>Khái niệm phân số a/b:</strong><br>
+            • Tử số (a): chỉ số phần có được<br>
+            • Mẫu số (b): chỉ số phần bằng nhau của đơn vị<br>
+            • Phân số = phép chia: a ÷ b
+        </div>
+
+        <div class="highlight">
+            <strong>Phân loại phân số:</strong>
+            <ul>
+                <li><strong>Phân số &lt; 1:</strong> tử số &lt; mẫu số</li>
+                <li><strong>Phân số = 1:</strong> tử số = mẫu số</li>
+                <li><strong>Phân số &gt; 1:</strong> tử số &gt; mẫu số</li>
+                <li><strong>Số tự nhiên:</strong> phân số có mẫu số = 1</li>
+            </ul>
+        </div>
+
+        <div class="note">
+            <strong>Quy tắc thay đổi phân số:</strong>
+            <ul>
+                <li>Nhân/chia tử và mẫu với cùng một số (≠0) → phân số mới = phân số cũ</li>
+                <li>Thêm/bớt tử số, giữ nguyên mẫu → phân số tăng/giảm</li>
+                <li>Thêm/bớt mẫu số, giữ nguyên tử → phân số giảm/tăng</li>
+                <li>Cùng thêm/bớt tử và mẫu cùng một số:
+                    <ul>
+                        <li>Phân số &lt; 1: thêm → tăng, bớt → giảm</li>
+                        <li>Phân số &gt; 1: thêm → giảm, bớt → tăng</li>
+                        <li>Phân số = 1: không đổi</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section" id="phep-toan-phan-so">
+        <h2>8. ⚖️ Cộng, trừ, nhân, chia phân số</h2>
+        
+        <h3>a. Rút gọn phân số</h3>
+        <ul>
+            <li>Tìm ước chung lớn nhất của tử và mẫu</li>
+            <li>Chia cả tử và mẫu cho ước chung đó</li>
+            <li>Thứ tự kiểm tra: 2, 3, 5, 9,...</li>
+        </ul>
+
+        <h3>b. Quy đồng mẫu số</h3>
+        <ul>
+            <li>Rút gọn các phân số trước khi quy đồng</li>
+            <li>Tìm bội chung nhỏ nhất của các mẫu số</li>
+            <li>Nhân tử và mẫu với số thích hợp để có mẫu chung</li>
+        </ul>
+
+        <h3>c. Cộng & trừ phân số</h3>
+        <div class="formula">
+            • Cùng mẫu số: a/c ± b/c = (a ± b)/c<br>
+            • Khác mẫu số: quy đồng mẫu rồi cộng/trừ tử, giữ nguyên mẫu
+        </div>
+
+        <h3>d. Nhân phân số</h3>
+        <div class="formula">
+            • a/b × c/d = (a × c)/(b × d)<br>
+            • a/b × c = (a × c)/b<br>
+            • Có tính chất giao hoán và kết hợp
+        </div>
+
+        <h3>e. Chia phân số</h3>
+        <div class="formula">
+            • a/b ÷ c/d = a/b × d/c = (a × d)/(b × c)<br>
+            • a/b ÷ c = a/b × 1/c = a/(b × c)<br>
+            • a ÷ b/c = a × c/b = (a × c)/b
+        </div>
+    </div>
+
+    <div class="section" id="so-thap-phan">
+        <h2>9. 🔢 Số thập phân</h2>
+        <div class="highlight">
+            <strong>Cấu trúc số thập phân:</strong> Phần nguyên, dấu phẩy, phần thập phân<br>
+            Ví dụ: 234,783 → đọc "hai trăm ba mươi bốn phẩy bảy trăm tám mươi ba"
+        </div>
+
+        <div class="formula">
+            <strong>Quy tắc tính toán:</strong><br>
+            • <strong>Cộng/Trừ:</strong> Thẳng cột dấu phẩy, tính như số tự nhiên<br>
+            • <strong>Nhân:</strong> Nhân như số tự nhiên, đếm tổng chữ số thập phân để đặt dấu phẩy<br>
+            • <strong>Chia:</strong> Biến đổi để số chia là số tự nhiên, đặt dấu phẩy khi chia phần thập phân
+        </div>
+    </div>
+
+    <div class="section" id="trung-binh-cong">
+        <h2>10. 📊 Trung bình cộng</h2>
+        <div class="formula">
+            <strong>Công thức cơ bản:</strong><br>
+            • Trung bình cộng = Tổng các số ÷ Số các số hạng<br>
+            • Tổng các số = Trung bình cộng × Số các số hạng
+        </div>
+
+        <div class="highlight">
+            <strong>Tính chất đặc biệt:</strong>
+            <ul>
+                <li>Dãy số cách đều: TBC = (số đầu + số cuối) ÷ 2</li>
+                <li>Dãy có số lẻ số hạng: TBC = số ở giữa</li>
+                <li>Một số lớn hơn TBC là a → số đó lớn hơn số còn lại là 2a</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section" id="tim-hai-so-tong-hieu">
+        <h2>11. 🔍 Tìm hai số khi biết tổng và hiệu</h2>
+        <div class="formula">
+            <strong>Công thức:</strong><br>
+            • Số bé = (Tổng - Hiệu) ÷ 2<br>
+            • Số lớn = (Tổng + Hiệu) ÷ 2<br>
+            • Hoặc: Số lớn = Tổng - Số bé
+        </div>
+    </div>
+
+    <div class="section" id="tim-hai-so-tong-ti">
+        <h2>12. 🔍 Tìm hai số khi biết tổng và tỉ</h2>
+        <div class="important">
+            <strong>Các bước giải:</strong>
+            <ol>
+                <li>Xác định tổng và tỷ số của hai số</li>
+                <li>Vẽ sơ đồ đoạn thẳng (các phần bằng nhau)</li>
+                <li>Tính tổng số phần bằng nhau</li>
+                <li>Tính giá trị một phần = Tổng ÷ Tổng số phần</li>
+                <li>Tính từng số = Giá trị một phần × Số phần tương ứng</li>
+                <li>Thử lại kết quả</li>
+            </ol>
+        </div>
+
+        <div class="note">
+            <strong>Lưu ý:</strong>
+            <ul>
+                <li>Tỷ số có thể cho dưới dạng phân số, gấp số lần, hoặc phép chia</li>
+                <li>Nửa chu vi hình chữ nhật = chiều dài + chiều rộng</li>
+                <li>Tổng n số = Trung bình cộng × n</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section" id="tim-hai-so-hieu-ti">
+        <h2>13. 🔍 Tìm hai số khi biết hiệu và tỉ</h2>
+        <div class="important">
+            <strong>Các bước giải:</strong>
+            <ol>
+                <li>Tìm hiệu hai số (nếu chưa có)</li>
+                <li>Tìm tỷ số (nếu chưa có)</li>
+                <li>Vẽ sơ đồ đoạn thẳng</li>
+                <li>Tính hiệu số phần bằng nhau</li>
+                <li>Số bé = Hiệu ÷ Hiệu số phần × Số phần của số bé</li>
+                <li>Số lớn = Số bé + Hiệu</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="section" id="ty-so-phan-tram">
+        <h2>14. % Tỷ số %</h2>
+        <div class="formula">
+            <strong>Công thức:</strong><br>
+            Tỷ số % của A so với B = (A ÷ B) × 100%
+        </div>
+
+        <div class="highlight">
+            <strong>Ví dụ:</strong> Tỷ số % của 3 so với 4 = (3 ÷ 4) × 100% = 0,75 × 100% = 75%
+        </div>
+    </div>
+
+    <div class="section" id="hinh-hoc">
+        <h2 class="page-break">15. 📐 Hình học</h2>
+        
+        <h3>a. Hình vuông</h3>
+        <div class="formula">
+            • Chu vi: P = a × 4<br>
+            • Cạnh: a = P ÷ 4<br>
+            • Diện tích: S = a × a = a²
+        </div>
+
+        <h3>b. Hình chữ nhật</h3>
+        <div class="formula">
+            • Chu vi: P = (a + b) × 2<br>
+            • Chiều dài: a = P÷2 - b<br>
+            • Chiều rộng: b = P÷2 - a<br>
+            • Diện tích: S = a × b<br>
+            • Chiều dài: a = S ÷ b<br>
+            • Chiều rộng: b = S ÷ a
+        </div>
+
+        <h3>c. Hình bình hành</h3>
+        <div class="formula">
+            • Chu vi: P = (a + b) × 2<br>
+            • Diện tích: S = a × h<br>
+            • Đáy: a = S ÷ h<br>
+            • Chiều cao: h = S ÷ a
+        </div>
+
+        <h3>d. Hình thoi</h3>
+        <div class="formula">
+            • Diện tích: S = (m × n) ÷ 2<br>
+            • Tích hai đường chéo: m × n = S × 2
+        </div>
+
+        <h3>e. Hình tam giác</h3>
+        <div class="formula">
+            • Chu vi: P = a + b + c<br>
+            • Diện tích: S = (a × h) ÷ 2<br>
+            • Chiều cao: h = (S × 2) ÷ a<br>
+            • Cạnh đáy: a = (S × 2) ÷ h
+        </div>
+
+        <h3>f. Hình thang</h3>
+        <div class="formula">
+            • Chu vi: P = a + b + c + d<br>
+            • Diện tích: S = (a + b) × h ÷ 2<br>
+            • Chiều cao: h = (S × 2) ÷ (a + b)<br>
+            • Tổng hai đáy: a + b = (S × 2) ÷ h
+        </div>
+
+        <h3>g. Hình tròn</h3>
+        <div class="formula">
+            • Bán kính: r = d ÷ 2 = C ÷ (2 × 3,14)<br>
+            • Đường kính: d = r × 2 = C ÷ 3,14<br>
+            • Chu vi: C = d × 3,14 = r × 2 × 3,14<br>
+            • Diện tích: S = r × r × 3,14 = r² × 3,14
+        </div>
+
+        <h3>h. Hình hộp chữ nhật</h3>
+        <div class="formula">
+            • Diện tích xung quanh: Sxq = (a + b) × 2 × c<br>
+            • Diện tích toàn phần: Stp = Sxq + 2 × a × b<br>
+            • Thể tích: V = a × b × c
+        </div>
+
+        <h3>i. Hình lập phương</h3>
+        <div class="formula">
+            • Diện tích xung quanh: Sxq = a² × 4<br>
+            • Diện tích toàn phần: Stp = a² × 6<br>
+            • Thể tích: V = a³ = a × a × a
+        </div>
+
+        <h3>k. Hình trụ</h3>
+        <div class="formula">
+            • Diện tích xung quanh: Sxq = d × 3,14 × h<br>
+            • Diện tích toàn phần: Stp = Sxq + 2 × r² × 3,14<br>
+            • Thể tích: V = r² × 3,14 × h
+        </div>
+    </div>
+
+    <div class="section" id="chuyen-dong-deu">
+        <h2>16. 🚗 Chuyển động đều</h2>
+        <div class="formula">
+            <strong>Công thức cơ bản:</strong><br>
+            • Quãng đường: S = v × t<br>
+            • Vận tốc: v = S ÷ t<br>
+            • Thời gian: t = S ÷ v
+        </div>
+
+        <div class="important">
+            <strong>Chuyển động ngược chiều:</strong><br>
+            • Thời gian gặp nhau: t = S ÷ (v₁ + v₂)<br>
+            • Quãng đường: S = (v₁ + v₂) × t
+        </div>
+
+        <div class="important">
+            <strong>Chuyển động cùng chiều:</strong><br>
+            • Thời gian đuổi kịp: t = S ÷ (v₁ - v₂) (v₁ > v₂)<br>
+            • Khoảng cách ban đầu: S = (v₁ - v₂) × t
+        </div>
+
+        <div class="highlight">
+            <strong>Chuyển động trên sông:</strong>
+            <ul>
+                <li>Vận tốc xuôi dòng = Vận tốc thuyền + Vận tốc dòng nước</li>
+                <li>Vận tốc ngược dòng = Vận tốc thuyền - Vận tốc dòng nước</li>
+                <li>Vận tốc dòng nước = (V xuôi - V ngược) ÷ 2</li>
+                <li>Vận tốc thuyền = (V xuôi + V ngược) ÷ 2</li>
+            </ul>
+        </div>
+
+        <div class="note">
+            <strong>Lưu ý về vận tốc trung bình:</strong> Chỉ tính được bằng trung bình cộng hai vận tốc khi thời gian đi với mỗi vận tốc bằng nhau.
+        </div>
+    </div>
+
+    <div class="section" id="ti-le-thuan-nghich">
+        <h2>17. ⚖️ Tỉ lệ thuận - Tỉ lệ nghịch</h2>
+        
+        <h3>Tỉ lệ thuận</h3>
+        <div class="formula">
+            • Công thức: y = k × x (k là hằng số ≠ 0)<br>
+            • Tỷ số hai giá trị tương ứng = hằng số = hệ số tỉ lệ<br>
+            • x₁/x₂ = y₁/y₂ (tỷ số bằng nhau)
+        </div>
+
+        <h3>Tỉ lệ nghịch</h3>
+        <div class="formula">
+            • Công thức: y = k ÷ x hoặc x × y = k<br>
+            • Tích hai giá trị tương ứng = hằng số<br>
+            • x₁ × y₁ = x₂ × y₂
+        </div>
+
+        <div class="note">
+            <strong>Ứng dụng:</strong>
+            <ul>
+                <li>Quãng đường tỉ lệ thuận với thời gian (cùng vận tốc)</li>
+                <li>Quãng đường tỉ lệ thuận với vận tốc (cùng thời gian)</li>
+                <li>Vận tốc tỉ lệ nghịch với thời gian (cùng quãng đường)</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="intro">
+            <p><strong>Kết luận:</strong> Trên đây là tóm tắt công thức Toán học cơ bản từ lớp 1 đến lớp 5 mà Luật Minh Khuê tổng hợp. Hy vọng sẽ giúp ích các em học sinh tham khảo dễ dàng, áp dụng vào bài tập và học tập tốt trên trường. Chúc các em học tập hiệu quả!</p>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<?php
+
+define("DEF_TOOL_CMS", 1);
+
+defined('DEF_IGNORE_ANTIDOS') || define('DEF_IGNORE_ANTIDOS', 1);
+define("DEF_CACHE_FILE_DL_INFO", "/mnt/glx/cache/21600/download_link/");
+$_SERVER['HTTP_HOST'] = $_SERVER['SERVER_NAME'] = '4share.vn';
+
+/** 13.12.22
+ * Tạo Bộ đầy đủ API, Amin... cho một model  mới
+ * Clone từ DemoTbl
+ */
+
+use Illuminate\Support\Str;
+use App\Models\FileCloud;
+use App\Models\FileUpload;
+
+require_once "/var/www/html/public/index.php";
+
+check_unique_script();
+
+function ol1($str)
+{
+    echo "\n$str";
+    $fileLog = basename(__FILE__);
+    outputT("/var/glx/weblog/$fileLog.log", $str);
+}
+
+try {
+
+
+    $lastReplicateIDFile = "/var/glx/weblog/lastReplicateID";
+    $lastIDOK = trim(@file_get_contents($lastReplicateIDFile)) ?? 0;
+
+    while (1) {
+        sss(1);
+        echo("\n-----------------------------------");
+        ol1(" -- Query REP now, LASTID = $lastIDOK  ");
+        echo("\n-----------------------------------");
+
+        $result = \App\Models\FileCloud::where("id", '>', ($lastIDOK))->where('size', '<>', 0)->where('server1', null)->orderBy('id', "DESC")->get()->toArray();
+//        $lastIDOK = 1000; // giả sử $lastIDOK = 1000
+        $totalFile = count($result);
+        ol1(" Total F to REP = $totalFile");
+
+        if ($totalFile == 0) {
+            ol1("Sleep 15 ...");
+            sss(15);
+            continue;
+        }
+//        dump($result);
+        $countFile = 0;
+        foreach ($result as $row) {
+            $countFile++;
+            $id = $row['id'];
+            $name = $row['name'];
+            $cfile = \App\Models\FileCloud::find($id);
+            if (!$cfile) {
+                continue;
+            }
+
+            $filepath = $cfile->file_path;
+
+            //Tìm xem FileUpload có link đến file này không, nếu không thì xóa?
+            //và filepath không tồn tại thì xóa
+            if($cfile->created_at > nowyh(time() - _NSECOND_DAY * 10))
+            if (!FileUpload::where("cloud_id", $id)->first() && !file_exists($filepath)) {
+
+                $cfile->addLog("Delete because empty server1 and file not found2: $filepath", 1);
+//                $cfile->delete();
+
+                ol1("\n No FileUpload Link to and File not found , delete UID = $cfile->user_id, FID = $cfile->id, $cfile->created_at, $cfile->name");
+
+//                getch("...");
+                continue;
+            }
+
+            if (!file_exists($filepath) || filesize($filepath) == 0) {
+                ol1("File not found or empty: $filepath");
+                //Khong xoa fi co the mount chua dung
+                continue;
+            }
+            ol1(" $countFile ---- Start fid: $id, $name");
+            $fsize = filesize($filepath);
+            echo "\n $filepath / Size = " . ByteSize($fsize);
+
+//            continue;
+//            $clu = new \Base\ModelCloudUser();
+//            if ($clu->getOneWhere("userid = $cfile->user_id")) {
+//                if ($clu->disable_replicate) {
+//                    echo "\n Disable replicate user ($cfile->user_id)!";
+//                    continue;
+//                }
+//            }
+
+            if($cfile instanceof FileCloud);
+            $md5 = $cfile->setMD5(1);
+            $crc32 = $cfile->setCRC32(1);
+
+        }
+        sss(5);
+    }
+} catch (Exception $e) {
+    ol1("\n *** Caught exception: " . $e->getMessage() . "\n");
+    sss(60);
+}

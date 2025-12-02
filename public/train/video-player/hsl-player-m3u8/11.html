@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>HLS Player with Quality Info</title>
+  <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css">
+  <style>
+    .quality-info {
+      margin-top: 10px;
+      padding: 8px;
+      background-color: #f0f0f0;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <video id="player" controls></video>
+  <div class="quality-info" id="quality-info">Loading stream information...</div>
+
+  <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const source = 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8';
+      const video = document.getElementById('player');
+      const qualityInfo = document.getElementById('quality-info');
+      
+      // Initialize Plyr
+      const player = new Plyr(video);
+      
+      // Check if the browser supports HLS
+      if (Hls.isSupported()) {
+        const hls = new Hls();
+        hls.loadSource(source);
+        hls.attachMedia(video);
+        
+        // Display available quality levels when manifest is parsed
+        hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
+          if (hls.levels.length === 0) {
+            qualityInfo.textContent = 'Không tìm thấy thông tin về độ phân giải';
+            return;
+          }
+          
+          let infoText = 'Độ phân giải có sẵn: ';
+          
+          hls.levels.forEach((level, index) => {
+            infoText += `${level.width}x${level.height} (${Math.round(level.bitrate/1000)} Kbps)`;
+            if (index < hls.levels.length - 1) infoText += ', ';
+          });
+          
+          qualityInfo.innerHTML = infoText;
+          
+          // Log full details to console for debugging
+          console.log('Available levels:', hls.levels);
+        });
+        
+        // Handle errors
+        hls.on(Hls.Events.ERROR, function(event, data) {
+          console.error('HLS error:', data);
+          qualityInfo.textContent = 'Đã xảy ra lỗi khi tải stream';
+        });
+      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        // Native support (like Safari)
+        video.src = source;
+        qualityInfo.textContent = 'Đang sử dụng hỗ trợ HLS gốc của trình duyệt (thông tin độ phân giải không có sẵn)';
+      } else {
+        console.error('Your browser does not support HLS');
+        qualityInfo.textContent = 'Trình duyệt của bạn không hỗ trợ HLS';
+      }
+    });
+  </script>
+</body>
+</html>

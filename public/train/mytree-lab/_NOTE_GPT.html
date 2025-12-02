@@ -1,0 +1,30 @@
+
+const data = [
+{ "id": 2598, "name": "La Thi Hoa", "parent_id": 2576, "married_with": 2597, "img_link": "https://mytree.vn/slink/1/000/003/3605050200" },
+{ "id": 2597, "name": "Le Van Vinh", "parent_id": 2576, "married_with": null, "img_link": "https://mytree.vn/slink/1/000/003/3506060100" },
+{ "id": 2586, "name": "Le Van Thang", "parent_id": 2597, "married_with": null, "img_link": null },
+{ "id": 2587, "name": "Pham Thi Loi", "parent_id": 2597, "married_with": 2586, "img_link": "https://mytree.vn/slink/1/000/003/3102020500" },
+{ "id": 2599, "name": "Le Van Vui", "parent_id": 2597, "married_with": null, "img_link": null },
+{ "id": 2801, "name": "Vo 1 Cua Vui", "parent_id": 2597, "married_with": 2599, "img_link": null },
+{ "id": 2802, "name": "Vo 2 Cua Vui", "parent_id": 2597, "married_with": 2599, "img_link": null },
+{ "id": 2803, "name": "Vo 3 Cua Vui", "parent_id": 2597, "married_with": 2599, "img_link": null },
+{ "id": 2849, "name": "Le Thong Nhat", "parent_id": 2597, "married_with": null, "img_link": null },
+{ "id": 2588, "name": "Le Van Dong", "parent_id": 2586, "married_with": null, "img_link": null },
+{ "id": 5545, "name": "Le Van Mai", "parent_id": 2586, "married_with": null, "img_link": null },
+{ "id": 2600, "name": "Le Van The", "parent_id": 2599, "married_with": null, "img_link": null },
+{ "id": 2601, "name": "Le Thi Gioi", "parent_id": 2599, "married_with": null, "img_link": null },
+{ "id": 2605, "name": "Le Van Ky", "parent_id": 2599, "married_with": null, "img_link": null },
+{ "id": 2606, "name": "Le Thi Dieu", "parent_id": 2599, "married_with": null, "img_link": "https://mytree.vn/slink/1/000/003/3704040300" }
+];
+
+
+Tổng hợp lại: Vẽ cây gia phả dùng D3.js gồm các yêu cầu sau
+- Mỗi node là 1 ô vuông chứa Tên trong đó, và ảnh nếu có, ảnh đặt trên Tên
+- Một node có thể có vợ chồng (gọi tắt là vợ), và có thể có nhiều vợ,
+vẽ 1 đường nối từ chồng đến vợ, vợ cả đến vợ 2,  vợ 2 đến mép 3... nếu có nhiều vợ
+- Vợ chồng cách nhau 50px , các vợ cả vợ 2, 3 ...cũng cách nhau như vậy
+- các ô chữ nhật không bao giờ chồng lên nhau
+- Đường nối giữa cha con là đường kiểu Hub Line, từ trên xuống khoảng 50px rồi 1 đường ngang nối tất cả các con.
+- Đường nối tới con sẽ xuất phát từ điểm giữa của bố và mẹ (vợ cả)
+- Làm sao cho tất cả các con sẽ cân đối vào giữa bố và mẹ
+

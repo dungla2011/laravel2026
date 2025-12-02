@@ -1,0 +1,21 @@
+<?php
+
+	define("DEF_TOOL_CMS", 1);
+
+	require "/var/www/galaxycloud/index.php";
+
+	if($_GET['golfstar_vn_2017']) {
+		$file_path = "/share/golfstar_vn_2017.tgz";
+		//$file_path = "/share/test1.mp4";
+	}
+	if(!isset($file_path) || !file_exists($file_path)){
+		die("Not valid file");
+	}
+
+	CFile::outputFileWeb($file_path);
+
+	$remote_ip = getenv('REMOTE_ADDR');
+	$nowy = nowy();
+	outputT("/var/glx/weblog/download_4ShareTool/$nowy",$remote_ip." .NET 2.0");
+
+?>

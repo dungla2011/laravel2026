@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitor Widget Demo</title>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <!-- Monitor Widget CSS -->
+    <link rel="stylesheet" href="/css/monitor-widget.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+        }
+
+        .demo-section {
+            margin-bottom: 40px;
+        }
+
+        .demo-section h2 {
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 24px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #4CAF50;
+        }
+
+        .code-block {
+            background: #282c34;
+            color: #abb2bf;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+
+        .code-block pre {
+            margin: 0;
+        }
+
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .info-box h3 {
+            margin: 0 0 10px 0;
+            color: #1976D2;
+        }
+
+        .info-box ul {
+            margin: 10px 0 0 20px;
+        }
+
+        .info-box li {
+            margin: 5px 0;
+            color: #555;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Monitor Widget Demo</h1>
+        <p class="subtitle">Reusable monitoring graph widgets for your applications</p>
+
+        <!-- Section 1: Uptime Status -->
+        <div class="demo-section">
+            <h2>1. Uptime Status Monitor</h2>
+
+            <div class="info-box">
+                <h3>📊 Use Case:</h3>
+                <ul>
+                    <li>Shows UP/DOWN status over time</li>
+                    <li>Displays uptime percentage</li>
+                    <li>Perfect for website/API monitoring</li>
+                    <li>Green = UP, Red = DOWN</li>
+                </ul>
+            </div>
+
+            <!-- Widget 1: Auto-init with data attributes -->
+            <div id="uptime-widget-1"
+                 data-auto-init="monitor-widget"
+                 data-type="uptime"
+                 data-monitor-id="10"
+                 data-period="24h"
+                 data-auto-refresh="60000">
+            </div>
+
+            <div class="code-block">
+<pre>&lt;!-- Method 1: Auto-init with data attributes --&gt;
+&lt;div id="uptime-widget-1"
+     data-auto-init="monitor-widget"
+     data-type="uptime"
+     data-monitor-id="1"
+     data-period="24h"
+     data-auto-refresh="60000"&gt;
+&lt;/div&gt;</pre>
+            </div>
+        </div>
+
+        <!-- Section 2: Response Time -->
+        <div class="demo-section">
+            <h2>2. Response Time Monitor</h2>
+
+            <div class="info-box">
+                <h3>⏱️ Use Case:</h3>
+                <ul>
+                    <li>Track API/website response times</li>
+                    <li>Shows Average, Min, and Max response time</li>
+                    <li>Identify performance issues</li>
+                    <li>Milliseconds measurement</li>
+                </ul>
+            </div>
+
+            <!-- Widget 2: Manual init -->
+            <div id="response-time-widget"></div>
+
+            <div class="code-block">
+<pre>&lt;!-- Method 2: Manual JavaScript init --&gt;
+&lt;div id="response-time-widget"&gt;&lt;/div&gt;
+
+&lt;script&gt;
+new MonitorWidget('response-time-widget', {
+    type: 'response-time',
+    monitorId: 1,
+    period: '7d',
+    autoRefresh: 30000,  // 30 seconds
+    showLegend: true,
+    showStats: true
+});
+&lt;/script&gt;</pre>
+            </div>
+        </div>
+
+        <!-- Section 3: System Metrics -->
+        <div class="demo-section">
+            <h2>3. System Metrics Monitor</h2>
+
+            <div class="info-box">
+                <h3>📈 Use Cases for monitor_system_metrics:</h3>
+                <ul>
+                    <li><strong>CPU Usage:</strong> Track server CPU utilization</li>
+                    <li><strong>Memory Usage:</strong> Monitor RAM consumption</li>
+                    <li><strong>Disk I/O:</strong> Read/write performance</li>
+                    <li><strong>Network Bandwidth:</strong> Upload/download speeds</li>
+                    <li><strong>Database Metrics:</strong> Query time, connection pool</li>
+                    <li><strong>Custom Metrics:</strong> Application-specific data</li>
+                </ul>
+            </div>
+
+            <div class="grid-2">
+                <!-- CPU Usage -->
+                <div id="cpu-widget"></div>
+
+                <!-- Memory Usage -->
+                <div id="memory-widget"></div>
+            </div>
+
+            <div class="code-block">
+<pre>&lt;!-- System Metrics Examples --&gt;
+
+&lt;!-- CPU Usage --&gt;
+&lt;div id="cpu-widget"&gt;&lt;/div&gt;
+&lt;script&gt;
+new MonitorWidget('cpu-widget', {
+    type: 'system-metrics',
+    metricType: 'cpu_usage',
+    period: '24h',
+    autoRefresh: 60000
+});
+&lt;/script&gt;
+
+&lt;!-- Memory Usage --&gt;
+&lt;div id="memory-widget"&gt;&lt;/div&gt;
+&lt;script&gt;
+new MonitorWidget('memory-widget', {
+    type: 'system-metrics',
+    metricType: 'memory_usage',
+    period: '24h',
+    autoRefresh: 60000
+});
+&lt;/script&gt;</pre>
+            </div>
+        </div>
+
+        <!-- Section 4: Multiple Monitors -->
+        <div class="demo-section">
+            <h2>4. Multiple Monitor Dashboard</h2>
+
+            <div class="info-box">
+                <h3>🎛️ Dashboard Example:</h3>
+                <ul>
+                    <li>Monitor multiple services simultaneously</li>
+                    <li>Different periods for each widget</li>
+                    <li>Mix uptime, response time, and system metrics</li>
+                </ul>
+            </div>
+
+            <div class="grid-2">
+                <div id="monitor-website"
+                     data-auto-init="monitor-widget"
+                     data-type="uptime"
+                     data-monitor-id="2"
+                     data-period="7d">
+                </div>
+
+                <div id="monitor-api"
+                     data-auto-init="monitor-widget"
+                     data-type="uptime"
+                     data-monitor-id="3"
+                     data-period="7d">
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 5: Configuration Options -->
+        <div class="demo-section">
+            <h2>5. Configuration Options</h2>
+
+            <div class="code-block">
+<pre>// All available options
+new MonitorWidget('my-widget', {
+    // Required
+    type: 'uptime|response-time|system-metrics',
+
+    // For uptime & response-time
+    monitorId: 1,
+
+    // For system-metrics
+    metricType: 'cpu_usage|memory_usage|disk_io|network_bandwidth|...',
+
+    // Optional
+    period: '1h|24h|7d|30d|90d',         // Default: 24h
+    height: '300px',                      // Chart height
+    autoRefresh: 60000,                   // Auto-refresh in ms (0 = disabled)
+    showLegend: true,                     // Show chart legend
+    showStats: true,                      // Show statistics
+    apiBase: '/api/monitor-graph',        // API endpoint base
+});
+
+// Widget methods
+const widget = new MonitorWidget('my-widget', options);
+widget.refresh();                         // Manual refresh
+widget.changePeriod('7d');                // Change time period
+widget.destroy();                         // Cleanup
+</pre>
+            </div>
+        </div>
+
+        <!-- Section 6: API Routes -->
+        <div class="demo-section">
+            <h2>6. API Routes (Don't forget to register!)</h2>
+
+            <div class="code-block">
+<pre>// routes/api.php
+
+use App\Http\Controllers\Api\MonitorGraphController;
+
+Route::prefix('monitor-graph')->group(function () {
+    Route::get('uptime', [MonitorGraphController::class, 'uptime']);
+    Route::get('response-time', [MonitorGraphController::class, 'responseTime']);
+    Route::get('system-metrics', [MonitorGraphController::class, 'systemMetrics']);
+    Route::get('metric-types', [MonitorGraphController::class, 'metricTypes']);
+});
+
+// Example API calls:
+// GET /api/monitor-graph/uptime?monitor_id=1&period=24h
+// GET /api/monitor-graph/response-time?monitor_id=1&period=7d
+// GET /api/monitor-graph/system-metrics?metric_type=cpu_usage&period=30d
+// GET /api/monitor-graph/metric-types
+</pre>
+            </div>
+        </div>
+
+        <!-- Section 7: Embed Instructions -->
+        <div class="demo-section">
+            <h2>7. How to Embed in Your Pages</h2>
+
+            <div class="code-block">
+<pre>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;!-- 1. Include Chart.js --&gt;
+    &lt;script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"&gt;&lt;/script&gt;
+
+    &lt;!-- 2. Include widget CSS --&gt;
+    &lt;link rel="stylesheet" href="/css/monitor-widget.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;!-- 3. Add widget container --&gt;
+    &lt;div id="my-monitor"
+         data-auto-init="monitor-widget"
+         data-type="uptime"
+         data-monitor-id="1"
+         data-period="24h"&gt;
+    &lt;/div&gt;
+
+    &lt;!-- 4. Include widget JS --&gt;
+    &lt;script src="/js/monitor-widget.js"&gt;&lt;/script&gt;
+
+    &lt;!-- Optional: Manual init --&gt;
+    &lt;script&gt;
+        // Auto-init happens automatically
+        // Or manual init:
+        // new MonitorWidget('my-monitor', { ... });
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- Monitor Widget JS -->
+    <script src="/js/monitor-widget.js"></script>
+
+    <!-- Manual initialization examples -->
+    <script>
+        // Response time widget (manual init)
+        new MonitorWidget('response-time-widget', {
+            type: 'response-time',
+            monitorId: 1,
+            period: '7d',
+            autoRefresh: 30000,
+            showLegend: true,
+            showStats: true
+        });
+
+        // CPU usage widget
+        new MonitorWidget('cpu-widget', {
+            type: 'system-metrics',
+            metricType: 'cpu_usage',
+            period: '24h',
+            autoRefresh: 60000
+        });
+
+        // Memory usage widget
+        new MonitorWidget('memory-widget', {
+            type: 'system-metrics',
+            metricType: 'memory_usage',
+            period: '24h',
+            autoRefresh: 60000
+        });
+    </script>
+</body>
+</html>

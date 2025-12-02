@@ -1,0 +1,3385 @@
+
+//cd E:\Projects\laravel2022-01\laravel01\public\tool1\lad_tree_vn\
+// javascript-obfuscator E:\Projects\laravel2022-01\laravel01\public\tool1\lad_tree_vn\clsTreeTopDown_src_glx.001.js -o E:\Projects\laravel2022-01\laravel01\public\tool1\lad_tree_vn\tree_glx01.js
+
+class clsTreeTopDownCtrl {
+
+    reDrawTree(forTester = 0) {
+
+        if (this.optDisableApiForTestLocalOnly) {
+            $("#info_svg").show()
+            $("#info_svg").html("<div style='position: fixed; right: 1px; top: 1px; padding: 2px 5px; background-color: orangered; color: white'> Disable API test local </div>")
+        }
+        let time1 = (Date.now());
+
+        console.log("--- Data Before Make", this.dataPart);
+        console.log(" dtime time1 = ", time1);
+
+        this.clearResetAllSvgToReDraw()
+
+        //sắp xếp theo thứ tự giảm dần
+        this.dataPart.sort((a, b) => (a.orders > b.orders) ? -1 : (b.orders > a.orders) ? 1 : 0);
+        console.log("After sort", this.dataPart);
+
+        //Nếu có setPID, thì tìm obj đó và lấy ra pid của obj
+        let pidToListFirst = 0 //Mặc định = 0
+        if (this.setPid) {
+            for (let tmp of this.dataPart) {
+                if (tmp.id == this.setPid) {
+                    if (!pidToListFirst)
+                        pidToListFirst = tmp.parent_id //Có thể = 0
+                    if (pidToListFirst > 0)
+                        break
+                }
+            }
+        }
+        // for (let tmp of this.dataPart) {
+        //     // console.log(" Obj Pos1 = ", tmp.name, tmp);
+        // }
+        //Remove các anh em  nếu có (giữ lại vợ chồng)
+        if (this.setPid){
+            for (let tmp of this.dataPart)
+                if (tmp.parent_id == pidToListFirst && tmp.id != this.setPid && tmp.married_with != this.setPid){
+                    this.deleteObj(tmp)
+                }
+        }
+
+        let obj = new clsTreeNode();
+        for (let tmp of this.dataPart) {
+            obj = tmp
+            //Duyệt qua các node đầu tiên TOP:
+            if (!obj.married_with && obj.parent_id == pidToListFirst) {
+                // console.log(" xxx2 ", obj, obj.id);
+                this.countColRowForObjData(obj, 0)
+            }
+        }
+
+        console.log(" --- 001");
+
+        // for (let tmp of this.dataPart) {
+        //     console.log(" Obj Pos = ", tmp.name, tmp);
+        // }
+
+        // console.log(" DataAfter setID = ", this.setPid);
+        // console.log(" DataAfter ORG = ", this.dataAll);
+        // console.log(" DataAfter Make = ", this.dataPart);
+
+
+        this.moveParentsToCenterOfChildren()
+        console.log(" --- 002");
+
+        // this.optimizeMoveLeftSpace()
+        // // //
+        // this.optimizeMoveRightSpace()
+        // console.log(" --- 003");
+        // // //
+        this.moveParentsToCenterOfChildren()
+        console.log(" --- 0031");
+        //
+        // this.moveGrandParentToCenterLeft()
+        // console.log(" --- 004");
+        // // // //
+        // this.moveGrandParentToCenterRight()
+        // console.log(" --- 005");
+
+        // this.drawAllNodeDebug()
+
+        // return;
+
+        console.log("--- DataAfterMake", this.dataPart);
+        if (forTester == 1)
+            return
+
+        this.createTreeSvg()
+
+        for (let tmp of this.dataPart) {
+            this.drawLineMarried(tmp)
+            this.drawLineToParent(tmp)
+        }
+
+        this.checkValidDataAndUI()
+
+        let time2 = (Date.now());
+        console.log(" dtime time2 = ", time2);
+        console.log("DTIME reDrawTree = ", time2 - time1);
+        let dtime = time2 - time1
+        $("#debug_svg").text("DTIME = " + dtime)
+    }
+
+    //static _data
+    // static mRectangle = null
+
+    idSvgSelector
+    spaceBetweenCellX = 30
+    spaceBetweenCellY = 50
+    widthCell = 80
+    heightCell = 100
+
+    startX = 100
+    startY = 100
+
+    zoomAble = 1
+    maxZoom = 10
+    minZoom = 0.1
+    dataPart
+
+    setPid = 0
+
+    optShowMarried = 1
+
+    //Chỉ hiển thị đàn ông
+    optShowOnlyMan = 0
+
+    //Tô đậm các đàn ông Đinh của dòng họ
+    optBorderMainMan = 0
+
+    optShowDebugGrid = 0
+
+    optShowDebugIdAndOrders = 0
+
+    //fit viewport vừa cửa sổ window Hoặc fit theo svg content
+    //khi download, cần Fit ViewPort với Full size svg để tải đúng size
+    optFitViewPortToWindow = 1
+
+    optColorLineParent = '#ccc'
+    optColorLineMarried = 'green'
+    optRemoveImage = 0
+
+    optDisableApiForTestLocalOnly = 0
+
+    optEnableGrandParentToCenter = 1
+
+
+    //1 là man, 2 là woman
+    static selectingManWomanBackGround
+
+    /**
+     * @public clsTreeNode
+     */
+    static doingNodeObj
+
+    /**
+     * @public clsTreeTopDownCtrl
+     */
+    static doingSvgObj
+
+    static doingCmd
+
+    //All instance tree
+    static allInstance = [];
+
+
+    apiIndex
+    apiAdd
+    apiDelete
+    apiUpdate
+    apiUploadImage
+
+    apiBearToken
+
+    /**
+     *
+     * @private SvgPanZoom
+     */
+    _panZoomTiger
+
+    // mmRec = []
+
+    constructor() {
+        clsTreeTopDownCtrl.allInstance.push(this);
+        console.log("clsTreeTopDownCtrl.constructor: ", clsTreeTopDownCtrl.allInstance);
+    }
+
+    /**
+     *
+     * @param idSvg
+     * @returns clsTreeTopDownCtrl
+     */
+    static getInstanceSvgById(idSvg) {
+
+        for (let obj of clsTreeTopDownCtrl.allInstance)
+            if (obj.idSvgSelector == idSvg)
+                return obj
+
+        //Nếu ko có thì return first
+        return clsTreeTopDownCtrl.allInstance[0]
+        // return null
+    }
+
+
+    checkValidDataAndUI() {
+
+        let notFoundArrayObj = []
+        let that = this
+
+        for (let obj of that.dataPart) {
+            let idsvg = obj.id
+            let found = 0
+            $(".svg_cont_node_cls").each(function () {
+                if ($(this).attr('data-svg-id') == idsvg) {
+
+                    found = 1
+                    return;
+                }
+            })
+            if (!found)
+                notFoundArrayObj.push(obj)
+        }
+
+        let strError = ''
+
+        //Tìm xem có phần tử nào bị trùng rowCol không:
+        for (let obj of this.dataPart)
+            for (let obj1 of this.dataPart)
+                if(!this.checkIgnoreObj(obj) && !this.checkIgnoreObj(obj1))
+                if(obj.id != obj1.id && obj._row == obj1._row && obj._col == obj1._col)
+                    strError+= " ( Trùng cột: Id=" + obj1.id + " / CR=" + obj1._col + ' / ' + obj1._row + '/' + obj1.name + ' ) '
+
+        if (notFoundArrayObj.length > 0) {
+            for (let obj of notFoundArrayObj) {
+                if (this.checkIgnoreObj(obj))
+                    continue
+                if (this.optShowOnlyMan && !this.checkNodeIsMainMan(obj))
+                    continue
+                strError += " (Không thấy: " + obj.name + "(" + obj.id + ") ) "
+            }
+            if (strError) {
+                $("#check_error_node").text("Có lỗi: " + strError)
+                $("#check_error_node").show()
+            }
+        }
+        console.log(" Notfound array = ", notFoundArrayObj, strError);
+    }
+
+    drawTreeSvg() {
+        if (!this.idSvgSelector) {
+            throw new Error("Not define idSvgSelector!");
+            return;
+        }
+        if (!this.optShowMarried) {
+            console.log(" dataPart Not optShowMarried", this.dataPart);
+        }
+        this.optBorderMainMan = 0
+        if (this.optShowOnlyMan) {
+        } else
+            this.optBorderMainMan = 1
+
+        console.log(" === AllNodeBeforeDraw = ", this.dataPart);
+        this.reDrawTree()
+
+
+        window.scrollTo((document.body.scrollWidth - document.body.clientWidth) / 2 + 200, 0);
+        console.log("Scrool center...", document.body.scrollLeft);
+
+        console.log(" ===  AllNodeAfterDraw = ", this.dataPart);
+        // console.log(" AllNodeAfterDraw = ");
+        // console.log(JSON.stringify(this.dataPart));
+
+    }
+
+    /**
+     * Để gửi delete all id lên api
+     * @param mm
+     * @returns {string}
+     */
+    static getStringIdOfNodeArraySeparateByComma(mm) {
+        let str = ''
+        if (mm)
+            for (let obj of mm) {
+                str += obj.id + ' '
+            }
+        str = str.trim()
+        str = str.replaceAll(" ", ',')
+        return str
+    }
+
+    /**
+     * Theo thứ tự order, vợ chồng Cả sẽ có order lớn nhất
+     * @param obj
+     * @param objMarried
+     */
+    isFirstMarriedObObj(obj, objMarried) {
+        let mm = this.findGetMariedOfObj(obj)
+        //Nếu chỉ có 1 vợ thì ok
+        if (mm && mm.length == 1)
+            return true
+
+        //Vì đã sắp theo thứ tự lấy về, nên mm0 chính là vợ chồng cả
+
+        // let maxOrders = -1
+        // for(let vc of mm)
+        //     if(vc.orders && vc.orders > maxOrders)
+        //         maxOrders = vc.orders
+        //
+        // if(maxOrders > 0)
+        //     if(objMarried.orders == maxOrders)
+        //         return true
+
+        if (objMarried.id == mm[0].id)
+            return true
+        return false
+    }
+
+    getMaxMinColOfChild(obj) {
+        let minColChild = 1000000000
+        let maxColChild = -1
+        let haveChild = 0
+        for (let con of this.dataPart) {
+            if (con.parent_id == obj.id) {
+
+                if (this.checkIgnoreObj(con))
+                    continue
+
+                if (minColChild < 0)
+                    minColChild = con._col
+
+                haveChild++
+                if (con._col > maxColChild)
+                    maxColChild = con._col
+                if (con._col < minColChild)
+                    minColChild = con._col
+            }
+        }
+        if (!haveChild)
+            return null
+        return [minColChild, maxColChild]
+    }
+
+    //Xét thêm cả vc hasChild
+    hasChild(obj) {
+        let pid = obj.id
+        if(obj.married_with)
+            pid = obj.married_with
+        for (let any of this.dataPart) {
+            if (this.checkIgnoreObj(any))
+                continue
+            if (any.parent_id == pid)
+                return 1
+        }
+        return 0
+    }
+
+    hasBrotherSister(obj) {
+        for (let any of this.dataPart) {
+            if (this.checkIgnoreObj(any))
+                continue
+            if (any.id != obj.id)
+                if (any.parent_id == obj.parent_id) {
+                    // console.log("xxx5, anh em cua ", obj, any);
+                    return 1
+                }
+        }
+        return 0
+    }
+
+    getNodeInRow(row) {
+        let mm = []
+        for (let any of this.dataPart) {
+            if (any._row == row)
+                mm.push(any)
+        }
+        return mm
+    }
+
+    //Di chuyển đến cạnh phần tử gần nhất bên phải
+    pushToEmptyPositionRight(obj) {
+
+        if(obj.id == 30847){
+            console.log(" obj.id == 30847 ");
+        }
+
+        let minColEmptyRight1 = -1
+        for (let any of this.dataPart) {
+            if (any.parent_id == obj.parent_id && any._row == obj._row && any.id != obj.id && any._col > obj._col){
+                //Tìm ra anh em gần nhất bên phải
+                if (minColEmptyRight1 < 0)
+                    minColEmptyRight1 = any._col
+                //Tìm thằng nhỏ nhất bên phải
+                if (minColEmptyRight1 > any._col)
+                    minColEmptyRight1 = any._col
+            }
+        }
+
+        if(minColEmptyRight1 > 0 && obj._col != minColEmptyRight1 - 1)
+            obj._col = minColEmptyRight1 - 1
+
+
+        return;
+        //
+        let minColEmptyRight = -1
+        let mm = this.getNodeInRow(obj._row)
+        for (let any of mm) {
+            if (any.id != obj.id)
+                //Tìm anh em bên phải của obj, không tính VỢ CHỒNG
+                if(!any.married_with) //Bỏ qua vợ chồng
+                if (any._col > obj._col && any.parent_id == obj.parent_id) {
+                    if (this.checkIgnoreObj(any))
+                        continue
+                    //Tìm ra anh em gần nhất bên phải
+                    if (minColEmptyRight < 0)
+                        minColEmptyRight = any._col
+                    //Tìm thằng nhỏ nhất bên phải
+                    if (minColEmptyRight > any._col)
+                        minColEmptyRight = any._col
+                }
+        }
+
+        //Vì là move sang phải, nên phải tính số vợ chồng bên phải, để move thì chừa khoảng trống ra cho VC
+        let m1 = this.findGetMariedOfObj(obj)
+        let countVC = 0
+        if(m1)
+            countVC = m1.length
+        if(this.checkIgnoreObj(obj))
+            countVC = 0
+
+        //nếu anh em gần nhất có khoảng trống bên phải
+        if (minColEmptyRight > 0)
+            if (minColEmptyRight - 1 - countVC > obj._col) {
+                let tmp = obj._col = minColEmptyRight - 1 - countVC
+
+                //todo: có phải làm như Left ko??
+                //Cả vợ chồng đi kèm:
+
+                if(m1)
+                    for(let vc of m1){
+                        tmp++
+                        vc._col = tmp
+                    }
+            }
+    }
+
+    //Di chuyển đến cạnh phần tử gần nhất bên trái
+    pushToEmptyPositionLeft(obj) {
+
+        let maxColEmptyLeft1 = -1
+        for (let any of this.dataPart) {
+            if (any.parent_id == obj.parent_id && any._row == obj._row && any.id != obj.id && any._col < obj._col){
+                //Tìm ra anh em gần nhất bên phải
+                if (maxColEmptyLeft1 < 0)
+                    maxColEmptyLeft1 = any._col
+                //Tìm thằng lớn nhất bên phải
+                if (maxColEmptyLeft1 < any._col)
+                    maxColEmptyLeft1 = any._col
+            }
+        }
+
+        if(maxColEmptyLeft1 > 0 && maxColEmptyLeft1 + 1 != obj._col)
+            obj._col = maxColEmptyLeft1 + 1
+
+        return;
+
+        // if(this.checkIgnoreObj(obj))
+        // return
+        if(obj.id == 67){
+            console.log(" 67...");
+        }
+
+        let maxColEmptyLeft = -1
+        let mm = this.getNodeInRow(obj._row)
+
+        //Tìm mọi phần tử anh em bên trái, và lấy col lớn nhất tìm thấy
+        for (let any of mm) {
+            if (any.id != obj.id)
+                if (any._col < obj._col && any.parent_id == obj.parent_id) {
+                    if (this.checkIgnoreObj(any))
+                        continue
+                    if (maxColEmptyLeft < 0)
+                        maxColEmptyLeft = any._col
+                    //Lấy thằng lớn nhất bên trái của obj
+                    if (maxColEmptyLeft < any._col)
+                        maxColEmptyLeft = any._col
+                }
+        }
+        //Nếu thấy col lớn nhất, và col đó cộng 1 vẫn trống:
+        if (maxColEmptyLeft > 0){
+            if (maxColEmptyLeft + 1 < obj._col) {
+
+                let tmp = obj._col = maxColEmptyLeft + 1
+                //Cả vợ chồng đi kèm:
+                if(!this.checkIgnoreObj(obj)){
+                    let m1 = this.findGetMariedOfObj(obj)
+                    if(m1)
+                    for(let vc of m1){
+                        tmp++
+                        vc._col = tmp
+                    }
+                }
+            }
+        }
+    }
+
+    getMaxCol() {
+        let max = 0
+        for (let any of this.dataPart)
+            if (any._col > max)
+                max = any._col
+        return max
+    }
+
+    getMaxRow() {
+        let max = 0
+        for (let any of this.dataPart)
+            if (any._row > max)
+                max = any._row
+        return max
+    }
+
+    deleteEmptyCol() {
+        // for(let i = 0; i < 5; i++)
+        {
+            let maxCol = this.getMaxCol()
+            for (let i = 0; i < maxCol; i++) {
+                let foundCol = 0
+                for (let any of this.dataPart) {
+                    if (this.checkIgnoreObj(any))
+                        continue
+                    if (any._col == i)
+                        foundCol = 1
+                }
+
+                //Tất cả các cột sau trừ đi 1
+                if (!foundCol) {
+                    for (let any of this.dataPart) {
+                        if (any._col > i)
+                            any._col--
+                    }
+                }
+            }
+        }
+    }
+    moveKhongCoConThiMoveSatAnhEm(r) {
+
+        let [maxRow, maxCol] = clsTreeTopDownCtrl.getMaxColRow(this.dataPart)
+
+        let mm = this.getNodeInRow(r);
+
+        //Từ phải sang trái, để move được hết
+        for(let c=maxCol; c>=0; c--){
+            for (let any of mm) {
+                if(any._col == c){
+                    if (!this.hasChild(any) && this.hasBrotherSister(any)) {
+                        console.log(" moveKhongCoConThiMoveSatAnhEm " , any);
+                        this.pushToEmptyPositionRight(any)
+                        //this.drawAllNodeDebug()
+                    }
+                }
+            }
+        }
+
+        //Từ trái sang, để move được hết
+        for(let c=0; c<=maxCol; c++){
+            for (let any of mm) {
+                if(any._col == c){
+                    if (!this.hasChild(any) && this.hasBrotherSister(any)) {
+                        console.log(" moveKhongCoConThiMoveSatAnhEm " , any);
+                        this.pushToEmptyPositionLeft(any)
+                        //this.drawAllNodeDebug()
+                    }
+                }
+            }
+        }
+    }
+
+    moveKhongCoConThiMoveSatAnhEm_v0(r) {
+        // if(r != 4)
+        //     return
+        console.log(" - moveKhongCoConThiMoveSatAnhEm " , r);
+        for (let any of this.dataPart) {
+            if (this.checkIgnoreObj(any))
+                continue
+            if (!any.married_with)
+                if (any._row == r)
+                    if (!this.hasChild(any) && this.hasBrotherSister(any)) {
+                        console.log(" moveKhongCoConThiMoveSatAnhEm " , any);
+                        this.pushToEmptyPositionRight(any)
+                        //this.drawAllNodeDebug()
+                    }
+        }
+
+        for (let any of this.dataPart) {
+            if (this.checkIgnoreObj(any))
+                continue
+            if (!any.married_with)
+                if (any._row == r)
+                    if (!this.hasChild(any) && this.hasBrotherSister(any)) {
+
+                        this.pushToEmptyPositionLeft(any)
+                        // this.drawAllNodeDebug()
+                        // console.log("xxx5 move ", any, this.dataAll);
+                    }
+        }
+    }
+
+    //Bỏ qua obj nếu chỉ lấy con trai, hoặc ko show VC
+    checkIgnoreObj(obj) {
+        if (this.optShowOnlyMan && obj.gender == 2)
+            return 1;
+        if (this.optShowOnlyMan && obj.married_with)
+            return 1;
+        if (!this.optShowMarried && obj.married_with)
+            return 1;
+        if (this.optShowOnlyMan && !this.checkNodeIsMainMan(obj))
+            return 1;
+        return 0
+    }
+
+    checkIfObjCanMoveFromToCol(obj, toCol){
+        for(let any of this.dataPart){
+            if(!any.married_with)
+            if(any._row == obj._row){
+                if(obj._col > toCol){
+                    for(let i = toCol; i < obj._col; i++)
+                        if(any._col == i)
+                            return 0
+                }
+                else{
+                    for(let i = toCol; i > obj._col; i--)
+                        if(any._col == i)
+                            return 0
+                }
+            }
+        }
+        return 1
+    }
+
+    //Di chuyen obj den trung tam con cua obj
+    moveParentsToCenterOfChildren0(obj) {
+
+        // if(obj.name == 'Le Van Suu')
+        if (obj.id == 29791 || obj.id == 29794 ) {
+            // return;
+        }
+
+        //Nếu là vc thì ko cần xử lý, vì đã bám vào vc gốc
+        if (obj.married_with)
+            return
+
+        if(!this.hasChild(obj))
+            return
+
+
+        //Tìm các con của obj, lấy ra min+max col
+        let maxMin = this.getMaxMinColOfChild(obj)
+        if (!maxMin)
+            return
+        let [minColChild, maxColChild] = maxMin
+
+        let mmVoChong = [obj]
+        // console.log(" mmVoChong1 = " , mmVoChong);
+        let lenVoChong = 1
+        //Trường hợp cả bố mẹ hiện lên, thì tính lại lenParents
+        //if(!this.optShowOnlyMan)
+        if (!this.optShowOnlyMan && this.optShowMarried) {
+            // console.log(" mmVoChong1333 = xxx");
+            //Tính số vợ của obj
+            let tmp = this.findGetMariedOfObj(obj)
+            if (!tmp)
+                mmVoChong = [obj]
+            else {
+                tmp.push(obj)
+                mmVoChong = tmp
+            }
+
+            lenVoChong = mmVoChong.length
+        }
+        let nShiftRight = (maxColChild - minColChild - lenVoChong) / 2
+
+        if (nShiftRight < 0){
+            nShiftRight = 0
+        }
+        nShiftRight = Math.ceil(nShiftRight)
+        // nShiftRight = Math.floor(nShiftRight)
+
+        //Lấy ra vị trí đầu tiên cần di chuyển Obj đến
+        let needMoveTo = minColChild + nShiftRight
+        let deltaMove = needMoveTo - obj._col
+
+
+        // console.log(" deltaMovexxx = " , obj , deltaMove);
+        //Nếu cha ở bên trái, thì ko cần move nữa???
+        // if(deltaMove < 0)
+        //     return
+
+        //Kiểm tra xem obj có thể move đến vị trí mới không, nghĩa là từ vị trí cũ đến mới phải trống?
+        //nếu có phần tử thì ko thể move, return luôn
+        if(!this.checkIfObjCanMoveFromToCol(obj, needMoveTo)){
+            console.log(" Can not move to ", obj, needMoveTo);
+            return
+        }
+
+
+        let hasError = 0
+
+        //Xem có nhầm lẫn chiếm mất chỗ của 1 obj nào đó ko:
+        let maxColVC = 0
+        if (mmVoChong)
+            for (let tmp of mmVoChong)
+                if (tmp._col > maxColVC)
+                    maxColVC = tmp._col
+
+        for (let any of this.dataPart) {
+            if (any._row == obj._row) {
+                if (this.checkIgnoreObj(any))
+                    continue
+                if (maxColVC + deltaMove == obj._col) {
+                    hasError = 1
+                    // console.log(" ... Có lỗi, ko move obj vì bị chiếm chỗ nhầm?", obj, obj.id, any);
+                    break
+                }
+            }
+        }
+
+        if (mmVoChong)
+            if (!hasError)
+                for (let tmp of mmVoChong) {
+                    tmp._col += deltaMove
+
+                }
+    }
+
+    getMinColInRow(r, data = null) {
+        let x = -1
+        if(data == null)
+            data = this.dataAll
+        if (data && data.length)
+            for (let obj of data) {
+                if (obj._row == r) {
+                    if (x < 0)
+                        x = obj._col
+                    if (obj._col < x)
+                        x = obj._col
+                }
+            }
+        return x
+    }
+
+    getMaxColInRow(data, r) {
+        let x = -1
+        if (data && data.length)
+            for (let obj of data) {
+                if (obj._row == r) {
+                    if (x < 0)
+                        x = obj._col
+                    if (obj._col > x)
+                        x = obj._col
+                }
+            }
+        return x
+    }
+
+    countNMarried(obj){
+        if(!this.findGetMariedOfObj(obj))
+            return 0;
+        return this.findGetMariedOfObj(obj).length
+    }
+
+    getLastMarriedOfObj(obj){
+        let mm =  this.findGetMariedOfObj(obj).length
+        if(mm && mm.length)
+            return mm.pop()
+        return null
+    }
+
+    //Tính toán khoảng cách tối đa có thể move sang trái của một obj và các con
+    //chính là khoảng cách nhỏ nhất của các lá cây bên trái (từ trên xuống), tới 1 phần tử của cây khác, hoặc mép svg
+    countMaxCanMoveLeftOfObjToEmptySpace(obj){
+        let [maxRow, maxCol] = clsTreeTopDownCtrl.getMaxColRow(this.dataPart)
+        let minSpace = 100000
+        let exit1 = 0
+        let mmChild = this.findGetAllChildsDeepOfObjAndMarried(obj)
+        mmChild.push(obj);
+        for (let r1 = 0; r1 <= maxRow; r1++) {
+            let foundOneObjLeft = 0
+            let minColInRow = this.getMinColInRow(r1, mmChild)
+            if (minColInRow >= 0) {
+                //Tìm từ col đó trở về 0, xem khoảng trống nhỏ nhất
+                for (let c2 = minColInRow - 1; c2 >= 0; c2--) {
+                    //Gặp 1 phần tử đầu tiên thì break vì đã tìm ra khoảng cách
+                    if (this.getObjByColRow(c2, r1)) {
+                        foundOneObjLeft = 1
+                        let space = minColInRow - this.getObjByColRow(c2, r1)._col - 1
+                        if (space < 1) {
+                            exit1 = 1
+                            break
+                        }
+                        if (space < minSpace) {
+                            minSpace = space
+                            break
+                        }
+                    }
+                }
+                //Nếu ko thấy 1 phần tử nào bên trái, thì bên trái là mép
+                if(!foundOneObjLeft)
+                    if (minColInRow < minSpace) {
+                        minSpace = minColInRow
+                        // break
+                    }
+            }
+            if (exit1)
+                break
+        }
+        if (exit1)
+            return 0;
+        if(minSpace >= 1000000 || minSpace <=0)
+            return 0
+        return minSpace
+    }
+
+    //Tính toán khoảng cách tối đa có thể move sang phải của một obj và các con
+    //chính là khoảng cách nhỏ nhất của các lá cây bên phải (từ trên xuống), tới 1 phần tử của cây khác, hoặc mép svg
+    countMaxCanMoveRightOfObjToEmptySpace(obj){
+        let [maxRow, maxCol] = clsTreeTopDownCtrl.getMaxColRow(this.dataPart)
+        //Xét obj hiện tại
+        //Bắt đầu duyệt từ trên xuống để tìm ra space trống nhỏ nhất bên phải của cây thuộc obj này
+        //Nếu space trống hàng nào đó =0 thì dừng ko move cây sang phải
+        let mmChild = this.findGetAllChildsDeepOfObjAndMarried(obj)
+        mmChild.push(obj);
+        let minSpace = 1000001
+        let exit1 = 0
+        for (let r1 = 0; r1 <= maxRow; r1++) {
+            let maxColInRow = this.getMaxColInRow(mmChild, r1)
+            if (maxColInRow >= 0) {
+
+                //Tìm từ col maxCol đó đến hết hàng, xem khoảng trống nhỏ nhất
+                for (let c2 = maxColInRow + 1; c2 <= maxCol; c2++) {
+                    //Gặp 1 phần tử đầu tiên thì break
+                    if (this.getObjByColRow(c2, r1)) {
+                        let space = this.getObjByColRow(c2, r1)._col - maxColInRow - 1
+                        //nếu không có khoảng trống nào thì exit
+                        if (space < 1) {
+                            exit1 = 1
+                            break
+                        }
+                        //nếu có 1 khoảng trống, thì xem nó nhỏ nhất chưa
+                        if (space < minSpace) {
+                            minSpace = space
+                            break
+                        }
+                    }
+                }
+            }
+            if (exit1)
+                break
+        }
+
+        if (exit1)
+            return 0;
+
+        if(minSpace >= 1000000 || minSpace <=0)
+            return 0
+        return minSpace
+    }
+
+    /**
+     * cột lớn hơn cha, hoặc không có cha (pid = 0) trống bên trái, xem các hàng con ở dưới, trống bên trái
+     tìm số trống bên trái nhỏ nhất, và move toàn bộ cây , - col nhỏ nhất
+     */
+    optimizeMoveLeftSpace() {
+
+        // return
+
+        //Lặp lại 1 số lần nếu cần, để quét đi quét lại,
+        //vì bên dưới khi đã sort, có thể sẽ thừa ra space, bên trên sẽ sort lại lần nữa...
+        for (let loop = 0; loop < 2; loop++)
+        {
+            let [maxRow, maxCol] = clsTreeTopDownCtrl.getMaxColRow(this.dataPart)
+            //Duyệt từ trên xuống, từ trái qua phải
+            for (let r = 0; r <= maxRow; r++) {
+                for (let c = 0; c <= maxCol; c++) {
+
+                    let obj = this.getObjByColRow(c, r)
+                    if (!obj)
+                        continue
+                    if (obj.id == 91) {
+                        // console.log(" xxx51 ", obj);
+                    }
+
+                    //Nếu có parent
+                    if (obj.parent_id) {
+                        let pr = this.getObjFromId(obj.parent_id)
+                        //Nếu có cha, cột nằm bên trái cột cha, thì bỏ qua vì ko dịch chuyển nó bên trái cha làm gì
+                        if (pr)
+                            if (obj._col <= pr._col)
+                                continue
+                    }
+
+                    //Xét obj hiện tại
+                    //Bắt đầu duyệt từ trên xuống để tìm ra space trống nhỏ nhất bên trái của cây thuộc obj này
+                    //Nếu space trống hàng nào đó =0 thì dừng ko move cây sang trái
+                    let mmChild = this.findGetAllChildsDeepOfObjAndMarried(obj)
+                    mmChild.push(obj);
+
+                    let minSpace = 100000
+
+                    minSpace = this.countMaxCanMoveLeftOfObjToEmptySpace(obj)
+                    if (minSpace < maxCol) {
+                        for (let objx of mmChild) {
+                            objx._col -= minSpace
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
+    /**
+     * Tương tự hàm Left trên
+     */
+    optimizeMoveRightSpace() {
+        //Lặp lại 1 số lần nếu cần, để quét đi quét lại,
+        //vì bên dưới khi đã sort, có thể sẽ thừa ra space, bên trên sẽ sort lại lần nữa...
+        for (let loop = 0; loop < 2; loop++) {
+            let [maxRow, maxCol] = clsTreeTopDownCtrl.getMaxColRow(this.dataPart)
+            //Duyệt từ trên xuống, từ trái qua phải
+            for (let r = 0; r <= maxRow; r++) {
+                for (let c = 0; c <= maxCol; c++) {
+                    let obj = this.getObjByColRow(c, r)
+                    if (!obj)
+                        continue
+                    if (obj.id == 21766) {
+                        console.log(" xxx51 ", obj);
+                    }
+                    if (obj.married_with)
+                        continue;
+                    //Nếu có parent
+                    if (obj.parent_id) {
+                        let pr = this.getObjFromId(obj.parent_id)
+                        //Nếu có cha, cột nằm bên phải cột cha, thì bỏ qua vì ko dịch chuyển nữa
+                        if (pr)
+                            if (obj._col >= pr._col)
+                                continue
+                    }else
+                        continue;
+
+                    //Xét obj hiện tại
+                    //Bắt đầu duyệt từ trên xuống để tìm ra space trống nhỏ nhất bên phải của cây thuộc obj này
+                    //Nếu space trống hàng nào đó =0 thì dừng ko move cây sang phải
+                    let mmChild = this.findGetAllChildsDeepOfObjAndMarried(obj)
+                    mmChild.push(obj);
+
+                    let minSpace = this.countMaxCanMoveRightOfObjToEmptySpace(obj)
+                    if(minSpace)
+                    if(minSpace < maxCol)
+                    {
+                        for (let objx of mmChild) {
+                            objx._col += minSpace
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    moveKhongCoConThiMoveSatAnhEmAll() {
+        let [maxRow, maxCol] = clsTreeTopDownCtrl.getMaxColRow(this.dataPart)
+        for(let r = 0; r <= maxRow; r++){
+            this.moveKhongCoConThiMoveSatAnhEm(r)
+        }
+
+    }
+
+
+    //Di chuyển bố mẹ sang giữa các con
+    moveParentsToCenterOfChildren() {
+        // return
+
+        //Duyệt từ dưới lên trên, từ trái qua phải
+        //Tính center của các con, chiều dài của bố mẹ
+        //Tính vị trí đầu tiên có thể đặt bố mẹ, suy ra vị trí có thể shift ra
+        let [maxRow, maxCol] = clsTreeTopDownCtrl.getMaxColRow(this.dataPart)
+        for (let r = maxRow; r >= 0; r--) {
+            for (let c = maxCol; c >= 0; c--) {
+                for (let obj of this.dataPart) {
+                    if (obj._row == r && obj._col == c) {
+                        if (this.checkIgnoreObj(obj))
+                            continue;
+                        this.moveParentsToCenterOfChildren0(obj)
+                    }
+                }
+            }
+            //Phải thực hiện ngay sau khi move chaMe vào giữa các con
+            this.moveKhongCoConThiMoveSatAnhEm(r)
+            this.deleteEmptyCol()
+        }
+    }
+
+    getObjByColRow(col, row) {
+        for (let obj of this.dataPart) {
+            if (obj._col == col && obj._row == row)
+                return obj
+        }
+        return null
+    }
+
+    //Tìm tất cả con cháu của obj
+    findGetAllChildsDeepOfObj(obj) {
+        let mmChild = []
+        for (let any of this.dataPart) {
+            if (this.checkObjIsChildOfOther(any, obj))
+                mmChild.push(any)
+        }
+        return mmChild
+    }
+
+    //Tìm tất cả con cháu của obj và vợ chồng
+    findGetAllChildsDeepOfObjAndMarried(obj) {
+        let m1 = this.findGetAllChildsDeepOfObj(obj)
+        if (this.findGetMariedOfObj(obj))
+            m1.push(...this.findGetMariedOfObj(obj))
+        return m1;
+    }
+
+    //Nếu con xa bố mẹ, bên trái trống từ trên xuống, thì move cả cây của con sát vào
+    //Có thể ko cần hàm này nữa, vì đã có hàm optimize left right...
+    neuConXaBoMeVaBenTraiTrongThiMoveConSangTrai() {
+        let maxRow = this.getMaxRow()
+        let maxCol = this.getMaxCol()
+
+        //Duyệt từ trên xuống, từ trái qua phải
+        for (let r1 = 0; r1 <= maxRow; r1++) {
+            for (let c1 = 0; c1 <= maxCol; c1++) {
+                let obj = this.getObjByColRow(c1, r1)
+                if (obj) {
+                    let pr = this.getObjFromId(obj.parent_id)
+
+                    for (let k = 1; k < 10; k++)
+                        if (pr && obj._col >= pr._col + k) {
+                            //kiểm tra cột bên cạnh con xem có trống hết từ hàng con trở xuống ko
+                            let colNow = obj._col - k
+                            let foundColRow = 0
+                            for (let r = obj._row; r <= maxRow; r++) {
+                                if (this.getObjByColRow(colNow, r)) {
+                                    foundColRow = 1
+                                    break
+                                }
+                            }
+                            //Nếu ko thấy, thì nghĩa là move sang trái được
+                            //Di chuyển tất cả các con cháu của obj sang trái
+                            if (!foundColRow) {
+                                let mmChilds = this.findGetAllChildsDeepOfObj(obj)
+                                if (mmChilds.length)
+                                    for (let o1 of mmChilds)
+                                        o1._col--
+                                obj._col--
+                            }
+                        }
+                }
+            }
+        }
+        //Xóa các cột trống nếu có
+        this.deleteEmptyCol()
+    }
+
+    //Có phải là đinh của dòng họ không:
+    checkNodeIsMainMan(obj) {
+        let tmp = obj
+        if (tmp.gender == 2 || tmp.married_with)
+            return false
+        let cc = 0
+        //Kiểm tra tất cả các parent phải là MAN, thì sẽ là đinh
+        while (tmp && tmp.parent_id > 0) {
+            cc++
+            if (cc > 10000)
+                return false
+            if (tmp.gender == 2 || tmp.married_with)
+                return false
+            tmp = this.getObjFromId(tmp.parent_id)
+        }
+        return true;
+    }
+
+    getRootSvgBase() {
+        return document.getElementById(this.idSvgSelector);
+    }
+
+    getRootSvgIfHavePanZoom() {
+        let tmp = document.querySelector("#" + this.idSvgSelector + ' .svg-pan-zoom_viewport')
+        if (tmp)
+            return tmp
+        return document.getElementById(this.idSvgSelector);
+    }
+
+    getMaxIdNode() {
+        let max = 0
+        for (let any of this.dataPart) {
+            if (any.id > max)
+                max = any.id
+        }
+        return max
+    }
+
+    createTreeSvg() {
+
+
+        let [maxRow, maxCol] = clsTreeTopDownCtrl.getMaxColRow(this.dataPart)
+        console.log("maxR,C = ", maxRow, maxCol);
+        maxRow++ //Thêm 1 cho rộng
+        maxCol++
+        let grid = this.getRootSvgIfHavePanZoom()
+        let startX = this.startX;
+        let startY = this.startY;
+        let rectWidth = this.widthCell
+        let rectHeight = this.heightCell
+
+        if (this.optRemoveImage)
+            rectHeight = this.heightCell - 30
+
+        let nrOfColumns = maxCol;
+        let nrOfRows = maxRow;
+
+        let horizontalPadding = this.spaceBetweenCellX;
+        let verticalPadding = this.spaceBetweenCellY;
+
+        let strokeWidth = 0;
+
+        let rectX = startX;
+
+        for (let colIdx = 0; colIdx < nrOfColumns; colIdx++) {
+            let rectY = startY;
+            for (let rowIdx = 0; rowIdx < nrOfRows; rowIdx++) {
+
+                //Tạo rect nếu cần
+                // let rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+                // rect.setAttribute("x", rectX);
+                // rect.setAttribute("y", rectY);
+                // rect.setAttribute("width", rectWidth);
+                // rect.setAttribute("height", rectHeight);
+                // rect.setAttribute("style", "fill:none;stroke:gray;stroke-width:" +
+                //     strokeWidth + ";fill-opacity:0.1;stroke-opacity:0.6");
+                // // Rounded corners
+                // rect.setAttribute("rx", "10");
+                // mmRec[rowIdx + "x" + colIdx] = rect;
+
+                let foundRec = 0
+                for (let obj of this.dataPart) {
+                    // console.log(" obj = ", obj);
+                    if (obj._row == rowIdx && obj._col == colIdx) {
+                        if (obj.child_type == 1) {
+                        }
+                        // console.log("Draw: " , obj, obj.name);
+                        let padColor = null
+                        let padNewBorder = ''
+
+                        if (this.optBorderMainMan)
+                            if (this.checkNodeIsMainMan(obj, this.dataPart)) {
+                                padNewBorder = ';border-color: green; border-width: 0px'
+                                padColor = '; color: red ; '
+                                // rect.setAttribute("style", "fill:none;stroke:red;stroke-width:" +
+                                //     strokeWidth + ";fill-opacity:0.1;stroke-opacity:0.6");
+                            }
+
+                        let newDiv1 = document.createElement('div');
+                        let imgLink = '/images/icon/man.jpg'
+                        if (obj.gender == 2)
+                            imgLink = '/images/icon/woman.jpg'
+
+                        if (obj._image_list && obj._image_list.length && obj._image_list[0].thumb && obj._image_list[0].thumb.indexOf("/") > -1)
+                            imgLink = obj._image_list[0].thumb
+
+                        // console.log(" xxx 2 imgLink: ", imgLink);
+
+                        let objContSvg = this.getRectOfObj(obj)
+                        let createNew = 0
+
+                        if (!objContSvg) {
+                            createNew = 1
+                            // console.log(" Create new: ", obj.name, obj);
+                            objContSvg = document.createElementNS('http://www.w3.org/2000/svg', "foreignObject");
+                        }
+
+                        let padShow
+                        if (obj._mark_add_new) {
+                            padNewBorder = ';border-color: red;'
+                            padShow = ';display: block;'
+                            obj._mark_add_new = 0
+                        }
+
+                        //nếu ko tạo mới thì chỉ set lại thuộc tính:
+                        objContSvg.setAttribute('id', "svg_cont_node_" + obj.id);
+                        objContSvg.setAttribute('data-svg-id', obj.id);
+                        objContSvg.setAttribute('class', "svg_cont_node_cls");
+                        objContSvg.setAttribute('x', rectX);
+                        objContSvg.setAttribute('y', rectY);
+                        objContSvg.setAttribute('width', this.widthCell);
+                        objContSvg.setAttribute('height', rectHeight);
+
+
+                        if (obj.birthday == undefined)
+                            obj.birthday = ''
+
+
+                        let strName = "<span id='id_node_name_" + obj.id + "' style='" + padColor + "'>" + obj.name;
+                        if (this.optShowDebugGrid)
+                            strName += " <br> (" + rowIdx + "x" + colIdx + ")"
+                        strName += "</span>"
+
+                        if (createNew) {
+
+                            //Remove tất cả các div blink cũ
+                            $(".img_new_node_blink").find("[id!='id_node_div_cont_" + obj.id + "']").css("display", 'none')
+
+                            let padHeight = ''
+                            if (this.optRemoveImage)
+                                padHeight = ' ;height: 60px;';
+
+                            let bgImg = ';background-size: 100% 100%;background-image: url("/images/border-frame-img2/a18.png");';
+
+                            let htmlDiv = "<div style='" + bgImg + padNewBorder + padHeight + "' id='id_node_div_cont_" +
+                                obj.id + "' class='node_cont' data-gender='" + obj.gender + "' title='" + obj.name + " - " + obj.id + ' . ' + rowIdx + '/' + colIdx + "'>" +
+                                " <div class='img_new_node_blink blink_me' style='" + padShow + "'> </div> "
+
+                            // if (!this.optRemoveImage)
+                            //     htmlDiv += " <img id='id_node_image_" + obj.id + "' src='" + imgLink + "' style='" + "'>  <br>  "
+                            //
+                            if (!this.optRemoveImage){
+                                let bgImgUser = '; height: 40px ;background-size: auto 100%;  background-repeat: no-repeat; background-position: center;;background-image: url("' + imgLink +'");';
+                                htmlDiv += "<div class='node_img' id='id_node_image_" + obj.id + "' src='" + imgLink + "' style=' "+ bgImgUser +"'></div>"
+                            }
+
+                            let showDebug = ''
+                            if(!this.optShowDebugIdAndOrders)
+                                showDebug = " ; display: none ;"
+
+                            htmlDiv += strName
+                            htmlDiv += " <div class='debug_id_orders' style='" + showDebug + "'> (ID:" + obj.id + ' - ' + rowIdx + 'x' + colIdx + ")" + " orders=" + obj.orders + '</div>'
+
+                            htmlDiv += " <div id='id_node_birthday_" + obj.id + "' style='margin-top: 5px; font-style: italic'>" + obj.birthday + "</div>" +
+                                " " + " <div id='id_node_menu_" + obj.id + "' data-id='" + obj.id +
+                                "' class='node_edit_btn context-menu-one btn btn-neutral' onclick1='clickEditBtn(this, \"" + obj.id + "\")'>" +
+                                " &#9776; </div> " +
+                                " </div> ";
+
+                            newDiv1.innerHTML = htmlDiv
+
+                            objContSvg.appendChild(newDiv1);
+                            grid.appendChild(objContSvg);
+                        }
+                        else{
+                            console.log(" Createnew = 0" , obj.id);
+                        }
+
+                        foundRec = 1
+
+                        if (createNew) {
+                            obj._divCont = objContSvg
+                            //this.mmRec[obj.id] = objContSvg;
+                        }
+
+                        break
+                    }
+                }
+                // if(foundRec)
+                //     grid.appendChild(rect);
+                // else
+                //     if(this.optShowDebugGrid)
+                //         grid.appendChild(rect);
+                rectY += rectHeight + verticalPadding;
+            }
+            rectX += rectWidth + horizontalPadding;
+        }
+
+
+
+            let svgWidth = startX + nrOfColumns * (horizontalPadding + rectWidth + strokeWidth);
+            let svgHeight = startY + nrOfRows * (verticalPadding + rectHeight + strokeWidth);
+
+            //Giữ lại size nguyên bản cho svgRoot, để sang zoom sẽ dùng đến
+            this._sizeOrgX = svgWidth
+            this._sizeOrgY = svgHeight
+            // console.log("xxx Zoom... _sizeOrgX set new: ", this._sizeOrgX);
+            // console.log("xxx Zoom... _sizeOrgY set new: ", this._sizeOrgY);
+
+            let gridBase = this.getRootSvgBase()
+
+            let rateZoom = 1
+            // rateZoom = jctool.getLocalStorage('last_zoom_gp')
+
+            //Nếu có ratezoom thì size svg thay đổi
+            if (this._panZoomTiger) {
+                console.log("Đã có _panZoom");
+                rateZoom = this._panZoomTiger.getSizes().realZoom
+                horizontalPadding *= rateZoom
+                verticalPadding *= rateZoom
+                rectWidth *= rateZoom
+                rectHeight *= rateZoom
+                // Resize the grid to fit its containing rectangles
+                svgWidth = startX + nrOfColumns * (horizontalPadding + rectWidth + strokeWidth);
+                svgHeight = startY + nrOfRows * (verticalPadding + rectHeight + strokeWidth);
+            }
+            else{
+                console.log("Have no _panZoom");
+            }
+
+            if(svgWidth < 300)
+                svgWidth = 300
+            if(svgHeight < 400)
+                svgHeight = 400
+
+            if(this.optFitViewPortToWindow) {
+                clsTreeTopDownCtrl.resizeByWindow(this.idSvgSelector)
+            }
+            else{
+                console.log("rateZoom zoom = " , rateZoom);
+                console.log(" Resize grid ...", svgWidth, svgHeight, 'nrOfColumns=', nrOfColumns, nrOfRows, 'horizontalPadding=', horizontalPadding, "rectWidth=", rectWidth);
+                gridBase.setAttribute("width", svgWidth);
+                gridBase.setAttribute("height", svgHeight);
+            }
+
+
+        //Và resize lại panzoom vừa với svgRoot
+        if (this._panZoomTiger)
+        {
+            this._panZoomTiger.resize(); // update SVG cached size and controls positions
+        }
+    }
+
+    setZoomAble() {
+
+        if (!this.zoomAble)
+            return
+
+        //For mobile
+        let eventsHandler;
+        eventsHandler = {
+            haltEventListeners: ['touchstart', 'touchend', 'touchmove', 'touchleave', 'touchcancel']
+            , init: function (options) {
+                var instance = options.instance
+                    , initialScale = 1
+                    , pannedX = 0
+                    , pannedY = 0
+
+                // Init Hammer
+                // Listen only for pointer and touch events
+                this.hammer = Hammer(options.svgElement, {
+                    inputClass: Hammer.SUPPORT_POINTER_EVENTS ? Hammer.PointerEventInput : Hammer.TouchInput
+                })
+
+                // Enable pinch
+                this.hammer.get('pinch').set({enable: true})
+
+                // Handle double tap
+                this.hammer.on('doubletap', function (ev) {
+                    instance.zoomIn()
+                })
+
+                // Handle pan
+                this.hammer.on('panstart panmove', function (ev) {
+                    // On pan start reset panned variables
+                    if (ev.type === 'panstart') {
+                        pannedX = 0
+                        pannedY = 0
+                    }
+
+                    // Pan only the difference
+                    instance.panBy({x: ev.deltaX - pannedX, y: ev.deltaY - pannedY})
+                    pannedX = ev.deltaX
+                    pannedY = ev.deltaY
+                })
+
+                // Handle pinch
+                this.hammer.on('pinchstart pinchmove', function (ev) {
+                    // On pinch start remember initial zoom
+                    if (ev.type === 'pinchstart') {
+                        initialScale = instance.getZoom()
+                        instance.zoomAtPoint(initialScale * ev.scale, {x: ev.center.x, y: ev.center.y})
+                    }
+
+                    instance.zoomAtPoint(initialScale * ev.scale, {x: ev.center.x, y: ev.center.y})
+                })
+
+                // Prevent moving the page on some devices when panning over SVG
+                options.svgElement.addEventListener('touchmove', function (e) {
+                    e.preventDefault();
+                });
+            }
+            , destroy: function () {
+                this.hammer.destroy()
+            }
+        }
+
+        let beforePan = function(oldPan, newPan){
+            var stopHorizontal = false
+                , stopVertical = false
+                , gutterWidth = 100
+                , gutterHeight = 100
+                // Computed variables
+                , sizes = this.getSizes()
+                , leftLimit = -((sizes.viewBox.x + sizes.viewBox.width) * sizes.realZoom) + gutterWidth
+                , rightLimit = sizes.width - gutterWidth - (sizes.viewBox.x * sizes.realZoom)
+                , topLimit = -((sizes.viewBox.y + sizes.viewBox.height) * sizes.realZoom) + gutterHeight
+                , bottomLimit = sizes.height - gutterHeight - (sizes.viewBox.y * sizes.realZoom)
+
+            let customPan = {}
+            customPan.x = Math.max(leftLimit, Math.min(rightLimit, newPan.x))
+            customPan.y = Math.max(topLimit, Math.min(bottomLimit, newPan.y))
+
+            return customPan
+        }
+
+        let that = this
+        this._panZoomTiger = svgPanZoom("#" + this.idSvgSelector, {
+            // zoomEnabled: true,
+            // controlIconsEnabled: true,
+            fit: false,
+            center: true,
+            beforePan: beforePan,
+            minZoom: this.minZoom,
+            maxZoom: this.maxZoom,
+            customEventsHandler: eventsHandler,
+            onPan: function () {
+                console.log("Pan.....");
+            },
+            onZoom: function () {
+
+                let gridRoot = that.getRootSvgBase()
+                //Resize SVG to zoom view port
+                //để đẹp fit đẹp hơn và download đúng view đó
+                let zoomInfo = that._panZoomTiger.getSizes()
+                //Trong mọi trường hợp, Khi zoom thay đổi, thì svgRoot sẽ resize theo tỷ lệ zoom, từ size gốc Base
+
+                console.log(" ... zoom ...");
+                jctool.setLocalStorage('last_zoom_gp', zoomInfo.realZoom)
+
+                if(!that.optFitViewPortToWindow){
+                    let newW = that._sizeOrgX * zoomInfo.realZoom
+                    let newH = that._sizeOrgY * zoomInfo.realZoom
+                    if(newW < 300)
+                        newW = 300
+                    if(newH < 400)
+                        newH = 400
+                    gridRoot.setAttribute("width", newW);
+                    gridRoot.setAttribute("height", newH);
+                }
+
+                // newW = window.innerWidth - 10
+                // newH = window.innerHeight - 80
+                // clsTreeTopDownCtrl.resizeByWindow(that.idSvgSelector)
+            }
+        });
+
+    }
+
+    getRectOfObj(node) {
+        if (!node)
+            return null
+        if (node._divCont)
+            return node._divCont
+        return null
+    }
+
+    drawLineToParent(obj) {
+
+        if (!obj.parent_id)
+            return
+        //Con dâu rể ko nối đến cha
+        if (obj.child_type || obj.married_with)
+            return
+
+        // console.log(" OBJx = ", obj, data);
+
+        let pObj = this.getObjFromId(obj.parent_id)
+
+        let recChild = this.getRectOfObj(obj)
+        let recParent = this.getRectOfObj(pObj)
+
+        if (!recChild ) {
+            console.log(" *** Error Not found child : ", obj.id, obj.name, obj);
+            return null
+        }
+
+        if (!recParent ) {
+            console.log(" *** Error Not found parent: ", obj.id, obj.name, obj);
+            return null
+        }
+
+        let xChild = parseFloat(recChild.getAttribute('x'));
+        let yChild = parseFloat(recChild.getAttribute('y'));
+        let wChild = parseFloat(recChild.getAttribute('width'));
+        let hChild = parseFloat(recChild.getAttribute('height'));
+
+        let xPar = parseFloat(recParent.getAttribute('x'));
+        let yPar = parseFloat(recParent.getAttribute('y'));
+        let wPar = parseFloat(recParent.getAttribute('width'));
+        let hPar = parseFloat(recParent.getAttribute('height'));
+
+        let grid = this.getRootSvgIfHavePanZoom()
+
+        let px, py
+        let polyLine = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+        polyLine.setAttribute("id", 'line_to_parent_' + obj.id)
+        let strLine = ''
+
+        //Nếu có VC, Thì con sẽ nối vào điểm giữa vc (và có option showMarried)
+        if (!this.optShowOnlyMan && this.optShowMarried && this.findGetMariedOfObj(pObj)) {
+
+            let mySecondMother = null
+            let xMother
+            let yMother
+            let wMother
+            let hMother
+            let nthMarried = 1
+            //Nếu là con của mẹ 2,3...
+            if (obj.child_of_second_married) {
+
+                mySecondMother = this.getObjFromId(obj.child_of_second_married)
+
+                //kiểm tra xem thứ tự của bố me có phải vợ cả ko
+                //Nếu không phải vợ chồng cả, thì mới coi là vợ chồng 2:
+                if (this.isFirstMarriedObObj(pObj, mySecondMother)) {
+                    console.log("xxx1:  vợ chồng cả ", obj, pObj, mySecondMother);
+                    console.log("xxx1: các vợ ", this.findGetMariedOfObj(pObj));
+                    mySecondMother = null
+                }
+
+                if (mySecondMother) {
+
+                    //Vợ/C thứ mấy của obj
+                    nthMarried = mySecondMother._col - pObj._col
+
+                    let recMother = this.getRectOfObj(mySecondMother)
+                    xMother = parseFloat(recMother.getAttribute('x'));
+                    yMother = parseFloat(recMother.getAttribute('y'));
+                    wMother = parseFloat(recMother.getAttribute('width'));
+                    hMother = parseFloat(recMother.getAttribute('height'));
+
+                    // mySecondMother.name = " abc "
+                    // obj.name = '111';
+                    // $('#id_node_name_' + mySecondMother.id).text(mySecondMother.name + " / " + nthMarried)
+                }
+            }
+
+            //Giữa trên của con
+            px = xChild + wChild / 2
+            py = yChild
+            strLine += px + "," + py
+
+            //Dịch lên trên
+            px = xChild + wChild / 2
+            py = yChild - this.spaceBetweenCellY / 2
+            if (mySecondMother)
+                py = py + 4 * nthMarried
+
+            strLine += " " + px + "," + py
+
+            //Dịch sang điểm nối bố mẹ
+            if (mySecondMother) {
+                polyLine.setAttribute("stroke", this.optColorLineParent)
+                polyLine.setAttribute("stroke-dasharray", "5,5")
+                px = xMother - this.spaceBetweenCellX / 2
+                py = yChild - this.spaceBetweenCellY / 2 + 4 * nthMarried
+            } else {
+
+                polyLine.setAttribute("stroke", this.optColorLineParent)
+                px = xPar + wPar + this.spaceBetweenCellX / 2
+                py = yChild - this.spaceBetweenCellY / 2
+            }
+
+
+            strLine += " " + px + "," + py
+
+            //Dịch lên trên
+            //px = xPar + wPar/2
+            py = yPar + hPar / 2
+            strLine += " " + px + "," + py
+
+            // console.log(" drawLineMarried: StrLine = ", strLine);
+
+            polyLine.setAttribute('points', strLine);
+
+            polyLine.setAttribute("stroke-width", 1)
+            polyLine.setAttribute("fill", "none")
+            grid.appendChild(polyLine)
+
+        } else {
+
+            //Nếu không có VC thì  nối vào đáy của cha
+            px = xChild + wChild / 2
+            py = yChild
+            strLine += px + "," + py
+
+            px = xChild + wChild / 2
+            py = yChild - this.spaceBetweenCellY / 2
+            strLine += " " + px + "," + py
+
+            px = xPar + wPar / 2
+            py = yChild - this.spaceBetweenCellY / 2
+            strLine += " " + px + "," + py
+
+            px = xPar + wPar / 2
+            py = yPar + hPar
+            strLine += " " + px + "," + py
+
+            // console.log(" drawLineMarried: StrLine = ", strLine);
+
+            polyLine.setAttribute('points', strLine);
+            polyLine.setAttribute("stroke", this.optColorLineParent)
+            polyLine.setAttribute("stroke-width", 1)
+            polyLine.setAttribute("fill", "none")
+            grid.appendChild(polyLine)
+        }
+    }
+
+    drawLineMarried(obj) {
+
+        if (this.optShowOnlyMan)
+            return
+        if (!this.optShowMarried) {
+            return
+        }
+
+        let mMarried = this.findGetMariedOfObj(obj)
+        if (!mMarried)
+            return null
+
+        // console.log(" obj/married = ", obj, mMarried);
+
+        let rec
+        rec = document.getElementById('svg_cont_node_' + obj.id)
+        if (!rec){
+
+            return null
+        }
+
+        let x1 = parseFloat(rec.getAttribute('x'));
+        let y1 = parseFloat(rec.getAttribute('y'));
+        let w1 = parseFloat(rec.getAttribute('width'));
+        let h1 = parseFloat(rec.getAttribute('height'));
+
+        // console.log(" x1, y1, w1, h1" , x1, y1, w1, h1);
+
+        let grid = this.getRootSvgIfHavePanZoom()
+
+        let px, py
+        let polyLine = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+        polyLine.setAttribute("id", 'line_to_married_' + obj.id)
+        let strLine = ''
+
+        px = x1 + w1
+        py = y1 + h1 / 2
+        strLine += px + "," + py
+
+        px = x1 + w1 + this.spaceBetweenCellX
+        py = y1 + h1 / 2
+        strLine += " " + px + "," + py
+
+        // console.log(" drawLineMarried: StrLine = ", strLine);
+
+        polyLine.setAttribute('points', strLine);
+        polyLine.setAttribute("stroke", this.optColorLineMarried)
+        polyLine.setAttribute("stroke-width", 1)
+        polyLine.setAttribute("fill", "none")
+        grid.appendChild(polyLine)
+
+        //Từ vợ chồng thứ 2 trở đi, vẽ kiểu đi vòng lên trên
+        let cc = 0;
+        if (mMarried.length > 1) {
+            for (let mr of mMarried) {
+                if (cc > mMarried.length - 2)
+                    break
+                polyLine = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+                polyLine.setAttribute("id", 'line_to_married_' + obj.id)
+
+                let strLine = ''
+
+                px = x1 + w1
+                py = y1 + h1 / 2
+                strLine += px + "," + py
+
+                px = x1 + w1 + this.spaceBetweenCellX / 2
+                py = y1 + h1 / 2
+                strLine += " " + px + "," + py
+
+                px = x1 + w1 + this.spaceBetweenCellX / 2
+                py = y1 - 10
+                strLine += " " + px + "," + py
+
+                //Đoạn nối bên trên dài
+                px = x1 + 2 * w1 + cc * w1 + this.spaceBetweenCellX * 1.5 + cc * this.spaceBetweenCellX
+                py = y1 - 10
+                strLine += " " + px + "," + py
+
+                py = y1 + h1 / 2
+                strLine += " " + px + "," + py
+
+                px = x1 + 2 * w1 + cc * w1 + this.spaceBetweenCellX * 2 + cc * this.spaceBetweenCellX
+                py = y1 + h1 / 2
+                strLine += " " + px + "," + py
+
+                // console.log(" drawLineMarried: StrLine = ", strLine);
+
+                polyLine.setAttribute('points', strLine);
+                polyLine.setAttribute("stroke", this.optColorLineMarried)
+
+                polyLine.setAttribute("stroke-width", 1)
+                // polyLine.setAttribute("stroke-dasharray", '2 4')
+                polyLine.setAttribute("fill", "none")
+                grid.appendChild(polyLine)
+
+                cc++;
+            }
+
+        }
+
+    }
+
+    zoomIn(n) {
+        this._panZoomTiger.zoomIn(n)
+    }
+
+    updateBBox() {
+        this._panZoomTiger.updateBBox()
+    }
+
+    fit() {
+        this._panZoomTiger.fit()
+    }
+
+    resize() {
+        this._panZoomTiger.resize()
+    }
+
+    center() {
+        this._panZoomTiger.center()
+    }
+
+    static center_fit(idSvg){
+        let svg = clsTreeTopDownCtrl.getInstanceSvgById(idSvg)
+        // svg._panZoomTiger.fit()
+        svg._panZoomTiger.center()
+        svg._panZoomTiger.fit()
+    }
+
+
+    static zoomIn(idSvg) {
+        let svg = clsTreeTopDownCtrl.getInstanceSvgById(idSvg)
+        // svg._panZoomTiger.fit()
+        svg._panZoomTiger.zoomIn()
+    }
+
+    static updateBBox(idSvg) {
+        let svg = clsTreeTopDownCtrl.getInstanceSvgById(idSvg)
+        svg._panZoomTiger.updateBBox()
+    }
+
+    static fit(idSvg) {
+        let svg = clsTreeTopDownCtrl.getInstanceSvgById(idSvg)
+        svg._panZoomTiger.fit()
+    }
+
+    static resize(idSvg) {
+        let svg = clsTreeTopDownCtrl.getInstanceSvgById(idSvg)
+        svg._panZoomTiger.resize()
+    }
+
+    static center(idSvg) {
+        let svg = clsTreeTopDownCtrl.getInstanceSvgById(idSvg)
+        // svg._panZoomTiger.fit()
+        svg._panZoomTiger.center()
+    }
+
+    //có thể dùng cho Download, khi click download, hàm này sẽ tự resize để fit content download
+    //Vì mặc định chuyển sang chế độ Fix GridSize gần = window size
+    resizeViewPortFitSvg(){
+        let newW
+        let newH
+
+        //Resize SVG to zoom view port
+        //để đẹp fit đẹp hơn và download đúng view đó
+        let zoomInfo = this._panZoomTiger.getSizes()
+        //Trong mọi trường hợp, Khi zoom thay đổi, thì svgRoot sẽ resize theo tỷ lệ zoom, từ size gốc Base
+        newW = this._sizeOrgX * zoomInfo.realZoom
+        newH = this._sizeOrgY * zoomInfo.realZoom
+
+
+        if(newW < 300)
+            newW = 300
+        if(newH < 400)
+            newH = 400
+
+        let gridRoot = this.getRootSvgBase()
+        gridRoot.setAttribute("width", newW);
+        gridRoot.setAttribute("height", newH);
+    }
+
+    /**
+     * Khi tải ảnh xuống, cần tải đúng kích thước đang chọn, nếu zoom<1 thì zoom về 1 để không bị quá  nhỏ
+     * và ảnh phải về center căn giữa svg, không bị mất phần nào
+     * @param idSvg
+     * @param name
+     */
+    static downloadImagePng(idSvg, name = 'saveImg') {
+
+        let svg = clsTreeTopDownCtrl.getInstanceSvgById(idSvg)
+
+
+        //Nếu zoom quá bé, thì reset về default 1?
+        if (svg._panZoomTiger.getSizes().realZoom < 1)
+            svg._panZoomTiger.zoom(1)
+
+        svg.resizeViewPortFitSvg();
+
+
+        //Đúng thứ tự này ok: user đang ở zoom hiện tại, updateBBox, resize, center : sẽ tải ảnh ok ở zoom hiện tại
+        svg._panZoomTiger.updateBBox()
+        svg._panZoomTiger.resize()
+        svg._panZoomTiger.center()
+
+
+        // return;
+        setTimeout(function () {
+            console.log("Start img");
+            jQuery('.loader1').show();
+            domtoimage.toJpeg(document.getElementById(idSvg), {quality: 1, bgcolor: 'white'})
+                //domtoimage.toJpeg(document.getElementsByClassName('svg-pan-zoom_viewport')[0], {quality: 1, bgcolor: 'white'})
+                .then(function (dataUrl) {
+                    var link = document.createElement('a');
+                    link.download = name;
+                    link.href = dataUrl;
+                    link.click();
+                    jQuery('.loader1').hide();
+                    console.log("Done img");
+                });
+        }, 500)
+
+    }
+
+    static downloadImageSvg(idSvg, name = 'saveSvg') {
+
+        let svg = clsTreeTopDownCtrl.getInstanceSvgById(idSvg)
+        //Nếu zoom quá bé, thì reset về default 1?
+        if (svg._panZoomTiger.getSizes().realZoom < 1)
+            svg._panZoomTiger.zoom(1)
+
+        //Đúng thứ tự này ok: user đang ở zoom hiện tại, updateBBox, resize, center : sẽ tải ảnh ok ở zoom hiện tại
+        svg._panZoomTiger.updateBBox()
+        svg._panZoomTiger.resize()
+        svg._panZoomTiger.center()
+
+        setTimeout(function () {
+
+            function filter(node) {
+                return (node.tagName !== 'i');
+            }
+
+            var elm = document.getElementsByTagName("g")[0];
+            elm = document.getElementById(idSvg);
+
+            domtoimage.toSvg(elm, {filter: filter})
+                .then(function (dataUrl) {
+                    //                console.log(" Datax: " + dataUrl);
+                    /* do something */
+                    window.saveAs(dataUrl, name);
+                });
+        }, 500)
+    }
+
+    // getMaxColInRow(row) {
+    //     let con = new clsTreeNode()
+    //     let max = -10
+    //     for (let con0 of this.dataPart) {
+    //         con = con0
+    //         if (con._row == row)
+    //             if (max < con._col)
+    //                 max = con._col
+    //     }
+    //     return max
+    // }
+
+
+    clearResetAllSvgToReDraw() {
+        this.resetAllColRowToDefault()
+        this.removeAllConnectLineParentAndMarried()
+        this.removeAllObjectSvgDrawed()
+    }
+
+    resetAllColRowToDefault() {
+        for (let tmp of this.dataPart)
+            tmp._col = tmp._row = -1
+    }
+
+    getObjFromId(id) {
+        for (let any of this.dataPart) {
+            if (any.id == id)
+                return any
+        }
+        return null;
+    }
+
+    checkObjIsChildOfOther(obj, other) {
+        let tmp = obj
+        for (let i = 0; i < 10000; i++) {
+            if (tmp.parent_id == other.id)
+                return true
+            tmp = this.getObjFromId(tmp.parent_id, this.dataPart)
+            if (!tmp || !tmp.parent_id)
+                return false
+        }
+        return false
+    }
+
+    //Tìm col cho một obj xét mới
+    //Xét 1 obj
+    //Duyệt tất cả các phần tử bên dưới hàng hiện tại
+    //Nếu các phần tử không phải là con/cháu của obj, thì obj không thể đứng cùng cột tử đó, mà phải sau cột đó
+    //và nếu nó là con đầu tiên của cha  nó, thì nó phải có col = cha nó
+    findColForNewObj(obj) {
+        // return 0
+        let any = new clsTreeNode()
+        let maxColValid = 0
+        for (let any of this.dataPart) {
+            //Xem các node ở hàng dưới
+            if (any._row > obj._row) {
+                //Nếu thấy node nào đó ko phải con cháu, thì col cần tìm sẽ + thêm 1
+                //nếu ko có con cháu thì đứng yên là ok ?
+                //if(this.hasChild(obj)) //đứng yên thì sẽ bị trường hợp Cha move ra giữa các con, thì đè lên chú
+                if (!this.checkObjIsChildOfOther(any, obj, this.dataPart)) {
+                    if (any._col >= maxColValid)
+                        maxColValid = any._col + 1
+                }
+
+            }
+        }
+        //Chiếu lên trên, nếu nó là con đầu của cha, nghĩa là trước nó ko có anh em nào
+        //thì col của nó bằng cha
+        if (this.getObjFromId(obj.parent_id))
+            // if (obj.parent_id > 0)
+        {
+            let isFirstChild = 1
+            for (let any of this.dataPart)
+                if (any._row == obj._row &&
+                    any.parent_id == obj.parent_id &&
+                    any._col < obj._col)
+                    isFirstChild = 0
+
+            //Nếu nó là con đầu của cha nó
+            if (isFirstChild) {
+                let colOfParent = this.getObjFromId(obj.parent_id)._col
+                if (colOfParent > maxColValid)
+                    return colOfParent
+            }
+        }
+        return maxColValid
+    }
+
+    /**
+     * Vẽ debug vào các ô hàng cột của 1 table
+     * @param obj
+     */
+    drawNodeDebug(obj) {
+        let span = $("#span-debug-" + obj._row + '-' + obj._col)
+        span.html(obj.name)
+    }
+
+    /**
+     * Vẽ debug vào các ô hàng cột của 1 table
+     * @param data
+     */
+    drawAllNodeDebug() {
+        //    return
+        //Xóa hết các node:
+        for (let i = 0; i < 100; i++)
+            for (let j = 0; j < 100; j++) {
+                let span = $("#span-debug-" + i + '-' + j)
+                span.html('')
+            }
+
+        let con = new clsTreeNode()
+        for (let con0 of this.dataPart) {
+            // console.log(" Draw...", con0);
+            con = con0
+            let span = $("#span-debug-" + con._row + '-' + con._col)
+            span.html(con.name)
+        }
+    }
+
+    //Cập nhật thông tin thay đổi node lên UI
+    updateNodeUI(node) {
+        let id = node.id
+        $("#id_node_name_" + id).text(node.name)
+        let imgLink
+        if (node._image_list && node._image_list.length && node._image_list[0].thumb && node._image_list[0].thumb.indexOf("/") > -1)
+            imgLink = node._image_list[0].thumb
+        //$("#id_node_image_" + id).src(imgLink)
+        $("#id_node_image_" + id).css('background-image' , imgLink)
+        $("#id_node_birthday_" + id).text(node.birthday)
+    }
+
+    removeAllConnectLineParentAndMarried() {
+        $("#" + this.idSvgSelector).find("[id^=line_to_parent_]").remove()
+        $("#" + this.idSvgSelector).find("[id^=line_to_married_]").remove()
+    }
+
+    removeAllObjectSvgDrawed() {
+        for (let any of this.dataPart)
+            any._divCont = null
+        $(".svg_cont_node_cls").remove()
+    }
+
+    countColRowForObjData(obj, row) {
+
+        if (this.optShowOnlyMan && obj.gender == 2)
+            return;
+        if (this.optShowOnlyMan && obj.married_with)
+            return;
+
+        // console.log("xxx2 --- OBJ = Level = " + row + " : ", obj);
+
+        //Mặc định cột của obj sẽ là cột tiếp theo sau phần tử đang có
+        //Nếu chưa có phần tử n ào trong hàng thì col =0
+        let maxColThisRow = this.getMaxColInRow(this.dataPart, row)
+        //Tăng col lên 1 vì cho vào cuối hàng
+        if (maxColThisRow < 0)
+            obj._col = 0;
+        else
+            obj._col = maxColThisRow + 1
+        obj._row = row
+
+        let goodCol = this.findColForNewObj(obj)
+        if (goodCol > obj._col)
+            obj._col = goodCol
+
+        // console.log("xxx2, col/row = ", obj, obj.id, obj._col, obj._row);
+
+        this.drawNodeDebug(obj)
+
+        //VC chỉ cần thêm chỗ này, nếu bỏ vc đi thì bỏ ở đây là xong
+        //Khi đó trở thành cây 1 gốc (như là phả hệ chỉ trong dòng họ), hoặc cây tổ chức
+        //Tìm vc để đặt bên cạnh
+        let countNextMarried = 1
+        //Nếu không show Man, thì cũng ko show married
+        if (!this.optShowOnlyMan)
+            if (this.optShowMarried)
+                for (let any of this.dataPart) {
+                    if (any.married_with == obj.id) {
+                        any._col = obj._col + countNextMarried
+                        any._row = row
+                        countNextMarried++
+                        this.drawNodeDebug(any)
+                    }
+                }
+
+        row++
+        let con = new clsTreeNode()
+        for (let con of this.dataPart) {
+            if (con.married_with) {
+                continue
+            }
+            if (con.parent_id == obj.id) {
+
+                // console.log("xxx21, col/row = ", con, con.id, con._col, con._row);
+                this.countColRowForObjData(con, row)
+            }
+        }
+    }
+
+    static getMaxColRow(payload) {
+        let nCol = [];
+        let maxCol = 0
+        let maxRow = 0
+        for (let obj of payload) {
+            if (obj._row > maxRow)
+                maxRow = obj._row
+            if (obj._col > maxCol)
+                maxCol = obj._col
+        }
+        return [maxRow, maxCol]
+    }
+
+    findMyChilds(obj) {
+        let mret = []
+        for (let any of this.dataPart) {
+            if (any.parent_id == obj.id)
+                mret.push(any)
+        }
+
+        if (mret.length == 0)
+            return null
+        return mret
+    }
+
+    getTopNodeFirst(){
+        let countTopNode
+        let foundOne
+        let minCol = -1
+        let maxCol = -1
+        for (let any of this.dataPart) {
+            if(any.parent_id == this.setPid){
+                // if(minCol < 0 || minCol > any._col)
+                //     minCol = any._col
+                // if(maxCol < 0 || maxCol < any._col)
+                //     maxCol = any._col
+                return any;
+            }
+        }
+        return null
+    }
+
+    getLastObjInRow(r, data){
+        if(!data)
+            data = this.dataPart
+        let minCol = -1
+        let ret = null
+        for (let any of data) {
+            if(any._row == r){
+                if(minCol < 0 || any._col > minCol) {
+                    minCol = any._col
+                    ret = any
+                }
+            }
+        }
+
+        return ret
+    }
+
+    getFirstObjInRow(r, data){
+        if(!data)
+            data = this.dataPart
+        let minCol = -1
+        let ret = null
+        for (let any of data) {
+            if(any._row == r){
+                if(minCol < 0 || any._col < minCol) {
+                    minCol = any._col
+                    ret = any
+                }
+            }
+        }
+
+        return ret
+    }
+
+    getLastChildOfObj(obj){
+        let mmChild = this.findMyChilds(obj)
+        if(!mmChild)
+            return null
+        return this.getLastObjInRow(mmChild[0]._row, mmChild)
+    }
+
+    getFirstChildOfObj(obj){
+        let mmChild = this.findMyChilds(obj)
+        if(!mmChild)
+            return null
+        return this.getFirstObjInRow(mmChild[0]._row, mmChild)
+    }
+
+    getMaxCanMoveLeftOfTop(){
+        let topNode = this.getFirstObjInRow(0)
+
+        let maxRow = this.getMaxRow()
+
+        let firstChild = null
+        let obj = topNode
+        let maxMoveLeft = 0
+        //Tối đa maxRow lần là xong
+        for(let r=0; r <= maxRow; r++){
+            firstChild = this.getFirstChildOfObj(obj)
+            if(!firstChild)
+                break
+            maxMoveLeft+= obj._col - firstChild._col
+            console.log(" firstChild = " , firstChild, obj._col - firstChild._col, maxMoveLeft);
+            obj = firstChild
+        }
+
+        // console.log("xxx topnode = ", topNode);
+
+        // //Tìm các child đầu của node
+        // let mmChild = this.findMyChilds(topNode)
+        // console.log("xxx mChild = ", mmChild);
+        // if(mmChild){
+        //     let firstCh = this.getFirstObjInRow(mmChild[0]._row, mmChild)
+        //     if(firstCh){
+        //         maxMoveLeft = firstCh._col
+        //         // //= topNode._col
+        //     }
+        // }
+        // return maxMoveLeft
+    }
+
+
+    moveGrandParentToCenterRight(){
+
+        if(!this.optEnableGrandParentToCenter)
+            return
+        // return;
+        //Kiểm tra xem top node có cân đối khoảng giữa tree
+        //Ví dụ nếu lệch PHẢI quá thì chỉnh sang phía Phải
+        //Bằng cách chỉnh dần các hàng phía dưới sang Phải, xem khả năng tối đa sang Phải được bao nhiêu
+        //Rồi chỉnh dần từng hàng, tất nhiên là không nên sang tối đa
+        let topNode = this.getFirstObjInRow(0)
+        let maxColHalfOfAll = Math.floor(this.getMaxCol() / 2)
+        let maxRow = this.getMaxRow()
+
+        //Nếu topnode lệch phải nhiều, thì chỉnh nó sang trái
+        if(topNode._col < maxColHalfOfAll - 1){
+            let maxNeedMove = -1 * (topNode._col - maxColHalfOfAll)
+            let lastChild = null
+            let obj = topNode
+            let maxCanMoveRight = 0
+            //Tối đa maxRow lần là xong
+            let mRowCanMoveRightMax = []
+            let mObjNeedMove = [topNode]
+            for(let r=0; r <= maxRow; r++){
+
+                lastChild = this.getLastChildOfObj(obj)
+                if(!lastChild)
+                    break
+                mObjNeedMove.push(lastChild)
+                let canMoveRight = -1 * (obj._col - lastChild._col)
+                mRowCanMoveRightMax[r] = canMoveRight
+                maxCanMoveRight += canMoveRight
+                console.log(" firstChild = " , lastChild, obj._col - lastChild._col);
+                obj = lastChild
+            }
+
+            console.log("mRowCanMoveMax0 = ", mRowCanMoveRightMax,maxCanMoveRight, maxNeedMove, mObjNeedMove);
+
+            let mRowMoveRightReal = []
+            //Nếu có thể move thoải mái, thì TopNode có thể move max
+            if(maxCanMoveRight >= maxNeedMove)
+                //this.moveObjAndMarried(mRowMoveRightReal[0], maxNeedMove)
+                mRowMoveRightReal[0] = maxNeedMove
+            else
+                //this.moveObjAndMarried(mRowMoveRightReal[0], mRowCanMoveRightMax[0])
+                mRowMoveRightReal[0] = mRowCanMoveRightMax[0]
+
+            //Sau đó các node sau move dần
+            let stillNeedMoveFromRow1 = maxNeedMove - mRowCanMoveRightMax[0]
+            console.log("mRowCanMoveMax , stillNeedMoveFromRow1 = ", stillNeedMoveFromRow1)
+            //Lấp đầy stillNeedMoveFromRow1 vào mảng mRowCanMoveRightMax
+            let tmp = stillNeedMoveFromRow1
+            if(tmp > 0)
+                for(let r=1; r <= maxRow; r++){
+                    let tmp0 = tmp
+                    tmp -= mRowCanMoveRightMax[r]
+                    if(tmp <= 0){
+                        mRowMoveRightReal[r] = tmp0
+                        break
+                    }
+                    mRowMoveRightReal[r] = mRowCanMoveRightMax[r]
+                }
+            console.log("mRowCanMoveMax. mRowMoveRightReal = ", mRowMoveRightReal);
+
+            if(mRowMoveRightReal && mRowMoveRightReal.length){
+                for (let r in mObjNeedMove){
+                    if(mRowMoveRightReal[r]){
+                        this.moveObjAndMarried(mObjNeedMove[r], mRowMoveRightReal[r] - 1)
+                    }
+                }
+            }
+        }
+
+        this.optimizeMoveRightSpace()
+    }
+
+    moveGrandParentToCenterLeft(){
+
+        if(!this.optEnableGrandParentToCenter)
+            return
+        // return;
+        //Kiểm tra xem top node có cân đối khoảng giữa tree
+        //Ví dụ nếu lệch PHẢI quá thì chỉnh sang phía TRÁI
+        //Bằng cách chỉnh dần các hàng phía dưới sang TRÁI, xem khả năng tối đa sang TRÁI được bao nhiêu
+        //Rồi chỉnh dần từng hàng, tất nhiên là không nên sang tối đa
+        let topNode = this.getFirstObjInRow(0)
+        let maxColHalfOfAll = Math.floor(this.getMaxCol() / 2)
+        let maxRow = this.getMaxRow()
+
+        //Nếu topnode lệch phải nhiều, thì chỉnh nó sang trái
+        if(topNode._col > maxColHalfOfAll + 0){
+            let maxNeedMove = topNode._col - maxColHalfOfAll
+            let firstChild = null
+            let obj = topNode
+            let maxCanMoveLeft = 0
+            //Tối đa maxRow lần là xong
+            let mRowCanMoveLeftMax = []
+            let mObjNeedMove = [topNode]
+
+            // Tính mảng mRowCanMoveLeftMax: di chuyển bên trái tối đa được bao nhiêu từ TopNode đến các con cháu đầu tiên bên trái
+            for(let r=0; r <= maxRow; r++)
+            //for(let r=maxRow; r >= 0; r--)
+            {
+                firstChild = this.getFirstChildOfObj(obj)
+                if(!firstChild)
+                    break
+                mObjNeedMove.push(firstChild)
+                let canMoveLeft = obj._col - firstChild._col
+                mRowCanMoveLeftMax[r] = canMoveLeft
+                maxCanMoveLeft += canMoveLeft
+                console.log(" firstChild = " , firstChild, obj._col - firstChild._col);
+                obj = firstChild
+            }
+
+            //Tính lại cộng dồn max từ dưới lên trên hàng 0
+            for(let i = mRowCanMoveLeftMax.length - 2; i >= 0; i--)
+                mRowCanMoveLeftMax[i] += mRowCanMoveLeftMax[i+1]
+
+            console.log("left mRowCanMoveMax0  mRowCanMoveLeftMax1= ", mRowCanMoveLeftMax);
+            console.log("left mRowCanMoveMax0  maxNeedMove = ", maxNeedMove);
+            console.log("left mRowCanMoveMax0  maxCanMoveLeft = ", maxCanMoveLeft);
+            console.log("left mRowCanMoveMax0, mObjNeedMove = ", mObjNeedMove);
+
+            let mRowMoveLeftReal = []
+            //Nếu có thể move thoải mái, thì TopNode có thể move max
+            if(maxCanMoveLeft >= maxNeedMove)
+                // mObjNeedMove[0]._col -= maxNeedMove
+                this.moveObjAndMarried(mObjNeedMove[0], -1 * maxNeedMove)
+            else
+                this.moveObjAndMarried(mObjNeedMove[0], mRowCanMoveLeftMax[0])
+                // mObjNeedMove[0]._col -= mRowCanMoveLeftMax[0]
+
+            //Duyệt từ trên xuống
+            for(let r=1; r <= maxRow; r++) {
+                //Nếu con đầu ở phía sau cha, thì con đầu phải move lên bằng cha, nếu không thì ko cần move gì cả
+                if (mObjNeedMove[r] && mObjNeedMove[r]._col > mObjNeedMove[r - 1]._col)
+                    this.moveObjAndMarried(mObjNeedMove[r], -1 * (mObjNeedMove[r]._col - mObjNeedMove[r - 1]._col))
+            }
+        }
+
+        this.optimizeMoveLeftSpace()
+    }
+
+    moveObjAndMarried(obj, nCol){
+        let mm = this.findGetMariedOfObj(obj)
+        if(mm && mm.length){
+            for(let any of mm){
+                any._col += nCol
+            }
+        }
+        obj._col += nCol
+
+    }
+
+    moveGrandParentToCenter_del(){
+
+
+        let maxMove = this.getMaxCanMoveLeftOfTop()
+        //
+        console.log("xxxx MaxMove = ", maxMove);
+        //
+        return;
+
+        // return;
+        //Kiểm tra xem top node có cân đối khoảng giữa tree
+        //Ví dụ nếu lệch PHẢI quá thì chỉnh sang phía TRÁI
+        //Bằng cách chỉnh dần các hàng phía dưới sang TRÁI, xem khả năng tối đa sang TRÁI được bao nhiêu
+        //Rồi chỉnh dần từng hàng, tất nhiên là không nên sang tối đa
+        let nodeTop = this.getTopNodeFirst()
+        let maxColHalfOfAll = Math.floor(this.getMaxCol() / 2)
+
+        let colOf1StRow = this.getMinColInRow(1);
+
+
+        //Tính maxCanMove
+
+
+        let colToMove = Math.max(...[colOf1StRow, maxColHalfOfAll])
+
+        console.log("xxx colToMove = " , colToMove, maxColHalfOfAll, colOf1StRow);
+
+        let maxRow = this.getMaxRow()
+
+        if(nodeTop._col > colToMove)
+        //Duyệt từng hàng từ trên xuống, nếu đủ điều kiện thì dừng
+        //for(let r = 0; r <= maxRow; r++)
+        {
+            let deltaOK = nodeTop._col - colToMove
+
+            nodeTop._col = colToMove;
+
+            let mm = this.findGetMariedOfObj(nodeTop)
+            if(mm && mm.length)
+                for(let obj of mm)
+                    obj._col -= deltaOK
+
+        }
+    }
+
+    deleteObjAndAllChildAndMarried(obj) {
+        this.deleteObjAndAllChild(obj, 1)
+    }
+
+    deleteObjAndAllChild(obj, withMarried = 0) {
+        let mmDel = this.findGetAllChildsDeepOfObj(obj)
+        mmDel.push(obj)
+
+        if (withMarried)
+            if (this.findGetMariedOfObj(obj))
+                mmDel.push(...this.findGetMariedOfObj(obj))
+
+        console.log(" mmDel = ", mmDel);
+        console.log(" Array1  before del: ", this.dataPart);
+        for (let del of mmDel) {
+            this.dataPart.splice(this.dataPart.findIndex(function (i) {
+                return i.id == del.id;
+            }), 1);
+        }
+    }
+
+    deleteArrayIdObj(mmId) {
+
+        this.dataPart = this.dataPart.filter(item => !mmId.includes(item.id));
+
+        // this.dataPart.splice(this.dataPart.findIndex(function(i){
+        //     console.log("xxx1 ", i.id, mmId);
+        //     return mmId.includes(i.id);
+        // }), 1);
+    }
+
+    deleteObj(obj) {
+        this.dataPart = this.dataPart.filter(item => item.id !== obj.id);
+    }
+
+    findGetMariedOfObj(obj) {
+        let mret = []
+        for (let any of this.dataPart) {
+            if (any.married_with == obj.id)
+                mret.push(any)
+        }
+        if (mret.length == 0)
+            return null
+
+        return mret
+    }
+
+    /**
+     *
+     * Thay đổi với Node, vẽ lại SVG
+     * @param treeIns clsTreeTopDownCtrl
+     * @param objNode
+     * @param action
+     * @param newName
+     * @param imgLink
+     */
+    static nodeAction(action, objNodeAction, doingNode) {
+
+        let treeIns = clsTreeTopDownCtrl.doingSvgObj
+        // let objNode = clsTreeTopDownCtrl.doingNodeObj
+        // let newName = objNodeNew.name
+        // let imgLink  = objNodeNew.thumb
+        // let newId  = objNodeNew.id
+        //let idSvgRoot = this1.closest('.root_svg').attr('id')
+
+        console.log(" ID Root = ", treeIns.idSvgSelector, doingNode);
+
+        // let treeIns = new clsTreeTopDownCtrl()
+        // treeIns = clsTreeTopDownCtrl.getInstanceSvgById(idSvgRoot)
+
+        console.log("treeIns.data = ", treeIns.dataPart);
+
+        if (action == 'edit_node') {
+            // objNode.name = $("#new_name").val()
+            // objNode.birthday = $("#new_birthday").val()
+            // objNode.orders = $("#new_orders").val()
+            // objNode.gender = $("input[name=new_gender]:checked").val(),
+            console.log("Edit node: ", doingNode, treeIns.dataPart);
+            //treeIns.updateNodeUI(objNodeAction)
+            treeIns.reDrawTree()
+            return;
+        }
+
+        let newObj = new clsTreeNode();
+
+        //nếu là các add_child, add_married
+        if (action == 'add_child' || action == 'add_married' || action == 'add_parent') {
+            if (treeIns.optDisableApiForTestLocalOnly)
+                newObj.id = treeIns.getMaxIdNode() + 1
+            else
+                newObj.id = objNodeAction.id
+        }
+
+        newObj.name = objNodeAction.name
+
+        newObj._col = -1
+        newObj._row = -1
+        newObj._mark_add_new = 1
+        newObj._image_list = objNodeAction._image_list
+        // newObj.gender = $("input[name=new_gender]:checked").val()
+        newObj.gender = objNodeAction.gender
+        newObj.birthday = objNodeAction.birthday
+
+        if (!newObj.orders)
+            newObj.orders = 0
+
+        if (action == 'add_parent') {
+            if(doingNode.parent_id > 0){
+                alert("Không thể thêm cha, vì Thành viên đã có cha! ID Cha = " + doingNode.parent_id)
+                return;
+            }
+
+            if(doingNode.married_with){
+                alert("Không thể thêm cha/mẹ cho vợ/chồng!")
+                return;
+            }
+
+
+            newObj.parent_id = 0
+            doingNode.parent_id = newObj.id
+            let mMaried = treeIns.findGetMariedOfObj(doingNode)
+            if(mMaried && mMaried.length)
+            for(let tmp of mMaried)
+                tmp.parent_id = newObj.id
+        }
+
+        if (action == 'add_child') {
+            newObj.parent_id = doingNode.id
+            //Nếu là thêm con cho vợ/chồng, thì phải gán parent về gốc
+            if (doingNode.married_with) {
+                console.log(" xxxxx 111");
+                let pObj = treeIns.getObjFromId(doingNode.married_with)
+                newObj.parent_id = pObj.id
+
+                //Nếu như là vợ chồng 2 của bố mẹ, thì sẽ cần gán child_of_second_married
+                if (doingNode._col > pObj._col + 1) {
+                    console.log(" xxxxx 112");
+                    newObj.child_of_second_married = doingNode.id
+                }
+            }
+        }
+
+        if (action == 'add_married') {
+            //newObj.name = 'Vo ' + obj.id
+            newObj.parent_id = doingNode.parent_id
+            newObj.married_with = doingNode.id
+            newObj.child_type = 2
+        }
+
+        treeIns.removeAllConnectLineParentAndMarried()
+        treeIns.dataPart.push(newObj)
+        treeIns.reDrawTree()
+
+        if (action == 'add_child' || action == 'add_married') {
+            treeIns.moveObjToCenterOfViewPort(newObj)
+        }
+    }
+
+    static tester1() {
+
+        test01()
+
+    }
+
+    static resetDefault(svgId) {
+        let svg = clsTreeTopDownCtrl.getInstanceSvgById(svgId)
+        svg.optDisableApiForTestLocalOnly = 0
+        svg.optShowMarried = 1
+        svg.optShowOnlyMan = 0
+        svg.optRemoveImage = 0
+        svg.clearResetAllSvgToReDraw()
+        svg.reDrawTree()
+        svg.updateBBox()
+        svg.resize()
+        svg.center()
+    }
+
+
+    static setOnlyMan(svgId) {
+        let svg = clsTreeTopDownCtrl.getInstanceSvgById(svgId)
+        svg.optShowOnlyMan = 1
+        svg.clearResetAllSvgToReDraw()
+        svg.reDrawTree()
+        svg.updateBBox()
+        svg.resize()
+        svg.center()
+    }
+
+    static setDisableMarried(svgId) {
+        let svg = clsTreeTopDownCtrl.getInstanceSvgById(svgId)
+        svg.optShowMarried = 0
+        svg.clearResetAllSvgToReDraw()
+        svg.reDrawTree()
+        svg.updateBBox()
+        svg.resize()
+        svg.center()
+    }
+
+    static setRemoveImage(svgId) {
+        let svg = clsTreeTopDownCtrl.getInstanceSvgById(svgId)
+        svg.optRemoveImage = 1
+        svg.clearResetAllSvgToReDraw()
+        svg.reDrawTree()
+        svg.updateBBox()
+        svg.resize()
+        svg.center()
+    }
+
+    static setDisableApiForTestLocal(svgId) {
+        let svg = clsTreeTopDownCtrl.getInstanceSvgById(svgId)
+        svg.optDisableApiForTestLocalOnly = 1
+        svg.clearResetAllSvgToReDraw()
+        svg.reDrawTree()
+        svg.updateBBox()
+        svg.resize()
+        svg.center()
+    }
+
+    static createNewTree(svgId) {
+        let name = $("#first_member_name_of_tree").val()
+        if (!name || name.length < 2) {
+            alert("Tên phải lớn hơn 1 ký tự");
+            return
+        }
+
+        let tree = clsTreeTopDownCtrl.getInstanceSvgById(svgId)
+        // let tree = new clsTreeTopDownCtrl()
+
+        let objNew = {name: name, parent_id: 0, gender: 1}
+
+        let ret
+        if (ret = tree.nodeAddApi(objNew, 'add_child', 'add_new_root')) {
+            let url = jctool.getUrlNotParam() + "?pid=" + ret
+            window.location.href = url
+        } else {
+            alert("Có lỗi không thể tạo cây mới!");
+        }
+
+    }
+
+    nodeDeleteApi(tree, obj) {
+
+        let idItem = obj.id
+        console.log("Delete item1..", idItem);
+
+        let mm = tree.findGetAllChildsDeepOfObjAndMarried(obj)
+        if (!mm)
+            mm = [obj]
+        else
+            mm.push(obj)
+
+        let strDelId = clsTreeTopDownCtrl.getStringIdOfNodeArraySeparateByComma(mm)
+        if (!strDelId)
+            strDelId = idItem
+
+        jQuery('.loader1').show();
+        let ret = 0
+        let urlAct = tree.apiDelete + "?id=" + strDelId
+        $.ajax({
+            url: urlAct,
+            async: false,
+            type: "GET",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader('Authorization', 'Bearer ' + tree.apiBearToken);
+            },
+            success: function (data, status) {
+                jQuery('.loader1').hide();
+                console.log("Data: ", data, " \nStatus: ", status);
+                console.log("Delete item1..", idItem);
+
+                ret = 1
+            },
+            error: function (jqXHR, exception) {
+                jQuery('.loader1').hide();
+                clsTreeTopDownCtrl.showError(jqXHR)
+                console.log(" Error....");
+                ret = 0
+            },
+        });
+        return ret
+    }
+
+    static showError(jqXHR){
+        if(jqXHR.status != 200){
+            if(jqXHR.responseJSON && jqXHR.responseJSON.payload){
+                alert("Error " + jqXHR.status + " : " + jqXHR.responseJSON.payload)
+            }
+            else{
+                alert("Error " + jqXHR.status + " : unknow error!")
+            }
+        }
+        else
+            alert("Error..." + jqXHR.status)
+    }
+
+    nodeAddApi(objNode, cmd, extraCmd) {
+        let urlAct = this.apiAdd
+        let type = "POST"
+        let idRet = false
+        let that = this
+        let doingObj = clsTreeTopDownCtrl.doingNodeObj
+
+        console.log(" nodeAddApi objNode = " , objNode);
+
+        if(cmd == 'add_parent')
+            urlAct  = jctool.setUrlParamString(urlAct, 'add_parent_to', doingObj.id);
+        jQuery('.loader1').show();
+        $.ajax({
+            url: urlAct,
+            async: false,
+            type: type,
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader('Authorization', 'Bearer ' + that.apiBearToken);
+            },
+            data: objNode,
+            success: function (data, status) {
+                jQuery('.loader1').hide();
+                console.log("Data: ", data, " \nStatus: ", status);
+                if (cmd == 'add_child' || cmd == 'add_married' || cmd == 'add_parent') {
+                    if (!data.payload) {
+                        alert("Error add item, not valid ?")
+                        return false
+                    }
+                    idRet = data.payload
+                    objNode.id = data.payload
+                    if(cmd == 'add_parent'){
+                        //Khi add được thì cần thêm setPid để redraw lấy lại PID mới
+                        that.setPid = idRet
+                        jctool.setCurrentUrlParamAndGo('pid', idRet)
+                    }
+                }
+
+                if (extraCmd != 'add_new_root') {
+                    clsTreeTopDownCtrl.nodeAction(
+                        cmd,
+                        objNode,
+                        clsTreeTopDownCtrl.doingNodeObj
+                    )
+                }
+            },
+            error: function (jqXHR, exception) {
+                jQuery('.loader1').hide();
+                clsTreeTopDownCtrl.showError(jqXHR)
+
+                console.log(" Error jqXHR...." , jqXHR);
+                console.log(" Error exception...." , exception);
+                idRet = false
+            },
+        });
+
+        return idRet
+    }
+
+    nodeEditApi(objNode) {
+        console.log(" nodeEditApi: ", objNode);
+        let dataPost2 = {
+            name: objNode.name,
+            birthday: objNode.birthday,
+            orders: objNode.orders,
+            gender: objNode.gender,
+            image_list: objNode.image_list
+        }
+
+        if (!objNode.name || objNode.name.length < 2) {
+            alert("Tên phải lớn hơn 1 ký tự");
+            return
+        }
+        let ret = 0
+        let that = this
+        let urlAct = this.apiUpdate + "/" + objNode.id
+        let type = "POST"
+        jQuery('.loader1').show();
+        $.ajax({
+            url: urlAct,
+            async: false,
+            type: type,
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader('Authorization', 'Bearer ' + that.apiBearToken);
+            },
+            data: dataPost2,
+            success: function (data, status) {
+                console.log("Data: ", data, " \nStatus: ", status);
+                jQuery('.loader1').hide();
+                clsTreeTopDownCtrl.nodeAction(
+                    'edit_node',
+                    objNode,
+                    clsTreeTopDownCtrl.doingNodeObj
+                )
+
+                ret = 1
+
+                $("#dialog-node-add").dialog("close");
+            },
+            error: function (jqXHR, exception) {
+                jQuery('.loader1').hide();
+                ret = 0
+                clsTreeTopDownCtrl.showError(jqXHR)
+                console.log(" Eror....");
+            },
+        });
+
+        return ret
+    }
+
+    static showDebugIdOrders(svgId) {
+        //let svg = clsTreeTopDownCtrl.getInstanceSvgById(svgId)
+
+        $(".debug_id_orders").toggle();
+        //    svg.optShowDebugIdAndOrders = 0
+
+    }
+
+    static selectBackGround(svgId, manOrWoman) {
+        let svg = clsTreeTopDownCtrl.getInstanceSvgById(svgId)
+        // $('.node_cont').css('background-image', 'url("/public/images/khung-anh1.png")')
+        svg.selectingManWomanBackGround = manOrWoman
+        $("#dialog-select-background").dialog('open')
+        if (manOrWoman == 2)
+            $("#dialog-select-background").dialog('option', 'title', 'Chọn khung ảnh cho NỮ');
+        else
+            $("#dialog-select-background").dialog('option', 'title', 'Chọn khung ảnh cho NAM');
+
+    }
+
+    uploadFile(file_id = 'file_id') {
+
+        let urlUpload = this.apiUploadImage
+        let retUpload = 0
+
+        if ($('#' + file_id)[0].files[0]) {
+
+            console.log("Filesize: " , $('#' + file_id)[0].files[0].size);
+
+            if($('#' + file_id)[0].files[0].size > 52400){
+                alert("Can not upload file, file is too big: " + $('#' + file_id)[0].files[0].size);
+                return 0
+            }
+
+            // const config = {
+            //     file: $('#' + file_id)[0].files[0],
+            //     maxSize: 200
+            // };
+            //
+            // const resizedImage = await resizeImage(config)
+
+            // console.log("upload resized image", resizedImage)
+
+            let formData = new FormData();
+            formData.append('file_data',
+                $('#file_id')[0].files[0]
+                // resizedImage
+            );
+
+            let that = this
+            jQuery('.loader1').show();
+            //Upload image before:
+            $.ajax({
+                url: urlUpload,
+                async: false,
+                type: 'POST',
+                processData: false,  // tell jQuery not to process the data
+                contentType: false,  // tell jQuery not to set contentType
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('Authorization', 'Bearer ' + that.apiBearToken);
+                },
+                data: formData,
+                success: function (data, status) {
+                    jQuery('.loader1').hide();
+                    console.log("DataUpload ret: ", data, " \nStatus: ", status);
+                    if (!data || !data.payload || !(data.payload.id)) {
+                        console.log("Error 1");
+                        return
+                    }
+                    retUpload = data.payload
+                },
+                error: function (jqXHR, exception) {
+                    jQuery('.loader1').hide();
+                    alert("Error...." + jqXHR.status)
+                    console.log(" Error upload file....");
+
+                },
+            });
+        }
+
+        console.log("RetUpload ", retUpload);
+
+        return retUpload
+
+    }
+
+    //Tìm vị trí của một NODE trong svg
+    moveObjToCenterOfViewPort(obj){
+        console.log(" move obj = ", obj);
+        let startX = this.startX;
+        let startY = this.startY;
+        let rectWidth = this.widthCell
+        let rectHeight = this.heightCell
+        if (this.optRemoveImage)
+            rectHeight = this.heightCell - 30
+        let horizontalPadding = this.spaceBetweenCellX;
+        let verticalPadding = this.spaceBetweenCellY;
+
+        let rateZoom = 1
+        let px = startX + obj._col * (horizontalPadding + rectWidth );
+        let py = startY + obj._row * (verticalPadding + rectHeight );
+        if(this._panZoomTiger) {
+            rateZoom = this._panZoomTiger.getSizes().realZoom
+            console.log("Đã có _panZoom" , rateZoom);
+            // Resize the grid to fit its containing rectangles
+            px *= rateZoom;
+            py *= rateZoom;
+        }
+
+        let needMoveToX = window.innerWidth/2
+        let needMoveToY = window.innerHeight/2
+
+        //VỊ trí x,y của obj trên viewPort
+        px += (this._panZoomTiger.getPan().x)
+        py += (this._panZoomTiger.getPan().y)
+
+        let panX = needMoveToX - px - rectWidth * rateZoom/2
+        let panY = needMoveToY - py - rectHeight * rateZoom/2
+
+        // console.log("pos px py = ", px, py);
+        // console.log("pos needMoveToX = ", needMoveToX, needMoveToY);
+        console.log("move panXY = ", panX, panY);
+        // console.log("pos panXY = ", typeof(panX), typeof(panY));
+
+        //this._panZoomTiger.panBy({x: 10 , y: 10})
+        this._panZoomTiger.panBy({x: panX , y: panY})
+    }
+
+    static resizeByWindow(idSvg = 'svg_grid'){
+        let gridRoot = document.getElementById(idSvg);
+        gridRoot.setAttribute("width", window.innerWidth - 2);
+        gridRoot.setAttribute("height", window.innerHeight - 100);
+    }
+
+    static showInformation(svgId = 'svg_grid'){
+        let tree1 = clsTreeTopDownCtrl.getInstanceSvgById(svgId);
+        let str = "<b>Tổng số: " + tree1.dataPart.length + ' thành viên </b>';
+        let mmCountElm = [];
+        for(let obj of tree1.dataPart){
+            if(!mmCountElm[obj._row]){
+                mmCountElm[obj._row] = 1
+            }
+            else
+                mmCountElm[obj._row]++
+        }
+        for (let r in mmCountElm){
+            str += '<br>- Hàng ' + (Number.parseInt(r) + 1) + " : " + mmCountElm[r] + " thành viên ";
+        }
+        $("#tree_info_1").html(str);
+
+        $("#tree_info_").toggle();
+    }
+
+    static saveNewInfoNodeUI(){
+        let nodeDoing = clsTreeTopDownCtrl.doingNodeObj
+        let svgDoing = clsTreeTopDownCtrl.doingSvgObj
+        let ret
+
+        let objNodeSendToApi = null
+        //Nếu thêm mới thì tạo node mới, nếu ko thì lấy node trong data
+        if (clsTreeTopDownCtrl.doingCmd == 'add_married' ||
+            clsTreeTopDownCtrl.doingCmd == 'add_child' ||
+            clsTreeTopDownCtrl.doingCmd == 'add_parent'
+        )
+            objNodeSendToApi = {}
+        else
+            objNodeSendToApi = nodeDoing
+
+        objNodeSendToApi.name = $('#new_name').val()
+        objNodeSendToApi.birthday = $('#new_birthday').val()
+        objNodeSendToApi.orders = $('#new_orders').val()
+        objNodeSendToApi.gender = $("input[name=new_gender]:checked").val()
+
+        if (!objNodeSendToApi.name || objNodeSendToApi.name.length < 2) {
+            alert("Tên phải lớn hơn 1 ký tự");
+            return
+        }
+
+        if(isNaN(objNodeSendToApi.orders)){
+            alert("Thứ tự phải là số");
+            return
+        }
+
+        if (svgDoing.optDisableApiForTestLocalOnly) {
+            clsTreeTopDownCtrl.nodeAction(clsTreeTopDownCtrl.doingCmd,
+                objNodeSendToApi,
+                clsTreeTopDownCtrl.doingNodeObj
+            )
+            $("#dialog-node-add").dialog("close");
+            return
+        }
+
+        console.log(" clsTreeTopDownCtrl.idAct = ", nodeDoing);
+
+        if ($('#file_id')[0].files[0]) {
+
+            let retUpload = svgDoing.uploadFile('file_id')
+            if (!retUpload) {
+                alert("Can not upload file!")
+                return
+            }
+            objNodeSendToApi.image_list = retUpload.id
+            objNodeSendToApi._image_list = [retUpload]
+            console.log(" OBJ to update upload file: ", objNodeSendToApi);
+        }
+
+        //Phai co chỗ này:
+        if (clsTreeTopDownCtrl.doingCmd == 'add_married'
+            || clsTreeTopDownCtrl.doingCmd == 'add_child'
+            || clsTreeTopDownCtrl.doingCmd == 'add_parent'
+        )
+        {
+
+            if (clsTreeTopDownCtrl.doingCmd == 'add_married') {
+                objNodeSendToApi.parent_id = nodeDoing.parent_id
+                objNodeSendToApi.married_with = nodeDoing.id
+            }
+
+            if (clsTreeTopDownCtrl.doingCmd == 'add_child') {
+                console.log(" add_child Doing node : ", nodeDoing);
+                if (nodeDoing) {
+                    objNodeSendToApi.parent_id = nodeDoing.id
+                    //Nếu là thêm con cho vợ/chồng, thì phải gán parent về gốc
+                    if (nodeDoing.married_with) {
+                        let pObj = svgDoing.getObjFromId(nodeDoing.married_with)
+                        objNodeSendToApi.parent_id = pObj.id
+                        //Nếu như là vợ chồng 2 của bố mẹ, thì sẽ cần gán child_of_second_married
+                        if (nodeDoing._col > pObj._col + 1) {
+                            objNodeSendToApi.child_of_second_married = nodeDoing.id
+                            console.log(" add_child Doing node1 : ", nodeDoing);
+                        }
+                    }
+                } else {
+                    objNodeSendToApi.parent_id = 0
+                }
+            }
+
+            if (clsTreeTopDownCtrl.doingCmd == 'add_parent') {
+
+                if(!nodeDoing){
+                    alert("Error: add parent, not doing node?")
+                    return;
+                }
+
+                console.log(" add_parent Doing node : ", nodeDoing);
+                objNodeSendToApi.parent_id = 0
+                //Nếu là thêm cha, thì phải lấy id server trả về
+            }
+
+            ret = svgDoing.nodeAddApi(objNodeSendToApi, clsTreeTopDownCtrl.doingCmd)
+            //không đóng dialog
+            if(!ret)
+                return
+        }
+
+        if (clsTreeTopDownCtrl.doingCmd == 'edit_node') {
+            ret = svgDoing.nodeEditApi(objNodeSendToApi)
+            //không đóng dialog
+            if(!ret)
+                return
+        }
+
+        $("#dialog-node-add").dialog("close");
+    }
+}
+
+
+$(function () {
+    $.contextMenu({
+        selector: '.context-menu-one',
+        trigger: 'left',
+        callback: function (key, options) {
+            let idItem = options.$trigger.attr("data-id");
+            console.log(" options idItem = ", idItem, key, options.$trigger);
+
+            $("#title_dialog_node").html("")
+
+            let idSvgRoot = options.$trigger.closest('.root_svg').attr('id')
+            clsTreeTopDownCtrl.doingNodeObj = clsTreeTopDownCtrl.getInstanceSvgById(idSvgRoot).getObjFromId(idItem)
+            // let treeIns = new clsTreeTopDownCtrl()
+            clsTreeTopDownCtrl.doingSvgObj = clsTreeTopDownCtrl.getInstanceSvgById(idSvgRoot)
+
+            clsTreeTopDownCtrl.doingCmd = key
+
+            console.log(" clsTreeTopDownCtrl.doingNodeObj = ", clsTreeTopDownCtrl.doingNodeObj);
+
+            //Clear all Input before edit, add
+            $("#dialog-node-add").find("input[type=text]").each(function () {
+                $(this).val("")
+            });
+            $("#dialog-node-add").find("input[type=file]").each(function () {
+                $(this).val("")
+            });
+
+            // var m = "clicked: " + key;
+            //window.console && console.log(m) || alert(m);
+            if (key == 'edit_node') {
+                $("#dialog-node-add").dialog('open')
+
+                $("#new_name").val(clsTreeTopDownCtrl.doingNodeObj.name)
+                $("#new_birthday").val(clsTreeTopDownCtrl.doingNodeObj.birthday)
+                $("#new_orders").val(clsTreeTopDownCtrl.doingNodeObj.orders)
+                $("input[name=new_gender][value=" + clsTreeTopDownCtrl.doingNodeObj.gender + "]").prop('checked', true);
+                $("#title_dialog_node").html("Thành viên: <b>" + clsTreeTopDownCtrl.doingNodeObj.name + "</b>");
+            }
+
+            if (key == 'add_child') {
+                $("#dialog-node-add").dialog('open')
+
+                $("#title_dialog_node").html("Thêm con cho: <b> " + clsTreeTopDownCtrl.doingNodeObj.name + "</b>")
+            }
+
+            if (key == 'add_parent') {
+                if(clsTreeTopDownCtrl.doingNodeObj.married_with){
+                    alert("Không thể thêm cha/mẹ cho vợ/chồng!")
+                    return;
+                }
+                if(clsTreeTopDownCtrl.doingNodeObj.parent_id > 0){
+                    alert("Không thể thêm cha, vì Thành viên đã có cha! ID Cha = " + clsTreeTopDownCtrl.doingNodeObj.parent_id)
+                    return;
+                }
+
+                $("#dialog-node-add").dialog('open')
+                $("#title_dialog_node").html("Thêm cha mẹ cho: <b> " + clsTreeTopDownCtrl.doingNodeObj.name + "</b>")
+            }
+
+            if (key == 'add_married') {
+                if (clsTreeTopDownCtrl.doingNodeObj.married_with) {
+                    alert(clsTreeTopDownCtrl.doingNodeObj.name + ": là Dâu-Rể, nên không thể thêm kết hôn!")
+                    return
+                } else {
+                    $("#dialog-node-add").dialog('open')
+                    if (clsTreeTopDownCtrl.doingNodeObj.gender == 2)
+                        $("#title_dialog_node").html("Thêm chồng cho: <b>" + clsTreeTopDownCtrl.doingNodeObj.name + "</b>")
+                    else
+                        $("#title_dialog_node").html("Thêm vợ cho: <b>" + clsTreeTopDownCtrl.doingNodeObj.name + "</b>")
+                }
+            }
+
+            if (key == 'view_this_node') {
+                let url = jctool.setCurrentUrlParamAndGo("pid", idItem, 1);
+                if (clsTreeTopDownCtrl.doingNodeObj.married_with)
+                    url = jctool.setCurrentUrlParamAndGo("pid", clsTreeTopDownCtrl.doingNodeObj.married_with, 1);
+                window.location.href = url
+            }
+
+            if (key == 'delete_node') {
+
+                let tree = clsTreeTopDownCtrl.doingSvgObj
+                let obj = clsTreeTopDownCtrl.doingNodeObj
+
+                if (tree.optDisableApiForTestLocalOnly) {
+                    tree.deleteObjAndAllChildAndMarried(obj)
+                    tree.reDrawTree()
+                    return
+                }
+
+                let mm = tree.findGetAllChildsDeepOfObjAndMarried(obj)
+                if (!mm)
+                    mm = [obj]
+                else
+                    mm.push(obj)
+
+                //nếu dùng API thì mới cần phải hỏi...
+                if (!tree.optDisableApiForTestLocalOnly) {
+                    if (mm.length > 1) {
+                        let ans = prompt('Cảnh báo: bạn đang xóa một cây nhiều hơn một phần tử\nĐể chắc chắn, hãy nhập từ: "ok" vào ô sau');
+                        if (ans == 'ok' || ans == '1')
+                            console.log("Đồng ý xóa");
+                        else {
+                            console.log("Không Đồng ý xóa");
+                            return
+                        }
+                    } else {
+                        let conf = confirm("Bấm vào nút OK để tiếp tục");
+                        if (conf)
+                            console.log("Đồng ý xóa");
+                        else {
+                            console.log("Không Đồng ý xóa");
+                            return
+                        }
+                    }
+                }
+                if (clsTreeTopDownCtrl.doingSvgObj.nodeDeleteApi(tree, obj)) {
+                    tree.deleteObjAndAllChildAndMarried(obj)
+                    tree.reDrawTree()
+                }
+            }
+        },
+        items: {
+            "edit_node": {name: "Sửa", icon: "edit"},
+            "add_child": {name: "Thêm con", icon: "add"},
+            'add_married': {name: "Thêm vợ chồng", icon: "add"},
+            'add_parent': {name: "Thêm bố mẹ", icon: "add"},
+            "delete_node": {name: "Xóa", icon: "delete"},
+            'view_this_node': {name: "Xem riêng nhánh này", icon: "tree"},
+            "sep1": "---------",
+            "quit": {
+                name: "Quit", icon: function () {
+                    return 'context-menu-icon context-menu-icon-quit';
+                }
+            }
+        }
+    });
+
+    $('.context-menu-one').on('click', function (e) {
+        console.log('clicked', this);
+    })
+});
+
+function closeAddDialog(){
+    $("#dialog-node-add").dialog('close')
+}
+
+$(function () {
+
+    $("#dialog-node-add").dialog({
+        autoOpen: false,
+        resizable: true,
+        // height: 400,
+        width: 330,
+        modal: true,
+        open: function(event, ui) {
+            // Height setter has no effect after init either
+            // $(this).dialog("option", "height", auto );
+            console.log("Open...");
+
+            // Width setter works after initialization too
+            // $(this).dialog("option", "width", 300 );
+        },
+        // buttons: {
+        //     "Ghi lại": function () {
+        //
+
+        //
+        //     },
+        //     "Bỏ qua": function () {
+        //         $(this).dialog("close");
+        //     }
+        // }
+    });
+
+    $("#dialog-select-background").dialog({
+        autoOpen: false,
+        resizable: false,
+        height: "600",
+        width: "800",
+        modal: true,
+        buttons: {
+            // "Ghi lại": function () {
+            //     console.log(" Chọn ");
+            //     $(this).dialog("close");
+            // },
+            "Đóng lại": function () {
+                console.log(" Ghi lai...");
+                $(this).dialog("close");
+            }
+        }
+    });
+
+    $(".img_bg_node_svg img").on('click', function () {
+
+        //alert("click to: " + $(this).attr('src'))
+
+        let srcImg = $(this).attr('data-src')
+        console.log("Datasrc = ", srcImg);
+
+        let svg = clsTreeTopDownCtrl.allInstance[0]
+        $('.node_cont').each(function () {
+            console.log(" Node ... ", $(this).prop('id') , $(this).attr('id') , $(this).attr('data-gender'));
+            if (!$(this).attr('data-gender')
+                || $(this).attr('data-gender') == 'undefined'
+                || $(this).attr('data-gender') == 'null'
+                || $(this).attr('data-gender') == svg.selectingManWomanBackGround){
+                // console.log("xxx");
+                $(this).css('background-image', 'url("' + srcImg + '")')
+            }
+        })
+
+    })
+
+    // dlg.dialog( "open" );
+
+
+    $('#file_id').imageUploadResizer({
+        max_width: 500, // Defaults 1000
+        max_height: 500, // Defaults 1000
+        quality: 0.8, // Defaults 1
+        do_not_resize: ['gif', 'svg'], // Defaults []
+    });
+
+
+    window.onresize = function(){
+        console.log("window.onresize... ");
+        clsTreeTopDownCtrl.resizeByWindow()
+    };
+
+    $("head").append($("<script></script>").attr("src", "/tool1/lad_tree_vn/tester.js"));
+
+    $("#showInformation_close").on("click", function (){
+        $("#tree_info_").hide();
+    })
+
+});
+
+
+var resizeImage = function (settings) {
+    var file = settings.file;
+    var maxSize = settings.maxSize;
+    var reader = new FileReader();
+    var image = new Image();
+    var canvas = document.createElement('canvas');
+    var dataURItoBlob = function (dataURI) {
+        var bytes = dataURI.split(',')[0].indexOf('base64') >= 0 ?
+            atob(dataURI.split(',')[1]) :
+            unescape(dataURI.split(',')[1]);
+        var mime = dataURI.split(',')[0].split(':')[1].split(';')[0];
+        var max = bytes.length;
+        var ia = new Uint8Array(max);
+        for (var i = 0; i < max; i++)
+            ia[i] = bytes.charCodeAt(i);
+        return new Blob([ia], { type: mime });
+    };
+    var resize = function () {
+        var width = image.width;
+        var height = image.height;
+        if (width > height) {
+            if (width > maxSize) {
+                height *= maxSize / width;
+                width = maxSize;
+            }
+        } else {
+            if (height > maxSize) {
+                width *= maxSize / height;
+                height = maxSize;
+            }
+        }
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext('2d').drawImage(image, 0, 0, width, height);
+        var dataUrl = canvas.toDataURL('image/jpeg');
+        return dataURItoBlob(dataUrl);
+    };
+    return new Promise(function (ok, no) {
+        if (!file.type.match(/image.*/)) {
+            no(new Error("Not an image"));
+            return;
+        }
+        reader.onload = function (readerEvent) {
+            image.onload = function () { return ok(resize()); };
+            image.src = readerEvent.target.result;
+        };
+        reader.readAsDataURL(file);
+    });
+
+
+};
+
+function openMoreAttr() {
+    $("#open_more").toggle()
+}
+
+class clsTreeNode {
+    id
+    name
+    parent_id
+    married_with
+    birthday
+    child_of_second_married
+    child_type
+    gender
+    has_child
+    last_name
+    orders
+    status
+    sur_name
+    image_list
+    _image_list
+    _mark_add_new
+    _row = -1
+    _col = -1
+    _divCont
+}
+

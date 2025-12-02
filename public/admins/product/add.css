@@ -1,0 +1,31 @@
+.select2-selection__choice{
+    background-color: #343a40!important;
+}
+.select2-container--default .select2-selection--multiple .select2-selection__choice__display {
+    padding-left: 7px;
+}
+
+.image_detail_product, .feature_image{
+    width: 100%;
+    object-fit: cover;
+}
+
+.container_image_detail, .feature_image_container{
+    margin-top: 20px;
+}
+
+label {
+    font-weight: normal!important;
+}
+
+.inside_a_parent table tr td {
+    font-size: small;
+}
+
+.inside_a_parent label {
+    font-size: small;
+}
+
+.inside_a_parent input {
+    margin-right: 5px;
+}

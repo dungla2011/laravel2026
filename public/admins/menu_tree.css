@@ -1,0 +1,47 @@
+.node_extra_info_after_name {
+    display: inline-block;
+    /*background-color: lavender;*/
+    margin-left: 10px;
+    margin-right: 10px;
+    /*height: 25px;*/
+    min-width: 100px;
+}
+
+.node_extra_info_after_name input {
+    border: 1px solid #ccc;
+    padding: 2px 5px;
+    color: green;
+}
+
+.link_item {
+    display: inline-block;
+    padding: 1px 8px;
+    border-radius: 5px;
+    border: 1px solid gray;
+    margin: 3px 5px;
+    font-size: small;
+}
+
+.menu_title {
+    display: inline-block;
+}
+
+.input_link_menu, .btn_click_save_link, .check_open_new_win_menu , .btn_click_open_link, .btn_click_save_link{
+    margin: 2px 5px;
+}
+
+.btn_click_save_link{
+    font-size: 16px;
+}
+.input_link_menu{
+    width: 250px;
+}
+
+.real_node_item .node_name {
+    display: inline-block;
+    /*width: 200px;*/
+}
+
+.cls_root_tree .real_node_item{
+    max-width: 1000px;
+}

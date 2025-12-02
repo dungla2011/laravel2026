@@ -1,0 +1,83 @@
+.divTable2Cell .upload_area {
+    max-width: 500px
+}
+
+.divTable2Cell .all_node_name .img_zone {
+    position: relative;
+    display: inline-block;
+    margin: 5px;
+}
+
+.divTable2Cell .readonly_imgs .img_zone img {
+    max-width: 200px;
+    max-height: 200px;
+    margin-left: 5px;
+}
+
+.divTable2Cell .readonly_imgs, .divTable2Cell .one_item_edit {
+    display: block;
+    max-width: 800px;
+}
+
+
+.divTable2Cell .readonly_imgs .one_node_name {
+    display: none;
+}
+
+.divTable2Cell .all_node_name .img_zone img {
+    max-width: 80px;
+    max-height: 80px;
+}
+
+.divTable2Cell .all_node_name .img_zone .one_node_name {
+    color: red;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    display: block;
+
+}
+
+.divTable2Cell .img_zone span.one_node_name {
+    margin: 0px;
+    padding: 5px;
+    border-radius: 0px 0px 0px 5px;
+    background-color: white;
+
+}
+
+.divTable2Cell .sort_able_imgs {
+    max-height: 220px;
+}
+
+.divTable2Cell .guide_imgs {
+    font-size: small;
+    font-style: italic;
+    margin: 5px 0px 5px 0px;
+}
+
+.divTable2Cell .upload_zone_glx {
+    margin-bottom: 1px;
+    display: inline-block;
+    background-color: white;
+}
+
+.ui-dialog .ui-dialog-content {
+    overflow: hidden;
+}
+
+.ui-dialog .ui-dialog-content {
+    padding: 0px 0px;
+}
+
+
+.divTable2Cell .upload_area .upload_button {
+    background-color: white;
+}
+
+.ui-dialog {
+    padding: 0px;
+}
+.scrollable-element {
+    scrollbar-width: thin;
+}

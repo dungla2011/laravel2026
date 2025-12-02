@@ -1,0 +1,108 @@
+
+table.glx00 {
+    border: 1px #ccc solid;
+    border-collapse: collapse;
+    margin: 0px 0px 0px 0px;
+}
+
+table.glx00 td {
+    border: 1px #ccc solid;
+    padding: 3px 5px 3px 5px;;
+}
+
+table.glx00 th {
+    border: 1px #ccc solid;
+    padding: 3px 5px 3px 5px;
+    /*background-color: lavender;*/
+}
+
+table.glx00 tr:nth-child(even) {
+    /*background: #eee*/
+}
+
+table.glx00 tr:nth-child(odd) {
+    /*background: lavender*/
+}
+
+
+table.glx01 {
+    border: 1px #ccc solid;
+    border-collapse: collapse;
+    margin: 0px 0px 0px 0px;
+}
+
+table.glx01 td {
+    border: 1px #ccc solid;
+    padding: 5px 5px 3px 5px;;
+}
+
+table.glx01 th {
+    border: 1px #ccc solid;
+    padding: 3px 5px 3px 5px;
+    background-color: lavender;
+}
+
+table.glx01 tr:nth-child(even) {
+    background: #eee
+}
+
+table.glx01 tr:nth-child(odd) {
+    background: lavender
+}
+
+
+
+
+
+table.glx03 {
+    width: 100%;
+    border: 1px MintCream solid;
+    border-collapse: collapse;
+    margin: 0px 0px 0px 0px;
+}
+
+table.glx03 td {
+    border: 1px MintCream solid;
+    padding: 3px 5px 3px 5px;;
+}
+
+table.glx03 th {
+    border: 1px MintCream solid;
+    padding: 3px 5px 3px 5px;;
+}
+
+table.glx03 tr:nth-child(even) {
+    background: #f6f6f6
+}
+
+table.glx03 tr:nth-child(odd) {
+    background: beige
+}
+
+
+table.glx04 {
+    box-shadow: 10px;
+    border-radius: 10px;
+    border: 2px #ccc solid;
+    border-collapse: collapse;
+    margin: 0px 0px 0px 0px;
+}
+
+table.glx04 td {
+    border: 1px MintCream solid;
+    padding: 5px 12px 5px 12px;;
+}
+
+table.glx04 th {
+    border: 1px MintCream solid;
+    padding: 5px 12px 5px 12px;;
+}
+
+table.glx04 tr:nth-child(even) {
+    background: #f6fbfb
+}
+
+table.glx04 tr:nth-child(odd) {
+    background: beige
+}
+

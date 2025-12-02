@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Family Tree</title>
+<style>
+.node circle {
+  fill: #fff;
+  stroke: steelblue;
+  stroke-width: 3px;
+}
+
+.node text {
+  font: 12px sans-serif;
+}
+
+.link {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 2px;
+}
+</style>
+</head>
+<body>
+
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script>
+
+// Dữ liệu cây
+var treeData = {
+  "name": "?", // Tên của người ở gốc cây
+  "id": 2576,
+  "children": [
+    { 
+      "id": 2598, 
+      "name": "La Thi Hoa", 
+      "parent_id": 2576, 
+      "married_with": 2597 
+    }, 
+    { 
+      "id": 2597, 
+      "name": "Le Van Vinh", 
+      "parent_id": 2576, 
+      "children": [
+        { 
+          "id": 2586, 
+          "name": "Le Van Thang", 
+          "parent_id": 2597, 
+          "married_with": null,
+          "children": [
+            { 
+              "id": 2588, 
+              "name": "Le Van Dong", 
+              "parent_id": 2586 
+            }, 
+            { 
+              "id": 5545, 
+              "name": "Le Van Mai", 
+              "parent_id": 2586 
+            }
+          ]
+        }, 
+        { 
+          "id": 2587, 
+          "name": "Pham Thi Loi", 
+          "parent_id": 2597, 
+          "married_with": 2586 
+        }, 
+        { 
+          "id": 2599, 
+          "name": "Le Van Vui", 
+          "parent_id": 2597, 
+          "married_with": null,
+          "children": [
+            { 
+              "id": 2600, 
+              "name": "Le Van The", 
+              "parent_id": 2599 
+            }, 
+            { 
+              "id": 2601, 
+              "name": "Le Thi Gioi", 
+              "parent_id": 2599 
+            }, 
+            { 
+              "id": 2605, 
+              "name": "Le Van Ky", 
+              "parent_id": 2599 
+            }, 
+            { 
+              "id": 2606, 
+              "name": "Le Thi Dieu", 
+              "parent_id": 2599 
+            }
+          ]
+        }, 
+        { 
+          "id": 2602, 
+          "name": "Tran Thi Tuoi", 
+          "parent_id": 2597, 
+          "married_with": 2599 
+        }, 
+        { 
+          "id": 2849, 
+          "name": "Le Thong Nhat", 
+          "parent_id": 2597 
+        }
+      ]
+    }
+  ]
+};
+
+// Thiết lập kích thước và lề
+var margin = {top: 20, right: 90, bottom: 30, left: 90},
+    width = 960 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+
+// Tạo svg
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.right + margin.left)
+    .attr("height", height + margin.top + margin.bottom);
+
+// Nhóm dùng để zoom/pan
+var gZoom = svg.append("g");
+
+// Nhóm chứa nội dung chính (cây), có áp dụng margin
+var g = gZoom.append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+var i = 0,
+    duration = 750,
+    root;
+
+// Tạo cây layout
+var treemap = d3.tree().size([height, width]);
+
+// Chuyển dữ liệu thành hierarchy
+root = d3.hierarchy(treeData, function(d) { return d.children; });
+root.x0 = width / 2;
+root.y0 = 0;
+
+// Thu gọn node sau level 2
+if (root.children) root.children.forEach(collapse);
+
+update(root);
+
+// Hàm thu gọn node
+function collapse(d) {
+  if(d.children) {
+    d._children = d.children;
+    d._children.forEach(collapse);
+    d.children = null;
+  }
+}
+
+// Zoom behavior
+svg.call(d3.zoom()
+    .scaleExtent([0.5, 5]) // giới hạn zoom
+    .on("zoom", function(event) {
+      gZoom.attr("transform", event.transform);
+    })
+);
+
+function update(source) {
+
+  // Tạo tree data
+  var treeData = treemap(root);
+
+  // Lấy tất cả nodes và links
+  var nodes = treeData.descendants(),
+      links = treeData.descendants().slice(1);
+
+  // Xác định vị trí cố định theo depth
+  nodes.forEach(function(d){ d.y = d.depth * 180});
+
+  // ****************** Nodes section ***************************
+
+  var node = g.selectAll('g.node')
+      .data(nodes, function(d) {return d.id || (d.id = ++i); });
+
+  var nodeEnter = node.enter().append('g')
+      .attr('class', 'node')
+      .attr("transform", function(d) {
+        return "translate(" + source.x0 + "," + source.y0 + ")";
+      })
+      .on('click', click);
+
+  // Vẽ circle
+  nodeEnter.append('circle')
+      .attr('class', 'node')
+      .attr('r', 1e-6)
+      .style("fill", function(d) {
+          return d._children ? "lightsteelblue" : "#fff";
+      });
+
+  // Thêm text
+  nodeEnter.append('text')
+      .attr("dy", ".35em")
+      .attr("x", function(d) {
+          return d.children || d._children ? -13 : 13;
+      })
+      .attr("text-anchor", function(d) {
+          return d.children || d._children ? "end" : "start";
+      })
+      .text(function(d) { return d.data.name; });
+
+  // UPDATE
+  var nodeUpdate = nodeEnter.merge(node);
+
+  // Transition vị trí node
+  nodeUpdate.transition()
+    .duration(duration)
+    .attr("transform", function(d) { 
+        return "translate(" + d.x + "," + d.y + ")";
+     });
+
+  // Update circle
+  nodeUpdate.select('circle.node')
+    .attr('r', 10)
+    .style("fill", function(d) {
+        return d._children ? "lightsteelblue" : "#fff";
+    })
+    .attr('cursor', 'pointer');
+
+  // Remove node cũ
+  var nodeExit = node.exit().transition()
+      .duration(duration)
+      .attr("transform", function(d) {
+          return "translate(" + source.x + "," + source.y + ")";
+      })
+      .remove();
+
+  nodeExit.select('circle')
+    .attr('r', 1e-6);
+
+  nodeExit.select('text')
+    .style('fill-opacity', 1e-6);
+
+  // ****************** Links section ***************************
+
+  var link = g.selectAll('path.link')
+      .data(links, function(d) { return d.id; });
+
+  // Link mới
+  var linkEnter = link.enter().insert('path', "g")
+      .attr("class", "link")
+      .attr('d', function(d){
+        var o = {x: source.x0, y: source.y0}
+        return diagonal(o, o)
+      });
+
+  // UPDATE link
+  var linkUpdate = linkEnter.merge(link);
+
+  linkUpdate.transition()
+      .duration(duration)
+      .attr('d', function(d){ return diagonal(d, d.parent) });
+
+  // Xóa link cũ
+  var linkExit = link.exit().transition()
+      .duration(duration)
+      .attr('d', function(d) {
+        var o = {x: source.x, y: source.y}
+        return diagonal(o, o)
+      })
+      .remove();
+
+  // Lưu vị trí cũ
+  nodes.forEach(function(d){
+    d.x0 = d.x;
+    d.y0 = d.y;
+  });
+
+  // Hàm vẽ đường cong
+  function diagonal(s, d) {
+
+    path = `M ${s.x} ${s.y}
+            C ${(s.x + d.x) / 2} ${s.y},
+              ${(s.x + d.x) / 2} ${d.y},
+              ${d.x} ${d.y}`
+
+    return path
+  }
+
+  // Toggle children khi click
+  function click(event, d) {
+    if (d.children) {
+        d._children = d.children;
+        d.children = null;
+      } else {
+        d.children = d._children;
+        d._children = null;
+      }
+    update(d);
+  }
+}
+
+</script>
+
+</body>
+</html>

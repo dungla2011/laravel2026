@@ -1,0 +1,34 @@
+<?php
+
+$token = "EAAH9FIZBS9ZAkBO2nXN2lcJ5ZBl6bZBYNuvPCzHALdHZCf0fyYX1NW1Ic8vZA3fVOl81g0qtCUNVIgT5cRiighJCCS2nlptmAcUd4ZCLUEQGnjPwDQgVNcPZCOG6GJE8wvDngPTsyZClAOQEshSstSLo7XeMwJHuYZAe0EBczYvsO7tFXDroFQ47H4uiiJzeB201RpgNMZBGuCo6CBUjpZCapI8tiZCf9pXIZD";
+$phone_number_id = "492941997231608";
+$recipient = "84902066768";
+
+$url = "https://graph.facebook.com/v21.0/{$phone_number_id}/messages";
+
+$data = [
+    "messaging_product" => "whatsapp",
+    "to" => $recipient,
+    "type" => "template",
+    "template" => [
+        "name" => "hello_world",
+        "language" => [
+            "code" => "en_US"
+        ]
+    ]
+];
+
+$options = [
+    "http" => [
+        "header" => "Authorization: Bearer $token\r\n" .
+            "Content-Type: application/json\r\n",
+        "method" => "POST",
+        "content" => json_encode($data),
+    ]
+];
+
+$context = stream_context_create($options);
+$result = file_get_contents($url, false, $context);
+
+echo $result;
+

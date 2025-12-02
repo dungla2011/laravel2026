@@ -1,0 +1,32 @@
+Win max size: Computer\HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\WebClient\Parameters
+FileSizeLimitInBytes = 4294967295
+
+18.10.24
+- up web: vào cloud ok, up sub folder vào subfolder ok
+- up win: vào folder, chưa vào cloud, vì stream sẽ đẩy dần data vào file chứ ko save xong ngay
+- tạo folder + Sub folder : ok cả win + web, và vào Cloud OK
+- Save file: bị save truc tiep vao File tren folder DAV
+- Thêm plugin để biết file upload xong, size upload, vì file up kiểu stream sẽ biết sau khi thành công
+- Upload Sub Folder ok
+- SubFolder: Edit file save sub folder ok
+** Vẫn chưa có upload Window vào Cloud
+** Xem BIg file có thể chậm, ví dụ 1G mà dùng file_get_content...
+
+- Rename Cloud Folder File ok
+- Đã upload file vào Cloud OK, upload trong folder con ok
+- Edit save File OK
+** có vđ: nếu 2 file trỏ vào 1 cloudid, thì save 1 file, file kia cũng bị change content
+*** Nếu file là số thì báo lỗi: Argument #1 ($string) must be of type string, int given<br/>#0 /var/www/html/vendor/sabre/dav/lib/DAV/Tree.php(55)
+*** Chưa làm move file, folder
+
+---------------
+- Big file: window explorer limit only 4GB webdav, dùng cac client khac nhu winscp hoặc chính next cloud client
+Nhưng upload trên web vào webdav vẫn ok, chỉ cần mở post max size...
++ Linux: Upload big file, sample 19GB ok voi Linux File Explore, php.ini đã set max size upload 20GB post_max_size = 20000M, upload_max_filesize = 50000M
+---------------
+Xác thực OK, xác thực bằng acc của web laravel
+https://zcloud.io.vn/tool/zcloud.io.vn
+
+
+
+

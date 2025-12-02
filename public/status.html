@@ -1,0 +1,16 @@
+<?php
+
+
+require_once "/var/www/html/public/index.php";
+
+
+if($pr = request("param")){
+    $pr = substr($pr,0,1000);
+    $IP = request()->ip();
+    outputT("/var/glx/weblog/zalo.log","$IP - PRZL1 = $pr");
+
+
+    die("OKFROMGLX1");
+}
+
+?>

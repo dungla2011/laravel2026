@@ -1,0 +1,205 @@
+<?php
+
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
+//$domain = "zcloud.io.vn";
+//$_SERVER['HTTP_HOST'] = $_SERVER['SERVER_NAME'] = $domain;
+
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+require_once "/var/www/html/public/index.php";;
+
+$domain = \LadLib\Common\UrlHelper1::getDomainHostName();
+
+$fidE = request('fide');
+$uid = getCurrentUserId();
+$uEmail = getCurrentUserEmail();
+$sid = \App\Models\SiteMng::getSiteId();
+
+$fid = qqgetIdFromRand_($fidE);
+
+
+if(!$fid || !is_numeric($fid)){
+    echo "File ID not found";
+    die;
+}
+if(!$uid)
+{
+    echo "<a href='/login'>Login please!</a>";
+    die;
+}
+
+
+function getFileExtension1($fileName) {
+    return pathinfo($fileName, PATHINFO_EXTENSION);
+}
+
+$file = \App\Models\FileUpload::find($fid);
+if(!$file){
+    echo "FileUpload not found! ";
+    die;
+}
+
+if($file->user_id != $uid){
+//    echo "File not belong to you!";
+//    die;
+}
+
+$fileCloud = \App\Models\FileCloud::find($file->cloud_id);
+if(!$fileCloud){
+    echo "File Cloud not found";
+    die;
+}
+
+$fileType = getFileExtension1($file->name);
+$docType = '';
+
+if(in_array($fileType, ['doc', 'docx'])){
+    $docType = 'word';
+}
+elseif(in_array($fileType, ['xls', 'xlsx'])){
+    $docType = 'cell';
+}
+elseif(in_array($fileType, ['pdf'])){
+    $docType = 'pdf';
+}
+elseif(in_array($fileType, ['ppt', 'pptx'])){
+    $docType = 'slide';
+}
+if(!$docType){
+    die("Not valid doc Type!");
+}
+
+$keyFile = $fid;
+$link = "https://$domain/test_cloud_file?fid=$fid&time=".time();
+$link = "https://$domain/tool/drive/get-info.html?info=" . qqgetRandFromId_($fid);
+
+$config = [
+    'document' => [
+        'fileType' => "$fileType",
+        'key' => "$fid.$sid.". strtotime($fileCloud->last_save_doc),
+        'title' => "$file->name",
+        'url' => "$link",
+        "permissions" => [
+            "comment" => true,
+            "copy" => true,
+            "download" => true,
+            "edit" => true,
+            "print" => true,
+            "fillForms" => true,
+            "modifyFilter" => true,
+            "modifyContentControl" => true,
+            "review" => true,
+            "chat" => true,
+            "reviewGroups" => null,
+            "commentGroups" => [],
+            "userInfoGroups" => null,
+            "protect" => true
+        ],
+    ],
+    "editorConfig" => [
+        //Chú ý call back phải trả lại http_response_code(200); echo json_encode(["error" => 0]);
+        //Để không báo lỗi
+        "callbackUrl" => "https://$domain/tool/drive/callback.html",
+        "user" => [
+            "id" => "$uid",
+            "email"=> "$uEmail",
+            "name" => "$uEmail",
+            "group" => "",
+//            "image" => "http://103.163.217.4/assets/images/uid-1.png"
+        ],
+        'customization' => [
+//            'forcesave' => true,
+            'autosave' => true,
+        ]
+    ],
+    'documentType' => "$docType",
+];
+
+$key = 'VBqpuj5FjAXwTpaUnYD5lcSIRqlsEkoF';//doc6
+$key = "d9T8OzjgBLhuH8amalEJqvdyXsnCHD4H";//doc81
+$tk = JWT::encode($config, $key, 'HS256');
+
+$config['token'] = $tk;
+
+$js_config = json_encode($config, JSON_PRETTY_PRINT );
+?>
+
+<title>
+    <?php
+
+    echo "Edit: " . $file->name;
+
+    ?>
+
+</title>
+
+<style>
+    /*reset css*/
+    body, html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow: hidden;
+    }
+
+</style>
+<div id="placeholder"></div>
+
+<script type="text/javascript" src="https://doc81.pm33.net/web-apps/apps/api/documents/api.js"></script>
+
+<script>
+
+    var innerAlert = function (message, inEditor) {
+        if (console && console.log)
+            console.log(message);
+        if (inEditor && docEditor)
+            docEditor.showMessage(message);
+    };
+
+    // the application is loaded into the browser
+    var onAppReady = function () {
+        innerAlert(" ---- Document editor ready");
+    };
+
+    var onRequestRename = function(event) { //  the user is trying to rename file by clicking Rename... button
+        innerAlert("----- onRequestRename: " + JSON.stringify(event.data));
+
+        var newfilename = event.data;
+        var data = {
+            newfilename: newfilename,
+            dockey: config.document.key,
+            ext: config.document.fileType
+        };
+
+        let urlPost =  "/tool/index.html?rename=1"
+
+        console.log(" urlPost = ", urlPost, " data = ", data);
+
+
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST",urlPost);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send(JSON.stringify(data));
+        xhr.onload = function () {
+            innerAlert(xhr.responseText);
+        }
+    };
+
+
+    var config = <?php echo $js_config; ?>;
+
+    config.events = {
+        'onAppReady': onAppReady,
+        'onRequestRename': onRequestRename,
+        'onSave': function () {
+            innerAlert(" ++++ onSave editor ready");
+        },
+        'onRequestSaveAs': function () {
+            innerAlert(" ++++ onRequestSaveAs editor ready");
+        }
+    };
+    // config.events['onRequestRename'] = onRequestRename;
+
+    const docEditor = new DocsAPI.DocEditor("placeholder", config);
+</script>

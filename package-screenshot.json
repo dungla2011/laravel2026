@@ -1,0 +1,27 @@
+{
+  "name": "screenshot-service",
+  "version": "1.0.0",
+  "description": "Server-side DOM to Image rendering service using Puppeteer",
+  "main": "task-cli/screenshot-service.js",
+  "scripts": {
+    "start": "node task-cli/screenshot-service.js",
+    "dev": "nodemon task-cli/screenshot-service.js",
+    "test": "node task-cli/screenshot-service-test.js"
+  },
+  "keywords": [
+    "screenshot",
+    "dom-to-image",
+    "puppeteer",
+    "server-side-rendering"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "puppeteer": "^21.0.0",
+    "express": "^4.18.0",
+    "body-parser": "^1.20.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.0"
+  }
+}

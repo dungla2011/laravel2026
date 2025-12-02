@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/template/glx2021/assets/img/favicon.png">
+
+    <title>
+    GalaxyCloud  :: VPS :: Software Solution:: Web, Portal, CMS, Cloud hosting    </title>
+
+    <meta name="description" content="Công ty Công nghệ số Galaxy Việt Nam, sản phẩm và dịch vụ công nghệ thông tin, hosting, phần mềm, app mobile">
+    <meta name="keywords" content="galaxyCloud, cong ty galaxyCloud, galaxyCloud, nha cung cap galaxyCloud, công ty galaxyCloud, galaxyCloud, gia ten mien, giá tên miền, bảng giá tên miền, đăng kí tên miền, Đăng ký tên miền, Domain, dang ki ten mien, tên miền giá rẻ, mua tên miền, mua domain, mua ten mien, mua domain gia re, mua ten mien gia re, mua tên miền giá rẻ, ten mien gia re, ten mien dep, domain gia re, tên miền đẹp, mua domain giá rẻ, mua tên miền ở đâu, tên miền quốc tế, ban ten mien dep, ten mien quoc te, mua bán tên miền, bảng giá hosting, mua host, bang gia hosting, mua hosting, đăng ký hosting, dang ky hosting, mua hosting gia re, mua hosting giá rẻ, host gia re, hosting ssd, hosting giá rẻ, hosting web, host giá rẻ, hosting, dang ky host, dịch vụ email, dịch vụ email doanh nghiệp, email tên miền riêng, email cho doanh nghiệp, đăng ký email công ty, tạo email tên miền riêng, email 365, email theo tên miền, tạo email doanh nghiệp, dịch vụ email cho doanh nghiệp, email theo ten mien, tạo email với tên miền riêng, email doanh nghiep, thuê cloud server, cloud server giá rẻ, thuê máy chủ vps, cho thue server, cho thuê server giá rẻ, cho thuê máy chủ, thuê server giá rẻ, thuê máy chủ giá rẻ, thuê máy chủ, server giá rẻ, dịch vụ cho thuê máy chủ, cloud server, cloud server tốt nhất">
+
+    <meta property="og:image" content="/public/images/logo/logo-glx-tech-trans-square-200.png?v=1">
+    <meta property="og:title" content="Galaxy Technology - Sản phẩm và dịch vụ Công nghệ thông tin">
+    <meta property="og:description" content="Galaxy Việt Nam chuyên cung cấp sản phẩm và dịch vụ công nghệ thông tin, hosting, phần mềm, app mobile ... đáp ứng yêu cầu đa dạng của quý khách">
+
+
+
+    <link rel="stylesheet" href="/template/glx2021/assets/css/plugins.css">
+    <link rel="stylesheet" href="/template/glx2021/assets/css/style.css?v=1634991115">
+
+    <link rel="stylesheet" href="/public/css/lad-common.css">
+    <link rel="stylesheet" href="/template/glx2021/css/custom.css?v=1653368278">
+
+
+    <script src="/public/js/jquery-3.6.min.js"></script>
+    <script src="/application/_js/lib_base.js?v=1634016826"></script>
+
+<!--    <link rel="stylesheet" href="/template/glxv2/css/style_glx.css">-->
+</head>
+
+<body>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4BLYRT03HD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4BLYRT03HD');
+</script>
+
+<div class="content-wrapper">
+    <header class="wrapper
+    bg-soft-primary">
+
+        <nav class="navbar navbar-expand-lg center-nav transparent position-absolute navbar-dark caret-none">
+            <div class="container flex-lg-row flex-nowrap align-items-center">
+                <div class="navbar-brand w-100">
+                                            <a href="/">
+                            <img class="logo-dark" src="/template/glxv2/images/graphics/logo-galaxy-transparent-h52.png"
+                                 srcset="/template/glxv2/images/graphics/logo-galaxy-transparent-h52.png 2x" alt=""/>
+                            <img class="logo-light"
+                                 src="/template/glxv2/images/graphics/logo-galaxy-transparent-white-52.png"
+                                 srcset="/template/glxv2/images/graphics/logo-galaxy-transparent-white-52.png 2x" alt=""/>
+                        </a>
+
+                </div>
+                <div class="navbar-collapse offcanvas-nav">
+                    <div class="offcanvas-header d-lg-none d-xl-none">
+                        <a href="/"><img class="logo-light" src="/template/glxv2/images/graphics/logo-galaxy-transparent-h52.png "
+                                         srcset="/template/glxv2/images/graphics/logo-galaxy-transparent-h52.png " alt=""/></a>
+                        <button type="button" class="btn-close btn-close-white offcanvas-close offcanvas-nav-close"
+                                aria-label="Close"></button>
+                    </div>
+                    <ul class="navbar-nav">
+
+
+	<li class='nav-item dropdown' data-code-pos='qqq1634946265276'>
+		<a class="nav-link dropdown-toggle" href='#' >   Dịch vụ   </a>
+		<ul  class='dropdown-menu' data-code-pos='qqq1634946270926' >
+		<li class='nav-item'>
+		<a class="dropdown-item" href='/default/index/vps' >  VPS, Server hosting</a>
+		</li>
+		<li class='nav-item'>
+		<a class="dropdown-item" href='https://backup.galaxycloud.vn/'  target='_blank' >  Galaxy Backup Service</a>
+		</li>
+		<li class='nav-item'>
+		<a class="dropdown-item" href='/web-hosting' >  Web Hosting, Web Design</a>
+		</li>
+		<li class='nav-item'>
+		<a class="dropdown-item" href='#' >  Quản trị, Triển khai CSDL</a>
+		</li>
+		<li class='nav-item'>
+		<a class="dropdown-item" href='https://uptimerobot.vn/'  target='_blank' >  Monitor Online</a>
+		</li>
+		<li class='nav-item'>
+		<a class="dropdown-item" href='https://4share.vn'  target='_blank' >  File hosting</a>
+		</li>
+		<li class='nav-item'>
+		<a class="dropdown-item" href='https://video.galaxycloud.vn/'  target='_blank' >  Video streaming</a>
+		</li>
+		<li class='nav-item'>
+		<a class="dropdown-item" href='https://nhackhongloi.vn/'  target='_blank' >  Audio streaming</a>
+		</li>
+		<li class='nav-item'>
+		<a class="dropdown-item" href='#' >  Crawle Data</a>
+		</li>
+		<li class='nav-item'>
+		<a class="dropdown-item" href='https://disk.com.vn/'  target='_blank' >  Storage Device</a>
+		</li>
+		<li class='nav-item'>
+		<a class="dropdown-item" href='//mytree.vn/'  target='_blank' >  Quản lý phả hệ - Free</a>
+		</li>
+		<li class='nav-item'>
+		<a class="dropdown-item" href='/cho-thue-laptop-pc' >  Cho thuê PC, Laptop</a>
+		</li>
+		<li class='nav-item'>
+		<a class="dropdown-item" href='https://docs.google.com/document/d/1KjpSYu2TKUvG5_1_yT3y9kWEszBSmJYTCdiqh06rMmY/edit' >  Đại lý VPS</a>
+		</li>
+		<li class='nav-item'>
+		<a class="dropdown-item" href='https://tapdanhmay.mytree.vn/' >  PM Tập đánh máy</a>
+		</li>
+		</ul>
+	</li>
+	<li class='nav-item dropdown' data-code-pos='qqq1634946265276'>
+		<a class="nav-link dropdown-toggle" href='#' >   Phần mềm   </a>
+		<ul  class='dropdown-menu' data-code-pos='qqq1634946270926' >
+		<li class='nav-item'>
+		<a class="dropdown-item" href='/tool/media/static.lib?sid=0&db68=1&type=ms&id=ka192038'  target='_blank' >  Giải pháp CloudStorage</a>
+		</li>
+		<li class='nav-item'>
+		<a class="dropdown-item" href='https://galaxycloud.vn//tool/media/static.lib?sid=0&db68=1&type=ms&id=ua007102'  target='_blank' >  Quản trị Doanh nghiệp, Số hóa</a>
+		</li>
+		<li class='nav-item'>
+		<a class="dropdown-item" href='https://cdn-glx-9.galaxycloud.vn/tool/media/static.lib?sid=0&db68=1&type=ms&id=gv654504'  target='_blank' >  Quản lý Kho và Bán hàng</a>
+		</li>
+		<li class='nav-item'>
+		<a class="dropdown-item" href='https://cdn-glx-8.galaxycloud.vn/tool/media/static.lib?sid=0&db68=1&type=ms&id=cu159818'  target='_blank' >  Quản lý Điều hành công việc</a>
+		</li>
+		<li class='nav-item'>
+		<a class="dropdown-item" href='https://cdn-glx-3.galaxycloud.vn/tool/media/static.lib?sid=0&db68=1&type=ms&id=sa603435'  target='_blank' >  Quản lý Tài sản</a>
+		</li>
+		<li class='nav-item'>
+		<a class="dropdown-item" href='https://cdn-glx-6.galaxycloud.vn/tool/media/static.lib?sid=0&db68=1&type=ms&id=sn376090'  target='_blank' >  Quản lý Nhân sự</a>
+		</li>
+		</ul>
+	</li>
+	<li class='nav-item'>
+	<a class="nav-link" href='' >  Hướng dẫn</a>
+	</li>
+	<li class='nav-item'>
+	<a class="nav-link" href='/#intro-glx' >  Giới thiệu</a>
+	</li>
+                        <li class="nav-item">
+                                                            <a class="nav-link" href="/default/login"> Đăng nhập</a>
+                                                    </li>
+
+    <li class="nav-item dropdown" style="display: none">
+        <a class="nav-link dropdown-toggle" href="#!">Pages
+            <span class="sub-arrow"></span>
+        </a>
+        <ul class="dropdown-menu">
+            <li class="dropdown"><a class="dropdown-item dropdown-toggle" href="#">Services</a>
+                <ul class="dropdown-menu">
+                    <li class="nav-item"><a class="dropdown-item"
+                                            href="/template/glx2021/services.html">Services I</a>
+                    </li>
+                    <li class="nav-item"><a class="dropdown-item"
+                                            href="/template/glx2021/services2.html">Services II</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="dropdown"><a class="dropdown-item dropdown-toggle" href="#">About</a>
+                <ul class="dropdown-menu">
+                    <li class="nav-item"><a class="dropdown-item"
+                                            href="/template/glx2021/about.html">About I</a></li>
+                    <li class="nav-item"><a class="dropdown-item"
+                                            href="/template/glx2021/about2.html">About II</a></li>
+                </ul>
+            </li>
+
+        </ul>
+    </li>
+
+                    </ul>
+                    <!-- /.navbar-nav -->
+                </div>
+                <!-- /.navbar-collapse -->
+                <div class="navbar-other w-100 d-flex ms-auto">
+
+                    <ul class="navbar-nav flex-row align-items-center ms-auto" data-sm-skip="true">
+
+                        <li class="nav-item dropdown language-select text-uppercase">
+                            <a class="nav-link dropdown-item dropdown-toggle" href="#" role="button"
+                               data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Vi</a>
+                            <ul class="dropdown-menu">
+                                <li class="nav-item"><a class="dropdown-item" href="#">En</a></li>
+                                <li class="nav-item"><a class="dropdown-item" href="#">Jp</a></li>
+                            </ul>
+                        </li>
+
+<!--                        <li class="nav-item"><a class="nav-link" data-toggle="offcanvas-info"><i-->
+<!--                                        class="uil uil-info-circle"></i></a></li>-->
+
+                        <li class="nav-item d-lg-none">
+                            <div class="navbar-hamburger">
+                                <button class="hamburger animate plain" data-toggle="offcanvas-nav"><span></span>
+                                </button>
+                            </div>
+                        </li>
+                    </ul>
+                    <!-- /.navbar-nav -->
+                </div>
+                <!-- /.navbar-other -->
+                <div class="offcanvas-info text-inverse">
+                    <button type="button" class="btn-close btn-close-white offcanvas-close offcanvas-info-close"
+                            aria-label="Close"></button>
+                    <a href="/"><img src="/template/glxv2/images/graphics/logo-galaxy-transparent-h52.png "
+                                                                srcset="/template/glxv2/images/graphics/logo-galaxy-transparent-h52.png "
+                                                                alt=""/></a>
+                    <div class="mt-4 widget">
+                        <p>Sandbox is a multipurpose HTML5 template with various layouts which will be a great solution
+                            for your business.</p>
+                    </div>
+                    <!-- /.widget -->
+                    <div class="widget">
+                        <h4 class="widget-title text-white mb-3">Contact Info</h4>
+                        <address> Moonshine St. 14/05 <br/> Light City, London</address>
+                        <a href="mailto:first.last@email.com">info@email.com</a><br/> +00 (123) 456 78 90
+                    </div>
+                    <!-- /.widget -->
+                    <div class="widget">
+                        <h4 class="widget-title text-white mb-3">Learn More</h4>
+                        <ul class="list-unstyled">
+                            <li><a href="#">Our Story</a></li>
+                            <li><a href="#">Terms of Use</a></li>
+                            <li><a href="#">Privacy Policy</a></li>
+                            <li><a href="#">Contact Us</a></li>
+                        </ul>
+                    </div>
+                    <!-- /.widget -->
+                    <div class="widget">
+                        <h4 class="widget-title text-white mb-3">Follow Us</h4>
+                        <nav class="nav social social-white">
+                            <a href="#"><i class="uil uil-twitter"></i></a>
+                            <a href="#"><i class="uil uil-facebook-f"></i></a>
+                            <a href="#"><i class="uil uil-dribbble"></i></a>
+                            <a href="#"><i class="uil uil-instagram"></i></a>
+                            <a href="#"><i class="uil uil-youtube"></i></a>
+                        </nav>
+                        <!-- /.social -->
+                    </div>
+                    <!-- /.widget -->
+                </div>
+                <!-- /.offcanvas-info -->
+            </div>
+
+            <!-- /.container -->
+        </nav>
+        <!-- /.navbar -->
+    </header>
+    <!-- /header -->
+
+
+
+    <!-- FileView=/application/module/default/index-view/glx2021/index.phtml --><div class="hero-slider-wrapper bg-dark">
+    <div class="hero-slider owl-carousel dots-over" data-nav="true" data-dots="true" data-autoplay="true">
+        <div class="owl-slide d-flex align-items-center bg-overlay bg-overlay-400"
+             style="background-image: url(https://cdn-glx-4.galaxycloud.vn/tool/media/static.lib?sid=100&db68=1&type=mg&id=cx347958&media=image);">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-10 offset-md-1 col-lg-7 offset-lg-0 col-xl-6 col-xxl-5 text-center text-lg-start">
+                        <h2 class="display-1 fs-56 mb-4 text-white animated-caption"
+                            data-anim="animate__slideInDown" data-anim-delay="500">We bring solutions to make life
+                            easier.</h2>
+                        <p class="lead fs-23 lh-sm mb-7 text-white animated-caption"
+                           data-anim="animate__slideInRight" data-anim-delay="1000">We are a creative company that
+                            focuses on long term relationships with customers.</p>
+                        <div class="animated-caption" data-anim="animate__slideInUp" data-anim-delay="1500"><a
+                                    href="#" class="btn btn-lg btn-outline-white rounded-pill">Read More</a></div>
+                    </div>
+                    <!--/column -->
+                </div>
+                <!--/.row -->
+            </div>
+            <!--/.container -->
+        </div>
+        <!--/.owl-slide -->
+        <div class="owl-slide d-flex align-items-center bg-overlay bg-overlay-400"
+             style="background-image: url(https://cdn-glx-8.galaxycloud.vn/tool/media/static.lib?sid=100&db68=1&type=mg&id=ga116216&media=image);">
+            <div class="container light-gallery-wrapper">
+                <div class="row">
+                    <div class="col-md-11 col-lg-8 col-xl-7 col-xxl-6 mx-auto text-center">
+                        <h2 class="display-1 fs-56 mb-4 text-white animated-caption"
+                            data-anim="animate__slideInDown" data-anim-delay="500">We are trusted by over a million
+                            customers.</h2>
+                        <p class="lead fs-23 lh-sm mb-7 text-white animated-caption"
+                           data-anim="animate__slideInRight" data-anim-delay="1000">Here a few reasons why our
+                            customers choose us.</p>
+                        <div class="animated-caption" data-anim="animate__slideInUp" data-anim-delay="1500"><a
+                                    href="https://vimeo.com/374265101"
+                                    class="btn btn-circle btn-white btn-play ripple mx-auto mb-5 lightbox"><i
+                                        class="icn-caret-right"></i></a></div>
+                    </div>
+                    <!--/column -->
+                </div>
+                <!--/.row -->
+            </div>
+            <!--/.container -->
+        </div>
+        <!--/.owl-slide -->
+        <div class="owl-slide d-flex align-items-center bg-overlay bg-overlay-400"
+             style="background-image: url(https://cdn-glx-7.galaxycloud.vn/tool/media/static.lib?sid=100&db68=1&type=mg&id=ex836256&media=image);">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-10 offset-md-1 col-lg-7 offset-lg-5 col-xl-6 offset-xl-6 col-xxl-5 offset-xxl-6 text-center text-lg-start">
+                        <h2 class="display-1 fs-56 mb-4 text-white animated-caption"
+                            data-anim="animate__slideInDown" data-anim-delay="500">Just sit and relax.</h2>
+                        <p class="lead fs-23 lh-sm mb-7 text-white animated-caption"
+                           data-anim="animate__slideInRight" data-anim-delay="1000">We make sure your spending is
+                            stress free so that you can have the perfect control.</p>
+                        <div class="animated-caption" data-anim="animate__slideInUp" data-anim-delay="1500"><a
+                                    href="#" class="btn btn-lg btn-outline-white rounded-pill">Contact Us</a></div>
+                    </div>
+                    <!--/column -->
+                </div>
+                <!--/.row -->
+            </div>
+            <!--/.container -->
+        </div>
+        <!--/.owl-slide -->
+    </div>
+    <!--/.hero-slider -->
+</div>
+<!--/.hero-slider-wrapper -->
+
+
+<div style="text-align: center; margin-top: 20px">
+    <a href="/default/index/vps">
+    <img src="/public/images/galaxy-vps.png" alt="" style="max-width: 1320px; width: 90%">
+    </a>
+</div>
+
+
+<section id="intro-glx"  data-code-pos='qqq1634973176496'  class="wrapper bg-light">
+    <div class="container py-10 py-md-12">
+        <div class="row gx-lg-8 gx-xl-12 gy-10 mb-14x mb-md-17xx align-items-center">
+            <div class="col-lg-6 position-relative order-lg-2">
+                <div class="shape bg-dot primary rellax w-16 h-20" data-rellax-speed="1"
+                     style="top: 3rem; left: 5.5rem"></div>
+                <div class="overlap-grid overlap-grid-2">
+                    <div class="item">
+                        <figure class="rounded shadow"><img src="/template/glx2021/assets/img/photos/about3.jpg"
+                                                            srcset="/template/glx2021/assets/img/photos/about3@2x.jpg 2x"
+                                                            alt=""></figure>
+                    </div>
+                    <div class="item">
+
+                        <figure class="rounded shadow"><img src="https://cdn-glx-8.galaxycloud.vn/tool/media/static.lib?sid=100&db68=1&type=mg&id=vd012977&media=image&w=400"
+                                                            srcset="https://cdn-glx-8.galaxycloud.vn/tool/media/static.lib?sid=100&db68=1&type=mg&id=vd012977&media=image&w=400"
+                                                            alt=""></figure>
+                    </div>
+                </div>
+            </div>
+
+            <!--/column -->
+            <div class="col-lg-6" >
+                <img src="/template/glx2021/assets/img/icons/megaphone.svg"
+                     class="svg-inject icon-svg icon-svg-md mb-4" alt=""/>
+                <h2 class="display-4 mb-3" style="display: inline-block; margin-left: 20px">Về GalaxyCloud</h2>
+                <p class="lead fs-lg">
+                    GalaxyCloud chuyên cung cấp các Giải pháp Công nghệ thông tin chuyên nghiệp
+                </p>
+<!--                <p class="mb-6"> Bao gồm các giải pháp Phần mềm, Phần cứng, Tích hợp hệ thống, Bảo mật thông tin</p>-->
+                <div class="row gy-3 gx-xl-8">
+                    <div class="col-xl-6">
+                        <ul class="icon-list bullet-bg bullet-soft-primary mb-0">
+                            <li><span><i class="uil uil-check"></i></span><span>
+                                    Thiết kế, lập trình phần mềm: phần mềm ứng dụng, App di động
+                                </span>
+                            </li>
+                            <li class="mt-3"><span><i class="uil uil-check"></i></span><span>
+                                    Cung cấp, tư vấn Hosting VPS server, hosting Dedicated server, web hosting, file hosting, image hosting, video hosting
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                    <!--/column -->
+                    <div class="col-xl-6">
+                        <ul class="icon-list bullet-bg bullet-soft-primary mb-0">
+                            <li><span><i class="uil uil-check"></i></span><span>
+                                    Thiết kế website, portal cho doanh nghiệp, cơ quan báo chí, thương mại điện tử
+                                </span>
+                            </li>
+                            <li class="mt-3"><span><i class="uil uil-check"></i></span><span>
+                                    Vận hành các hệ thống IT: quản trị hệ thống Server và chuyên gia về các hệ Cơ sở dữ liệu
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                    <!--/column -->
+                </div>
+                <!--/.row -->
+            </div>
+            <!--/column -->
+        </div>
+        <!--/.row -->
+
+
+
+
+    </div>
+    <!-- /.container -->
+</section>
+
+
+<section  data-code-pos='qqq1634970569488' id="snippet-10" class="wrapper bg-gray-primary angled lower-start trangchu-hosting">
+    <div class="container pt-10 pb-8">
+        <div class="row gx-lg-8 gy-8 align-items-center">
+            <div class="col-lg-6 order-lg-2">
+                <div class="row gx-md-5 gy-5">
+                    <div class="col-md-4 offset-md-2 align-self-end">
+                        <figure class="rounded"><img src="https://cdn-glx-8.galaxycloud.vn/tool/media/static.lib?sid=100&db68=1&type=mg&id=oc869228&media=image" alt=""></figure>
+                    </div>
+                    <!--/column -->
+                    <div class="col-md-6 align-self-end">
+                        <figure class="rounded"><img src="https://cdn-glx-2.galaxycloud.vn/tool/media/static.lib?sid=100&db68=1&type=mg&id=wy150531&media=image&w=300" alt=""></figure>
+                    </div>
+                    <!--/column -->
+                    <div class="col-md-6 offset-md-1">
+                        <figure class="rounded"><img src="https://cdn-glx-3.galaxycloud.vn/tool/media/static.lib?sid=100&db68=1&type=mg&id=cr500430&media=image&w=300" alt=""></figure>
+                    </div>
+                    <!--/column -->
+                    <div class="col-md-4 align-self-start">
+                        <figure class="rounded"><img src="https://cdn-glx-1.galaxycloud.vn/tool/media/static.lib?sid=100&db68=1&type=mg&id=ta035656&media=image&w=300" alt=""></figure>
+                    </div>
+                    <!--/column -->
+                </div>
+                <!--/.row -->
+            </div>
+            <!--/column -->
+            <div class="col-lg-6">
+                <h2 class="display-4 mb-3" style="">Dịch vụ Hosting</h2>
+                <p class="lead fs-lg mb-8 pe-xxl-2">
+                    Galaxy cung cấp dịch vụ hosting hàng đầu, tư vấn phù hợp nhất cho khách hàng, tối ưu chi phí
+                </p>
+                <div class="row gx-xl-10 gy-6">
+                    <div class="col-md-6 col-lg-12 col-xl-6">
+                        <div class="d-flex flex-row">
+                            <div>
+                                <div class="icon btn btn-circle btn-lg btn-soft-primary disabled me-5"> <i class="uil uil-phone-volume"></i> </div>
+                            </div>
+                            <div>
+                                <h4 class="mb-1">24/7 Hỗ trợ</h4>
+                                <p class="mb-0">Hỗ trợ toàn thời gian</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!--/column -->
+                    <div class="col-md-6 col-lg-12 col-xl-6">
+                        <div class="d-flex flex-row">
+                            <div>
+                                <div class="icon btn btn-circle btn-lg btn-soft-primary disabled me-5"> <i class="uil uil-shield-exclamation"></i> </div>
+                            </div>
+                            <div>
+                                <h4 class="mb-1">Phần cứng</h4>
+                                <p class="mb-0">Hạ tầng Phần cứng mạnh mẽ</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!--/column -->
+                    <div class="col-md-6 col-lg-12 col-xl-6">
+                        <div class="d-flex flex-row">
+                            <div>
+                                <div class="icon btn btn-circle btn-lg btn-soft-primary disabled me-5"> <i class="uil uil-laptop-cloud"></i> </div>
+                            </div>
+                            <div>
+                                <h4 class="mb-1">Vị trí</h4>
+                                <p class="mb-0">Đặt tại các IDC lớn nhất: Viettel, VNPT, FPT</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!--/column -->
+                    <div class="col-md-6 col-lg-12 col-xl-6">
+                        <div class="d-flex flex-row">
+                            <div>
+                                <div class="icon btn btn-circle btn-lg btn-soft-primary disabled me-5"> <i class="uil uil-chart-line"></i> </div>
+                            </div>
+                            <div>
+                                <h4 class="mb-1">Phần mềm</h4>
+                                <p class="mb-0">Phần mềm hỗ trợ miễn phí độc đáo: FTP, VPN, Monitor</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-12 col-xl-6">
+                        <a href="/default/index/vps" class="btn btn-lg btn-outline-white rounded-pill">Xem thêm</a>
+                    </div>
+                    <!--/column -->
+                </div>
+                <!--/.row -->
+            </div>
+            <!--/column -->
+        </div>
+        <!--/.row -->
+    </div>
+    <!-- /.container -->
+
+    <!-- /.container -->
+</section>
+
+
+<!-- /section -->
+
+<section class="wrapper bg-light">
+    <div class="container py-10 py-md-12">
+        <div class="row mb-3">
+            <div class="col-md-10 col-xl-9 col-xxl-7 mx-auto text-center">
+                <img src="/template/glx2021/assets/img/icons/team.svg" class="svg-inject icon-svg icon-svg-md mb-4"
+                     alt=""/>
+                <h2 class="display-4 mb-3 px-lg-14">Nhận xét về chúng tôi.</h2>
+            </div>
+            <!--/column -->
+        </div>
+        <!--/.row -->
+        <div class="position-relative">
+            <div class="shape rounded-circle bg-soft-yellow rellax w-16 h-16" data-rellax-speed="1"
+                 style="bottom: 0.5rem; right: -1.7rem;"></div>
+            <div class="shape rounded-circle bg-line red rellax w-16 h-16" data-rellax-speed="1"
+                 style="top: 0.5rem; left: -1.7rem;"></div>
+            <div class="carousel owl-carousel gap-small" data-margin="0" data-dots="true" data-autoplay="false"
+                 data-autoplay-timeout="5000"
+                 data-responsive='{"0":{"items": "1"}, "768":{"items": "2"}, "992":{"items": "3"}, "1400":{"items": "4"}}'>
+                <div class="item">
+                    <div class="item-inner">
+                        <div class="card">
+                            <div class="card-body">
+                                <img class="rounded-circle w-15 mb-4"
+                                     src="https://cdn-glx-5.galaxycloud.vn/tool/media/static.lib?sid=100&db68=1&type=mg&id=br868633&media=image" alt=""/>
+                                <h4 class="mb-1">Ông Phạm Hưng</h4>
+                                <div class="meta mb-2">Trưởng phòng IDC Soft</div>
+                                <p class="mb-2">GalaxyCloud đã đáp ứng tốt yêu cầu cao của dịch vụ chúng tôi.</p>
+                                <nav class="nav social mb-0">
+                                    <a href="#"><i class="uil uil-twitter"></i></a>
+                                    <a href="#"><i class="uil uil-facebook-f"></i></a>
+                                    <a href="#"><i class="uil uil-dribbble"></i></a>
+                                </nav>
+                                <!-- /.social -->
+                            </div>
+                            <!--/.card-body -->
+                        </div>
+                        <!-- /.card -->
+                    </div>
+                    <!-- /.item-inner -->
+                </div>
+                <!-- /.item -->
+
+
+
+                <div class="item">
+                    <div class="item-inner">
+                        <div class="card">
+                            <div class="card-body">
+                                <img class="rounded-circle w-15 mb-4"
+                                     src="https://cdn-glx-1.galaxycloud.vn/tool/media/static.lib?sid=100&db68=1&type=mg&id=id598865&media=image" alt=""/>
+                                <h4 class="mb-1">Ông Phan Bá Mạnh </h4>
+                                <div class="meta mb-2">CEO tập đoàn AnVui</div>
+                                <p class="mb-2">GalaxyCloud là đối tác chiến lược trong phát triển các dịch vụ lớn của chúng tôi và đối tác</p>
+                                <nav class="nav social mb-0">
+                                    <a href="#"><i class="uil uil-twitter"></i></a>
+                                    <a href="#"><i class="uil uil-facebook-f"></i></a>
+                                    <a href="#"><i class="uil uil-dribbble"></i></a>
+                                </nav>
+                                <!-- /.social -->
+                            </div>
+                            <!--/.card-body -->
+                        </div>
+                        <!-- /.card -->
+                    </div>
+                    <!-- /.item-inner -->
+                </div>
+                <!-- /.item -->
+
+                <div class="item">
+                    <div class="item-inner">
+                        <div class="card">
+                            <div class="card-body">
+                                <img class="rounded-circle w-15 mb-4"
+                                     src="https://cdn-glx-5.galaxycloud.vn/tool/media/static.lib?sid=100&db68=1&type=mg&id=fe634662&media=image&w=100" alt=""/>
+                                <h4 class="mb-1">Ông Khắc Quý</h4>
+                                <div class="meta mb-2">Cục Thuế Quốc gia</div>
+                                <p class="mb-2">Dịch vụ có phản ứng nhanh, kịp thời với các vấn đề khẩn cấp của khách hàng</p>
+                                <nav class="nav social mb-0">
+                                    <a href="#"><i class="uil uil-twitter"></i></a>
+                                    <a href="#"><i class="uil uil-facebook-f"></i></a>
+                                    <a href="#"><i class="uil uil-dribbble"></i></a>
+                                </nav>
+                                <!-- /.social -->
+                            </div>
+                            <!--/.card-body -->
+                        </div>
+                        <!-- /.card -->
+                    </div>
+                    <!-- /.item-inner -->
+                </div>
+
+                <!-- /.item -->
+                <div class="item">
+                    <div class="item-inner">
+                        <div class="card">
+                            <div class="card-body">
+                                <img class="rounded-circle w-15 mb-4"
+                                     src="https://cdn-glx-8.galaxycloud.vn/tool/media/static.lib?sid=100&db68=1&type=mg&id=hy945795&media=image" alt=""/>
+                                <h4 class="mb-1">Mr Erik </h4>
+                                <div class="meta mb-2">From Clickadu</div>
+                                <p class="mb-2">I always use services of GalaxyCloud with VPS hosting in Vietnam.</p>
+                                <nav class="nav social mb-0">
+                                    <a href="#"><i class="uil uil-twitter"></i></a>
+                                    <a href="#"><i class="uil uil-facebook-f"></i></a>
+                                    <a href="#"><i class="uil uil-dribbble"></i></a>
+                                </nav>
+                                <!-- /.social -->
+                            </div>
+                            <!--/.card-body -->
+                        </div>
+                        <!-- /.card -->
+                    </div>
+                    <!-- /.item-inner -->
+                </div>
+                <!-- /.item -->
+                <div class="item">
+                    <div class="item-inner">
+                        <div class="card">
+                            <div class="card-body">
+                                <img class="rounded-circle w-15 mb-4"
+                                     src="/template/glx2021/assets/img/avatars/te4.jpg"
+                                     srcset="/template/glx2021/assets/img/avatars/te4@2x.jpg 2x" alt=""/>
+                                <h4 class="mb-1">Jackie Sanders</h4>
+                                <div class="meta mb-2">Investment Planner</div>
+                                <p class="mb-2">GalaxyCloud hỗ trợ rất tốt mỗi khi khách hàng yêu cầu, tư vấn cả các vấn đề ngoài phạm vi trách nhiệm dịch vụ</p>
+                                <nav class="nav social mb-0">
+                                    <a href="#"><i class="uil uil-twitter"></i></a>
+                                    <a href="#"><i class="uil uil-facebook-f"></i></a>
+                                    <a href="#"><i class="uil uil-dribbble"></i></a>
+                                </nav>
+                                <!-- /.social -->
+                            </div>
+                            <!--/.card-body -->
+                        </div>
+                        <!-- /.card -->
+                    </div>
+                    <!-- /.item-inner -->
+                </div>
+                <!-- /.item -->
+
+            </div>
+            <!-- /.owl-carousel -->
+        </div>
+        <!-- /.position-relative -->
+    </div>
+    <!-- /.container -->
+</section>
+<!-- /section -->
+<section class="wrapper image-wrapper bg-image bg-overlay"
+         data-image-src="/template/glxv2/images/bg_hostting_server2.jpg"
+         style="background-image: url('/template/glxv2/images/bg_hostting_server2.jpg');">
+    <div class="container py-10 py-md-12 white-all-text">
+        <div class="row">
+            <div class="col-xl-10 mx-auto">
+                <div class="row align-items-center counter-wrapper gy-6 text-center">
+                    <div class="col-md-3">
+                        <img src="/template/glx2021/assets/img/icons/check.svg"
+                             class="svg-inject icon-svg icon-svg-lg text-primary mb-3" alt=""/>
+                        <h3 class="counter">7518</h3>
+                        <p>Vps Online</p>
+                    </div>
+                    <!--/column -->
+                    <div class="col-md-3">
+                        <img src="/template/glx2021/assets/img/icons/user.svg"
+                             class="svg-inject icon-svg icon-svg-lg text-primary mb-3" alt=""/>
+                        <h3 class="counter">3472</h3>
+                        <p>Satisfied Customers</p>
+                    </div>
+                    <!--/column -->
+                    <div class="col-md-3">
+                        <img src="/template/glx2021/assets/img/icons/briefcase-2.svg"
+                             class="svg-inject icon-svg icon-svg-lg text-primary mb-3" alt=""/>
+                        <h3 class="counter">40 Gbs</h3>
+                        <p>Bandwidth usage</p>
+                    </div>
+                    <!--/column -->
+                    <div class="col-md-3">
+                        <img src="/template/glx2021/assets/img/icons/award-2.svg"
+                             class="svg-inject icon-svg icon-svg-lg text-primary mb-3" alt=""/>
+                        <h3 class="counter">523 TBs</h3>
+                        <p>Storage usage</p>
+                    </div>
+                    <!--/column -->
+                </div>
+                <!--/.row -->
+            </div>
+            <!-- /column -->
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.container -->
+</section>
+<!-- /section -->
+<section class="wrapper bg-light ">
+    <div class="container pt-15 pb-13 pt-md-15 pb-md-13">
+        <div class="row gx-md-8 gx-xl-12 gy-10 align-items-center">
+            <div class="col-md-8 col-lg-6 offset-lg-0 col-xl-5 offset-xl-1 position-relative">
+                <div class="shape bg-dot primary rellax w-17 h-21" data-rellax-speed="1"
+                     style="top: -2rem; left: -1.4rem;"></div>
+                <figure class="rounded"><img src="https://cdn-glx-8.galaxycloud.vn/tool/media/static.lib?sid=100&db68=1&type=mg&id=vd012977&media=image"
+                                             srcset="https://cdn-glx-8.galaxycloud.vn/tool/media/static.lib?sid=100&db68=1&type=mg&id=vd012977&media=image" alt="">
+                </figure>
+            </div>
+            <!--/column -->
+            <div class="col-lg-6">
+                <img src="/template/glx2021/assets/img/icons/telemarketer.svg"
+                     class="svg-inject icon-svg icon-svg-md mb-4" alt=""/>
+                <h2 class="display-4 mb-8" style="display: inline-block"> Liên hệ ngay khi bạn cần giải pháp Công nghệ thông tin</h2>
+                <div class="d-flex flex-row">
+                    <div>
+                        <div class="icon text-primary fs-28 me-6 mt-n1"><i class="uil uil-location-pin-alt"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <h5 class="mb-1">Địa chỉ</h5>
+                        <address>24 Nguyễn Cơ Thạch, Mỹ Đình, Hà Nội <br class="d-none d-md-block"/>
+                        </address>
+                    </div>
+                </div>
+                <div class="d-flex flex-row">
+                    <div>
+                        <div class="icon text-primary fs-28 me-6 mt-n1"><i class="uil uil-phone-volume"></i></div>
+                    </div>
+                    <div>
+                        <h5 class="mb-1">Phone</h5>
+                        <p>
+                            <a href="tel:84966616368">
+                            +849.66.61.63.68
+                            </a>
+                            <br>
+                            <a href="tel:84966616368">
+                                +849.29.36.68.99
+                            </a>
+
+                        </p>
+                    </div>
+                </div>
+                <div class="d-flex flex-row">
+                    <div>
+                        <div class="icon text-primary fs-28 me-6 mt-n1"><i class="uil uil-envelope"></i></div>
+                    </div>
+                    <div>
+                        <h5 class="mb-1">E-mail</h5>
+                        <p class="mb-0"><a href="mailto:sale@glx.com.vn" class="link-body">sale@glx.com.vn</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <!--/column -->
+        </div>
+        <!--/.row -->
+    </div>
+    <!-- /.container -->
+</section>
+<!-- /section -->
+<section class="wrapper bg-soft-primary" style="display: none">
+    <div class="container py-10 py-md-12 text-center">
+        <div class="row">
+            <div class="col-md-9 col-lg-7 col-xl-7 mx-auto text-center">
+                <img src="/template/glx2021/assets/img/icons/puzzle-2.svg"
+                     class="svg-inject icon-svg icon-svg-md mb-4" alt=""/>
+                <h2 class="display-4 mb-3">Join Our Community</h2>
+                <p class="lead fs-lg mb-6 px-xl-10 px-xxl-15">We are trusted by over 5000+ clients. Join them by
+                    using our services and grow your business.</p>
+            </div>
+            <!-- /column -->
+        </div>
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-md-6 col-lg-5 col-xl-4 mx-auto">
+                <div class="newsletter-wrapper">
+                    <!-- Begin Mailchimp Signup Form -->
+                    <div id="mc_embed_signup2">
+                        <form action="https://elemisfreebies.us20.list-manage.com/subscribe/post?u=aa4947f70a475ce162057838d&amp;id=b49ef47a9a"
+                              method="post" id="mc-embedded-subscribe-form2" name="mc-embedded-subscribe-form"
+                              class="validate" target="_blank" novalidate>
+                            <div id="mc_embed_signup_scroll2">
+                                <div class="mc-field-group input-group form-floating">
+                                    <input type="email" value="" name="EMAIL" class="required email form-control"
+                                           placeholder="Email Address" id="mce-EMAIL2">
+                                    <label for="mce-EMAIL2">Email Address</label>
+                                    <input type="submit" value="Join" name="subscribe" id="mc-embedded-subscribe2"
+                                           class="btn btn-primary">
+                                </div>
+                                <div id="mce-responses2" class="clear">
+                                    <div class="response" id="mce-error-response2" style="display:none"></div>
+                                    <div class="response" id="mce-success-response2" style="display:none"></div>
+                                </div>
+                                <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+                                <div style="position: absolute; left: -5000px;" aria-hidden="true"><input
+                                            type="text" name="b_ddc180777a163e0f9f66ee014_4b1bcfa0bc" tabindex="-1"
+                                            value=""></div>
+                                <div class="clear"></div>
+                            </div>
+                        </form>
+                    </div>
+                    <!--End mc_embed_signup-->
+                </div>
+                <!-- /.newsletter-wrapper -->
+            </div>
+            <!-- /column -->
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.container -->
+</section>
+<!-- /section -->
+
+
+
+<section class="wrapper bg-gradient-primary">
+    <div class="container py-14 pt-md-15 pb-md-18">
+        <div class="row text-center">
+            <div class="col-lg-9 col-xxl-7 mx-auto" data-cues="zoomIn" data-group="welcome" data-interval="-200" data-disabled="true">
+                <h2 class="display-1 mb-4" data-cue="zoomIn" data-interval="-200" data-group="welcome" data-show="true" style="animation-name: zoomIn; animation-duration: 700ms; animation-timing-function: ease; animation-delay: 0ms; animation-direction: normal; animation-fill-mode: both;">
+                    Triển khai Portal, CMS, Web
+                </h2>
+                <p class="lead lh-sm px-md-5 px-xl-15 px-xxl-10 mb-7" data-cue="zoomIn" data-interval="-200" data-group="welcome" data-show="true"
+                   style="animation-name: zoomIn; animation-duration: 700ms; animation-timing-function: ease; animation-delay: 500ms;
+                   animation-direction: normal; animation-fill-mode: both;">
+                    GalaxyCloud triển khai web Portal đa dạng như Hệ thống quản lý công việc, quản lý tin tức, website bán hàng, quản lý hàng, khách hàng, xuất bản tin tức, crawler dữ liệu web...
+                    GalaxyCloud cũng triển khai các dịch vụ BigData như File Hosting, Video Streaming, Music Streaming, VPS Hosting...
+                </p>
+            </div>
+            <!-- /column -->
+        </div>
+        <!-- /div -->
+        <div class="row mt-12" data-cue="fadeIn" data-delay="1600" data-show="true" style="animation-name: fadeIn; animation-duration: 700ms; animation-timing-function: ease; animation-delay: 1600ms; animation-direction: normal; animation-fill-mode: both;">
+            <div class="col-lg-8 mx-auto">
+                <figure><img class="img-fluid" src="https://sandbox.elemisthemes.com/assets/img/concept/concept12.png" srcset="https://sandbox.elemisthemes.com/assets/img/concept/concept12@2x.png 2x" alt=""></figure>
+            </div>
+            <!-- /column -->
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.container -->
+</section>
+
+<section class="wrapper bg-light">
+    <div class="container">
+        <div class="row gx-lg-0 gy-10 mb-15 mb-md-18 align-items-center">
+            <div class="col-lg-6">
+                <div class="row g-6 text-center">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <figure class="rounded mb-6"><img src="https://sandbox.elemisthemes.com/assets/img/photos/se1.jpg" srcset="https://sandbox.elemisthemes.com/assets/img/photos/se1@2x.jpg 2x" alt=""></figure>
+                            </div>
+                            <!-- /column -->
+                            <div class="col-lg-12">
+                                <div class="card shadow-lg">
+                                    <div class="card-body">
+                                        <div class="icon btn btn-circle btn-lg btn-soft-purple disabled mb-3"> <i class="uil uil-monitor"></i> </div>
+                                        <h4>Web Design</h4>
+                                        <p class="mb-2">Website đáp ứng giao diện hiện đại, tốc độ cao, tương thích SEO, dễ dàng sử dụng, cập nhật vĩnh viễn</p>
+                                        <a href="/web-hosting" class="more hover link-purple">Xem thêm</a>
+                                    </div>
+                                    <!--/.card-body -->
+                                </div>
+                                <!--/.card -->
+                            </div>
+                            <!-- /column -->
+                        </div>
+                        <!-- /.row -->
+                    </div>
+                    <!-- /column -->
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-lg-12 order-md-2">
+                                <figure class="rounded mb-6 mb-md-0"><img src="https://sandbox.elemisthemes.com/assets/img/photos/se2.jpg" srcset="https://sandbox.elemisthemes.com/assets/img/photos/se2@2x.jpg 2x" alt=""></figure>
+                            </div>
+                            <!-- /column -->
+                            <div class="col-lg-12">
+                                <div class="card shadow-lg mb-md-6 mt-lg-6">
+                                    <div class="card-body">
+                                        <div class="icon btn btn-circle btn-lg btn-soft-purple disabled mb-3"> <i class="uil uil-mobile-android"></i> </div>
+                                        <h4>Mobile Design</h4>
+                                        <p class="mb-2">Thiết kế tương thích thiết bị di động, tối ưu hiển thị Ui Ux, giao diện hiện đại, thuận tiện nhất khi sử dụng</p>
+                                        <a href="/web-hosting" class="more hover link-purple">Xem thêm</a>
+                                    </div>
+                                    <!--/.card-body -->
+                                </div>
+                                <!--/.card -->
+                            </div>
+                            <!-- /column -->
+                        </div>
+                        <!-- /.row -->
+                    </div>
+                    <!-- /column -->
+                </div>
+                <!-- /.row -->
+            </div>
+            <!-- /column -->
+            <div class="col-lg-5 offset-lg-1">
+                <h2 class="display-4 mb-3">Các bước thực hiện</h2>
+                <p class="lead fs-lg lh-sm">Nhận yêu cầu khách hàng, tiến hành phân tích thiết kế và triển khai dự án theo quy trình thống nhất.</p>
+                <p>
+                    Phân tích thiết kế - Phù hợp quy mô dịch vụ, dự phòng mở rộng tương lai - Thiết kế giao diện chuyên nghiệp, hiện đại - Lập trình triển khai theo giao diện và tính năng đã thiết kế - Cùng khách hàng đánh giá, chỉnh sửa hoàn thiện - Kết thúc dự án
+                </p>
+                <a href="/web-hosting" class="btn btn-primary rounded-pill mt-3">Xem thêm</a>
+            </div>
+            <!-- /column -->
+        </div>
+        <!-- /.row -->
+
+    </div>
+
+</section>
+</div>
+
+
+
+<!-- /.content-wrapper -->
+<footer class="bg-dark text-inverse">
+    <div class="container py-13 py-md-15">
+        <div class="row gy-6 gy-lg-0">
+            <div class="col-lg-6">
+                <div class="widget">
+                    <img class="mb-4" height="45"
+                         src="/template/glxv2/images/graphics/logo-galaxy-transparent-white-52.png "
+                         srcset="/template/glxv2/images/graphics/logo-galaxy-transparent-white-52.png " alt=""/>
+                         <br>
+                         CÔNG TY TNHH CÔNG NGHỆ SỐ GALAXY VIỆT NAM
+                         <br>
+                         Địa chỉ: Số 54, Nguyễn Đổng Chi, Cầu Diễn, Nam Từ Liêm,  Hà Nội
+                         <br>
+                         Ngày hoạt động: 06/12/2010
+                         <br>
+                         Giấy phép kinh doanh: 0105029486
+<br>
+                    <p style="color: #b9b9b9">Thông tin thanh toán </p>
+                    - Số TK: 83211.1066.8888 – CÔNG TY TNHH CÔNG NGHỆ SỐ GALAXY VIỆT NAM -
+
+                    Ngân hàng Thương mại cổ phần Quân đội -
+                    Chi nhánh Mỹ đình (Hà Nội)
+<!--                    <br>-->
+<!--                    - Số TK: 0021.0014.80409 – LÊ ANH DŨNG – Ngân hàng Vietcombank Hà Nội-->
+<!--                    <br>-->
+<!--                    - Số TK: 138.996.249 – LÊ ANH DŨNG – Ngân hàng ACB Hà Nội-->
+                    <br>
+
+                    <br>
+                    <p class="mb-4">© 2010 - 2024                    Galaxy Technology. All rights reserved.</p>
+                    <nav class="nav social social-white">
+                        <a href="#"><i class="uil uil-twitter"></i></a>
+                        <a href="#"><i class="uil uil-facebook-f"></i></a>
+                        <a href="#"><i class="uil uil-dribbble"></i></a>
+                        <a href="#"><i class="uil uil-instagram"></i></a>
+                        <a href="#"><i class="uil uil-youtube"></i></a>
+                    </nav>
+                    <!-- /.social -->
+                </div>
+                <!-- /.widget -->
+            </div>
+            <!-- /column -->
+<!--            <div class="col-md-4 col-lg-2 offset-lg-2">-->
+<!--                <div class="widget">-->
+<!--                    <h4 class="widget-title mb-3 text-white">Need Help?</h4>-->
+<!--                    <ul class="list-unstyled mb-0">-->
+<!--                        <li><a href="#">Support</a></li>-->
+<!--                        <li><a href="#">Get Started</a></li>-->
+<!--                        <li><a href="#">Terms of Use</a></li>-->
+<!--                        <li><a href="#">Privacy Policy</a></li>-->
+<!--                    </ul>-->
+<!--                </div>-->
+                <!-- /.widget -->
+<!--            </div>-->
+            <!-- /column -->
+            <div class="col-md-4 col-lg-2">
+                <div class="widget">
+                    <h4 class="widget-title mb-3 text-white">Learn More</h4>
+                    <ul class="list-unstyled mb-0">
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Our Story</a></li>
+                        <li><a href="#">Projects</a></li>
+                        <li><a href="#">Pricing</a></li>
+                    </ul>
+                </div>
+                <!-- /.widget -->
+            </div>
+            <!-- /column -->
+            <div class="col-md-4 col-lg-2">
+                <div class="widget">
+                    <h4 class="widget-title mb-3 text-white">Liên hệ</h4>
+                    <address>24 Nguyễn Cơ Thạch, Nam Từ Liêm, Hà Nội</address>
+                    <a href="mailto:sale@glx.com.vn">sale@glx.com.vn</a>
+                    <br/>
+
+                    <a href="tel:0966616368">- Hà Nội: +849.04.04.36.89</a>
+                    <br/>
+                    <a href="tel:0929366899">- TP HCM: +849.29.36.68.99</a>
+                    <br/>
+
+                    <a href="tel:0981002959">- Đà Nẵng: +849.81.00.29.59</a>
+                </div>
+                <!-- /.widget -->
+            </div>
+            <!-- /column -->
+        </div>
+        <!--/.row -->
+    </div>
+    <!-- /.container -->
+</footer>
+<div class="progress-wrap">
+    <svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
+        <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"/>
+    </svg>
+</div>
+
+<script src="/public/js/bootstrap.5.bundle.min.js"></script>
+<script src="/template/glx2021/assets/js/plugins.js"></script>
+<script src="/template/glx2021/assets/js/theme.js"></script>
+
+<script src="/application/_js/hosting_vps.js"></script>
+<script src="/application/_js/hosting_dedicated.js"></script>
+<script src="/application/_js/common_glx.js.php"></script>
+
+
+<a href="https://zalo.me/0904043689" id="linkzalo" target="_blank" rel="noopener noreferrer"><div id="fcta-zalo-tracking" class="fcta-zalo-mess">
+        <span id="fcta-zalo-tracking">Hỗ trợ</span></div><div class="fcta-zalo-vi-tri-nut"><div id="fcta-zalo-tracking" class="fcta-zalo-nen-nut"><div id="fcta-zalo-tracking" class="fcta-zalo-ben-trong-nut"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 460.1 436.6"><path fill="currentColor" class="st0" d="M82.6 380.9c-1.8-.8-3.1-1.7-1-3.5 1.3-1 2.7-1.9 4.1-2.8 13.1-8.5 25.4-17.8 33.5-31.5 6.8-11.4 5.7-18.1-2.8-26.5C69 269.2 48.2 212.5 58.6 145.5 64.5 107.7 81.8 75 107 46.6c15.2-17.2 33.3-31.1 53.1-42.7 1.2-.7 2.9-.9 3.1-2.7-.4-1-1.1-.7-1.7-.7-33.7 0-67.4-.7-101 .2C28.3 1.7.5 26.6.6 62.3c.2 104.3 0 208.6 0 313 0 32.4 24.7 59.5 57 60.7 27.3 1.1 54.6.2 82 .1 2 .1 4 .2 6 .2H290c36 0 72 .2 108 0 33.4 0 60.5-27 60.5-60.3v-.6-58.5c0-1.4.5-2.9-.4-4.4-1.8.1-2.5 1.6-3.5 2.6-19.4 19.5-42.3 35.2-67.4 46.3-61.5 27.1-124.1 29-187.6 7.2-5.5-2-11.5-2.2-17.2-.8-8.4 2.1-16.7 4.6-25 7.1-24.4 7.6-49.3 11-74.8 6zm72.5-168.5c1.7-2.2 2.6-3.5 3.6-4.8 13.1-16.6 26.2-33.2 39.3-49.9 3.8-4.8 7.6-9.7 10-15.5 2.8-6.6-.2-12.8-7-15.2-3-.9-6.2-1.3-9.4-1.1-17.8-.1-35.7-.1-53.5 0-2.5 0-5 .3-7.4.9-5.6 1.4-9 7.1-7.6 12.8 1 3.8 4 6.8 7.8 7.7 2.4.6 4.9.9 7.4.8 10.8.1 21.7 0 32.5.1 1.2 0 2.7-.8 3.6 1-.9 1.2-1.8 2.4-2.7 3.5-15.5 19.6-30.9 39.3-46.4 58.9-3.8 4.9-5.8 10.3-3 16.3s8.5 7.1 14.3 7.5c4.6.3 9.3.1 14 .1 16.2 0 32.3.1 48.5-.1 8.6-.1 13.2-5.3 12.3-13.3-.7-6.3-5-9.6-13-9.7-14.1-.1-28.2 0-43.3 0zm116-52.6c-12.5-10.9-26.3-11.6-39.8-3.6-16.4 9.6-22.4 25.3-20.4 43.5 1.9 17 9.3 30.9 27.1 36.6 11.1 3.6 21.4 2.3 30.5-5.1 2.4-1.9 3.1-1.5 4.8.6 3.3 4.2 9 5.8 14 3.9 5-1.5 8.3-6.1 8.3-11.3.1-20 .2-40 0-60-.1-8-7.6-13.1-15.4-11.5-4.3.9-6.7 3.8-9.1 6.9zm69.3 37.1c-.4 25 20.3 43.9 46.3 41.3 23.9-2.4 39.4-20.3 38.6-45.6-.8-25-19.4-42.1-44.9-41.3-23.9.7-40.8 19.9-40 45.6zm-8.8-19.9c0-15.7.1-31.3 0-47 0-8-5.1-13-12.7-12.9-7.4.1-12.3 5.1-12.4 12.8-.1 4.7 0 9.3 0 14v79.5c0 6.2 3.8 11.6 8.8 12.9 6.9 1.9 14-2.2 15.8-9.1.3-1.2.5-2.4.4-3.7.2-15.5.1-31 .1-46.5z"></path></svg></div><div id="fcta-zalo-tracking" class="fcta-zalo-text">Chat ngay</div></div></div></a>
+<link rel="stylesheet" href="/public/css/zalo.css">
+<script>
+    if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) )
+    {document.getElementById("linkzalo").href="https://zalo.me/0904043689";}
+</script>
+
+</body>
+
+</html>
+<!-- LOADTIME1 = 0.0961 (ActionTime: 0.0001) , 103.163.216.21
+
+ *** This website is Powered By GalaxyCloud.vn ***
+ -->

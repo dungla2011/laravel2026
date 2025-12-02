@@ -1,0 +1,198 @@
+[
+    {
+        "old": "'ACB' => ['public_name' => 'NH TMCP Á CHÂU - ACB', \r\n    'bidv_name' => 'NHTMCP A CHAU-CN HA NOI - 01307001']",
+        "new": "'ACB' => ['public_name' => 'NH TMCP Á CHÂU - ACB', 'bidv_name' => 'NHTMCP A CHAU-CN HA NOI  - 01307001', 'bidv_name2' => 'NHTMCP A CHAU-CN HA NOI']",
+        "key": "ACB",
+        "id": "01307001",
+        "bidv_name2": "NHTMCP A CHAU-CN HA NOI"
+    },
+    {
+        "old": "'VIETINBANK' => ['public_name' => 'NH TMCP CÔNG THƯƠNG VIỆT NAM - VIETINBANK', \r\n    'bidv_name' => 'NHTMCP CONG THUONG VIET NAM - HA NOI - 01201001']",
+        "new": "'VIETINBANK' => ['public_name' => 'NH TMCP CÔNG THƯƠNG VIỆT NAM - VIETINBANK', 'bidv_name' => 'NHTMCP CONG THUONG VIET NAM - HA NOI  - 01201001', 'bidv_name2' => 'NHTMCP CONG THUONG VIET NAM - HA NOI']",
+        "key": "VIETINBANK",
+        "id": "01201001",
+        "bidv_name2": "NHTMCP CONG THUONG VIET NAM - HA NOI"
+    },
+    {
+        "old": "'CO-OPBANK' => ['public_name' => 'NH Hợp tác xã Việt Nam - CO-OPBANK', \r\n    'bidv_name' => 'NH HOP TAC XA VIET NAM - 01901001']",
+        "new": "'CO-OPBANK' => ['public_name' => 'NH Hợp tác xã Việt Nam - CO-OPBANK', 'bidv_name' => 'NH HOP TAC XA VIET NAM  - 01901001', 'bidv_name2' => 'NGAN HANG HOP TAC HOI SO CHINH - HA NOI']",
+        "key": "CO-OPBANK",
+        "id": "01901001",
+        "bidv_name2": "NGAN HANG HOP TAC HOI SO CHINH - HA NOI"
+    },
+    {
+        "old": "'CIMB' => ['public_name' => 'NH CATHAY - CIMB', \r\n    'bidv_name' => 'NH CATHAY - 79634001']",
+        "new": "'CIMB' => ['public_name' => 'NH CATHAY - CIMB', 'bidv_name' => 'NH CATHAY  - 79634001', 'bidv_name2' => 'NH CATHAY - HO CHI MINH']",
+        "key": "CIMB",
+        "id": "79634001",
+        "bidv_name2": "NH CATHAY - HO CHI MINH"
+    },
+    {
+        "old": "'VDB' => ['public_name' => 'NH Phát triển Việt Nam - VDB', \r\n    'bidv_name' => 'NH PHAT TRIEN VIET NAM - 01208001']",
+        "new": "'VDB' => ['public_name' => 'NH Phát triển Việt Nam - VDB', 'bidv_name' => 'NH PHAT TRIEN VIET NAM  - 01208001', 'bidv_name2' => 'NH PHAT TRIEN VN - HOI SO CHINH - HA NOI']",
+        "key": "VDB",
+        "id": "01208001",
+        "bidv_name2": "NH PHAT TRIEN VN - HOI SO CHINH - HA NOI"
+    },
+    {
+        "old": "'ABBANK' => ['public_name' => 'NH TMCP An Bình - ABBANK', \r\n    'bidv_name' => 'NH TMCP AN BINH - 01323002']",
+        "new": "'ABBANK' => ['public_name' => 'NH TMCP An Bình - ABBANK', 'bidv_name' => 'NH TMCP AN BINH  - 01323002', 'bidv_name2' => 'NH TMCP AN BINH - HOI SO CHINH']",
+        "key": "ABBANK",
+        "id": "01323002",
+        "bidv_name2": "NH TMCP AN BINH - HOI SO CHINH"
+    },
+    {
+        "old": "'ANZ' => ['public_name' => 'NH TNHH MTV ANZ Việt Nam - ANZ', \r\n    'bidv_name' => 'NH TNHH MTV ANZ VIET NAM - 01602002']",
+        "new": "'ANZ' => ['public_name' => 'NH TNHH MTV ANZ Việt Nam - ANZ', 'bidv_name' => 'NH TNHH MTV ANZ VIET NAM  - 01602002', 'bidv_name2' => 'NH TNHH MTV ANZ VIET NAM HOI SO -HN']",
+        "key": "ANZ",
+        "id": "01602002",
+        "bidv_name2": "NH TNHH MTV ANZ VIET NAM HOI SO -HN"
+    },
+    {
+        "old": "'PBVN' => ['public_name' => 'NH TNHH MTV PUBLIC Việt Nam - PBVN', \r\n    'bidv_name' => 'NH TNHH MTV PUBLIC VIET NAM - 01501001']",
+        "new": "'PBVN' => ['public_name' => 'NH TNHH MTV PUBLIC Việt Nam - PBVN', 'bidv_name' => 'NH TNHH MTV PUBLIC VIET NAM  - 01501001', 'bidv_name2' => 'NH TNHH MTV PUBLIC VN HOI SO CHINH']",
+        "key": "PBVN",
+        "id": "01501001",
+        "bidv_name2": "NH TNHH MTV PUBLIC VN HOI SO CHINH"
+    },
+    {
+        "old": "'SHINHAN' => ['public_name' => 'NH TNHH MTV SHINHAN Việt Nam - SHINHAN', \r\n    'bidv_name' => 'NH TNHH MTV SHINHAN VIET NAM - 79616001']",
+        "new": "'SHINHAN' => ['public_name' => 'NH TNHH MTV SHINHAN Việt Nam - SHINHAN', 'bidv_name' => 'NH TNHH MTV SHINHAN VIET NAM  - 79616001', 'bidv_name2' => 'NH TNHH MTV SHINHAN VN-HOI SO CHINH-HCM']",
+        "key": "SHINHAN",
+        "id": "79616001",
+        "bidv_name2": "NH TNHH MTV SHINHAN VN-HOI SO CHINH-HCM"
+    },
+    {
+        "old": "'AGRIBANK' => ['public_name' => 'NH Nông nghiệp Và Phát triển Nông thôn Việt Nam - AGRIBANK', 'bidv_name' => 'NH NONG NGHIEP VA PHAT TRIEN NONG THON VIET NAM - 01204001']",
+        "new": "'AGRIBANK' => ['public_name' => 'NH Nông nghiệp Và Phát triển Nông thôn Việt Nam - AGRIBANK', 'bidv_name' => 'NH NONG NGHIEP VA PHAT TRIEN NONG THON VIET NAM  - 01204001', 'bidv_name2' => 'NHNO&PTNT-HOI SO CHINH - HA NOI']",
+        "key": "AGRIBANK",
+        "id": "01204001",
+        "bidv_name2": "NHNO&PTNT-HOI SO CHINH - HA NOI"
+    },
+    {
+        "old": "'BVBANK_TIMO' => ['public_name' => 'NH TMCP Bản Việt - BVBANK', \r\n    'bidv_name' => 'NH TMCP BAN VIET - 79327001']",
+        "new": "'BVBANK_TIMO' => ['public_name' => 'NH TMCP Bản Việt - BVBANK', 'bidv_name' => 'NH TMCP BAN VIET  - 79327001', 'bidv_name2' => 'NHTMCP BAN VIET-CN HOI SO CHINH -TPHCM']",
+        "key": "BVBANK_TIMO",
+        "id": "79327001",
+        "bidv_name2": "NHTMCP BAN VIET-CN HOI SO CHINH -TPHCM"
+    },
+    {
+        "old": "'BAO_VIET_BANK' => ['public_name' => 'NH TMCP Bảo Việt - BAO_VIET', \r\n    'bidv_name' => 'NH TMCP BAO VIET - 01359001']",
+        "new": "'BAO_VIET_BANK' => ['public_name' => 'NH TMCP Bảo Việt - BAO_VIET', 'bidv_name' => 'NH TMCP BAO VIET  - 01359001', 'bidv_name2' => 'NHTMCP BAO VIET-HOI SO CHINH - HA NOI']",
+        "key": "BAO_VIET_BANK",
+        "id": "01359001",
+        "bidv_name2": "NHTMCP BAO VIET-HOI SO CHINH - HA NOI"
+    },
+    {
+        "old": "'VINASIAM_BANK' => ['public_name' => 'NH TMCP Bưu Điện Liên Việt - VINASIAM', \r\n    'bidv_name' => 'NH TMCP BUU DIEN LIEN VIET - 01357005']",
+        "new": "'VINASIAM_BANK' => ['public_name' => 'NH TMCP Bưu Điện Liên Việt - VINASIAM', 'bidv_name' => 'NH TMCP BUU DIEN LIEN VIET  - 01357005', 'bidv_name2' => 'NHTMCP BUU DIEN LIEN VIET HOI SO CHINH']",
+        "key": "VINASIAM_BANK",
+        "id": "01357005",
+        "bidv_name2": "NHTMCP BUU DIEN LIEN VIET HOI SO CHINH"
+    },
+    {
+        "old": "'KBANK' => ['public_name' => 'NH TMCP Đại chúng Việt Nam - KBANK', \r\n    'bidv_name' => 'NH TMCP DAI CHUNG VIET NAM - 01360002']",
+        "new": "'KBANK' => ['public_name' => 'NH TMCP Đại chúng Việt Nam - KBANK', 'bidv_name' => 'NH TMCP DAI CHUNG VIET NAM  - 01360002', 'bidv_name2' => 'NHTMCP DAI CHUNG VN-HOI SO CHINH -HA NOI']",
+        "key": "KBANK",
+        "id": "01360002",
+        "bidv_name2": "NHTMCP DAI CHUNG VN-HOI SO CHINH -HA NOI"
+    },
+    {
+        "old": "'SEABANK' => ['public_name' => 'NH TMCP Đông Nam Á - SEABANK', \r\n    'bidv_name' => 'NH TMCP DONG NAM A - 01317001']",
+        "new": "'SEABANK' => ['public_name' => 'NH TMCP Đông Nam Á - SEABANK', 'bidv_name' => 'NH TMCP DONG NAM A  - 01317001', 'bidv_name2' => 'NHTMCP DONG NAM A-HOI SO CHINH - HA NOI']",
+        "key": "SEABANK",
+        "id": "01317001",
+        "bidv_name2": "NHTMCP DONG NAM A-HOI SO CHINH - HA NOI"
+    },
+    {
+        "old": "'BIDV' => ['public_name' => 'NH TMCP Đầu tư Và Phát triển Việt Nam - BIDV', \r\n    'bidv_name' => 'NH TMCP DAU TU VA PHAT TRIEN VIET NAM - 01202001']",
+        "new": "'BIDV' => ['public_name' => 'NH TMCP Đầu tư Và Phát triển Việt Nam - BIDV', 'bidv_name' => 'NH TMCP DAU TU VA PHAT TRIEN VIET NAM  - 01202001', 'bidv_name2' => 'NHTMCP DT&PT VN-HOI SO CHINH - HA NOI']",
+        "key": "BIDV",
+        "id": "01202001",
+        "bidv_name2": "NHTMCP DT&PT VN-HOI SO CHINH - HA NOI"
+    },
+    {
+        "old": "'MSB' => ['public_name' => 'NH TMCP Hàng hải Việt Nam - MSB', \r\n    'bidv_name' => 'NH TMCP HANG HAI VIET NAM - 01302001']",
+        "new": "'MSB' => ['public_name' => 'NH TMCP Hàng hải Việt Nam - MSB', 'bidv_name' => 'NH TMCP HANG HAI VIET NAM  - 01302001', 'bidv_name2' => 'NHTMCP HANG HAI VN-HOI SO CHINH - HA NOI']",
+        "key": "MSB",
+        "id": "01302001",
+        "bidv_name2": "NHTMCP HANG HAI VN-HOI SO CHINH - HA NOI"
+    },
+    {
+        "old": "'TECHCOMBANK' => ['public_name' => 'NH TMCP Kỹ thương Việt Nam - TECHCOMBANK', \r\n    'bidv_name' => 'NH TMCP KY THUONG VIET NAM - 01310001']",
+        "new": "'TECHCOMBANK' => ['public_name' => 'NH TMCP Kỹ thương Việt Nam - TECHCOMBANK', 'bidv_name' => 'NH TMCP KY THUONG VIET NAM  - 01310001', 'bidv_name2' => 'NHTMCP KY THUONG VN-HOI SO CHINH -HA NOI']",
+        "key": "TECHCOMBANK",
+        "id": "01310001",
+        "bidv_name2": "NHTMCP KY THUONG VN-HOI SO CHINH -HA NOI"
+    },
+    {
+        "old": "'VIETCOMBANK' => ['public_name' => 'NH TMCP Ngoại thương Việt Nam - VIETCOMBANK', \r\n    'bidv_name' => 'NH TMCP NGOAI THUONG VIET NAM - 01203001']",
+        "new": "'VIETCOMBANK' => ['public_name' => 'NH TMCP Ngoại thương Việt Nam - VIETCOMBANK', 'bidv_name' => 'NH TMCP NGOAI THUONG VIET NAM  - 01203001', 'bidv_name2' => 'NHTMCP NGOAI THUONG-HOI SO CHINH-HA NOI']",
+        "key": "VIETCOMBANK",
+        "id": "01203001",
+        "bidv_name2": "NHTMCP NGOAI THUONG-HOI SO CHINH-HA NOI"
+    },
+    {
+        "old": "'MB' => ['public_name' => 'NH TMCP Quân đội - MB', \r\n    'bidv_name' => 'NH TMCP QUAN DOI - 01311001']",
+        "new": "'MB' => ['public_name' => 'NH TMCP Quân đội - MB', 'bidv_name' => 'NH TMCP QUAN DOI  - 01311001', 'bidv_name2' => 'NHTMCP QUAN DOI- HOI SO CHINH - HA NOI']",
+        "key": "MB",
+        "id": "01311001",
+        "bidv_name2": "NHTMCP QUAN DOI- HOI SO CHINH - HA NOI"
+    },
+    {
+        "old": "'VIB' => ['public_name' => 'NH TMCP Quốc tế - VIB', \r\n    'bidv_name' => 'NH TMCP QUOC TE - 01314001']",
+        "new": "'VIB' => ['public_name' => 'NH TMCP Quốc tế - VIB', 'bidv_name' => 'NH TMCP QUOC TE  - 01314001', 'bidv_name2' => 'NHTMCP QUOC TE VN-HOI SO CHINH - HA NOI']",
+        "key": "VIB",
+        "id": "01314001",
+        "bidv_name2": "NHTMCP QUOC TE VN-HOI SO CHINH - HA NOI"
+    },
+    {
+        "old": "'SHB' => ['public_name' => 'NH TMCP Sài Gòn Hà Nội - SHB', \r\n    'bidv_name' => 'NH TMCP SAI GON HA NOI - 01348002']",
+        "new": "'SHB' => ['public_name' => 'NH TMCP Sài Gòn Hà Nội - SHB', 'bidv_name' => 'NH TMCP SAI GON HA NOI  - 01348002', 'bidv_name2' => 'NHTMCP SAI GON HA NOI-HOI SO - HA NOI']",
+        "key": "SHB",
+        "id": "01348002",
+        "bidv_name2": "NHTMCP SAI GON HA NOI-HOI SO - HA NOI"
+    },
+    {
+        "old": "'SACOMBANK' => ['public_name' => 'NH TMCP Sài Gòn Thương tín - SACOMBANK', \r\n    'bidv_name' => 'NH TMCP SAI GON THUONG TIN - 79303001']",
+        "new": "'SACOMBANK' => ['public_name' => 'NH TMCP Sài Gòn Thương tín - SACOMBANK', 'bidv_name' => 'NH TMCP SAI GON THUONG TIN  - 79303001', 'bidv_name2' => 'NHTMCP SAI GON THUONG TIN-HOI SO - TPHCM']",
+        "key": "SACOMBANK",
+        "id": "79303001",
+        "bidv_name2": "NHTMCP SAI GON THUONG TIN-HOI SO - TPHCM"
+    },
+    {
+        "old": "'TPBANK' => ['public_name' => 'NH TMCP Tiền Phong - TPBANK', \r\n    'bidv_name' => 'NH TMCP TIEN PHONG - 01358001']",
+        "new": "'TPBANK' => ['public_name' => 'NH TMCP Tiền Phong - TPBANK', 'bidv_name' => 'NH TMCP TIEN PHONG  - 01358001', 'bidv_name2' => 'NHTMCP TIEN PHONG-HOI SO CHINH- HA NOI']",
+        "key": "TPBANK",
+        "id": "01358001",
+        "bidv_name2": "NHTMCP TIEN PHONG-HOI SO CHINH- HA NOI"
+    },
+    {
+        "old": "'VIET_A_BANK' => ['public_name' => 'NH TMCP Việt Á - VIET_A', \r\n    'bidv_name' => 'NH TMCP VIET A - 01355002']",
+        "new": "'VIET_A_BANK' => ['public_name' => 'NH TMCP Việt Á - VIET_A', 'bidv_name' => 'NH TMCP VIET A  - 01355002', 'bidv_name2' => 'NHTMCP VIET A-HOI SO CHINH - HA NOI']",
+        "key": "VIET_A_BANK",
+        "id": "01355002",
+        "bidv_name2": "NHTMCP VIET A-HOI SO CHINH - HA NOI"
+    },
+    {
+        "old": "'VPBANK' => ['public_name' => 'NH TMCP Việt Nam Thịnh vượng - VPBANK', \r\n    'bidv_name' => 'NH TMCP VIET NAM THINH VUONG - 01309001']",
+        "new": "'VPBANK' => ['public_name' => 'NH TMCP Việt Nam Thịnh vượng - VPBANK', 'bidv_name' => 'NH TMCP VIET NAM THINH VUONG  - 01309001', 'bidv_name2' => 'NHTMCP VN THINH VUONG-HOI SO CHINH-HANOI']",
+        "key": "VPBANK",
+        "id": "01309001",
+        "bidv_name2": "NHTMCP VN THINH VUONG-HOI SO CHINH-HANOI"
+    },
+    {
+        "old": "'PETROLIMEX' => ['public_name' => 'NH TMCP Xăng dầu - PETROLIMEX', \r\n    'bidv_name' => 'NH TMCP XANG DAU - 01341003']",
+        "new": "'PETROLIMEX' => ['public_name' => 'NH TMCP Xăng dầu - PETROLIMEX', 'bidv_name' => 'NH TMCP XANG DAU  - 01341003', 'bidv_name2' => 'NHTMCP XANG DAU PETROLIMEX-HOI SO-HA NOI']",
+        "key": "PETROLIMEX",
+        "id": "01341003",
+        "bidv_name2": "NHTMCP XANG DAU PETROLIMEX-HOI SO-HA NOI"
+    },
+    {
+        "old": "'EXIMBANK' => ['public_name' => 'NH TMCP Xuất nhập khẩu Việt Nam - EXIMBANK', \r\n    'bidv_name' => 'NH TMCP XUAT NHAP KHAU VIET NAM - 79305001']",
+        "new": "'EXIMBANK' => ['public_name' => 'NH TMCP Xuất nhập khẩu Việt Nam - EXIMBANK', 'bidv_name' => 'NH TMCP XUAT NHAP KHAU VIET NAM  - 79305001', 'bidv_name2' => 'NHTMCP XUAT NHAP KHAU VN-HOI SO - TPHCM']",
+        "key": "EXIMBANK",
+        "id": "79305001",
+        "bidv_name2": "NHTMCP XUAT NHAP KHAU VN-HOI SO - TPHCM"
+    }
+]

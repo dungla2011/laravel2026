@@ -1,0 +1,49 @@
+<?php
+
+namespace Tests\Feature;
+
+use App\Models\User;
+use Tests\TestCase;
+
+class ApiDemoDeleteDataTest extends TestCase
+{
+    protected function setUp(): void
+    {
+        parent::setUp();
+        // set your headers here
+        if (!User::where('email', 'admin@abc.com')->first()) {
+            User::createUserAdminDefault();
+        }
+        if (!User::where('email', 'admin@abc.com')->first()) {
+            User::createUserAdminDefault();
+        }
+$tk = User::where("email", 'admin@abc.com')->first()->getUserToken();
+        dump("Token : $tk");
+        //$this->withToken("123456")->getJson(route("api.demo.list"));
+        $this->withHeader('Authorization', 'Bearer '.$tk);
+    }
+
+    public function assertDataApi($ret)
+    {
+
+        dump($ret);
+
+        $this->assertTrue(isset($ret['payload']));
+        //        $this->assertTrue(isset($ret['message']));
+        $this->assertTrue(isset($ret['code']));
+
+        //        $this->assertTrue(isset($dataAll['data']));
+        //        $this->assertTrue(isset($dataAll['current_page']));
+        //        $this->assertTrue(isset($dataAll['total']));
+    }
+
+    /**
+     * kiểm tra API có Undelete tốt không
+     * Undelete 1, và nhiều ID
+     */
+    public function testUnDeleteDataApi()
+    {
+        //todo: undelete data Api
+        $this->assertTrue(true);
+    }
+}

@@ -1,0 +1,25 @@
+<html style="font-family: Tahoma, Geneva, sans-serif">
+<br/>
+<center>
+    <?php
+
+    if($_SERVER['SERVER_NAME'] !== '4share.vn'){
+        echo "<br/><a href='http://".$_SERVER['SERVER_NAME']."'>Trang chủ</a>";
+        return;
+    }
+
+    echo "".$_SERVER['SERVER_NAME'];
+    ?>
+     Tool cần được chạy với quyền Administrator để có thể update lên bản mới nhất, như hình dưới đây!
+
+    <h3 style="font-family: Arial">
+
+    <a href="https://<?php echo $_SERVER['SERVER_NAME']?>/default/index/huong-dan"> Hướng dẫn thêm Tại đây </a>
+    </h3>
+    <br>
+
+<img src='/images/4s/runAsAdmin.png'>
+
+
+</center>
+</html>

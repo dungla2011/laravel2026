@@ -1,0 +1,144 @@
+.mainPrints {
+    width: 100mm;
+    height: 72mm;
+    background: white;
+    line-height: 12px;
+    border: solid 1px #000;
+    position: relative;
+    font-size: 9px;
+    font-weight: 500;
+    overflow: hidden;
+    font-family: Arial;
+    margin: 2px auto auto auto;
+}
+
+@media print {
+    .mainPrints {
+        page-break-after: always;
+    }
+
+    @page {
+        size: 4.1in 2.9in ;
+        margin: 0 8px;
+    }
+
+    .divbtn {
+        display: none;
+    }
+
+    .border-r {
+        border-right: 1px solid #000000 !important;
+    }
+
+    .border-b {
+        border-bottom: 1px solid #000000 !important;
+    }
+}
+
+.img-A7 {
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    font-family: Times New Roman;
+    font-size: 12px;
+}
+
+.background {
+    transform: rotate(270deg);
+    opacity: 0.2;
+    margin-top: -165px;
+    margin-left: 227px;
+}
+
+.print_barcode {
+    padding: 5px;
+}
+
+.barCode_Code {
+    top: 107px;
+    left: 55px;
+    position: absolute;
+}
+
+.d-flex {
+    display: flex;
+}
+
+.border-rl {
+    border-left: 1px solid #cecece;
+    border-right: 1px solid #cecece
+}
+
+.border-l {
+    border-left: 1px solid #cecece;
+}
+
+.border-r {
+    border-right: 1px solid #cecece
+}
+
+.border-b {
+    border-bottom: 1px solid #cecece
+}
+
+.text-overflow {
+    overflow: hidden;
+    display: -webkit-box;
+    text-overflow: ellipsis;
+= -webkit-box-orient: vertical;
+}
+
+.line-clamp-1 {
+    -webkit-line-clamp: 1;
+}
+
+.line-clamp-2 {
+    -webkit-line-clamp: 2;
+}
+
+.line-clamp-4 {
+    -webkit-line-clamp: 4;
+}
+
+.divbtn {
+    position: fixed;
+    top: 10px;
+    font-size: 20px;
+    right: 20px;
+}
+
+.index {
+    right: 12px;
+    margin: 14px 0px 0px 3px;
+    background: #ffffff;
+    border-radius: 1.2em;
+    font-weight: bold;
+    line-height: 1.4em;
+    text-align: center;
+    width: 1.4em;
+    font-size: small;
+    border: 1px solid #000000;
+    padding: 0.1em;
+    position: absolute;
+}
+
+.absolute {
+    position: absolute;
+    overflow: hidden;
+    display: -webkit-box;
+    text-overflow: ellipsis;
+    -webkit-box-orient: vertical;
+}
+
+.img-bg {
+    width: 100%;
+    height: 100%;
+}
+
+table.glx08 { border: 1px #ccc solid; border-collapse: collapse; margin: 0px 0px 0px 0px; }
+table.glx08 td {font-size: smaller;  border: 1px #ccc solid;      padding: 5px 5px      ;}
+table.glx08 th { font-size: smaller; border: 1px #ccc solid;    padding: 5px 5px;}
+/*table.glx08 tr:nth-child(even) {background:   #eee }*/
+/*table.glx08 tr:nth-child(odd) {background:  lavender  }*/

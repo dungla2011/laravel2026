@@ -1,0 +1,177 @@
+/*
+@font-face {
+    font-family: Lato-B;
+    src: url('fonts/Lato-Bold.eot');
+    src: url('fonts/Lato-Bold.eot?#iefix') format('embedded-opentype'),  url('fonts/Lato-Bold.woff') format('woff'),  url('fonts/Lato-Bold.ttf') format('truetype'),  url('fonts/Lato-Bold.svg') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: Lato;
+    src: url('fonts/Lato-Regular.eot');
+    src: url('fonts/Lato-Regular.eot?#iefix') format('embedded-opentype'),  url('fonts/Lato-Regular.woff') format('woff'),  url('fonts/Lato-Regular.ttf') format('truetype'),  url('fonts/Lato-Regular.svg') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+*/
+
+
+@font-face {
+    font-family: MyriadPro-R;
+    src: url('fonts/MyriadPro/MYRIADPRO-REGULAR.OTF');
+    font-display: swap;
+}
+
+
+@font-face {
+    font-family: Gotham-B;
+    src: url('fonts/SVN-GOTHAM/SVN-GothamBold.ttf');
+    font-display: swap;
+}
+
+
+@font-face {
+    font-family: Gotham-R;
+    src: url('fonts/SVN-GOTHAM/SVN-GothamRegular.otf');
+    font-display: swap;
+}
+
+@font-face {
+    font-family: Gotham-L;
+    src: url('fonts/SVN-GOTHAM/SVN-GothamLight.ttf');
+    font-display: swap;
+}
+
+
+
+
+@font-face {
+    font-family: Muli;
+    src: url('fonts/Muli-Regular.ttf');
+    font-display: swap;
+}
+
+@font-face {
+    font-family: Muli-EXB;
+    src: url('fonts/Muli-ExtraBold.ttf');
+    font-display: swap;
+}
+
+@font-face {
+    font-family: Muli-B;
+    src: url('fonts/Muli-Bold.ttf');
+    font-display: swap;
+}
+
+@font-face {
+    font-family: Muli-L;
+    src: url('fonts/Muli-Bold.ttf');
+    font-display: swap;
+}
+
+@font-face {
+    font-family: exo-b;
+    src: url('fonts/Exo-Bold.ttf');
+
+}
+
+@font-face {
+    font-family: exo-m;
+    src: url('fonts/Exo-SemiBold.ttf');
+
+}
+
+@font-face {
+    font-family: exo;
+    src: url('fonts/Exo-Medium.ttf');
+
+}
+
+@font-face {
+    font-family: R-b;
+    src: url('fonts/Roboto-Bold.ttf');
+    font-display: swap;
+}
+
+@font-face {
+    font-family: R-m;
+    src: url('fonts/Roboto-Medium.ttf');
+    font-display: swap;
+}
+
+@font-face {
+    font-family: R-r;
+    src: url('fonts/Roboto-Regular.ttf');
+    font-display: swap;
+}
+
+@font-face {
+    font-family: Roboto-L;
+    src: url('fonts/RobotoCondensed-Light.html');
+    font-display: swap;
+
+}
+
+@font-face {
+    font-family: Roboto-B;
+    src: url('fonts/RobotoCondensed-Bold.eot');
+    src: url('fonts/RobotoCondensed-Boldd41d.eot?#iefix') format('embedded-opentype'), url('fonts/RobotoCondensed-Bold.woff') format('woff'), url('fonts/RobotoCondensed-Bold.ttf') format('truetype'), url('fonts/RobotoCondensed-Bold.svg') format('svg');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: Roboto;
+    src: url('fonts/Roboto-Regular.html');
+    src: url('fonts/Roboto-Regulard41d.html?#iefix') format('embedded-opentype'), url('fonts/Roboto-Regular-2.html') format('woff'), url('fonts/Roboto-Regular.ttf') format('truetype'), url('fonts/Roboto-Regular-3.html') format('svg');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: Roboto-R;
+    src: url('fonts/RobotoCondensed-Regular.eot');
+    src: url('fonts/RobotoCondensed-Regulard41d.eot?#iefix') format('embedded-opentype'), url('fonts/RobotoCondensed-Regular.woff') format('woff'), url('fonts/RobotoCondensed-Regular.ttf') format('truetype'), url('fonts/RobotoCondensed-Regular.svg') format('svg');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'LG-B';
+    src: url('fonts/utm-bryantlg-b.eot');
+    src: local('â˜º'), url('fonts/utm-bryantlg-b.woff') format('woff'), url('fonts/utm-bryantlg-b.ttf') format('truetype'), url('fonts/utm-bryantlg-b.svg') format('svg');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+
+@font-face {
+    font-family: Hel-B;
+    src: url('fonts/HelveticaNeue-Bold.eot');
+    src: url('fonts/HelveticaNeue-Boldd41d.eot?#iefix') format('embedded-opentype'), url('fonts/HelveticaNeue-Bold.woff') format('woff'), url('fonts/HelveticaNeue-Bold.ttf') format('truetype'), url('fonts/HelveticaNeue-Bold.svg') format('svg');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: Hel;
+    src: url('fonts/HelveticaNeue.eot');
+    src: url('fonts/HelveticaNeued41d.eot?#iefix') format('embedded-opentype'), url('fonts/HelveticaNeue.woff') format('woff'), url('fonts/HelveticaNeue.ttf') format('truetype'), url('fonts/HelveticaNeue.svg') format('svg');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: Hel-M;
+    src: url('fonts/HelveticaNeue-Medium.eot');
+    src: local('☺'), url('fonts/HelveticaNeue-Medium.woff') format('woff'), url('fonts/HelveticaNeue-Medium.ttf') format('truetype'), url('fonts/HelveticaNeue-Medium.svg') format('svg');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}

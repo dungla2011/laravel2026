@@ -1,0 +1,506 @@
+<?php
+ob_start();
+defined("DEF_TOOL_CMS") || define("DEF_TOOL_CMS", 1);
+use App\Models\FileUpload;
+
+//require_once "/var/www/html/public/index.php";
+require '/var/www/html/vendor/autoload.php';
+$app = require_once '/var/www/html/bootstrap/app.php';
+
+$kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
+$status = $kernel->handle(
+    $input = new Symfony\Component\Console\Input\ArgvInput,
+    new Symfony\Component\Console\Output\ConsoleOutput
+);
+
+try {
+
+    $remote_ip = getenv('REMOTE_ADDR');
+
+//    if(nowyh()> '2014-03-30')
+//    if (substr($remote_ip,0,6)!="16.0.0"
+//    && substr($remote_ip,0,7)!="100.0.0" && substr($remote_ip,0,11)!="123.30.50.1"
+//    && substr($remote_ip,0,11)!="203.113.132"
+//    && $remote_ip != "117.6.87.119") {
+//    	echo "ERROR: access denied!";
+//        return;
+//    }
+
+//    if (nowy() > '2019-03-05')
+//        if (!isIPVpn($remote_ip)) {
+//            echo "ERROR: access denied! ($remote_ip)";
+//            return;
+//        }
+
+//    dumpdebug( " === sysinfoglx " . ctoolUrl::getFullUrl());
+
+    //////////////////////
+    //if($remote_ip == '117.6.87.119')
+    //  var_dump(GlxDataDiskInfo());
+
+
+    //Ch? ch?y tr�n sv UP
+    if (isset($_GET['finfo']) && isset($_GET['fid'])) {
+        try {
+
+            $id = $_GET['fid'];
+            if ($id <= 0)
+                loi("ERROR: FID <=0");
+
+            $f1 = \App\Models\FileCloud::find($id);
+            if(!$f1)
+                loi(" not found fid $id");
+
+            $f1->name = str_replace(' ', '-', $f1->name); // Replaces all spaces with hyphens.
+            $f1->name = preg_replace('/[^A-Za-z0-9\-]/', '', $f1->name); // Removes special chars.
+
+            $f1Obj = (object) $f1->toArray();
+
+            $strObj = serialize($f1Obj);
+
+            $strObjHex = STH($strObj);
+
+            ob_clean();
+            echo "<info>$strObjHex</info><error></error>";
+            return;
+
+            //$f1->GetFileInfo(0);
+        } catch (Exception $e) {
+            ob_clean();
+            echo "<info></info><error>" . $e->getMessage() . "</error>";
+            return;
+        }
+    }
+
+
+
+    if (isset($_GET['disk'])) {
+        $disk = trim($_GET['disk']);
+
+        if (!file_exists($disk)) {
+            $ret = "<root><return>0</return><hdd>$disk</hdd><diskfree>0</diskfree><disktotal>1</disktotal><writeable>0</writeable><info></info></root>";
+            echo $ret;
+            return;
+        }
+
+        @list($tmp1, $tmp2, $hdd) = explode('/', $disk);
+        $file_signature = "$disk/_$hdd";
+        $free = disk_free_space($disk);
+        $total = disk_total_space($disk);
+        //echo "<br />$disk FREE: $df / $total";
+
+        $writeable = 0;
+        //if(is_writable($disk))
+        clearstatcache();
+        if (is_readable($file_signature))
+            $ret = "<root><return>1</return><hdd>$disk</hdd><diskfree>$free</diskfree><disktotal>$total</disktotal><writeable>1</writeable><info></info></root>";
+        else
+            $ret = "<root><return>0</return><hdd>$disk</hdd><diskfree>$free</diskfree><disktotal>$total</disktotal><writeable>0</writeable><info>ERROR: khong the ghi len dia $disk</info></root>";
+
+        echo $ret;
+        return;
+    }
+
+    if (isset($_GET['disklist'])) {
+        $disklist = trim($_GET['disklist']);
+
+        $diskInfoArr = GlxDataDiskInfo();
+
+        $arrayDisk = explode("|", $disklist);
+
+        $ret = "<root>";
+
+        for ($i = 0; $i < count($arrayDisk); $i++) {
+            if (isset($arrayDisk[$i]) && strlen($arrayDisk[$i]) > 1)
+                ;
+            else continue;
+
+            $disk = "/mnt/" . $arrayDisk[$i];
+            $ret .= "<disk>";
+            if (!isset($diskInfoArr[$disk])) {
+                $ret .= "<hdd>$disk</hdd><return>0</return><physical>ERROR</physical><util>0</util><diskfree>1</diskfree><disktotal>1</disktotal><writeable>0</writeable><info></info>";
+                $ret .= "</disk>";
+                continue;
+            }
+            $file_signature = "$disk/_" . $arrayDisk[$i];
+            $free = disk_free_space($disk);
+            $total = disk_total_space($disk);
+            //echo "<br />$disk FREE: $df / $total";
+
+
+            $writeable = $diskInfoArr[$disk]['writable'];
+            $util = $diskInfoArr[$disk]['util'];
+            $physical = $diskInfoArr[$disk]['physical'];
+
+//            $writeable = 0;
+            //if(is_writable($disk))
+            clearstatcache();
+
+            $readOK = 0;
+            if (is_readable($file_signature))
+                $readOK = 1;
+
+//            if($writeable)
+//                $ret .= "<hdd>$disk</hdd><return>$readOK</return><physical>$physical</physical><util>$util</util><diskfree>$free</diskfree><disktotal>$total</disktotal><writeable>1</writeable><info></info>";
+//            else
+            $ret .= "<hdd>$disk</hdd><return>$readOK</return><physical>$physical</physical><util>$util</util><diskfree>$free</diskfree><disktotal>$total</disktotal><writeable>$writeable</writeable><info></info>";
+
+
+            $ret .= "</disk>";
+
+        }
+
+        $ret .= "</root>";
+
+        echo $ret;
+        return;
+    }
+
+    if (isset($_GET['disklist_ex'])) {
+        if (isset($_GET['quick']))
+            $strDiskInfo = serialize(GlxDataDiskInfo(0));
+        else
+            $strDiskInfo = serialize(GlxDataDiskInfo());
+
+        //echo "<br />$strDiskInfo<br />";
+
+        //ob_clean();
+        $DiskInfoEnc = STH($strDiskInfo);
+        echo "<diskinfo_ex>$DiskInfoEnc</diskinfo_ex>";
+        return;
+    }
+
+    if (isset($_GET['scandisk'])) {
+        $ret = "<root>";
+        for ($i = 'b'; $i <= 'z'; $i++) {
+            $file = "/mnt/sd$i/_sd$i";
+            //echo "<br />$file";
+
+            if (file_exists("$file")) {
+                $ret .= "<disk>sd$i</disk>";
+            }
+        }
+        $ret .= "</root>";
+
+        echo "$ret";
+        return;
+    }
+
+    if (isset($_GET['mail'])) {
+        $mailEnc = $_GET['mail'];
+
+        list($toEnc, $subEnc, $bodyEnc, $fromEnc) = explode("|", $mailEnc);
+
+        $toDec = HTS($toEnc);
+        $subDec = HTS($subEnc);
+        $bodyDec = HTS($bodyEnc);
+        $fromDec = HTS($fromEnc);
+
+        $headers = "Reply-To: Admin 4Share <admin@4share.vn>\r\n";
+        //$headers .= "Return-Path: Admin 4Share <admin@4share.vn>\r\n";
+        $headers .= "From: Admin 4Share <admin@4share.vn>\r\n";
+        $headers .= "Organization: 4SHARE.VN\r\n";
+        //$header .= "Organization: My Organization\r\n";
+        $headers .= "MIME-Version: 1.0\r\n";
+        $headers .= "Content-Type: text/plain\r\n";
+        //$headers .= "Content-type: text/plain; charset=iso-8859-1\r\n";
+        $headers .= "X-Priority: 1\r\n";
+        $headers .= "X-Mailer: PHP" . phpversion() . "\r\n";
+
+        if (mail($toDec, $subDec, $bodyDec, $headers, "-f $fromDec"))
+            echo "SendMailOK $toDec, $subDec, $bodyDec, $fromDec";
+        else
+            echo "SendMailError";
+        return;
+    }
+
+
+    if (isset($_GET['mail_to_manager'])) {
+        $mailEnc = $_GET['mail_to_manager'];
+
+        list($toEnc, $subEnc, $bodyEnc, $fromEnc) = explode("|", $mailEnc);
+
+        $toDec = HTS($toEnc);
+        $subDec = HTS($subEnc);
+        $bodyDec = HTS($bodyEnc);
+        $fromDec = HTS($fromEnc);
+
+        if (SendMailUp4ShareToManager($subDec, $bodyDec))
+            echo "SendMailOK $toDec, $subDec, $bodyDec, $fromDec";
+        else
+            echo "SendMailError";
+
+    }
+
+    if (isset($_GET['getfilesize'])) {
+        $filepath = ($_GET['getfilesize']);
+        if (!file_exists($filepath)) {
+            ob_clean();
+            echo "ERROR: getfilesize File not found: $filepath!";
+            return;
+        } else {
+            ob_clean();
+            echo filesize($filepath);
+            return;
+        }
+    }
+
+    if (isset($_GET['getfilechecksum'])) {
+        $filepath = ($_GET['getfilechecksum']);
+        if (!file_exists($filepath)) {
+            ob_clean();
+            echo "ERROR: getfilechecksum File not found: $filepath!";
+            return;
+        } else {
+            ob_clean();
+            echo CheckSumFile($filepath, 5);
+            return;
+        }
+        return;
+    }
+
+    if (isset($_GET['getfile'])) {
+        $filepath = ($_GET['getfile']);
+
+        if (!file_exists($filepath)) {
+            ob_clean();
+            echo "ERROR: getfile File not found: $filepath!";
+            return;
+        } else {
+            ob_clean();
+            $fp = fopen($filepath, 'rb');
+            set_time_limit(0);
+            $basename = basename($filepath);
+            header('Pragma: public');
+            header('Expires: 0');
+            header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+            header('Content-Type: application/octet-stream');// . getmimetype($file));
+            header('Content-Disposition: attachment; filename=' . $basename);
+            header('Content-Length: ' . filesize($filepath));
+
+            while (!feof($fp)) {
+                print(fread($fp, 1024 * 64));
+                flush();
+                ob_flush();
+            }
+
+            fclose($fp);
+        }
+        return;
+    }
+
+    if (isset($_GET['ListFileOfDir'])) {
+        $dir = ($_GET['ListFileOfDir']);
+        if (!file_exists($dir)) {
+            ob_clean();
+            echo "ERROR: Dir not found: $filepath!";
+            return;
+        } else {
+            ob_clean();
+            $arrDir = array();
+            ListDirFullToArray($dir, $arrDir);
+
+            /*               for($i=0;$i<count($arrDir);$i++)
+                           {
+                                if(is_file($arrDir[$i]))
+                                    echo "\n".$arrDir[$i];
+                           }
+            //            inarr($arrDir);
+                        */
+
+            $arrSerial = serialize($arrDir);
+
+            $arrSerialHex = STH($arrSerial);
+
+            echo $arrSerialHex;
+
+            return;
+        }
+    }
+
+    if (isset($_GET['setserver']) && isset($_GET['fid']) && isset($_GET['filepath'])) {
+        $fid = $_GET['fid'];
+        if ($fid <= 0 || !ctype_digit($fid))
+            loi1("ERROR: FID <=0");
+
+        $server = $_GET['setserver'];
+        $filepath = $_GET['filepath'];
+        $cFileGlx = new ModelCloudFile();
+        if (!CFileGLX::checkDownloadAble_($fid, $server, $filepath)) {
+            ob_clean();
+            echo "<info>ERROR: File not downloadable, so can not set Server for this file $filepath</info><error>0</error>";
+            return;
+        }
+
+
+    }
+//
+//    if(isset($_GET['uif']))
+//    {
+//            require_once("/var/www/glx/html/bill.lib");
+//
+//            $uid = $_GET['uif'];
+//            if(!UserExist($uid))
+//                loi1("ERROR: Not found $uid");
+//
+//            $userinfo = new UserGLX();
+//            $userinfo->LoadDataQuick($uid);
+//
+//            $serial = serialize($userinfo);
+//            ob_clean();
+//            echo STH($serial);
+//            return;
+//    }
+//
+
+
+    if (isset($_GET['userdownloadinfo'])) {
+
+        $userid = $_GET['userdownloadinfo'];
+
+        $userinfo = new UserGLX();
+
+        $userinfo->LoadDataQuick($userid);
+
+        if ($userinfo->lastdate_download >= nowy()) {
+            if ($userinfo->lastdate_downloadBW / _GB > DEF_MAX_DOWNLOAD_DAY_GB) {
+
+
+            }
+        }
+
+    }
+
+    if (isset($_GET['getHotListFileOfServer'])) {
+        $server = $_GET['getHotListFileOfServer'];
+        $today = nowy();
+        $sql = "SELECT * FROM cloud_file WHERE lastdate_down2 > '$today' AND download_lastday_count > 10 AND server1='$server'";
+        $ret = mysql_query($sql, $dblink);
+
+        $arrHotFile = array();
+        $file = new ModelCloudFile();
+        while ($row = mysql_fetch_array($ret)) {
+            $fid = $row['id'];
+            $file->LoadFileInfo($fid);
+            $arrHotFile[$fid] = new ModelCloudFile();
+            $arrHotFile[$fid]->LoadFromObj($file);
+        }
+
+        //inarr2($arrHotFile);
+
+        $arrHotFileSerial = serialize($arrHotFile);
+        $arrHotFileSerialHex = STH($arrHotFileSerial);
+
+        ob_clean();
+        echo $arrHotFileSerialHex;
+        return;
+    }
+
+    if (isset($_GET['errorBadFile'])) {
+
+        $errorBadFile = $_GET['errorBadFile'];
+
+        outputT("/var/glx/weblog/badfile.log", $errorBadFile);
+        return;
+    }
+
+    if (isset($_GET['serverinfo'])) {
+        $server = new CServerGlx();
+        $server->getLocalServerInfo();
+        $server->getLocalDataDiskInfo();
+        $serial = serialize($server);
+        $serialHex = STH($serial);
+
+        ob_clean();
+        echo $serialHex;
+        return;
+    }
+
+    //đoạn này nếu cho chạy làm cpu nặng tải, lên đến vài trăm tiến trình với check apache-top
+    if (isset($_GET['check_md5'])) {
+
+        if (isset($_GET['get_all_id_not_have_md5'])) {
+
+            $db = MysqliDb::getInstance();
+            $svName = $_GET['get_all_id_not_have_md5'] . '.4share.vn';
+            $sql = "SELECT id FROM cloud_file WHERE (idlink = 0 OR idlink = id) AND server1='$svName' AND size > 0 AND (delete_date_real IS NULL OR  delete_date_real = '' ) AND (md5 IS NULL OR  md5 = '' )";
+            echo "\n SQL = $sql ";
+            $arr = $db->rawQuery($sql);
+            $arrId = [];
+            $total = count($arr);
+            for ($i = 0; $i < $len = $total; $i++) {
+
+                //echo "<br/>x = ". $arr[$i]['id'];
+                $id = $arr[$i]['id'];
+                $arrId[] = $id;
+            }
+
+            ob_clean();
+            die(serialize($arrId));
+        }
+
+        //die("stop");
+
+        $fid = $_GET['check_md5'];
+
+        if (!is_numeric($fid)) {
+            die("Error: not int?");
+        }
+
+        if (isAdmin_()) {
+            echo "<br/>xxx1 - " . microtime(1);
+        }
+
+        $cret = new CReturnError();
+
+        $f1 = new ModelCloudFile();
+        //$cret = $f1->file_exist_id_include_deleted($fid);
+        if (!$cret = $f1->getOneWhereSql(" id = '$fid'", ['id', 'md5']))
+            die("not update md5, because file not found!");
+        //$cret = $f1->getOneWhereSql(" id = $fid" );
+        if (isAdmin_()) {
+            echo "<br/>xxx11 - " . microtime(1);
+            die();
+        }
+        ob_clean();
+        if (empty($f1->md5)) {
+            if (isset($_GET['update_md5'])) {
+                $md5 = $_GET['update_md5'];
+                if (strlen($md5) == 32) {
+                    if (isAdmin_()) {
+                        echo "xxx2 - " . microtime(1);
+                    }
+                    $f1 = new ModelCloudFile();
+                    $f1->id = $fid;
+                    $f1->md5 = $md5;
+                    $cret = $f1->updateDbMe(" id = $fid");
+                    if (isAdmin_()) {
+                        echo "xxx3 - " . microtime(1);
+                    }
+                    outputT("/var/glx/weblog/md5_update.log", " $remote_ip, FID: $f1->id , UpTime:$f1->createdAt, MD5=$md5");
+                    if (isAdmin_()) {
+                        echo "xxx4 - " . microtime(1);
+                    }
+                    ob_clean();
+                    die('update-md5-ok');
+                } else {
+                    die(" Not valid md5? '$md5'");
+                }
+            } else
+                die("not-md5");
+        } else {
+            die("ok-md5-$f1->md5");
+        }
+
+
+    }
+
+} catch (Exception $e) {
+    $host = gethostname();
+//    ob_clean();
+    echo "ERROR: Host '$host' return: " . $e->getMessage();
+    return;
+}
+
+
+?>

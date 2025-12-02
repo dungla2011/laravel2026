@@ -1,0 +1,28 @@
+<?php
+
+return [
+    'failed' => '这些凭证与我们的记录不符。',
+    'password' => '提供的密码不正确。',
+    'throttle' => '登录尝试次数过多。',
+    'login' => '登录',
+    'login_with' => '登录方式',
+    'register' => '登记',
+    'register_with' => '注册',
+    'logout' => '退出',
+    'email_or_account' => '电子邮件或帐户',
+    'username' => '用户名（仅限字母数字和下划线）',
+    'account' => '帐户',
+    'password_field' => '密码',
+    'password_confirmation' => '确认密码',
+    'forgot_password' => '忘记密码',
+    'activate_account' => '激活账户',
+    'home' => '家',
+    'activation_message' => '输入您的注册邮箱来激活账户（如果您注册了但没有收到激活邮件）',
+    'enter_email' => '输入电子邮件地址',
+    'email' => '电子邮件',
+    'remember_me' => '记住账号',
+    'submit' => '提交',
+    'back_to_login' => '返回登录',
+    'reset_password' => '重置密码',
+    'email_reset_password' => '邮箱接收密码',
+];

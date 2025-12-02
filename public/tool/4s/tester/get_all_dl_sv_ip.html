@@ -1,0 +1,25 @@
+<?php
+
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+define("DEF_TOOL_CMS", 1);
+$_SERVER['HTTP_HOST'] = $_SERVER['SERVER_NAME'] = "4share.vn";
+require_once "/var/www/html/public/index.php";
+check_unique_script();
+
+$mm =  \App\Models\CloudServer::all();
+$str = '';
+foreach ($mm AS $sv){
+//    echo "\n $sv->domain";
+    $ipx = gethostbyname($sv->domain);
+    $str .= "$ipx,";
+}
+$str = trim(trim($str, ','));
+
+echo "\n$str";
+
+$fileIp = "/var/glx/weblog/dl_sv_ip.log";
+$ctFile = @file_get_contents($fileIp);
+if($ctFile != $str)
+    outputW($fileIp, $str);

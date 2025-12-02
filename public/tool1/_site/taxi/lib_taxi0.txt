@@ -1,0 +1,182 @@
+<?php
+
+
+// ========== CONFIGURATION ==========
+$PROJECT_ID = "taxi2025-6932c";  // Project ID từ Firebase
+$FCM_TOKEN = "d8YTOl6MRY2okhavek48hP:APA91bHxjKo5y9TJYxMDDzQD8DDTei6UmbPIX3FjOUZbBfieawBjfzpRQMayh7eHtbvPUUuRT_WmDa6Hk5ymMxjri27-srKWiOWskTVL2wXmP72aaq5ISto";  // FCM Token từ Flutter app
+$SERVICE_ACCOUNT_FILE = "/var/www/html/config/service-account-key-firebase-taxi.json";  // Path to service account file
+
+// ========== FIREBASE V1 API FUNCTIONS ==========
+
+/**
+ * Generate OAuth 2.0 Access Token từ Service Account
+ */
+function getAccessToken($serviceAccountFile) {
+    if (!file_exists($serviceAccountFile)) {
+        throw new Exception("❌ Service Account file not found: $serviceAccountFile");
+    }
+
+    $serviceAccount = json_decode(file_get_contents($serviceAccountFile), true);
+
+    // Create JWT header
+    $header = json_encode(['alg' => 'RS256', 'typ' => 'JWT']);
+
+    // Create JWT payload
+    $now = time();
+    $payload = json_encode([
+        'iss' => $serviceAccount['client_email'],
+        'scope' => 'https://www.googleapis.com/auth/cloud-platform',
+        'aud' => 'https://oauth2.googleapis.com/token',
+        'iat' => $now,
+        'exp' => $now + 3600 // 1 hour
+    ]);
+
+    // Encode
+    $base64Header = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($header));
+    $base64Payload = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($payload));
+
+    // Sign with private key
+    $signature = '';
+    openssl_sign($base64Header . '.' . $base64Payload, $signature, $serviceAccount['private_key'], 'SHA256');
+    $base64Signature = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($signature));
+
+    $jwt = $base64Header . '.' . $base64Payload . '.' . $base64Signature;
+
+    // Exchange JWT for access token
+    $tokenData = [
+        'grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+        'assertion' => $jwt
+    ];
+
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, 'https://oauth2.googleapis.com/token');
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($tokenData));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/x-www-form-urlencoded']);
+
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+
+    if ($httpCode !== 200) {
+        throw new Exception("❌ Failed to get access token: $response");
+    }
+
+    $tokenInfo = json_decode($response, true);
+    return $tokenInfo['access_token'];
+}
+
+/**
+ * Send notification using FCM V1 API
+ */
+function sendNotificationV1($projectId, $accessToken, $fcmToken, $title, $body, $data = []) {
+    $url = "https://fcm.googleapis.com/v1/projects/$projectId/messages:send";
+
+    $message = [
+        'message' => [
+            'token' => $fcmToken,
+            'notification' => [
+                'title' => $title,
+                'body' => $body
+            ],
+            'data' => $data,
+            'android' => [
+                'priority' => 'high',
+                'notification' => [
+                    'sound' => 'default',
+                    'channel_id' => 'booking_channel'
+                ]
+            ]
+        ]
+    ];
+
+    $headers = [
+        'Authorization: Bearer ' . $accessToken,
+        'Content-Type: application/json'
+    ];
+
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($message));
+
+    $result = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $error = curl_error($ch);
+    curl_close($ch);
+
+    return [
+        'success' => $httpCode === 200,
+        'result' => $result,
+        'http_code' => $httpCode,
+        'error' => $error
+    ];
+}
+
+
+
+function searchTaxiMessages($diemDi, $diemDen, $nPhut) {
+    // Xử lý $diemDi để tách các từ khóa
+    $diemDiKeywords = [];
+    if($diemDi) {
+        $diemDiKeywords = array_map('trim', explode(',', $diemDi));
+        $diemDiKeywords = array_filter($diemDiKeywords);
+    }
+
+    $query = \App\Models\CrmMessage::select('crm_messages.*', 'crm_message_groups.name AS gname','crm_message_groups.link_group AS link_group' )
+        ->leftJoin('crm_message_groups', 'crm_messages.thread_id', '=', 'crm_message_groups.gid')
+        ->where('crm_messages.created_at', '>=', now()->subMinute($nPhut))
+        ->where('crm_messages.channel_name', 'anh_taxi')
+        ->limit(30);
+
+    // Thêm điều kiện OR cho các từ khóa từ $diemDi
+    if(!empty($diemDiKeywords)) {
+        $query->where(function($q) use ($diemDiKeywords) {
+            foreach($diemDiKeywords as $keyword) {
+                $q->orWhere('crm_messages.content', 'LIKE', "%$keyword%");
+            }
+        });
+    }
+
+    $query->orderBy('crm_messages.created_at', 'desc');
+    $messages = $query->get();
+
+    //Nếu tin có content giống nhau, chỉ giữ lại 1 cái (lọc trùng)
+    $messages = $messages->unique('content');
+
+    // Xử lý $diemDen để tách các từ khóa
+    $diemDenKeywords = [];
+    if($diemDen) {
+        $diemDenKeywords = array_map('trim', explode(',', $diemDen));
+        $diemDenKeywords = array_filter($diemDenKeywords);
+    }
+
+    //Neu co $diemDen , thi tim tiep
+    if(!empty($diemDenKeywords)){
+        $messages = $messages->filter(function ($message) use ($diemDenKeywords) {
+            foreach($diemDenKeywords as $keyword) {
+                if(stripos($message->content, $keyword) !== false) {
+                    return true;
+                }
+            }
+            return false;
+        });
+    }
+
+    if($messages->count() == 0) {
+        return null; // Không có tin nào phù hợp
+    }
+
+    //pluck lấy ra mảng id của all $messages
+    $messageIds = $messages->pluck('id')->toArray();
+
+    return [
+        'messages' => $messages,
+        'message_ids_string' => implode(', ', $messageIds),
+        'diemDiKeywords' => $diemDiKeywords,
+        'diemDenKeywords' => $diemDenKeywords
+    ];
+}

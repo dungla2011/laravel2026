@@ -1,0 +1,38 @@
+<?php
+
+use App\Models\FileUpload;
+
+require '/var/www/html/vendor/autoload.php';
+$app = require_once '/var/www/html/bootstrap/app.php';
+$kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
+$response = $kernel->handle(
+    $request = Illuminate\Http\Request::capture()
+);
+
+$_SERVER['HTTP_HOST'] = $_SERVER['SERVER_NAME'] = 'zcloud.io.vn';
+
+$ip = $_SERVER['REMOTE_ADDR'];
+if(!str_contains($ip, '103.163.21')){
+    die("Not valid Access!");
+}
+
+if(!$fide = request("info")){
+    die("Not valid info");
+}
+
+$fid = qqgetIdFromRand_($fide);
+//$fid = $fide;
+if(!$obj = FileUpload::find($fid)){
+    die("Not found $fide");
+}
+
+if($fcl = \App\Models\FileCloud::find($obj->cloud_id)){
+
+    if(filesize($fcl->file_path) > 20 * _MB){
+        die("File too large 20MB");
+    }
+    header('Content-Type: '.$obj->mime);
+    header('Content-Disposition: inline; filename="'.$obj->name.'"');
+    header('Content-Length: '.filesize($fcl->file_path));
+    echo file_get_contents($fcl->file_path);
+}

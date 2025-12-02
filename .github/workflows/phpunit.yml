@@ -1,0 +1,72 @@
+name: PHPUnit CI
+
+on:
+  push:
+    branches: [ main, develop, master ]
+  pull_request:
+    branches: [ main, develop, master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    services:
+      mysql:
+        image: mysql:10.11
+        env:
+          MYSQL_ROOT_PASSWORD: ''
+          MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+          MYSQL_DATABASE: glx2026test
+        options: >-
+          --health-cmd="mysqladmin ping -u root"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+        ports:
+          - 3306:3306
+
+    strategy:
+      matrix:
+        php-version: ['8.2']
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          extensions: mysql, mbstring, json, curl, bcmath
+          coverage: xdebug
+
+      - name: Setup test database
+        run: |
+          mysql -h 127.0.0.1 -u root -e "DROP DATABASE IF EXISTS glx2026test; CREATE DATABASE glx2026test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+          mysql -h 127.0.0.1 -u root glx2026test < database/glx2026test.sql
+
+      - name: Copy .env.testing
+        run: cp .env.testing .env
+
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader
+
+      - name: Generate app key
+        run: php artisan key:generate
+
+      - name: Start Laravel development server
+        run: php artisan serve --host 127.0.0.1 --port 8000 &
+        
+      - name: Wait for server to start
+        run: sleep 5 && curl -f http://127.0.0.1:8000/ || true
+
+      - name: Run PHPUnit tests
+        run: php artisan test --configuration=phpunit.xml
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: |
+            .phpunit.result.cache
+            storage/logs/

@@ -1,0 +1,153 @@
+ServerName "Serveur GLXi"
+ServerType standalone
+ServerAdmin mail
+
+
+
+
+SystemLog	/var/glx/glxlog/2024_glxI.log
+
+LogFormat	default "%h %l %u %t \"%r\" %s %b"
+LogFormat	auth    "%v [%P] %h %t \"%r\" %s"
+LogFormat	write   "%h %l %u %t \"%r\" %s %b"
+LogFormat	userlog "%u %b"
+
+ExtendedLog	/var/glx/glxlog/2024_sizeI.bytes WRITE,READ userlog
+ExtendedLog	/var/glx/glxlog/2024_accessI.log WRITE,READ default
+ExtendedLog	/var/glx/glxlog/2024_authI.log AUTH auth
+SQLLogFile     /var/glx/glxlog/2024_mysqlI.log
+TransferLog	/var/glx/glxlog/2024_transferI.log
+
+PassivePorts 51000 52000
+	
+# Hide as much as possible to outside users
+#ServerIdent on "Bienvenue sur le serveur GLX, merci de vous logguer"
+ServerIdent off
+DeferWelcome on
+DefaultServer on
+AccessGrantMsg "User: %u connect to Galaxy Server"
+TimeoutStalled 0
+AllowStoreRestart on
+
+#MasqueradeAddress webup.4share.vn
+
+
+Port 36880
+
+Umask 022
+
+
+MaxInstances 100
+
+# Divers perso
+AllowOverwrite on
+AllowRetrieveRestart on
+AllowForeignAddress on
+RootLogin no
+ListOptions "-a"
+MaxClients 500
+MaxClientsPerHost 50
+MaxLoginAttempts 20
+LogFormat default "%h %l %u %t \"%r\" %s %b"
+LogFormat auth "%v [%P] %h %t \"%r\" %s"
+# TransferRate APPE,STOR 8000
+# TransferRate RETR 8000
+UseReverseDNS off
+#IdentLookups off
+
+SQLMinID 29
+#User www-data
+#Group www-data
+User apache
+Group apache
+
+# To cause every GLX user to be "jailed" (chrooted) into their home
+# directory, uncomment this line. (khong duoc comment dong nay, neu khong user co the truy cap ra ngoai)
+DefaultRoot ~
+
+
+ServerIdent off
+DeferWelcome on
+AccessGrantMsg "User: %u connect to Galaxy Server"
+
+# Divers perso
+AllowOverwrite on
+AllowRetrieveRestart on
+AllowForeignAddress on
+RootLogin no
+ListOptions "-a"
+MaxClients 500
+MaxClientsPerHost 10
+MaxLoginAttempts 3
+
+
+
+<IfModule mod_shaper.c>
+	<IfUser testabc>
+		ShaperEngine off
+	</IfUser>
+
+	<IfGroup glxgroup_vip>
+		ShaperEngine off
+	</IfGroup>
+
+	ShaperEngine on
+	ShaperLog /var/glx/glxlog/2024_shaper.log
+	ShaperTable /var/glx/glxlog/2024_shaper.tab
+
+	# An overall rate (in KB/s) must be set.  This line explicitly
+	# sets both the download and upload rates to be the same.
+	# ShaperAll downrate 300 uprate 200
+
+	# Allow all system users to see shaper info
+	ShaperControlsACLs info allow user *
+
+	# Allow FTP admins to alter settings both overall and per-session
+	# ShaperControlsACLs all,sess allow group ftpadm
+</IfModule>
+SQLEngine	 on 
+SQLPasswordEngine on
+SQLPasswordEncoding             hex
+SQLAuthTypes	 SHA1 SHA256  
+
+SQLAuthenticate users* groups*
+
+
+#GRANT ALL ON test2024.* TO 'webuser4s'@'127.0.0.1' IDENTIFIED BY 'JwkDm_odM4Jw111';
+SQLConnectInfo test2024@4share.vn webuser02 JwkDm_odM4Jw111
+
+SQLNamedQuery get-user-salt SELECT "id FROM users WHERE username='%U' or email = '%U'"
+SQLPasswordUserSalt sql:/get-user-salt
+SQLPasswordUserSalt name Append
+SQLNamedQuery	get-user-info SELECT "username, password, glx_uid, glx_gid, location_store_file, glx_shell FROM (SELECT username, password FROM `users`  WHERE username='%U' OR email='%U' LIMIT 1) AS a, \
+(SELECT glx_uid, glx_gid, location_store_file, glx_shell, user_id from user_clouds WHERE user_id=(SELECT id FROM `users` WHERE username='%U' OR email='%U'  LIMIT 1)  LIMIT 1) AS b"
+SQLNamedQuery	uid_infos SELECT "username, password, glx_uid, glx_gid, location_store_file, glx_shell FROM (SELECT username, password FROM `users`  WHERE id=%{0} LIMIT 1) AS a, \
+(SELECT glx_uid, glx_gid, location_store_file, glx_shell, user_id from user_clouds WHERE user_id=(SELECT id FROM `users` WHERE id=%{0}  LIMIT 1)  LIMIT 1) AS b"
+SQLUserInfo	custom:/get-user-info/uid_infos
+
+SQLGroupInfo cloud_group groupname gid members
+
+CreateHome on 755 dirmode 755 uid 48 gid 48
+
+# User quotas
+# ===========
+QuotaEngine on
+QuotaDirectoryTally off
+QuotaDisplayUnits Mb
+QuotaShowQuotas on
+QuotaLog "/var/glx/glxlog/2024_quotalog"
+SQLNamedQuery get-quota-limit SELECT    "'%U', glx_quota_type, glx_per_session,glx_limit_type, glx_bytes_in_avail, glx_bytes_out_avail, glx_bytes_xfer_avail, glx_files_in_avail, glx_files_out_avail, glx_files_xfer_avail FROM user_clouds WHERE user_id = (SELECT id FROM users WHERE username='%U' OR email='%U')"
+SQLNamedQuery get-quota-tally SELECT    "'%U', glx_quota_type, glx_bytes_in_used, glx_bytes_out_used, glx_bytes_xfer_used, glx_files_in_used, glx_files_out_used, glx_files_xfer_used FROM user_clouds WHERE user_id = (SELECT id FROM users WHERE username='%U' OR email='%U')"
+SQLNamedQuery update-quota-tally UPDATE "glx_bytes_in_used = glx_bytes_in_used + %{0}, glx_bytes_out_used = glx_bytes_out_used + %{1}, glx_bytes_xfer_used = glx_bytes_xfer_used + %{2}, glx_files_in_used = glx_files_in_used + %{3}, glx_files_out_used = glx_files_out_used + %{4}, glx_files_xfer_used = glx_files_xfer_used + %{5}, glx_bytes_up_total = glx_bytes_up_total +(%{0}+abs(%{0}))/2, glx_bytes_down_total = glx_bytes_down_total + (%{1}+abs(%{1}))/2, glx_files_up_total =glx_files_up_total +(%{3}+abs(%{3}))/2,  glx_files_down_total =glx_files_down_total +(%{4}+abs(%{4}))/2  WHERE user_id = (SELECT id FROM users WHERE username='%U' OR email='%U')" user_clouds
+#SQLNamedQuery insert-quota-tally INSERT "%{0}, %{1}, %{2}, %{3}, %{4}, %{5}, %{6}, %{7}, 0, 0, 0, 0" glx_quotatallies
+
+#SQLLog RETR,STOR,APPE,STOU transfer_success
+#SQLNamedQuery  transfer_success INSERT "null, '%u', '%f', '%b', '%h', '%a', '%m', '%T', now(), 'c'" cloud_transfer
+
+#QuotaLimitTable sql:/get-quota-limit
+#QuotaTallyTable sql:/get-quota-tally/update-quota-tally/insert-quota-tally
+
+#</VirtualHost>
+
+RootLogin off
+RequireValidShell off

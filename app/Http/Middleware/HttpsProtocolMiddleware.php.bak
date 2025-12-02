@@ -1,0 +1,31 @@
+<?php
+
+namespace App\Http\Middleware;
+
+use App\Providers\RouteServiceProvider;
+use Closure;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+//https://robindirksen.com/blog/laravel-redirect-to-https-a-middleware-to-force-https
+class HttpsProtocolMiddleware
+{
+    /**
+     * Handle an incoming request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure  $next
+     * @return mixed
+     */
+    //Todo: *** redirect https
+    public function handle($request, Closure $next)
+    {
+
+//        if (!$request->secure() && app()->environment('production')) {
+        if (!$request->secure()) {
+            return redirect()->secure($request->getRequestUri());
+        }
+
+        return $next($request);
+    }
+}

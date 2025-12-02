@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        ul, #myUL {
+            list-style-type: none;
+        }
+
+        #myUL {
+            margin: 0;
+            padding: 0;
+        }
+
+        .caret {
+            cursor: pointer;
+            -webkit-user-select: none; /* Safari 3.1+ */
+            -moz-user-select: none; /* Firefox 2+ */
+            -ms-user-select: none; /* IE 10+ */
+            user-select: none;
+        }
+
+        .caret::before {
+            content: "\25B6";
+            color: black;
+            display: inline-block;
+            margin-right: 6px;
+        }
+
+        .caret-down::before {
+            -ms-transform: rotate(90deg); /* IE 9 */
+            -webkit-transform: rotate(90deg); /* Safari */
+        ' transform: rotate(90 deg);
+        }
+
+        .nested {
+            display: none;
+        }
+
+        .active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Tree View</h2>
+<p>A tree view represents a hierarchical view of information, where each item can have a number of subitems.</p>
+<p>Click on the arrow(s) to open or close the tree branches.</p>
+
+<ul id="myUL">
+    <li  class='drop'id="x1" draggable="true">
+        <span class="caret">Beverages</span>
+        <ul class="nested">
+            <li  class='drop' id="x11" draggable="true">Water</li>
+            <li  class='drop' id="x12"  draggable="true">Coffee</li>
+            <li  class='drop' id="x13"  draggable="true"><span class="caret">Tea</span>
+                <ul class="nested">
+                    <li  class='drop' id="x131"  draggable="true">Black Tea</li>
+                    <li  class='drop' id="x132"  draggable="true">White Tea</li>
+                    <li  class='drop' id="x133"  draggable="true">
+                        <span class="caret">Green Tea</span>
+                        <ul class="nested">
+                            <li  class='drop' id="x1331"  draggable="true">Sencha</li>
+                            <li  class='drop' id="x1332"  draggable="true">Gyokuro</li>
+                            <li  class='drop' id="x1333"  draggable="true">Matcha</li>
+                            <li  class='drop' id="x1334"  draggable="true">Pi Lo Chun</li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+    <li  class='drop' id="x2"  draggable="true"><span class="caret">ABC</span>
+</ul>
+<script src="/adminlte/plugins/jquery/jquery.min.js"></script>
+
+<script>
+    var toggler = document.getElementsByClassName("caret");
+    var i;
+
+    for (i = 0; i < toggler.length; i++) {
+        toggler[i].addEventListener("click", function () {
+            this.parentElement.querySelector(".nested").classList.toggle("active");
+            this.classList.toggle("caret-down");
+        });
+    }
+</script>
+
+<script>
+    $(function () {
+
+        var dragId = null;
+
+        $('.drop').on('drag', function (event) {
+            event.stopPropagation();
+            console.log(" dragID = " + this.id);
+            dragId = this.id;
+            // event.dataTransfer.setData("text", event.currentTarget.id);
+        });
+
+        $('.drop').on('drop dragdrop', function (event) {
+
+            // alert('dropped');
+            console.log(" id FROM " + dragId);
+            event.stopPropagation();
+
+            console.log(" drop dragdrop TO " + this.id);
+            $(this).css("color", "blue");
+
+            // $("#" + dragId).appendTo($(this));
+            $(this).append('' +
+                '<span class="caret"> xxx </span>' +
+                '<ul class="nested">' +
+                $("#" + dragId).html() +
+                '</ul>');
+
+            var toggler = document.getElementsByClassName("caret");
+            var i;
+
+            for (i = 0; i < toggler.length; i++) {
+                toggler[i].addEventListener("click", function () {
+                    this.parentElement.querySelector(".nested").classList.toggle("active");
+                    this.classList.toggle("caret-down");
+                });
+            }
+        });
+        $('.drop').on('dragenter', function (event) {
+            event.stopPropagation();
+            $(this).css("color", "red");
+            event.preventDefault();
+            // $(this).html('drop now').css('background', 'blue');
+            console.log(" dragenter " + this.id);
+        })
+        $('.drop').on('dragleave', function () {
+            event.stopPropagation();
+            $(this).css("color", "green");
+            console.log(" dragleave " + this.id);
+            // $(this).html('drop here').css('background', 'red');
+        })
+        $('.drop').on('dragover', function (event) {
+            event.preventDefault();
+            // console.log(" dragover ");
+        })
+    })
+</script>
+
+
+</body>
+</html>

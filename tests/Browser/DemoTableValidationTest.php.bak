@@ -1,0 +1,46 @@
+<?php
+
+namespace Tests\Feature;
+
+use App\Models\DemoTbl;
+use App\Models\Tag;
+use App\Models\User;
+use Facebook\WebDriver\Remote\RemoteWebElement;
+use Facebook\WebDriver\WebDriverBy;
+use Facebook\WebDriver\WebDriverElement;
+use Facebook\WebDriver\WebDriverKeys;
+use Facebook\WebDriver\WebDriverSelect;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
+use LadLib\Common\Tester\clsTestBase2;
+use LadLib\Laravel\Database\DbHelperLaravel;
+use Tests\Browser\DuskTestCaseBase;
+use Tests\DuskTestCase;
+use Tests\TestCase;
+
+
+/**
+ *
+ *
+ *  Filter autocomplete top filter
+ *  Edit, Add item
+ *
+ */
+
+class DemoTableValidationTest extends DuskTestCaseBase
+{
+
+    protected function hasHeadlessDisabled(): bool
+    {
+        return true;
+        return parent::hasHeadlessDisabled();
+    }
+
+    function testDemoValidationField()
+    {
+        //Todo
+
+    }
+
+}

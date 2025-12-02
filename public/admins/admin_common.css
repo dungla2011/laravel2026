@@ -1,0 +1,13 @@
+
+.sec1 {
+    border-bottom: 1px solid #ccc;
+    margin: 0px 0px 15px 0px;
+    padding: 20px;
+    background: white;
+}
+
+.stat_data{
+    width: 100%;
+    height: 400px; /* Đổi theo nhu cầu */
+    margin-bottom: 20px;
+}

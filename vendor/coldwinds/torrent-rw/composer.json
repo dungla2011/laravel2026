@@ -1,0 +1,13 @@
+{
+	"name": "coldwinds/torrent-rw",
+	"type": "library",
+	"description": "Composer version of torrent-rw https://github.com/adriengibrat/torrent-rw",
+	"keywords": ["torrent-rw", "bittorrent", "bencode", "torrent"],
+	"license": "Version 3 of the GNU GPL",
+	"require": {
+		"php": ">=5.2.0"
+	},
+	"autoload": {
+		 "classmap": ["Torrent.php"]
+	}
+}

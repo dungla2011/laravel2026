@@ -1,0 +1,5 @@
+[config]
+#controller_internet_ip : co the la ten mien intenet, co the la ten mien LAN
+controller_internet_ip=4share.vn
+upload_ip=v2up.web4share.vn
+upload_web_and_port=https://v2up.4share.vn

@@ -1,0 +1,688 @@
+Toán học giúp các em tìm hiểu nhiều lĩnh vực, kỹ năng cần thiết về khoa học công nghệ, nhất là trong thời đại số như ngày nay. Nhằm giúp các em học sinh học tập môn Toán một cách dễ dàng hơn. Luật Minh Khuê đã tổng hợp tất cả các công thức Toán tiểu học đầy đủ từ lớp 1 đến lớp 5 một cách đầy đủ và logic nhất để các em tham khảo nhằm củng cố, nâng cao kiến thức của bản thân. Hãy cùng theo dõi nhé.
+Mục lục bài viết
+1. Số tự nhiên
+2. Bốn phép toán trên số tự nhiên
+a. Phép cộng
+b. Phép trừ
+c. Phép nhân
+d. Phép chia
+3. Bảng đơn vị đo độ dài, khối lượng, diện tích, thể tích
+4. Toán trồng cây
+5. Dãy số cách đều
+6. Tính giá trị của biểu thức
+7. Phân số
+8. Cộng, trừ, nhân, chia phân số
+a. Rút gọn phân số
+b. Quy đồng mẫu số
+c. Cộng & trừ phân số
+d. Nhân phân số
+e. Chia phân số
+9. Số thập phân
+10. Trung bình cộng
+11. Tìm hai số khi biết tổng và hiệu
+12. Tìm hai số khi biết tổng và tỉ
+13. Tìm hai số khi biết hiệu và tỉ
+14. Tỷ số %
+15. Hình học
+a. Công thức hình vuông
+b. Công thức hình chữ nhật
+c. Công thức hình bình hành
+d. Công thức hình thoi
+e. Công thức hình tam giác
+f. Công thức hình thang
+g. Công thức hình tròn
+h. Công thức hình hộp chữ nhật
+i. Công thức hình lập phương
+k. Công thức hình trụ
+16. Chuyển động đều
+17. Tỉ lệ thuận - Tỉ lệ nghịch
+Thu gọn ↑
+1. Số tự nhiên
+- Để viết số tự nhiên người ta dùng 10 chữ số: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9.
+
+- Các chữ số đều nhỏ hơn 10.
+
+- 0 là số tự nhiên nhỏ nhất.
+
+- Không có số tự nhiên lớn nhất.
+
+- Các số lẻ có chữ số hàng đơn vị là: 1, 3, 5, 7, 9. Dãy các số lẻ là: 1, 3, 5, 7, 9, 11, 13, 15, 17,…
+
+- Các số chẵn có chữ số ở hàng đơn vị là: 0, 2, 4, 6, 8. Dãy các số chẵn là: 2, 4, 6, 8, 10, 12, 14, 16,…
+
+
+- Hai số tự nhiên liên tiếp chúng hơn, kém nhau 1 đơn vị.
+
+- Hai số chẵn (lẻ) liên tiếp chúng hơn kém nhau 2 đơn vị.
+
+- Số có 1 chữ số (từ 0 đến 9), có: 10 số.
+
+- Số có 2 chữ số (từ 10 đến 99), có: 90 số.
+
+- Số có 3 chữ số (từ 100 đến 999), có: 900 số.
+
+- Số có 4 chữ số (từ 1000 đến 9999), có: 9000 số…
+
+- Trong dãy số tự nhiên liên tiếp, cứ một số lẻ thì đến một số chẵn, rồi lẻ, rồi chẵn,…
+
+- Nếu dãy số tự nhiên liên tiếp bắt đầu từ số lẻ mà kết thúc là số chẵn thì số số hạng của dãy là một số chẵn. Còn nếu bắt đầu và kết thúc là 2 số cùng chẵn (hoặc cùng lẻ) thì số số hạng của dãy là một số lẻ.
+
+ 
+
+2. Bốn phép toán trên số tự nhiên
+a. Phép cộng
+- Khi thêm vào (bớt ra) ở một, hai hay nhiều số hạng bao nhiêu đơn vị thì tổng sẽ tăng (giảm) bấy nhiêu đơn vị.
+
+- Một tổng có hai số hạng, nếu ta thêm vào (bớt ra) ở số hạng này bao nhiêu đơn vị và bớt ra (thêm vào) ở số hạng kia bao nhiêu đơn vị thì tổng cũng không đổi.
+
+* Một số công thức phép công đáng nhớ:
+
+1. a + b = b + a
+
+2. (a + b) + c = a + (b + c).
+
+3. 0 + a = a + 0 = a.
+
+4. (a - n) + (b + n) = a + b.
+
+5. (a - n) + (b - n) = a + b - n x 2.
+
+
+6. (a + n) + (b + n) = (a + b) + n x 2.
+
+* Một số điều cần lưu ý khi thực hiện phép cộng:
+
+- Tổng của các số chẵn là số chẵn
+
+- Tổng của 2 số lẻ là số chẵn.
+
+- Tổng của nhiều số lẻ mà có số số hạng là số chẵn (số lẻ) là một số chẵn (số lẻ).
+
+- Tổng của 1 số chẵn và 1 số lẻ là một số lẻ.
+
+- Tổng một số chẵn các số lẻ là một số chẵn.
+
+- Tổng một số lẻ các số lẻ là một số lẻ.
+
+ 
+
+b. Phép trừ
+- Khi ta thêm vào (bớt ra) ở số bị trừ bao nhiêu đơn vị và giữ y số trừ thì hiệu sẽ tăng thêm (giảm đi) bấy nhiêu đơn vị.
+
+- Khi ta thêm vào (bớt ra) ở số trừ bao nhiêu đơn vị và giữ y số bị trừ thì hiệu sẽ giảm đi (tăng thêm) bấy nhiêu đơn vị.
+
+
+- Khi ta cùng thêm vào (bớt ra) ở số bị trừ và số trừ cùng một số đơn vị thì hiệu cũng không thay đổi.
+
+* Một số công thức của phép trừ:
+
+a - (b + c) = (a - c) - b = (a - c) - b.
+
+* Một số lưu ý khi thực hiện phép trừ:
+
+- Hiệu của 2 số chẵn là số chẵn.
+
+- Hiệu của 2 số lẻ là số chẵn.
+
+- Hiệu của một số chẵn và một số lẻ (số lẻ và số chẵn) là một số lẻ.
+
+ 
+
+c. Phép nhân
+* Một số công thức của phép nhân:
+
+1. a x b = b x a.
+
+2. a x (b x c) = (a x b) x c.
+
+3. a x 0 = 0 x a = 0.
+
+4. a x 1 = 1 x a = a.
+
+5. a x (b + c) = a x b + a x c.
+
+6. a x (b - c) = a x b - a x c.
+
+* Một số lưu ý khi thực hiện phép nhân:
+
+- Tích của các số lẻ là một số lẻ.
+
+- Trong một tích nhiều thừa số nếu có ít nhất 1 thừa số là số chẵn thì tích là một số chẵn. (Tích của các số chẵn là một số chẵn.)
+
+- Trong một tích nhiều thừa số, ít nhất một thừa số có hàng đơn vị là 5 và có ít nhất một thừa số chẵn thì tích có hàng đơn vị là 0.
+
+
+- Trong một tích nhiều thừa số, ít nhất một thừa số có hàng đơn vị là 5 và các thừa số khác là số lẻ thì tích có hàng đơn vị là 5.
+
+- Tích các thừa số tận cùng là chữ số 1 thì tận cùng là chữ số 1.
+
+- Tích các thừa số tận cùng là chữ số 6 thì tận cùng là chữ số 6.
+
+ 
+
+d. Phép chia
+* Dấu hiệu chia hết:
+
+- Chia hết cho 2: Chữ số tận cùng là 0, 2, 4, 6, 8.
+
+- Chia hết cho 5: Chữ số tận cùng là 0 hoặc 5.
+
+- Chia hết cho 3: Tổng các chữ số chia hết cho 3.
+
+- Chia hết cho 9: Tổng các chữ số chia hết cho 9.
+
+- Chia hết cho 4: Hai chữ số tận cùng tạo thành số chia hết cho 4.
+
+- Chia hết cho 8: Ba chữ số tận cùng tạo thành số chia hết cho 8.
+
+
+- Chia hết cho 6: Vừa chia hết cho 2 vừa chia hết cho 3.
+
+* Chia hết:
+
+- Trong phép chia, nếu ta gấp (giảm đi) số bị chia lên bao nhiêu lần và giữ y số chia (mà vẫn chia hết) thì thương cũng tăng lên (giảm đi) bấy nhiêu lần.
+
+- Trong phép chia, nếu ta gấp (giảm đi) số chia lên bao nhiêu lần và giữ y số bị chia (mà vẫn chia hết) thì thương sẽ giảm đi (tăng lên) bấy nhiêu lần.
+
+- Nếu cùng tăng (giảm) ở số bị chia và số chia một số lần như nhau thì thương vẫn không đổi.
+
+- 0 chia cho bất cứ số nào khác không (0) cũng bằng 0. (0 : a = 0; a khác 0)
+
+- Số nào chia cho 1 cũng bằng chính số đó.
+
+- Số bị chia bằng số chia thì thương bằng 1 (a : a = 1)
+
+ 
+
+3. Bảng đơn vị đo độ dài, khối lượng, diện tích, thể tích
+ 	km	hm	dam	m	dm	cm	mm
+ĐỘ DÀI	1 km = 10 hm	1 hm = 10 dam = 1/10 km	1 dam = 10 m = 1/10 hm	1 m = 10 dm = 1/10 dam	1 dm = 10 cm = 1/10 m	1 cm = 10 mm = 1/10 dm	1 mm = 1/10 cm
+ 	tấn	tạ 	yến	kg	hg	dag	g
+KHỐI LƯỢNG	1 tấn = 10 tạ	1 tạ = 10 yến = 1/10 tấn	1 yến = 10 kg = 1/10 tạ	1 kg = 10 hg = 1/10 yến	1 hg = 10 dag = 1/10 kg	1 dag = 10 g = 1/10 hg	1g = 1/10 dag 
+- Hai đơn vị đo độ dài (hoặc khối lượng) liền nhau:
+
++ Đơn vị lớn gấp 10 lần đơn vị bé
+
++ Đơn vị bé bằng 1/10 đơn vị lớn
+
+ 	km²	hm² = ha	dam²	m²	dm²	cm²	mm²
+DIỆN TÍCH	1 km² = 100 hm²	1 hm² = 100 dam² = 1/100 km²	1 dam² = 100 m² =1/100hm²	1 m² = 100 dm² = 1/100 dam²	1 dm² = 100 cm² = 1/100 m²	1 cm² = 100 mm² = 1/100 dm²	1 mm² = 1/100 cm²
+- Hai đơn vị đo diện tích liền nhau:
+
++ Đơn vị lớn gấp 100 lần đơn vị bé
+
++ Đơn vị bé bằng 1/100 đơn vị lớn
+
+ 	m³	dm³	cm³
+THỂ TÍCH	1 m³ = 1000 dm³ = 1000000 cm³	1 dm³ = 1 lít = 1000 cm³ = 1/1000 m³	1 cm³ = 1/1000 dm³
+- Hai đơn vị đo thể tích liền nhau:
+
++ Đơn vị lớn gấp 1000 lần đơn vị bé
+
++ Đơn vị bé bằng 1/1000 đơn vị lớn
+
+ 
+
+4. Toán trồng cây
+- Trồng cây 2 đầu: Số cây = số khoảng + 1
+
+- Trồng cây 1 đầu: Số cây = số khoảng.
+
+- Không trồng cây ở 2 đầu: Số cây = số khoảng – 1
+
+- Trồng cây khép kín: Số cây = số khoảng.
+
+ 
+
+5. Dãy số cách đều
+TỔNG = (Số đầu + số cuối) x Số số hạng : 2
+
+SỐ CUỐI = Số đầu + (Số số hạng – 1) x Đơn vị khoảng cách.
+
+SỐ ĐẦU = Số cuối - (Số số hạng - 1) x Đơn vị khoảng cách
+
+
+SỐ SỐ HẠNG = (Số cuối – Số đầu) : Đơn vị khoảng cách + 1
+
+TRUNG BÌNH CỘNG = Trung bình cộng của số đầu và số cuối.
+
+* Chú ý:
+
+- Nói đến dãy số cách đều, ta nên quan tâm đến: Số hạng đầu, số hạng cuối, số số hạng, hai số liên tiếp cách nhau bao nhiêu đơn vị (đơn vị khoảng cách).
+
+- Có số số hạng là lẻ thì số ở giữa bằng ½ tổng mỗi cặp (số đầu + số cuối). Ví dụ: Dãy số 1; 3; 5; 7; 9 thì số 5 = (1+9):2
+
+- Tùy theo dãy số tăng hay giảm để vận dụng các công thức một cách hợp lí (các công thức trên dùng cho dãy số tăng).
+ 
+
+6. Tính giá trị của biểu thức
+- Nguyên tắc chung là trong vòng đơn tính trước, ngoài vòng đơn tính sau theo thứ tự nhân chia trước cộng trừ sau, tính từ trái sang phải.
+
+- Lưu ý: Hai cặp phép tính nhân - chia và cộng - trừ được xem xét ngang nhau. Nghĩa là từ trái sang phải gặp phép tính nào trước thì làm phép tính đó trước.
+
+* Tính tổng nhiều số:
+
+- Chú ý những cặp số hạng có tổng tròn chục, tròn trăm,… Dùng tính chất giao hoán và tính chất kết hợp trong phép cộng để sắp xếp một cách hợp lí.
+
+- Một số trừ đi một tổng: [ a – b – c = a – (b c) ]. 
+
+
+- Trong biểu thức có phép cộng, phép trừ không theo một thứ tự nhất định: Hướng dẫn học sinh hiểu phép cộng là thêm vào, phép trừ là bớt ra, mà vận dụng một cách phù hợp, để thực hiện các phép tính một cách hợp lí.
+
+* Tính giá trị biểu thức:
+
+- Chú ý việc vận dụng tính chất phân phối của phép nhân đối với phép cộng (phép trừ).
+
+a x (b + c) = a x b + a x c
+
+a x (b – c) = a x b – a x c
+
+* Một số dạng bài tính nhanh khác:
+
+Nếu là phép chia có số bị chia và số chia là những biểu thức phức tạp ta chú ý những trường hợp sau:
+
+– Số bị chia bằng 0 thì thương bằng 0 (Không cần xét số chia).
+
+– Số bị chia và số chia bằng nhau thì thương bằng 1.
+
+– Số chia bằng 1 thì thương bằng số bị chia.
+
+– Dạng phân số có tử số (số bị chia) và mẫu số (số chia) là những biểu thức phức tạp.
+
+ 
+
+7. Phân số
+* Phân số ¾ có tử số là 3 và mẫu số là 4.
+
+- Mẫu số chỉ số phần bằng nhau của đơn vị.
+
+- Tử số chỉ số phần có được.
+
+* Ví dụ: Phân số 3/8, cho ta biết đơn vị được chia ra làm 8 phần bằng nhau thì ta có 3 phần.
+
+- Phân số là một phép chia số tự nhiên, tử số là số bị chia, mẫu số là số chia.
+
+- Khi ta nhân (hay chia) tử số và mẫu số của một phân số với cùng một số (khác 0) thì ta được phân số mới bằng phân số cũ.
+
+- Số tự nhiên là một phân số có mẫu số là 1.
+
+- Phân số nhỏ hơn 1 có tử số nhỏ hơn mẫu số.
+
+- Phân số lớn hơn 1 có tử số lớn hơn mẫu số.
+
+- Phân số bằng 1 có tử số bằng mẫu số.
+
+- Khi ta thêm vào (bớt ra) ở tử số một số đơn vị, giữ y mẫu số ta được phân số mới lớn hơn (nhỏ) phân số cũ.
+
+- Khi ta thêm vào (bớt ra) ở mẫu số một số đơn vị, giữ y tử số ta được phân số mới nhỏ hơn (lớn) phân số cũ.
+
+- Khi ta cùng thêm vào (bớt ra) tử số và mẫu số một số đơn vị bằng nhau thì ta được phân số mới :
+
++ Lớn (nhỏ) hơn phân số cũ, nếu phân số đó nhỏ hơn 1.
+
++ Nhỏ (lớn) hơn phân số cũ, nếu phân số đó lớn hơn 1.
+
++ Bằng với phân số cũ, nếu phân số đó bằng 1.
+
+ 
+
+8. Cộng, trừ, nhân, chia phân số
+a. Rút gọn phân số
+Rút gọn phân số là làm cho phân số có tử số và mẫu số nhỏ lại nhưng giá trị không đổi.
+
+- Muốn rút gọn phân số ta xem tử số và mẫu số đó cùng chia hết cho số nào.
+
+- Cùng chia tử số và mẫu số của phân số đó cho cùng một số (khác 0).
+
+- Ta nên xét theo thứ tự các số: 2; 3; 5; 9; …
+
+ 
+
+b. Quy đồng mẫu số
+– Trước khi quy đồng mẫu số ta cần rút gọn các phân số để sau khi quy đồng ta có mẫu số chung không quá lớn.
+
+– Trường hợp có mẫu số của một phân số chia hết cho mẫu số của phân số kia, ta lấy thương của 2 mẫu số nhân với tử và mẫu số của phân số có mẫu số nhỏ. Ta được mẫu số chung bằng mẫu số lớn.
+
+– Trường hợp đặc biệt: là nếu tử số và mẫu số của phân số có mẫu số lớn cùng chia hết cho thương của 2 mẫu số thì ta có mẫu số chung bằng mẫu số của phân số có mẫu số nhỏ như thế phân số sẽ có mẫu số nhỏ hơn và bước quy đồng sẽ nhẹ nhàng hơn.
+
+ 
+
+c. Cộng & trừ phân số
+– Muốn cộng, trừ 2 phân số, trước nhất ta phải quy đồng mẫu số, sau đó ta tiến hành cộng, trừ tử số giữ y mẫu số.
+
+– Phép công phân số cũng có các tính chất như: giao hoán, kết hợp như số tự nhiên.
+
+ 
+
+d. Nhân phân số
+– Muốn nhân hai phân số ta nhân tử với tử, mẫu với mẫu.
+
+– Muốn nhân một phân số với một số tự nhiên, ta nhân số tự nhiên với tử số giữ y mẫu số.
+
+– Phép nhân phân số cũng có tính chất giao hoán và kết hợp như số tự nhiên.
+
+– Tương tự như nhân một số với một tổng (một hiệu).
+
+ 
+
+e. Chia phân số
+– Muốn chia hai phân số ta lấy phân số thứ nhất (số bị chia) nhân với phân số thứ nhì (số chia) đảo ngược.
+
+– Muốn chia một phân số cho một số tự nhiên ta lấy tử số chia cho số tự nhiên, giữ y mẫu số (lấy mẫu số nhân với số tự nhiên, giữ y tử số).
+
+– Muốn chia một số tự nhiên cho một phân số ta lấy số tự nhiên nhân với phân số đảo ngược.
+
+Chú ý: Khi thực hiện phép chia phân số cho số tự nhiên (hoặc số tự nhiên chia cho phân số) ta nên biến số tự nhiên thành phân số có mẫu số là 1 rồi lấy phân số thứ nhất nhân với phân số thư hai đảo ngược. Như thế sẽ ít bị sai sót.
+
+ 
+
+9. Số thập phân
+- Số thập phân gồm có hai phần: Phần nguyên và phần thập phân. Phần nguyên ở bên trái còn phần thập phân ở bên phải dấu phẩy.
+
+Ví dụ: 234,783 (234 là phần nguyên; 783 là phần thập phân. Đọc là: Hai trăm ba mươi bốn phẩy bảy tăm tám mươi ba).
+
+* Những điều cần chú ý:
+
+- Cộng, trừ số thập phân ta chú ý sắp các số cùng hàng thẳng cột (chú ý nhất là dấu phẩy) thực hiện như số tự nhiên, xong ta đánh dấu phẩy vào kết quả cho thẳng cột với hai số trên.
+
+- Đối với phép nhân, ta nhân như số tự nhiên, xong ta đếm xem ở cả 2 thừa số có bao nhiêu chữ số thập phân rồi ta đánh dấu phẩy vào tích vừa tìm được từ phải sang trái bấy nhiêu chữ số.
+
+- Trong phép chia số thập phân, ta phải biến đổi thế nào để số chia là số tự nhiên. Ta thực hiện như phép chia số tự nhiên, nhưng trước khi bước sang chia ở phần thập phân của số bị chia ta đánh dấu phẩy vào thương.
+
+ 
+
+10. Trung bình cộng
+* Muốn tính trung bình cộng của nhiều số ta lấy tổng các số đó chia cho số các số hạng:
+
+- Muốn tính tổng các số đó ta lấy trung bình cộng của chúng nhân với số các số hạng.
+
+- Trung bình cộng của dãy số cách đều chính là trung bình cộng của số đầu và số cuối. Nếu dãy số có số lẻ số hạng thì trung bình cộng chính là số ở giữa.
+
+- Nếu 1 trong 2 số lớn hơn trung bình cộng của chúng a đơn vị thì số đó lớn hơn số còn lại a x 2 đơn vị.
+
+- Một số lớn hơn trung bình cộng của các số a đơn vị thì tổng của các số còn lại thiếu a đơn vị. Để tính trung bình cộng chung ta lấy tổng các số còn lại cộng với a đơn vị rồi chia cho số số hạng còn lại.
+
+* Muốn tính trung bình cộng của nhiều số ta lấy tổng các số đó chia cho số các số hạng:
+
+- Muốn tính tổng các số đó ta lấy trung bình cộng của chúng nhân với số các số hạng. - Trung bình cộng của dãy số cách đều chính là trung bình cộng của số đầu và số cuối. Nếu dãy số có số lẻ số hạng thì trung bình cộng chính là số ở giữa.
+
+- Nếu 1 trong 2 số lớn hơn trung bình cộng của chúng a đơn vị thì số đó lớn hơn số còn lại a x 2 đơn vị.
+
+- Một số lớn hơn trung bình cộng của các số a đơn vị thì tổng của các số còn lại thiếu a đơn vị. Để tính trung bình cộng chung ta lấy tổng các số còn lại cộng với a đơn vị rồi chia cho số số hạng còn lại.
+
+ 
+
+11. Tìm hai số khi biết tổng và hiệu
+Số bé = (Tổng – Hiệu) : 2
+
+Số lớn = (Tổng + Hiệu) : 2
+
+Khi đã tìm được một số nên hướng dẫn học sinh biết lấy Tổng trừ đi số vừa tìm được để được số kia.
+
+ 
+
+12. Tìm hai số khi biết tổng và tỉ
+- Đọc kĩ đề bài rồi suy nghĩ xem đâu là tổng và tỷ số của 2 số cần tìm, đâu là số bé đâu là số lớn. Nếu là tổng của 3 số thì xác định xem tổng 3 số là bao nhiêu, tỷ số giữa số thứ nhất và số thứ 2, số thứ 2 và số thứ 3... (Đề bài đã cho tổng mà giấu hoặc chưa cho tỷ số thì ta phải tìm tỷ số. Nếu đề bài đã cho tỷ số mà giấu hoặc chưa cho tổng thì ta phải tìm tổng).
+
+- Tóm tắt đề toán bằng sơ đồ đoạn thẳng (Chú ý: Vẽ các phần phải bằng nhau) - Tìm tổng số phần bằng nhau.
+
+- Tìm giá trị một phần.
+
+Giá trị một phần = Tổng : Tổng số phần bằng nhau.
+
+- Tìm từng số cần tìm:
+
+Số bé = Giá trị một phần × Số phần của số bé.
+
+Số lớn = Giá trị một phần × Số phần của số lớn.
+
+- Thử lại vào giấy nháp mà thấy đúng thì ghi đáp số. (Cách thử lại: Lấy số lớn cộng với số bé được kết quả bằng tổng 2 số thì bài làm đúng)
+
+* Lưu ý:
+
+- Tỷ số của 2 số có thể được cho dưới dạng phân số, dưới dạng gấp số lần, hoặc dưới dạng phép chia.
+
+- Nửa chu vi của hình chữ nhật chính là tổng của chiều dài và chiều rộng.
+
+- Tổng của chiều dài và chiều rộng hình chữ nhật bằng nửa chu vi, bằng chu vi chia cho 2.
+
+- Tổng của 2 số bằng trung bình cộng của 2 số nhân với 2.
+
+- Tổng của 3 số bằng trung bình cộng của 3 số nhân với 3.
+
+- Tổng của n số bằng trung bình cộng của n số nhân với n (n là số các số hạng).
+
+ 
+
+13. Tìm hai số khi biết hiệu và tỉ
+* Các bước giải:
+
+- Bước 1: Tìm hiệu hai số (nếu ẩn hiệu).
+
+- Bước 2: Tìm tỷ số (nếu ẩn tỷ số).
+
+- Bước 3: Vẽ sơ đồ.
+
+- Bước 4: Tìm hiệu số phần bằng nhau.
+
+- Bước 5: Số bé = Hiệu : Hiệu số phần x số phần của số bé.
+
+- Bước 6: Số lớn bằng = Số bé + Hiệu
+
+* Trường hợp đặc biệt:
+
+Đề bài nhiều bài toán không cho dữ kiện đầy đủ về hiệu và tỷ số mà có thể cho dữ kiện như sau:
+
++ Thiếu hiệu (cho biết tỷ số, không có biết hiệu số).
+
++ Thiếu tỷ số (cho biết hiệu số, không cho biết tỷ số).
+
++ Cho dữ kiện thêm, bớt số, tạo hiệu (tỷ) mới tìm số ban đầu.
+
++ Với những bài toán cho dữ kiện như vậy, cần tiến hành thêm một bước chuyển về bài toán cơ bản.
+
+ 
+
+14. Tỷ số %
+- Tỷ số phần trăm của A đối với B là tỷ số của A đối với B được viết dưới dạng có mẫu số bằng 100 (hay dùng ký hiệu %). Ví dụ: Tìm tỷ số phần trăm của 3 so với 4. Ta lấy 3 : 4 = 0,75 x 100/100 = 75/100 = 75%
+
+- Muốn tìm tỷ số phần trăm của 2 số, ta tìm thương của 2 số đó rồi nhân với 100/100 (hoặc lấy thương của 2 số đó nhân với 100 rồi ghi thêm ký hiệu %).
+
+ 
+
+15. Hình học
+a. Công thức hình vuông
+- Chu vi: P = a x 4 (P: chu vi).
+
+- Cạnh: a = P : 4 (a: cạnh).
+
+- Diện tích: S = a x a (S: diện tích).
+
+ 
+
+b. Công thức hình chữ nhật
+- Chu vi: P = (a + b) x 2 (P: chu vi)
+
++ Chiều dài: a = P/2 - b (a: chiều dài)
+
++ Chiều rộng: b = P/2 - a (b: chiều rộng)
+
+- Diện tích: S = a x b (S: diện tích)
+
++ Chiều dài: a = S : b
+
++ Chiều rộng: b = S : a
+
+ 
+
+c. Công thức hình bình hành
+- Chu vi: P = (a + b) x 2 (a: độ dài đáy)
+
+- Diện tích: S = a x h (h: chiều cao)
+
+- Độ dài đáy: a = S : h
+
+- Chiều cao: h = S : a
+
+ 
+
+d. Công thức hình thoi
+- Diện tích: S = (m x n) : 2 (m: đường chéo thứ nhất)
+
+- Tích 2 đường chéo: (m x n) = S x 2 (n: đường chéo thứ nhất)
+
+ 
+
+e. Công thức hình tam giác
+- Chu vi: P = a + b + c (a: cạnh thứ nhất; b: cạnh thứ hai; c: cạnh thứ ba)
+
+- Diện tích: S = (a x h) : 2 (a: cạnh đáy)
+
++ Chiều cao: h = (S x 2) : a (h: chiều cao)
+
++ Cạnh đáy: a = (S x 2) : h
+
+ 
+
+f. Công thức hình thang
+- Diện tích: S = (a + b) x h : 2 (a & b: cạnh đáy).
+
++ Chiều cao: h = (S x 2) : a (h: chiều cao).
+
++ Cạnh đáy: a = (S x 2) : h.
+
+- Chu vi hình thang: Muốn tìm chu vi hình thang ta lấy tổng chiều dài hai cạnh bên và hai cạnh đáy:
+
+P = a + b + c + d.
+
+- Tổng chiều dài hai đáy hình thang: Muốn tìm tổng chiều dài hai đáy hình thang, ta lấy hai lần diện tích chia cho chiều cao.
+
+- Muốn tìm đáy lớn, (đáy bé) hình thang ta lấy tổng hai đáy trừ đi đáy bé (đáy lớn).
+
+ 
+
+g. Công thức hình tròn
+- Bán kính hình tròn: r = d : 2 hoặc r = C : 2 : 3,14.
+
+- Đường kính hình tròn: d = r x 2 hoặc d = C : 3,14.
+
+- Chu vi hình tròn: C = r x 2 x 3,14 hoặc C = d x 3,14.
+
+- Diện tích hình tròn: C = r x r x 3,14.
+
+- Tìm diện tích miệng giếng: S = r x r x 3,14.
+
+- Bán kính hình tròn lớn = bán kính hình tròn nhỏ + chiều rộng thành giếng.
+
+- Diện tích hình tròn lớn: S = r x r x 3,14.
+
+- Tìm diện tích thành giếng = diện tích hình tròn lớn - diện tích hình tròn nhỏ.
+
+ 
+
+h. Công thức hình hộp chữ nhật
+- Diện tích xung quanh hình hộp chữ nhật bằng chu vi đáy nhân chiều cao:
+
+Sxq = Pđáy x c ( Sxq = (a + b) x 2 x c )
+
+- Diện tích toàn phần bằng diện tích xung quanh cộng với diện tích 2 mặt đáy:
+
+Stp = Sxq (Sđáy x2)
+
+- Thể tích hình hộp chữ nhật bằng số đo chiều dài nhân với số đo chiều rộng nhân với chiều cao (hoặc bằng diện tích đáy nhân chiều cao):
+
+V = a x b x c
+
+ 
+
+i. Công thức hình lập phương
+- Diện tích xung quanh bằng diện tích một mặt nhân với 4:
+
+Sxq= a x a x 4
+
+- Diện tích toàn phần bằng diện tích một mặt nhân với 6:
+
+Stp= a x a x 6
+
+- Thể tích bằng số đo của cạnh nhân với cạnh rồi nhân với cạnh.
+
+V = a x a x a
+
+ 
+
+k. Công thức hình trụ
+- Diện tích xung quanh bằng chu vi đáy nhân chiều cao:
+
+Sxq= d x 3,14 x h
+
+- Diện tích toàn phần bằng diện tích xung quanh cộng với diện tích 2 mặt đáy.
+
+- Thể tích hình trụ bằng diện tích đáy nhân chiều cao:
+
+V = R x R x 3,14 x h
+
+ 
+
+16. Chuyển động đều
+- Quãng đường bằng vận tốc nhân với thời gian: S = v x t.
+
+- Vận tốc bằng quãng đường chia cho thời gian: v = S : t.
+
+- Thời gian bằng quãng đường chia cho vận tốc: t = S : v.
+
+- Ngược chiều: Thời gian gặp nhau bằng quãng đường chia cho tổng hai vận tốc: t = S : ( v1 + v2)
+
+- Cùng chiều: Thời gian đuổi kịp bằng khoảng cách chia cho hiệu hai vận tốc: t = S : (v1 – v2) (v1>v2)
+
+* Chú ý:
+
+- Tìm thời gian gặp nhau hay thời gian đuổi kịp ta phải xét 2 chuyển động khởi hành cùng một lúc.
+
+- Quãng đường đi được tỉ lệ thuận với thời gian và cũng tỉ lệ thuận với vận tốc.
+
+- Quãng đường không đổi vận tốc tỉ lệ nghịch với thời gian.
+
+- Muốn tính vận tốc trung bình, chú ý là thời gian đi phải bằng nhau.
+
+* Lưu ý: Khi tính Vận tốc trung bình. Trường hợp đề bài cho biết một chuyển động đi với 2 vận tốc khác nhau, chỉ tính được vận tốc trung bình bằng cách tính trung bình cộng của 2 vận tốc đã cho, chỉ khi đi với 2 vận tốc đó có số đo thời gian bằng nhau.
+
+- (V1+ V2) = S : t đi gặp nhau
+
+- S = ( V1+ V2) x t đi gặp nhau
+
+- ( V1- V2) = S : t đi đuổi kịp nhau
+
+- Thời gian đi gặp nhau = thời điểm gặp nhau lúc 2 xe
+
+- Thời điểm khởi hành 2 xe
+
+- Tính vận tốc xuôi dòng:
+
+V xuôi dòng = V thuyền khi nước lặng + V dòng nước
+
+- Tính vận tốc ngược dòng
+
+V ngược dòng = V thuyền khi nước lặng- V dòng nước
+
+- Tính vận tốc dòng nước
+
+V dòng nước = (V xuôi dòng - V ngược dòng) : 2
+
+- Tính vận tốc khi nước lặng
+
+V thuyền khi nước lặng = V xuôi dòng - V dòng nước
+
+- Tính vận tốc tàu (thuyền) khi nước lặng:
+
+V thuyền khi nước lặng = V ngược dòng+ V dòng nước
+
+ 
+
+17. Tỉ lệ thuận - Tỉ lệ nghịch
+- Hai đại lượng tỷ lệ thuận x và y liên hệ với nhau bởi công thức y = kx, với k là một hằng số khác, (y tỉ lệ thuận với x theo hệ số tỉ lệ k).
+
+- Tỷ số hai giá trị tương ứng của hai đại lượng tỉ lệ thuận luôn không đổi và bằng hệ số tỉ lệ.
+
+- Tỷ số hai giá trị bất kỳ của đại lượng này bằng tỷ số hai giá trị tương ứng của địa lượng kia.
+
+Trên đây, là tóm tắt công thức Toán học cơ bản từ lớp 1 đến lớp 5 mà Luật Minh Khuê tổng hợp hy vọng sẽ giúp ích các em học sinh tham khảo dễ dàng áp dụng bài tập và học tập tốt trên trường. Luật Minh Khuê chân thành cảm ơn các bạn đã theo dõi!

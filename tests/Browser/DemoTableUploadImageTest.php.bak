@@ -1,0 +1,58 @@
+<?php
+
+namespace Tests\Feature;
+
+use App\Models\DemoTbl;
+use App\Models\Tag;
+use App\Models\TagDemo;
+use App\Models\User;
+use Facebook\WebDriver\Remote\RemoteWebElement;
+use Facebook\WebDriver\WebDriverBy;
+use Facebook\WebDriver\WebDriverElement;
+use Facebook\WebDriver\WebDriverKeys;
+use Facebook\WebDriver\WebDriverSelect;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
+use LadLib\Common\Tester\clsTestBase2;
+use LadLib\Laravel\Database\DbHelperLaravel;
+use Tests\Browser\DuskTestCaseBase;
+use Tests\DuskTestCase;
+use Tests\TestCase;
+
+
+/**
+ *
+ *
+ *  Filter autocomplete top filter
+ *  Edit, Add item
+ *
+ */
+
+class DemoTableUploadImageTest extends DuskTestCaseBase
+{
+
+    protected function hasHeadlessDisabled(): bool
+    {
+        return true;
+        return parent::hasHeadlessDisabled();
+    }
+
+    //Todo: test upload multi image to demo
+    function testDemoUploadImageMulti()
+    {
+        return;
+        dump("=== Check " . get_called_class() ."/" . __FUNCTION__);
+        if (!$browser = $this->getBrowserLogined()) {
+        }
+        $this->testLoginTrueAcc();
+        $browser = $this->getBrowserLogined();
+        $drv = $this->getDrv();
+        $browser->visit("/admin/demo-api");
+
+    }
+
+    //Todo: test nếu readonly imagesList, thì chỉ thấy ảnh mà ko move, xóa ảnh được
+
+
+}

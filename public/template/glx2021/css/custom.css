@@ -1,0 +1,132 @@
+.logo-dark {
+    height: 52px;
+}
+
+@media (max-width: 768px) {
+    .logo-dark {
+        height: 36px!important;
+    }
+}
+
+
+.logo-light {
+    height: 52px;
+}
+
+@media (max-width: 768px) {
+    .logo-light {
+        height: 36px!important;
+    }
+}
+
+hr {
+    margin: 20px 0px;
+}
+
+.navbar.caret-none .navbar-nav:not(.sm-collapsible) .nav-link .sub-arrow {
+    display: inline;
+}
+
+.trangchu-hosting p, .trangchu-hosting h1 , .trangchu-hosting h2 , .trangchu-hosting h3 , .trangchu-hosting h4 {
+    color: white!important;
+}
+
+.trangchu-hosting {
+    background: #60697b!important;
+    /*background-image: url("/template/glxv2/images/bg_hostting_server2.jpg");*/
+    /*background-size: cover;*/
+
+}
+.trangchu-hosting img{
+    border: 3px solid white;
+}
+.trangchu-hosting .btn-primary{
+    background-color: transparent;
+    border-color: white;
+    color: white;
+    margin-top: 10px;
+}
+
+.bg-gray-primary {
+    background-color: #60697b;
+}
+
+.wrapper.bg-gray-primary.angled.lower-start:after, .wrapper.bg-gray-primary.angled.upper-start:before {
+    border-left-color: #60697b;
+}
+
+/*prev_select_vps_custom*/
+/*next_select_vps_custom*/
+
+
+.item-select-resource{
+    border: 0px solid red;
+}
+
+.item-select-resource{
+    /*text-align: center;*/
+    background-color: lavenderblush;
+    padding: 20px 20px 0px 20px;
+}
+.white-all-text{
+    color: white;
+}
+.white-all-text h3.counter{
+    color: white;
+}
+
+.white-all-text .svg-fill , .white-all-text .svg-stroke{
+    color: white;
+    fill: white;
+}
+.item-select-resource-head{
+    font-size: 22px;
+    padding: 10px;
+    font-weight: bold;
+    background-color: #ff8000;
+    color: white;
+    text-align: center;
+    border-radius: 10px 10px 0px 0px;
+}
+
+.item-select-resource select {
+    border-radius: 5px;
+    padding: 5px;width: 66%;
+    text-align-last: center
+}
+
+.btn_vps_opt {
+    background-color: white;
+    color: black;
+    display: inline;
+    height: 40px;
+    padding: 0px 10px;
+    border: 1px solid gray;
+    border-radius: 5px;
+}
+
+.btn_vps_opt:hover{
+    background-color: black;
+    color: white;
+}
+
+.inside-html-item {
+    border-radius: 10px;
+    padding-bottom: 20px;
+    background-color: lavenderblush;
+    margin-bottom: 20px;
+}
+
+.btn-glx {
+    background-color: #ff8000;
+    color: white;
+    padding: 10px;
+    width: 100%;
+    text-align: center;
+    border-color: #ff8000;
+    font-weight: bolder;
+}
+
+.nav-link {
+    font-size: 0.85rem;
+}

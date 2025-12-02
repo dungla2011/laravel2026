@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/template/glx2021/assets/img/favicon.png">
+
+    <title>
+    <?php
+    //echo "Galaxy Technology - Công ty Công nghệ số Galaxy Việt Nam";
+//    ClassSetting::$metaTitle = str_replace("Galaxy Cloud", 'Galaxy Tech', ClassSetting::$metaTitle);
+//    ClassSetting::$metaTitle = str_replace("GalaxyCloud", 'GalaxyTech', ClassSetting::$metaTitle);
+    echo ClassSetting::$metaTitle;
+    ?>
+    </title>
+
+    <meta name="description" content="Công ty Công nghệ số Galaxy Việt Nam, sản phẩm và dịch vụ công nghệ thông tin, hosting, phần mềm, app mobile">
+    <meta name="keywords" content="<?php echo ClassSetting::$metaKeyword; ?>">
+
+    <meta property="og:image" content="/public/images/logo/logo-glx-tech-trans-square-200.png?v=1">
+    <meta property="og:title" content="Galaxy Technology - Sản phẩm và dịch vụ Công nghệ thông tin">
+    <meta property="og:description" content="Galaxy Việt Nam chuyên cung cấp sản phẩm và dịch vụ công nghệ thông tin, hosting, phần mềm, app mobile ... đáp ứng yêu cầu đa dạng của quý khách">
+
+    <?php
+
+    if(0)
+        ClassSetting::showAllMetaAndTitle();
+
+    ?>
+
+
+    <link rel="stylesheet" href="/template/glx2021/assets/css/plugins.css">
+    <link rel="stylesheet" href="/template/glx2021/assets/css/style.css?v=<?php echo filemtime(ROOT_FOLDER_CODE.'/template/glx2021/assets/css/style.css') ?>">
+
+    <link rel="stylesheet" href="/public/css/lad-common.css">
+    <link rel="stylesheet" href="/template/glx2021/css/custom.css?v=<?php echo filemtime(ROOT_FOLDER_CODE.'/template/glx2021/css/custom.css') ?>">
+
+
+    <script src="/public/js/jquery-3.6.min.js"></script>
+    <script src="/application/_js/lib_base.js?v=1634016826"></script>
+
+<!--    <link rel="stylesheet" href="/template/glxv2/css/style_glx.css">-->
+</head>
+
+<body>
+<div class="content-wrapper">
+    <header class="wrapper
+    <?php
+    if(\Base\ClassRoute::isDefaultIndexIndexActionOnly())
+        echo "bg-soft-primary";
+    else{
+        echo "bg-gray";
+    }
+    ?>">
+
+        <nav class="<?php
+        if(\Base\ClassRoute::isDefaultIndexIndexActionOnly())
+            echo 'navbar navbar-expand-lg center-nav transparent position-absolute navbar-dark caret-none';
+        else
+            echo 'navbar navbar-expand-lg center-logo transparent navbar-light'
+        ?>">
+            <div class="container flex-lg-row flex-nowrap align-items-center">
+                <div class="navbar-brand w-100">
+                    <?php
+                    if(\Base\ClassRoute::isDefaultIndexIndexActionOnly()) {
+                        ?>
+                        <a href="/">
+                            <img class="logo-dark" src="/public/images/logo/glx-trans-black-h52.png"
+                                 srcset="/public/images/logo/glx-trans-black-h52.png 2x" alt=""/>
+                            <img class="logo-light"
+                                 src="/public/images/logo/glx-trans-white-h52.png"
+                                 srcset="/public/images/logo/glx-trans-white-h52.png 2x" alt=""/>
+                        </a>
+                    <?php
+
+                    }
+                    else{
+                        ?>
+
+                        <a href="/">
+                            <img class="logo-dark" src="/public/images/logo/glx-trans-black-h52.png"
+                                 srcset="/public/images/logo/glx-trans-black-h52.png 2x" alt=""/>
+                            <img class="logo-light" src="/public/images/logo/glx-trans-black-h52.png"
+                                 srcset="/public/images/logo/glx-trans-black-h52.png 2x" alt=""/>
+                        </a>
+                    <?php
+                    }
+                    ?>
+
+                </div>
+                <div class="navbar-collapse offcanvas-nav">
+                    <div class="offcanvas-header d-lg-none d-xl-none">
+                        <a href="/"><img class="logo-light" src="/public/images/logo/glx-trans-white.png"
+                                         srcset="/public/images/logo/glx-trans-white.png" alt=""/></a>
+                        <button type="button" class="btn-close btn-close-white offcanvas-close offcanvas-nav-close"
+                                aria-label="Close"></button>
+                    </div>
+                    <ul class="navbar-nav">
+
+                        <?php
+
+                        echo \Base\ModelMenuCms::showMenu2021_Mobi_And_Pc_SandBoxTemplate(null, null, null, ['cat_id'=>4]);
+
+                        ?>
+
+                        <li class="nav-item">
+                            <?php
+                            if(getCurrentUserId()){
+                            ?>
+                            <a class="nav-link" href="/member"> Thành viên</a>
+                            <?php
+                            }
+                            else{
+                            ?>
+                                <a class="nav-link" href="/default/login"> Đăng nhập</a>
+                            <?php
+                            }
+                            ?>
+                        </li>
+
+    <li class="nav-item dropdown" style="display: none">
+        <a class="nav-link dropdown-toggle" href="#!">Pages
+            <span class="sub-arrow"></span>
+        </a>
+        <ul class="dropdown-menu">
+            <li class="dropdown"><a class="dropdown-item dropdown-toggle" href="#">Services</a>
+                <ul class="dropdown-menu">
+                    <li class="nav-item"><a class="dropdown-item"
+                                            href="/template/glx2021/services.html">Services I</a>
+                    </li>
+                    <li class="nav-item"><a class="dropdown-item"
+                                            href="/template/glx2021/services2.html">Services II</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="dropdown"><a class="dropdown-item dropdown-toggle" href="#">About</a>
+                <ul class="dropdown-menu">
+                    <li class="nav-item"><a class="dropdown-item"
+                                            href="/template/glx2021/about.html">About I</a></li>
+                    <li class="nav-item"><a class="dropdown-item"
+                                            href="/template/glx2021/about2.html">About II</a></li>
+                </ul>
+            </li>
+
+        </ul>
+    </li>
+
+                    </ul>
+                    <!-- /.navbar-nav -->
+                </div>
+                <!-- /.navbar-collapse -->
+                <div class="navbar-other w-100 d-flex ms-auto">
+
+                    <ul class="navbar-nav flex-row align-items-center ms-auto" data-sm-skip="true">
+
+                        <li class="nav-item dropdown language-select text-uppercase">
+                            <a class="nav-link dropdown-item dropdown-toggle" href="#" role="button"
+                               data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Vi</a>
+                            <ul class="dropdown-menu">
+                                <li class="nav-item"><a class="dropdown-item" href="#">En</a></li>
+                                <li class="nav-item"><a class="dropdown-item" href="#">Jp</a></li>
+                            </ul>
+                        </li>
+
+<!--                        <li class="nav-item"><a class="nav-link" data-toggle="offcanvas-info"><i-->
+<!--                                        class="uil uil-info-circle"></i></a></li>-->
+
+                        <li class="nav-item d-lg-none">
+                            <div class="navbar-hamburger">
+                                <button class="hamburger animate plain" data-toggle="offcanvas-nav"><span></span>
+                                </button>
+                            </div>
+                        </li>
+                    </ul>
+                    <!-- /.navbar-nav -->
+                </div>
+                <!-- /.navbar-other -->
+                <div class="offcanvas-info text-inverse">
+                    <button type="button" class="btn-close btn-close-white offcanvas-close offcanvas-info-close"
+                            aria-label="Close"></button>
+                    <a href="/"><img src="/public/images/logo/glx-trans-white.png"
+                                                                srcset="/public/images/logo/glx-trans-white.png"
+                                                                alt=""/></a>
+                    <div class="mt-4 widget">
+                        <p>Sandbox is a multipurpose HTML5 template with various layouts which will be a great solution
+                            for your business.</p>
+                    </div>
+                    <!-- /.widget -->
+                    <div class="widget">
+                        <h4 class="widget-title text-white mb-3">Contact Info</h4>
+                        <address> Moonshine St. 14/05 <br/> Light City, London</address>
+                        <a href="mailto:first.last@email.com">info@email.com</a><br/> +00 (123) 456 78 90
+                    </div>
+                    <!-- /.widget -->
+                    <div class="widget">
+                        <h4 class="widget-title text-white mb-3">Learn More</h4>
+                        <ul class="list-unstyled">
+                            <li><a href="#">Our Story</a></li>
+                            <li><a href="#">Terms of Use</a></li>
+                            <li><a href="#">Privacy Policy</a></li>
+                            <li><a href="#">Contact Us</a></li>
+                        </ul>
+                    </div>
+                    <!-- /.widget -->
+                    <div class="widget">
+                        <h4 class="widget-title text-white mb-3">Follow Us</h4>
+                        <nav class="nav social social-white">
+                            <a href="#"><i class="uil uil-twitter"></i></a>
+                            <a href="#"><i class="uil uil-facebook-f"></i></a>
+                            <a href="#"><i class="uil uil-dribbble"></i></a>
+                            <a href="#"><i class="uil uil-instagram"></i></a>
+                            <a href="#"><i class="uil uil-youtube"></i></a>
+                        </nav>
+                        <!-- /.social -->
+                    </div>
+                    <!-- /.widget -->
+                </div>
+                <!-- /.offcanvas-info -->
+            </div>
+
+            <!-- /.container -->
+        </nav>
+        <!-- /.navbar -->
+    </header>
+    <!-- /header -->
+
+
+
+    <?php
+
+    echo \Base\ClassRoute::getContentHtml();
+
+    ?>
+</div>
+
+
+
+<!-- /.content-wrapper -->
+<footer class="bg-dark text-inverse">
+    <div class="container py-13 py-md-15">
+        <div class="row gy-6 gy-lg-0">
+            <div class="col-lg-6">
+                <div class="widget">
+                    <img class="mb-4" height="45"
+                         src="/public/images/logo/glx-trans-white.png"
+                         srcset="/public/images/logo/glx-trans-white.png" alt=""/>
+                         <br>
+                         CÔNG TY TNHH CÔNG NGHỆ SỐ GALAXY VIỆT NAM
+                         <br>
+                         Địa chỉ: Số 54, Nguyễn Đổng Chi, Cầu Diễn, Nam Từ Liêm,  Hà Nội
+                         <br>
+                         Ngày hoạt động: 06/12/2010
+                         <br>
+                         Giấy phép kinh doanh: 0105029486
+<br>
+                    <p style="color: #b9b9b9">Thông tin thanh toán </p>
+                    - Số TK: 83211.1066.8888 – CÔNG TY TNHH CÔNG NGHỆ SỐ GALAXY VIỆT NAM -
+
+                    Ngân hàng Thương mại cổ phần Quân đội -
+                    Chi nhánh Mỹ đình (Hà Nội)
+                    <br>
+                    - Số TK: 0021.0014.80409 – LÊ ANH DŨNG – Ngân hàng Vietcombank Hà Nội
+                    <br>
+                    - Số TK: 138.996.249 – LÊ ANH DŨNG – Ngân hàng ACB Hà Nội
+                    <br>
+
+                    <p class="mb-4">© 2010 - <?php echo date("Y")  ?>
+                    Galaxy Technology. All rights reserved.</p>
+                    <nav class="nav social social-white">
+                        <a href="#"><i class="uil uil-twitter"></i></a>
+                        <a href="#"><i class="uil uil-facebook-f"></i></a>
+                        <a href="#"><i class="uil uil-dribbble"></i></a>
+                        <a href="#"><i class="uil uil-instagram"></i></a>
+                        <a href="#"><i class="uil uil-youtube"></i></a>
+                    </nav>
+                    <!-- /.social -->
+                </div>
+                <!-- /.widget -->
+            </div>
+            <!-- /column -->
+<!--            <div class="col-md-4 col-lg-2 offset-lg-2">-->
+<!--                <div class="widget">-->
+<!--                    <h4 class="widget-title mb-3 text-white">Need Help?</h4>-->
+<!--                    <ul class="list-unstyled mb-0">-->
+<!--                        <li><a href="#">Support</a></li>-->
+<!--                        <li><a href="#">Get Started</a></li>-->
+<!--                        <li><a href="#">Terms of Use</a></li>-->
+<!--                        <li><a href="#">Privacy Policy</a></li>-->
+<!--                    </ul>-->
+<!--                </div>-->
+                <!-- /.widget -->
+<!--            </div>-->
+            <!-- /column -->
+            <div class="col-md-4 col-lg-2">
+                <div class="widget">
+                    <h4 class="widget-title mb-3 text-white">Learn More</h4>
+                    <ul class="list-unstyled mb-0">
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Our Story</a></li>
+                        <li><a href="#">Projects</a></li>
+                        <li><a href="#">Pricing</a></li>
+                    </ul>
+                </div>
+                <!-- /.widget -->
+            </div>
+            <!-- /column -->
+            <div class="col-md-4 col-lg-2">
+                <div class="widget">
+                    <h4 class="widget-title mb-3 text-white">Liên hệ</h4>
+                    <address>24 Nguyễn Cơ Thạch, Nam Từ Liêm, Hà Nội</address>
+                    <a href="mailto:sale@glx.com.vn">sale@glx.com.vn</a><br/>
+                    <a href="tel:0966616368">Tel, Zalo: 0966.61.63.68</a>
+                    <a href="tel:0929366899">09.29.36.68.99</a>
+                </div>
+                <!-- /.widget -->
+            </div>
+            <!-- /column -->
+        </div>
+        <!--/.row -->
+    </div>
+    <!-- /.container -->
+</footer>
+<div class="progress-wrap">
+    <svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
+        <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"/>
+    </svg>
+</div>
+
+<script src="/public/js/bootstrap.5.bundle.min.js"></script>
+<script src="/template/glx2021/assets/js/plugins.js"></script>
+<script src="/template/glx2021/assets/js/theme.js"></script>
+
+<script src="/application/_js/hosting_vps.js"></script>
+<script src="/application/_js/hosting_dedicated.js"></script>
+<script src="/application/_js/common_glx.js.php"></script>
+
+<?php
+echo ClassSetting::$siteMngObj->livechat;
+?>
+
+</body>
+
+</html>

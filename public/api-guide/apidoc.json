@@ -1,0 +1,20 @@
+{
+  "name": "TEST GLX- API Managerment",
+  "version": "1.0.1",
+  "description": "Tài liệu mô tả API - TEST.glx",
+  "title": "glx.vn - API Document",
+  "url" : "http://localhost:9081/",
+  "sampleUrl": "http://localhost:9081/",
+  "header": {
+    "title": "API Document",
+    "filename": "header.md"
+  },
+  "footer": {
+    "title": ".",
+    "filename": "footer.md"
+  },
+  "template": {
+  	"withCompare": true,
+  	"withGenerator": true
+  }
+}

@@ -1,0 +1,987 @@
+2024-11-25 12:32:06 pid:2386856 Workerman[public/tool1/22.php] start in DEBUG mode
+2024-11-25 12:43:06 pid:2386856 Workerman[22.php] stopping ...
+2024-11-25 12:43:06 pid:2386856 Workerman[22.php] has been stopped
+2024-11-25 12:43:07 pid:2388267 Workerman[public/tool1/22.php] start in DEBUG mode
+2024-11-25 12:45:30 pid:2388267 Workerman[22.php] stopping ...
+2024-11-25 12:45:30 pid:2388267 Workerman[22.php] has been stopped
+2024-11-25 12:45:33 pid:2388549 Workerman[public/tool1/22.php] start in DEBUG mode
+2024-11-25 12:45:43 pid:2388549 Workerman[22.php] stopping ...
+2024-11-25 12:45:43 pid:2388549 Workerman[22.php] has been stopped
+2024-11-25 12:49:03 pid:2388952 Workerman[public/tool1/22.php] start in DEBUG mode
+2024-11-25 12:49:33 pid:2388952 Workerman[22.php] stopping ...
+2024-11-25 12:49:33 pid:2388952 Workerman[22.php] has been stopped
+2024-11-25 12:50:21 pid:2389094 Workerman[public/tool1/22.php] start in DEBUG mode
+2024-11-25 12:53:11 pid:2389094 Workerman[22.php] stopping ...
+2024-11-25 12:53:11 pid:2389094 Workerman[22.php] has been stopped
+2024-11-25 12:53:21 pid:2389447 Workerman[public/tool1/22.php] start in DEBUG mode
+2024-11-25 12:54:13 pid:2389447 Workerman[22.php] stopping ...
+2024-11-25 12:54:14 pid:2389447 Workerman[22.php] has been stopped
+2024-11-25 12:54:25 pid:2389569 Workerman[public/tool1/22.php] start in DEBUG mode
+2024-11-25 12:55:22 pid:2389569 Workerman[22.php] stopping ...
+2024-11-25 12:55:22 pid:2389569 Workerman[22.php] has been stopped
+2024-11-25 12:55:55 pid:2389748 Workerman[public/tool1/22.php] start in DEBUG mode
+2024-11-25 12:56:28 pid:2389748 Workerman[22.php] stopping ...
+2024-11-25 12:56:29 pid:2389748 Workerman[22.php] has been stopped
+2024-11-25 12:56:35 pid:2389846 Workerman[public/tool1/22.php] start in DEBUG mode
+2024-11-25 12:56:41 pid:2389846 Workerman[22.php] stopping ...
+2024-11-25 12:56:41 pid:2389846 Workerman[22.php] has been stopped
+2024-11-25 13:00:09 pid:2390265 Workerman[public/tool1/22.php] start in DEBUG mode
+2024-11-25 13:00:12 pid:2390265 Workerman[22.php] stopping ...
+2024-11-25 13:00:12 pid:2390265 Workerman[22.php] has been stopped
+2024-11-25 13:01:01 pid:2390357 Workerman[public/tool1/22.php] start in DEBUG mode
+2024-11-25 13:04:34 pid:2390357 Workerman[22.php] stopping ...
+2024-11-25 13:04:34 pid:2390357 Workerman[22.php] has been stopped
+2024-11-25 13:04:37 pid:2390781 Workerman[public/tool1/22.php] start in DEBUG mode
+2024-11-25 13:05:25 pid:2390781 Workerman[22.php] stopping ...
+2024-11-25 13:05:25 pid:2390781 Workerman[22.php] has been stopped
+2024-11-25 13:05:27 pid:2390881 Workerman[public/tool1/22.php] start in DEBUG mode
+2024-11-25 13:07:16 pid:2390881 Workerman[22.php] stopping ...
+2024-11-25 13:07:16 pid:2390881 Workerman[22.php] has been stopped
+2024-11-25 13:07:18 pid:2391100 Workerman[public/tool1/22.php] start in DEBUG mode
+2024-11-25 13:11:18 pid:2391100 Workerman[22.php] stopping ...
+2024-11-25 13:11:18 pid:2391100 Workerman[22.php] has been stopped
+2024-11-25 13:12:13 pid:2391784 Workerman[public/tool1/22.php] start in DEBUG mode
+2024-11-25 14:14:01 pid:2391784 Workerman[22.php] stopping ...
+2024-11-25 14:14:01 pid:2391784 Workerman[22.php] has been stopped
+2024-11-25 14:14:02 pid:2399169 Workerman[public/tool1/22.php] start in DEBUG mode
+2024-11-25 14:14:30 pid:2399169 Workerman[22.php] stopping ...
+2024-11-25 14:14:30 pid:2399169 Workerman[22.php] has been stopped
+2024-11-25 14:14:31 pid:2399234 Workerman[public/tool1/22.php] start in DEBUG mode
+2024-11-25 14:17:06 pid:2399234 Workerman[22.php] stopping ...
+2024-11-25 14:17:06 pid:2399234 Workerman[22.php] has been stopped
+2024-11-25 14:17:07 pid:2399539 Workerman[public/tool1/22.php] start in DEBUG mode
+2024-11-25 14:17:42 pid:2399539 Workerman[22.php] stopping ...
+2024-11-25 14:17:42 pid:2399539 Workerman[22.php] has been stopped
+2024-11-25 14:17:44 pid:2399590 Workerman[public/tool1/22.php] start in DEBUG mode
+2024-11-25 14:24:31 pid:2399590 Workerman[22.php] stopping ...
+2024-11-25 14:24:31 pid:2399590 Workerman[22.php] has been stopped
+2024-11-25 14:24:33 pid:2400401 Workerman[public/tool1/22.php] start in DEBUG mode
+2024-11-25 14:25:35 pid:2400401 Workerman[22.php] stopping ...
+2024-11-25 14:25:35 pid:2400401 Workerman[22.php] has been stopped
+2024-11-25 14:25:37 pid:2400524 Workerman[public/tool1/22.php] start in DEBUG mode
+2024-11-25 14:25:48 pid:2400524 Workerman[22.php] stopping ...
+2024-11-25 14:25:48 pid:2400524 Workerman[22.php] has been stopped
+2024-11-25 14:27:53 pid:2400795 Workerman[public/tool1/22.php] start in DEBUG mode
+2024-11-25 14:27:53 pid:2400799 ErrorException: Undefined array key "REQUEST_URI" in /var/www/html/public/tool1/22.php:34
+Stack trace:
+#0 /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(255): Illuminate\Foundation\Bootstrap\HandleExceptions->handleError()
+#1 /var/www/html/public/tool1/22.php(34): Illuminate\Foundation\Bootstrap\HandleExceptions->Illuminate\Foundation\Bootstrap\{closure}()
+#2 /var/www/html/vendor/workerman/workerman/Worker.php(2664): {closure}()
+#3 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Worker->acceptConnection()
+#4 /var/www/html/vendor/workerman/workerman/Worker.php(1719): Workerman\Events\Select->loop()
+#5 /var/www/html/vendor/workerman/workerman/Worker.php(1510): Workerman\Worker::forkOneWorkerForLinux()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1484): Workerman\Worker::forkWorkersForLinux()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(561): Workerman\Worker::forkWorkers()
+#8 /var/www/html/public/tool1/22.php(72): Workerman\Worker::runAll()
+#9 {main}
+2024-11-25 14:27:53 pid:2400797 ErrorException: Undefined array key "REQUEST_URI" in /var/www/html/public/tool1/22.php:34
+Stack trace:
+#0 /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(255): Illuminate\Foundation\Bootstrap\HandleExceptions->handleError()
+#1 /var/www/html/public/tool1/22.php(34): Illuminate\Foundation\Bootstrap\HandleExceptions->Illuminate\Foundation\Bootstrap\{closure}()
+#2 /var/www/html/vendor/workerman/workerman/Worker.php(2664): {closure}()
+#3 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Worker->acceptConnection()
+#4 /var/www/html/vendor/workerman/workerman/Worker.php(1719): Workerman\Events\Select->loop()
+#5 /var/www/html/vendor/workerman/workerman/Worker.php(1510): Workerman\Worker::forkOneWorkerForLinux()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1484): Workerman\Worker::forkWorkersForLinux()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(561): Workerman\Worker::forkWorkers()
+#8 /var/www/html/public/tool1/22.php(72): Workerman\Worker::runAll()
+#9 {main}
+2024-11-25 14:27:53 pid:2400795 worker[none:2400799] exit with status 64000
+2024-11-25 14:27:53 pid:2400795 worker[none:2400797] exit with status 64000
+2024-11-25 14:27:57 pid:2400795 Workerman[22.php] stopping ...
+2024-11-25 14:27:57 pid:2400795 Workerman[22.php] has been stopped
+2024-11-25 14:28:12 pid:2400836 Workerman[public/tool1/22.php] start in DEBUG mode
+2024-11-25 14:28:14 pid:2400839 ErrorException: Undefined array key "REQUEST_URI" in /var/www/html/public/tool1/22.php:38
+Stack trace:
+#0 /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(255): Illuminate\Foundation\Bootstrap\HandleExceptions->handleError()
+#1 /var/www/html/public/tool1/22.php(38): Illuminate\Foundation\Bootstrap\HandleExceptions->Illuminate\Foundation\Bootstrap\{closure}()
+#2 /var/www/html/vendor/workerman/workerman/Worker.php(2664): {closure}()
+#3 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Worker->acceptConnection()
+#4 /var/www/html/vendor/workerman/workerman/Worker.php(1719): Workerman\Events\Select->loop()
+#5 /var/www/html/vendor/workerman/workerman/Worker.php(1510): Workerman\Worker::forkOneWorkerForLinux()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1484): Workerman\Worker::forkWorkersForLinux()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(561): Workerman\Worker::forkWorkers()
+#8 /var/www/html/public/tool1/22.php(76): Workerman\Worker::runAll()
+#9 {main}
+2024-11-25 14:28:14 pid:2400840 ErrorException: Undefined array key "REQUEST_URI" in /var/www/html/public/tool1/22.php:38
+Stack trace:
+#0 /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(255): Illuminate\Foundation\Bootstrap\HandleExceptions->handleError()
+#1 /var/www/html/public/tool1/22.php(38): Illuminate\Foundation\Bootstrap\HandleExceptions->Illuminate\Foundation\Bootstrap\{closure}()
+#2 /var/www/html/vendor/workerman/workerman/Worker.php(2664): {closure}()
+#3 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Worker->acceptConnection()
+#4 /var/www/html/vendor/workerman/workerman/Worker.php(1719): Workerman\Events\Select->loop()
+#5 /var/www/html/vendor/workerman/workerman/Worker.php(1510): Workerman\Worker::forkOneWorkerForLinux()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1484): Workerman\Worker::forkWorkersForLinux()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(561): Workerman\Worker::forkWorkers()
+#8 /var/www/html/public/tool1/22.php(76): Workerman\Worker::runAll()
+#9 {main}
+2024-11-25 14:28:14 pid:2400836 worker[none:2400839] exit with status 64000
+2024-11-25 14:28:14 pid:2400836 worker[none:2400840] exit with status 64000
+2024-11-25 14:28:15 pid:2400836 Workerman[22.php] stopping ...
+2024-11-25 14:28:15 pid:2400836 Workerman[22.php] has been stopped
+2024-11-25 14:45:03 pid:2402897 Workerman[public/tool1/22.php] start in DEBUG mode
+2024-11-25 14:45:04 pid:2402898 ErrorException: Undefined property: Workerman\Connection\TcpConnection::$websocketHandshake in /var/www/html/public/tool1/22.php:35
+Stack trace:
+#0 /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(255): Illuminate\Foundation\Bootstrap\HandleExceptions->handleError()
+#1 /var/www/html/public/tool1/22.php(35): Illuminate\Foundation\Bootstrap\HandleExceptions->Illuminate\Foundation\Bootstrap\{closure}()
+#2 /var/www/html/vendor/workerman/workerman/Worker.php(2664): {closure}()
+#3 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Worker->acceptConnection()
+#4 /var/www/html/vendor/workerman/workerman/Worker.php(1719): Workerman\Events\Select->loop()
+#5 /var/www/html/vendor/workerman/workerman/Worker.php(1510): Workerman\Worker::forkOneWorkerForLinux()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1484): Workerman\Worker::forkWorkersForLinux()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(561): Workerman\Worker::forkWorkers()
+#8 /var/www/html/public/tool1/22.php(75): Workerman\Worker::runAll()
+#9 {main}
+2024-11-25 14:45:04 pid:2402901 ErrorException: Undefined property: Workerman\Connection\TcpConnection::$websocketHandshake in /var/www/html/public/tool1/22.php:35
+Stack trace:
+#0 /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(255): Illuminate\Foundation\Bootstrap\HandleExceptions->handleError()
+#1 /var/www/html/public/tool1/22.php(35): Illuminate\Foundation\Bootstrap\HandleExceptions->Illuminate\Foundation\Bootstrap\{closure}()
+#2 /var/www/html/vendor/workerman/workerman/Worker.php(2664): {closure}()
+#3 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Worker->acceptConnection()
+#4 /var/www/html/vendor/workerman/workerman/Worker.php(1719): Workerman\Events\Select->loop()
+#5 /var/www/html/vendor/workerman/workerman/Worker.php(1510): Workerman\Worker::forkOneWorkerForLinux()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1484): Workerman\Worker::forkWorkersForLinux()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(561): Workerman\Worker::forkWorkers()
+#8 /var/www/html/public/tool1/22.php(75): Workerman\Worker::runAll()
+#9 {main}
+2024-11-25 14:45:04 pid:2402897 worker[none:2402898] exit with status 64000
+2024-11-25 14:45:04 pid:2402897 worker[none:2402901] exit with status 64000
+2024-11-25 14:45:08 pid:2402900 ErrorException: Undefined property: Workerman\Connection\TcpConnection::$websocketHandshake in /var/www/html/public/tool1/22.php:35
+Stack trace:
+#0 /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(255): Illuminate\Foundation\Bootstrap\HandleExceptions->handleError()
+#1 /var/www/html/public/tool1/22.php(35): Illuminate\Foundation\Bootstrap\HandleExceptions->Illuminate\Foundation\Bootstrap\{closure}()
+#2 /var/www/html/vendor/workerman/workerman/Worker.php(2664): {closure}()
+#3 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Worker->acceptConnection()
+#4 /var/www/html/vendor/workerman/workerman/Worker.php(1719): Workerman\Events\Select->loop()
+#5 /var/www/html/vendor/workerman/workerman/Worker.php(1510): Workerman\Worker::forkOneWorkerForLinux()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1484): Workerman\Worker::forkWorkersForLinux()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(561): Workerman\Worker::forkWorkers()
+#8 /var/www/html/public/tool1/22.php(75): Workerman\Worker::runAll()
+#9 {main}
+2024-11-25 14:45:08 pid:2402903 ErrorException: Undefined property: Workerman\Connection\TcpConnection::$websocketHandshake in /var/www/html/public/tool1/22.php:35
+Stack trace:
+#0 /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(255): Illuminate\Foundation\Bootstrap\HandleExceptions->handleError()
+#1 /var/www/html/public/tool1/22.php(35): Illuminate\Foundation\Bootstrap\HandleExceptions->Illuminate\Foundation\Bootstrap\{closure}()
+#2 /var/www/html/vendor/workerman/workerman/Worker.php(2664): {closure}()
+#3 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Worker->acceptConnection()
+#4 /var/www/html/vendor/workerman/workerman/Worker.php(1719): Workerman\Events\Select->loop()
+#5 /var/www/html/vendor/workerman/workerman/Worker.php(1510): Workerman\Worker::forkOneWorkerForLinux()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1484): Workerman\Worker::forkWorkersForLinux()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(1869): Workerman\Worker::forkWorkers()
+#8 /var/www/html/vendor/workerman/workerman/Worker.php(1805): Workerman\Worker::monitorWorkersForLinux()
+#9 /var/www/html/vendor/workerman/workerman/Worker.php(563): Workerman\Worker::monitorWorkers()
+#10 /var/www/html/public/tool1/22.php(75): Workerman\Worker::runAll()
+#11 {main}
+2024-11-25 14:45:08 pid:2402897 worker[none:2402900] exit with status 64000
+2024-11-25 14:45:08 pid:2402897 worker[none:2402903] exit with status 64000
+2024-11-25 14:45:11 pid:2402897 Workerman[22.php] stopping ...
+2024-11-25 14:45:11 pid:2402897 Workerman[22.php] has been stopped
+2024-11-25 14:49:22 pid:2403407 Workerman[public/tool1/22.php] start in DEBUG mode
+2024-11-25 14:49:32 pid:2403407 Workerman[22.php] stopping ...
+2024-11-25 14:49:32 pid:2403407 Workerman[22.php] has been stopped
+2024-11-25 14:51:00 pid:2403581 Workerman[public/tool1/22.php] start in DEBUG mode
+2024-11-25 14:51:00 pid:2403584 ArgumentCountError: Too few arguments to function {closure}(), 1 passed in /var/www/html/vendor/workerman/workerman/Worker.php on line 2664 and exactly 2 expected in /var/www/html/public/tool1/22.php:31
+Stack trace:
+#0 /var/www/html/vendor/workerman/workerman/Worker.php(2664): {closure}()
+#1 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Worker->acceptConnection()
+#2 /var/www/html/vendor/workerman/workerman/Worker.php(1719): Workerman\Events\Select->loop()
+#3 /var/www/html/vendor/workerman/workerman/Worker.php(1510): Workerman\Worker::forkOneWorkerForLinux()
+#4 /var/www/html/vendor/workerman/workerman/Worker.php(1484): Workerman\Worker::forkWorkersForLinux()
+#5 /var/www/html/vendor/workerman/workerman/Worker.php(561): Workerman\Worker::forkWorkers()
+#6 /var/www/html/public/tool1/22.php(76): Workerman\Worker::runAll()
+#7 {main}
+2024-11-25 14:51:00 pid:2403582 ArgumentCountError: Too few arguments to function {closure}(), 1 passed in /var/www/html/vendor/workerman/workerman/Worker.php on line 2664 and exactly 2 expected in /var/www/html/public/tool1/22.php:31
+Stack trace:
+#0 /var/www/html/vendor/workerman/workerman/Worker.php(2664): {closure}()
+#1 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Worker->acceptConnection()
+#2 /var/www/html/vendor/workerman/workerman/Worker.php(1719): Workerman\Events\Select->loop()
+#3 /var/www/html/vendor/workerman/workerman/Worker.php(1510): Workerman\Worker::forkOneWorkerForLinux()
+#4 /var/www/html/vendor/workerman/workerman/Worker.php(1484): Workerman\Worker::forkWorkersForLinux()
+#5 /var/www/html/vendor/workerman/workerman/Worker.php(561): Workerman\Worker::forkWorkers()
+#6 /var/www/html/public/tool1/22.php(76): Workerman\Worker::runAll()
+#7 {main}
+2024-11-25 14:51:00 pid:2403581 worker[none:2403584] exit with status 64000
+2024-11-25 14:51:00 pid:2403581 worker[none:2403582] exit with status 64000
+2024-11-25 14:51:03 pid:2403585 ArgumentCountError: Too few arguments to function {closure}(), 1 passed in /var/www/html/vendor/workerman/workerman/Worker.php on line 2664 and exactly 2 expected in /var/www/html/public/tool1/22.php:31
+Stack trace:
+#0 /var/www/html/vendor/workerman/workerman/Worker.php(2664): {closure}()
+#1 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Worker->acceptConnection()
+#2 /var/www/html/vendor/workerman/workerman/Worker.php(1719): Workerman\Events\Select->loop()
+#3 /var/www/html/vendor/workerman/workerman/Worker.php(1510): Workerman\Worker::forkOneWorkerForLinux()
+#4 /var/www/html/vendor/workerman/workerman/Worker.php(1484): Workerman\Worker::forkWorkersForLinux()
+#5 /var/www/html/vendor/workerman/workerman/Worker.php(561): Workerman\Worker::forkWorkers()
+#6 /var/www/html/public/tool1/22.php(76): Workerman\Worker::runAll()
+#7 {main}
+2024-11-25 14:51:03 pid:2403583 ArgumentCountError: Too few arguments to function {closure}(), 1 passed in /var/www/html/vendor/workerman/workerman/Worker.php on line 2664 and exactly 2 expected in /var/www/html/public/tool1/22.php:31
+Stack trace:
+#0 /var/www/html/vendor/workerman/workerman/Worker.php(2664): {closure}()
+#1 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Worker->acceptConnection()
+#2 /var/www/html/vendor/workerman/workerman/Worker.php(1719): Workerman\Events\Select->loop()
+#3 /var/www/html/vendor/workerman/workerman/Worker.php(1510): Workerman\Worker::forkOneWorkerForLinux()
+#4 /var/www/html/vendor/workerman/workerman/Worker.php(1484): Workerman\Worker::forkWorkersForLinux()
+#5 /var/www/html/vendor/workerman/workerman/Worker.php(561): Workerman\Worker::forkWorkers()
+#6 /var/www/html/public/tool1/22.php(76): Workerman\Worker::runAll()
+#7 {main}
+2024-11-25 14:51:03 pid:2403581 worker[none:2403585] exit with status 64000
+2024-11-25 14:51:03 pid:2403581 worker[none:2403583] exit with status 64000
+2024-11-25 14:51:03 pid:2403581 Workerman[22.php] stopping ...
+2024-11-25 14:51:03 pid:2403581 Workerman[22.php] has been stopped
+2024-11-25 14:51:47 pid:2403678 Workerman[public/tool1/22.php] start in DEBUG mode
+2024-11-25 14:51:52 pid:2403678 Workerman[22.php] stopping ...
+2024-11-25 14:51:52 pid:2403678 Workerman[22.php] has been stopped
+2024-11-25 14:55:17 pid:2404088 Workerman[public/tool1/22.php] start in DEBUG mode
+2024-11-25 14:56:27 pid:2404088 Workerman[22.php] stopping ...
+2024-11-25 14:56:27 pid:2404088 Workerman[22.php] has been stopped
+2024-11-25 14:56:28 pid:2404245 Workerman[public/tool1/22.php] start in DEBUG mode
+2024-11-25 14:56:59 pid:2404245 Workerman[22.php] stopping ...
+2024-11-25 14:57:00 pid:2404245 Workerman[22.php] has been stopped
+2024-11-25 14:57:13 pid:2404335 Workerman[public/tool1/22.php] start in DEBUG mode
+2024-11-25 14:59:24 pid:2404335 Workerman[22.php] stopping ...
+2024-11-25 14:59:24 pid:2404335 Workerman[22.php] has been stopped
+2024-11-25 14:59:26 pid:2404578 Workerman[public/tool1/22.php] start in DEBUG mode
+2024-11-25 14:59:44 pid:2404578 Workerman[22.php] stopping ...
+2024-11-25 14:59:44 pid:2404578 Workerman[22.php] has been stopped
+2024-11-25 14:59:45 pid:2404603 Workerman[public/tool1/22.php] start in DEBUG mode
+2024-11-25 14:59:49 pid:2404603 Workerman[22.php] stopping ...
+2024-11-25 14:59:49 pid:2404603 Workerman[22.php] has been stopped
+2024-11-25 15:00:42 pid:2404727 Workerman[public/tool1/22.php] start in DEBUG mode
+2024-11-25 15:02:21 pid:2404727 Workerman[22.php] stopping ...
+2024-11-25 15:02:21 pid:2404727 Workerman[22.php] has been stopped
+2024-11-25 15:02:22 pid:2404926 Workerman[public/tool1/22.php] start in DEBUG mode
+2024-11-25 15:05:10 pid:2404926 Workerman[22.php] stopping ...
+2024-11-25 15:05:10 pid:2404926 Workerman[22.php] has been stopped
+2024-11-25 15:05:12 pid:2405278 Workerman[public/tool1/22.php] start in DEBUG mode
+2024-11-25 15:05:17 pid:2405278 Workerman[22.php] stopping ...
+2024-11-25 15:05:17 pid:2405278 Workerman[22.php] has been stopped
+2024-11-25 15:05:25 pid:2405286 Workerman[public/tool1/22.php] start in DEBUG mode
+2024-11-25 15:05:41 pid:2405289 ErrorException: Undefined property: Workerman\Connection\TcpConnection::$user_id in /var/www/html/public/tool1/22.php:69
+Stack trace:
+#0 /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(255): Illuminate\Foundation\Bootstrap\HandleExceptions->handleError()
+#1 /var/www/html/public/tool1/22.php(69): Illuminate\Foundation\Bootstrap\HandleExceptions->Illuminate\Foundation\Bootstrap\{closure}()
+#2 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(653): {closure}()
+#3 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead()
+#4 /var/www/html/vendor/workerman/workerman/Worker.php(1719): Workerman\Events\Select->loop()
+#5 /var/www/html/vendor/workerman/workerman/Worker.php(1510): Workerman\Worker::forkOneWorkerForLinux()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1484): Workerman\Worker::forkWorkersForLinux()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(561): Workerman\Worker::forkWorkers()
+#8 /var/www/html/public/tool1/22.php(79): Workerman\Worker::runAll()
+#9 {main}
+2024-11-25 15:05:41 pid:2405286 worker[none:2405289] exit with status 64000
+2024-11-25 15:06:35 pid:2405286 Workerman[22.php] stopping ...
+2024-11-25 15:06:35 pid:2405286 Workerman[22.php] has been stopped
+2024-11-25 15:06:37 pid:2405447 Workerman[public/tool1/22.php] start in DEBUG mode
+2024-11-25 15:06:42 pid:2405447 Workerman[22.php] stopping ...
+2024-11-25 15:06:42 pid:2405447 Workerman[22.php] has been stopped
+2024-11-25 15:07:14 pid:2405528 Workerman[public/tool1/22.php] start in DEBUG mode
+2024-11-25 15:07:23 pid:2405528 Workerman[22.php] stopping ...
+2024-11-25 15:07:23 pid:2405528 Workerman[22.php] has been stopped
+2024-11-25 15:08:37 pid:2405686 Workerman[public/tool1/22.php] start in DEBUG mode
+2024-11-25 15:08:47 pid:2405686 Workerman[22.php] stopping ...
+2024-11-25 15:08:47 pid:2405686 Workerman[22.php] has been stopped
+2024-11-25 15:09:44 pid:2405917 Workerman[public/tool1/22.php] start in DEBUG mode
+2024-11-25 15:12:57 pid:2405917 Workerman[22.php] stopping ...
+2024-11-25 15:12:57 pid:2405917 Workerman[22.php] has been stopped
+2024-11-25 15:13:10 pid:2406343 Workerman[public/train/websocket/Workerman/001-server-ok1.php] start in DEBUG mode
+2024-11-25 15:15:09 pid:2406343 Workerman[001-server-ok1.php] stopping ...
+2024-11-25 15:15:09 pid:2406343 Workerman[001-server-ok1.php] has been stopped
+2024-11-25 15:15:11 pid:2406572 Workerman[public/train/websocket/Workerman/001-server-ok1.php] start in DEBUG mode
+2024-11-25 15:15:58 pid:2406572 Workerman[001-server-ok1.php] stopping ...
+2024-11-25 15:15:58 pid:2406572 Workerman[001-server-ok1.php] has been stopped
+2024-11-25 15:16:00 pid:2406653 Workerman[public/train/websocket/Workerman/001-server-ok1.php] start in DEBUG mode
+2024-11-25 15:17:10 pid:2406653 Workerman[001-server-ok1.php] stopping ...
+2024-11-25 15:17:10 pid:2406653 Workerman[001-server-ok1.php] has been stopped
+2024-11-25 15:17:18 pid:2406812 Workerman[public/train/websocket/Workerman/001-server-ok1.php] start in DEBUG mode
+2024-11-25 15:25:02 pid:2406812 Workerman[001-server-ok1.php] stopping ...
+2024-11-25 15:25:02 pid:2406812 Workerman[001-server-ok1.php] has been stopped
+2024-11-25 15:25:04 pid:2407711 Workerman[public/train/websocket/Workerman/001-server-ok1.php] start in DEBUG mode
+2024-11-25 15:30:00 pid:2407711 Workerman[001-server-ok1.php] stopping ...
+2024-11-25 15:30:00 pid:2407711 Workerman[001-server-ok1.php] has been stopped
+2024-11-25 15:30:02 pid:2408290 Workerman[public/train/websocket/Workerman/001-server-ok1.php] start in DEBUG mode
+2024-11-25 15:41:33 pid:2408290 Workerman[001-server-ok1.php] stopping ...
+2024-11-25 15:41:33 pid:2408290 Workerman[001-server-ok1.php] has been stopped
+2024-11-25 15:41:34 pid:2409794 Workerman[public/train/websocket/Workerman/001-server-ok1.php] start in DEBUG mode
+2024-11-25 15:41:35 pid:2409798 ErrorException: Undefined property: Workerman\Connection\TcpConnection::$user_id in /var/www/html/public/train/websocket/Workerman/001-server-ok1.php:85
+Stack trace:
+#0 /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(255): Illuminate\Foundation\Bootstrap\HandleExceptions->handleError()
+#1 /var/www/html/public/train/websocket/Workerman/001-server-ok1.php(85): Illuminate\Foundation\Bootstrap\HandleExceptions->Illuminate\Foundation\Bootstrap\{closure}()
+#2 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(936): {closure}()
+#3 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(843): Workerman\Connection\TcpConnection->destroy()
+#4 /var/www/html/public/train/websocket/Workerman/001-server-ok1.php(61): Workerman\Connection\TcpConnection->close()
+#5 /var/www/html/vendor/workerman/workerman/Protocols/Websocket.php(449): {closure}()
+#6 /var/www/html/vendor/workerman/workerman/Protocols/Websocket.php(73): Workerman\Protocols\Websocket::dealHandshake()
+#7 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(616): Workerman\Protocols\Websocket::input()
+#8 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead()
+#9 /var/www/html/vendor/workerman/workerman/Worker.php(1719): Workerman\Events\Select->loop()
+#10 /var/www/html/vendor/workerman/workerman/Worker.php(1510): Workerman\Worker::forkOneWorkerForLinux()
+#11 /var/www/html/vendor/workerman/workerman/Worker.php(1484): Workerman\Worker::forkWorkersForLinux()
+#12 /var/www/html/vendor/workerman/workerman/Worker.php(561): Workerman\Worker::forkWorkers()
+#13 /var/www/html/public/train/websocket/Workerman/001-server-ok1.php(89): Workerman\Worker::runAll()
+#14 {main}
+2024-11-25 15:41:35 pid:2409794 worker[none:2409798] exit with status 64000
+2024-11-25 15:41:38 pid:2409795 ErrorException: Undefined property: Workerman\Connection\TcpConnection::$user_id in /var/www/html/public/train/websocket/Workerman/001-server-ok1.php:85
+Stack trace:
+#0 /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(255): Illuminate\Foundation\Bootstrap\HandleExceptions->handleError()
+#1 /var/www/html/public/train/websocket/Workerman/001-server-ok1.php(85): Illuminate\Foundation\Bootstrap\HandleExceptions->Illuminate\Foundation\Bootstrap\{closure}()
+#2 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(936): {closure}()
+#3 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(843): Workerman\Connection\TcpConnection->destroy()
+#4 /var/www/html/public/train/websocket/Workerman/001-server-ok1.php(61): Workerman\Connection\TcpConnection->close()
+#5 /var/www/html/vendor/workerman/workerman/Protocols/Websocket.php(449): {closure}()
+#6 /var/www/html/vendor/workerman/workerman/Protocols/Websocket.php(73): Workerman\Protocols\Websocket::dealHandshake()
+#7 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(616): Workerman\Protocols\Websocket::input()
+#8 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead()
+#9 /var/www/html/vendor/workerman/workerman/Worker.php(1719): Workerman\Events\Select->loop()
+#10 /var/www/html/vendor/workerman/workerman/Worker.php(1510): Workerman\Worker::forkOneWorkerForLinux()
+#11 /var/www/html/vendor/workerman/workerman/Worker.php(1484): Workerman\Worker::forkWorkersForLinux()
+#12 /var/www/html/vendor/workerman/workerman/Worker.php(561): Workerman\Worker::forkWorkers()
+#13 /var/www/html/public/train/websocket/Workerman/001-server-ok1.php(89): Workerman\Worker::runAll()
+#14 {main}
+2024-11-25 15:41:38 pid:2409794 worker[none:2409795] exit with status 64000
+2024-11-25 15:41:38 pid:2409794 Workerman[001-server-ok1.php] stopping ...
+2024-11-25 15:41:38 pid:2409794 Workerman[001-server-ok1.php] has been stopped
+2024-11-25 15:42:43 pid:2409913 Workerman[public/train/websocket/Workerman/001-server-ok1.php] start in DEBUG mode
+2024-11-25 15:42:43 pid:2409916 ErrorException: Undefined property: Workerman\Connection\TcpConnection::$user_id in /var/www/html/public/train/websocket/Workerman/001-server-ok1.php:88
+Stack trace:
+#0 /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(255): Illuminate\Foundation\Bootstrap\HandleExceptions->handleError()
+#1 /var/www/html/public/train/websocket/Workerman/001-server-ok1.php(88): Illuminate\Foundation\Bootstrap\HandleExceptions->Illuminate\Foundation\Bootstrap\{closure}()
+#2 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(936): {closure}()
+#3 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(843): Workerman\Connection\TcpConnection->destroy()
+#4 /var/www/html/public/train/websocket/Workerman/001-server-ok1.php(64): Workerman\Connection\TcpConnection->close()
+#5 /var/www/html/vendor/workerman/workerman/Protocols/Websocket.php(449): {closure}()
+#6 /var/www/html/vendor/workerman/workerman/Protocols/Websocket.php(73): Workerman\Protocols\Websocket::dealHandshake()
+#7 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(616): Workerman\Protocols\Websocket::input()
+#8 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead()
+#9 /var/www/html/vendor/workerman/workerman/Worker.php(1719): Workerman\Events\Select->loop()
+#10 /var/www/html/vendor/workerman/workerman/Worker.php(1510): Workerman\Worker::forkOneWorkerForLinux()
+#11 /var/www/html/vendor/workerman/workerman/Worker.php(1484): Workerman\Worker::forkWorkersForLinux()
+#12 /var/www/html/vendor/workerman/workerman/Worker.php(561): Workerman\Worker::forkWorkers()
+#13 /var/www/html/public/train/websocket/Workerman/001-server-ok1.php(92): Workerman\Worker::runAll()
+#14 {main}
+2024-11-25 15:42:43 pid:2409913 worker[none:2409916] exit with status 64000
+2024-11-25 15:42:48 pid:2409915 ErrorException: Undefined property: Workerman\Connection\TcpConnection::$user_id in /var/www/html/public/train/websocket/Workerman/001-server-ok1.php:88
+Stack trace:
+#0 /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(255): Illuminate\Foundation\Bootstrap\HandleExceptions->handleError()
+#1 /var/www/html/public/train/websocket/Workerman/001-server-ok1.php(88): Illuminate\Foundation\Bootstrap\HandleExceptions->Illuminate\Foundation\Bootstrap\{closure}()
+#2 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(936): {closure}()
+#3 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(843): Workerman\Connection\TcpConnection->destroy()
+#4 /var/www/html/public/train/websocket/Workerman/001-server-ok1.php(64): Workerman\Connection\TcpConnection->close()
+#5 /var/www/html/vendor/workerman/workerman/Protocols/Websocket.php(449): {closure}()
+#6 /var/www/html/vendor/workerman/workerman/Protocols/Websocket.php(73): Workerman\Protocols\Websocket::dealHandshake()
+#7 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(616): Workerman\Protocols\Websocket::input()
+#8 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead()
+#9 /var/www/html/vendor/workerman/workerman/Worker.php(1719): Workerman\Events\Select->loop()
+#10 /var/www/html/vendor/workerman/workerman/Worker.php(1510): Workerman\Worker::forkOneWorkerForLinux()
+#11 /var/www/html/vendor/workerman/workerman/Worker.php(1484): Workerman\Worker::forkWorkersForLinux()
+#12 /var/www/html/vendor/workerman/workerman/Worker.php(561): Workerman\Worker::forkWorkers()
+#13 /var/www/html/public/train/websocket/Workerman/001-server-ok1.php(92): Workerman\Worker::runAll()
+#14 {main}
+2024-11-25 15:42:48 pid:2409913 worker[none:2409915] exit with status 64000
+2024-11-25 15:42:49 pid:2409913 Workerman[001-server-ok1.php] stopping ...
+2024-11-25 15:42:49 pid:2409913 Workerman[001-server-ok1.php] has been stopped
+2024-11-25 15:43:14 pid:2409998 Workerman[public/train/websocket/Workerman/001-server-ok1.php] start in DEBUG mode
+2024-11-25 15:43:22 pid:2409998 Workerman[001-server-ok1.php] stopping ...
+2024-11-25 15:43:22 pid:2409998 Workerman[001-server-ok1.php] has been stopped
+2024-11-25 15:43:23 pid:2410004 Workerman[public/train/websocket/Workerman/001-server-ok1.php] start in DEBUG mode
+2024-11-25 15:44:01 pid:2410004 Workerman[001-server-ok1.php] stopping ...
+2024-11-25 15:44:01 pid:2410004 Workerman[001-server-ok1.php] has been stopped
+2024-11-25 15:44:49 pid:2410169 Workerman[public/train/websocket/Workerman/001-server-ok1.php] start in DEBUG mode
+2024-11-25 15:45:08 pid:2410169 Workerman[001-server-ok1.php] stopping ...
+2024-11-25 15:45:08 pid:2410169 Workerman[001-server-ok1.php] has been stopped
+2024-11-25 15:45:10 pid:2410235 Workerman[public/train/websocket/Workerman/001-server-ok1.php] start in DEBUG mode
+2024-11-25 15:45:45 pid:2410235 Workerman[001-server-ok1.php] stopping ...
+2024-11-25 15:45:45 pid:2410235 Workerman[001-server-ok1.php] has been stopped
+2024-11-25 15:45:47 pid:2410307 Workerman[public/train/websocket/Workerman/001-server-ok1.php] start in DEBUG mode
+2024-11-25 15:45:54 pid:2410307 Workerman[001-server-ok1.php] stopping ...
+2024-11-25 15:45:54 pid:2410307 Workerman[001-server-ok1.php] has been stopped
+2024-11-25 16:13:40 pid:2413624 Workerman[public/train/websocket/Workerman/001-server-ok1.php] start in DEBUG mode
+2024-11-25 16:46:02 pid:2413624 Workerman[001-server-ok1.php] stopping ...
+2024-11-25 16:46:02 pid:2413624 Workerman[001-server-ok1.php] has been stopped
+2024-11-25 17:02:34 pid:2419364 Workerman[public/train/websocket/Workerman/001-server-ok1.php] start in DEBUG mode
+2024-11-25 17:03:06 pid:2419370 ErrorException: Undefined property: Workerman\Connection\TcpConnection::$user_id in /var/www/html/public/train/websocket/Workerman/001-server-ok1.php:91
+Stack trace:
+#0 /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(255): Illuminate\Foundation\Bootstrap\HandleExceptions->handleError()
+#1 /var/www/html/public/train/websocket/Workerman/001-server-ok1.php(91): Illuminate\Foundation\Bootstrap\HandleExceptions->Illuminate\Foundation\Bootstrap\{closure}()
+#2 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(936): {closure}()
+#3 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(843): Workerman\Connection\TcpConnection->destroy()
+#4 /var/www/html/public/train/websocket/Workerman/001-server-ok1.php(65): Workerman\Connection\TcpConnection->close()
+#5 /var/www/html/vendor/workerman/workerman/Protocols/Websocket.php(449): {closure}()
+#6 /var/www/html/vendor/workerman/workerman/Protocols/Websocket.php(73): Workerman\Protocols\Websocket::dealHandshake()
+#7 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(616): Workerman\Protocols\Websocket::input()
+#8 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead()
+#9 /var/www/html/vendor/workerman/workerman/Worker.php(1719): Workerman\Events\Select->loop()
+#10 /var/www/html/vendor/workerman/workerman/Worker.php(1510): Workerman\Worker::forkOneWorkerForLinux()
+#11 /var/www/html/vendor/workerman/workerman/Worker.php(1484): Workerman\Worker::forkWorkersForLinux()
+#12 /var/www/html/vendor/workerman/workerman/Worker.php(561): Workerman\Worker::forkWorkers()
+#13 /var/www/html/public/train/websocket/Workerman/001-server-ok1.php(95): Workerman\Worker::runAll()
+#14 {main}
+2024-11-25 17:03:06 pid:2419364 worker[none:2419370] exit with status 64000
+2024-11-25 17:04:53 pid:2419364 Workerman[001-server-ok1.php] stopping ...
+2024-11-25 17:04:53 pid:2419364 Workerman[001-server-ok1.php] has been stopped
+2024-11-25 17:13:00 pid:2420669 Workerman[public/train/websocket/Workerman/001-server-ok1.php] start in DEBUG mode
+2024-11-25 17:16:42 pid:2420669 Workerman[001-server-ok1.php] stopping ...
+2024-11-25 17:16:42 pid:2420669 Workerman[001-server-ok1.php] has been stopped
+2024-11-25 17:20:20 pid:2421601 Workerman[public/train/websocket/Workerman/001-server-ok1.php] start in DEBUG mode
+2024-11-25 17:26:45 pid:2421601 Workerman[001-server-ok1.php] stopping ...
+2024-11-25 17:26:45 pid:2421601 Workerman[001-server-ok1.php] has been stopped
+2024-11-25 17:30:09 pid:2423083 Workerman[public/train/websocket/Workerman/001-server-ok1.php] start in DEBUG mode
+2024-11-25 17:30:19 pid:2423083 Workerman[001-server-ok1.php] stopping ...
+2024-11-25 17:30:19 pid:2423083 Workerman[001-server-ok1.php] has been stopped
+2024-11-25 17:42:37 pid:2424610 Workerman[public/train/websocket/Workerman/001-server-ok1.php] start in DEBUG mode
+2024-11-25 17:42:44 pid:2424610 Workerman[001-server-ok1.php] stopping ...
+2024-11-25 17:42:44 pid:2424610 Workerman[001-server-ok1.php] has been stopped
+2024-11-25 17:42:51 pid:2424633 Workerman[public/train/websocket/Workerman/001-server-ok1.php] start in DEBUG mode
+2024-11-25 17:42:57 pid:2424633 Workerman[001-server-ok1.php] stopping ...
+2024-11-25 17:42:57 pid:2424633 Workerman[001-server-ok1.php] has been stopped
+2024-11-25 17:43:02 pid:2424657 Workerman[public/train/websocket/Workerman/001-server-ok1.php] start in DEBUG mode
+2024-11-25 17:43:14 pid:2424657 Workerman[001-server-ok1.php] stopping ...
+2024-11-25 17:43:14 pid:2424657 Workerman[001-server-ok1.php] has been stopped
+2024-11-25 17:50:57 pid:2425581 Workerman[public/train/websocket/Workerman/001-server-ok1.php] start in DEBUG mode
+2024-11-25 17:51:32 pid:2425581 Workerman[001-server-ok1.php] stopping ...
+2024-11-25 17:51:32 pid:2425581 Workerman[001-server-ok1.php] has been stopped
+2024-11-25 17:51:44 pid:2425686 Workerman[public/train/websocket/Workerman/001-server-ok1.php] start in DEBUG mode
+2024-11-25 17:51:53 pid:2425686 Workerman[001-server-ok1.php] stopping ...
+2024-11-25 17:51:53 pid:2425686 Workerman[001-server-ok1.php] has been stopped
+2024-11-25 17:57:03 pid:2426287 Workerman[public/train/websocket/Workerman/001-server-ok1.php] start in DEBUG mode
+2024-11-25 17:57:54 pid:2426287 Workerman[001-server-ok1.php] stopping ...
+2024-11-25 17:57:54 pid:2426287 Workerman[001-server-ok1.php] has been stopped
+2024-11-25 17:58:16 pid:2426441 Workerman[public/train/websocket/Workerman/001-server-ok1.php] start in DEBUG mode
+2024-11-25 17:58:36 pid:2426441 Workerman[001-server-ok1.php] stopping ...
+2024-11-25 17:58:36 pid:2426441 Workerman[001-server-ok1.php] has been stopped
+2024-11-25 18:01:28 pid:2426805 Workerman[public/train/websocket/Workerman/001-server-ok1.php] start in DEBUG mode
+2024-11-25 18:01:38 pid:2426805 Workerman[001-server-ok1.php] stopping ...
+2024-11-25 18:01:38 pid:2426805 Workerman[001-server-ok1.php] has been stopped
+2024-11-25 18:03:01 pid:2426968 Workerman[public/train/websocket/Workerman/001-server-ok1.php] start in DEBUG mode
+2024-11-25 18:04:38 pid:2426968 Workerman[001-server-ok1.php] stopping ...
+2024-11-25 18:04:38 pid:2426968 Workerman[001-server-ok1.php] has been stopped
+2024-11-25 18:05:05 pid:2427217 Workerman[public/train/websocket/Workerman/001-server-ok1.php] start in DEBUG mode
+2024-11-25 18:05:24 pid:2427217 Workerman[001-server-ok1.php] stopping ...
+2024-11-25 18:05:24 pid:2427217 Workerman[001-server-ok1.php] has been stopped
+2024-11-25 18:08:13 pid:2427599 Workerman[public/train/websocket/Workerman/001-server-ok1.php] start in DEBUG mode
+2024-11-25 18:08:31 pid:2427599 Workerman[001-server-ok1.php] stopping ...
+2024-11-25 18:08:31 pid:2427599 Workerman[001-server-ok1.php] has been stopped
+2024-11-25 18:09:25 pid:2427827 Workerman[public/train/websocket/Workerman/001-server-ok1.php] start in DEBUG mode
+2024-11-25 18:12:21 pid:2427827 Workerman[001-server-ok1.php] stopping ...
+2024-11-25 18:12:21 pid:2427827 Workerman[001-server-ok1.php] has been stopped
+2024-11-25 18:12:40 pid:2428217 Workerman[public/train/websocket/Workerman/001-server-ok1.php] start in DEBUG mode
+2024-11-25 19:55:58 pid:2428217 Workerman[001-server-ok1.php] stopping ...
+2024-11-25 19:55:58 pid:2428217 Workerman[001-server-ok1.php] has been stopped
+2024-11-25 19:56:27 pid:2440561 Workerman[public/train/websocket/Workerman/001-server-ok1.php] start in DEBUG mode
+2024-11-26 07:54:28 pid:2440561 Workerman[001-server-ok1.php] stopping ...
+2024-11-26 07:54:28 pid:2440561 Workerman[001-server-ok1.php] has been stopped
+2024-11-26 07:54:42 pid:2527299 Workerman[public/train/websocket/Workerman/002-server-ok-chat.php] start in DEBUG mode
+2024-11-26 07:55:02 pid:2527412 Workerman[public/train/websocket/Workerman/002-server-ok-chat.php] status 
+2024-11-26 07:55:18 pid:2527459 Workerman[public/train/websocket/Workerman/002-server-ok-chat.php] status 
+2024-11-26 07:55:33 pid:2527318 ErrorException: Undefined property: Workerman\Connection\TcpConnection::$user_id in /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php:109
+Stack trace:
+#0 /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(255): Illuminate\Foundation\Bootstrap\HandleExceptions->handleError()
+#1 /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php(109): Illuminate\Foundation\Bootstrap\HandleExceptions->Illuminate\Foundation\Bootstrap\{closure}()
+#2 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(936): {closure}()
+#3 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(765): Workerman\Connection\TcpConnection->destroy()
+#4 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(577): Workerman\Connection\TcpConnection->doSslHandshake()
+#5 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1719): Workerman\Events\Select->loop()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(1510): Workerman\Worker::forkOneWorkerForLinux()
+#8 /var/www/html/vendor/workerman/workerman/Worker.php(1484): Workerman\Worker::forkWorkersForLinux()
+#9 /var/www/html/vendor/workerman/workerman/Worker.php(561): Workerman\Worker::forkWorkers()
+#10 /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php(114): Workerman\Worker::runAll()
+#11 {main}
+2024-11-26 07:55:33 pid:2527320 ErrorException: Undefined property: Workerman\Connection\TcpConnection::$user_id in /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php:109
+Stack trace:
+#0 /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(255): Illuminate\Foundation\Bootstrap\HandleExceptions->handleError()
+#1 /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php(109): Illuminate\Foundation\Bootstrap\HandleExceptions->Illuminate\Foundation\Bootstrap\{closure}()
+#2 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(936): {closure}()
+#3 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(765): Workerman\Connection\TcpConnection->destroy()
+#4 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(577): Workerman\Connection\TcpConnection->doSslHandshake()
+#5 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1719): Workerman\Events\Select->loop()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(1510): Workerman\Worker::forkOneWorkerForLinux()
+#8 /var/www/html/vendor/workerman/workerman/Worker.php(1484): Workerman\Worker::forkWorkersForLinux()
+#9 /var/www/html/vendor/workerman/workerman/Worker.php(561): Workerman\Worker::forkWorkers()
+#10 /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php(114): Workerman\Worker::runAll()
+#11 {main}
+2024-11-26 07:55:33 pid:2527299 worker[none:2527318] exit with status 64000
+2024-11-26 07:55:33 pid:2527299 worker[none:2527320] exit with status 64000
+2024-11-26 07:55:35 pid:2527478 ErrorException: Undefined property: Workerman\Connection\TcpConnection::$user_id in /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php:109
+Stack trace:
+#0 /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(255): Illuminate\Foundation\Bootstrap\HandleExceptions->handleError()
+#1 /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php(109): Illuminate\Foundation\Bootstrap\HandleExceptions->Illuminate\Foundation\Bootstrap\{closure}()
+#2 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(936): {closure}()
+#3 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(765): Workerman\Connection\TcpConnection->destroy()
+#4 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(577): Workerman\Connection\TcpConnection->doSslHandshake()
+#5 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1719): Workerman\Events\Select->loop()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(1510): Workerman\Worker::forkOneWorkerForLinux()
+#8 /var/www/html/vendor/workerman/workerman/Worker.php(1484): Workerman\Worker::forkWorkersForLinux()
+#9 /var/www/html/vendor/workerman/workerman/Worker.php(1869): Workerman\Worker::forkWorkers()
+#10 /var/www/html/vendor/workerman/workerman/Worker.php(1805): Workerman\Worker::monitorWorkersForLinux()
+#11 /var/www/html/vendor/workerman/workerman/Worker.php(563): Workerman\Worker::monitorWorkers()
+#12 /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php(114): Workerman\Worker::runAll()
+#13 {main}
+2024-11-26 07:55:35 pid:2527317 ErrorException: Undefined property: Workerman\Connection\TcpConnection::$user_id in /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php:109
+Stack trace:
+#0 /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(255): Illuminate\Foundation\Bootstrap\HandleExceptions->handleError()
+#1 /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php(109): Illuminate\Foundation\Bootstrap\HandleExceptions->Illuminate\Foundation\Bootstrap\{closure}()
+#2 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(936): {closure}()
+#3 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(765): Workerman\Connection\TcpConnection->destroy()
+#4 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(577): Workerman\Connection\TcpConnection->doSslHandshake()
+#5 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1719): Workerman\Events\Select->loop()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(1510): Workerman\Worker::forkOneWorkerForLinux()
+#8 /var/www/html/vendor/workerman/workerman/Worker.php(1484): Workerman\Worker::forkWorkersForLinux()
+#9 /var/www/html/vendor/workerman/workerman/Worker.php(561): Workerman\Worker::forkWorkers()
+#10 /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php(114): Workerman\Worker::runAll()
+#11 {main}
+2024-11-26 07:55:35 pid:2527299 worker[none:2527478] exit with status 64000
+2024-11-26 07:55:35 pid:2527299 worker[none:2527317] exit with status 64000
+2024-11-26 07:55:37 pid:2527484 ErrorException: Undefined property: Workerman\Connection\TcpConnection::$user_id in /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php:109
+Stack trace:
+#0 /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(255): Illuminate\Foundation\Bootstrap\HandleExceptions->handleError()
+#1 /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php(109): Illuminate\Foundation\Bootstrap\HandleExceptions->Illuminate\Foundation\Bootstrap\{closure}()
+#2 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(936): {closure}()
+#3 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(765): Workerman\Connection\TcpConnection->destroy()
+#4 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(577): Workerman\Connection\TcpConnection->doSslHandshake()
+#5 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1719): Workerman\Events\Select->loop()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(1510): Workerman\Worker::forkOneWorkerForLinux()
+#8 /var/www/html/vendor/workerman/workerman/Worker.php(1484): Workerman\Worker::forkWorkersForLinux()
+#9 /var/www/html/vendor/workerman/workerman/Worker.php(1869): Workerman\Worker::forkWorkers()
+#10 /var/www/html/vendor/workerman/workerman/Worker.php(1805): Workerman\Worker::monitorWorkersForLinux()
+#11 /var/www/html/vendor/workerman/workerman/Worker.php(563): Workerman\Worker::monitorWorkers()
+#12 /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php(114): Workerman\Worker::runAll()
+#13 {main}
+2024-11-26 07:55:37 pid:2527319 ErrorException: Undefined property: Workerman\Connection\TcpConnection::$user_id in /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php:109
+Stack trace:
+#0 /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(255): Illuminate\Foundation\Bootstrap\HandleExceptions->handleError()
+#1 /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php(109): Illuminate\Foundation\Bootstrap\HandleExceptions->Illuminate\Foundation\Bootstrap\{closure}()
+#2 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(936): {closure}()
+#3 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(765): Workerman\Connection\TcpConnection->destroy()
+#4 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(577): Workerman\Connection\TcpConnection->doSslHandshake()
+#5 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1719): Workerman\Events\Select->loop()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(1510): Workerman\Worker::forkOneWorkerForLinux()
+#8 /var/www/html/vendor/workerman/workerman/Worker.php(1484): Workerman\Worker::forkWorkersForLinux()
+#9 /var/www/html/vendor/workerman/workerman/Worker.php(561): Workerman\Worker::forkWorkers()
+#10 /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php(114): Workerman\Worker::runAll()
+#11 {main}
+2024-11-26 07:55:37 pid:2527299 worker[none:2527484] exit with status 64000
+2024-11-26 07:55:37 pid:2527299 worker[none:2527319] exit with status 64000
+2024-11-26 07:55:39 pid:2527477 ErrorException: Undefined property: Workerman\Connection\TcpConnection::$user_id in /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php:109
+Stack trace:
+#0 /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(255): Illuminate\Foundation\Bootstrap\HandleExceptions->handleError()
+#1 /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php(109): Illuminate\Foundation\Bootstrap\HandleExceptions->Illuminate\Foundation\Bootstrap\{closure}()
+#2 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(936): {closure}()
+#3 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(765): Workerman\Connection\TcpConnection->destroy()
+#4 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(577): Workerman\Connection\TcpConnection->doSslHandshake()
+#5 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1719): Workerman\Events\Select->loop()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(1510): Workerman\Worker::forkOneWorkerForLinux()
+#8 /var/www/html/vendor/workerman/workerman/Worker.php(1484): Workerman\Worker::forkWorkersForLinux()
+#9 /var/www/html/vendor/workerman/workerman/Worker.php(1869): Workerman\Worker::forkWorkers()
+#10 /var/www/html/vendor/workerman/workerman/Worker.php(1805): Workerman\Worker::monitorWorkersForLinux()
+#11 /var/www/html/vendor/workerman/workerman/Worker.php(563): Workerman\Worker::monitorWorkers()
+#12 /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php(114): Workerman\Worker::runAll()
+#13 {main}
+2024-11-26 07:55:39 pid:2527485 ErrorException: Undefined property: Workerman\Connection\TcpConnection::$user_id in /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php:109
+Stack trace:
+#0 /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(255): Illuminate\Foundation\Bootstrap\HandleExceptions->handleError()
+#1 /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php(109): Illuminate\Foundation\Bootstrap\HandleExceptions->Illuminate\Foundation\Bootstrap\{closure}()
+#2 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(936): {closure}()
+#3 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(765): Workerman\Connection\TcpConnection->destroy()
+#4 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(577): Workerman\Connection\TcpConnection->doSslHandshake()
+#5 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1719): Workerman\Events\Select->loop()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(1510): Workerman\Worker::forkOneWorkerForLinux()
+#8 /var/www/html/vendor/workerman/workerman/Worker.php(1484): Workerman\Worker::forkWorkersForLinux()
+#9 /var/www/html/vendor/workerman/workerman/Worker.php(1869): Workerman\Worker::forkWorkers()
+#10 /var/www/html/vendor/workerman/workerman/Worker.php(1805): Workerman\Worker::monitorWorkersForLinux()
+#11 /var/www/html/vendor/workerman/workerman/Worker.php(563): Workerman\Worker::monitorWorkers()
+#12 /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php(114): Workerman\Worker::runAll()
+#13 {main}
+2024-11-26 07:55:39 pid:2527299 worker[none:2527477] exit with status 64000
+2024-11-26 07:55:39 pid:2527299 worker[none:2527485] exit with status 64000
+2024-11-26 07:55:41 pid:2527486 ErrorException: Undefined property: Workerman\Connection\TcpConnection::$user_id in /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php:109
+Stack trace:
+#0 /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(255): Illuminate\Foundation\Bootstrap\HandleExceptions->handleError()
+#1 /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php(109): Illuminate\Foundation\Bootstrap\HandleExceptions->Illuminate\Foundation\Bootstrap\{closure}()
+#2 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(936): {closure}()
+#3 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(765): Workerman\Connection\TcpConnection->destroy()
+#4 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(577): Workerman\Connection\TcpConnection->doSslHandshake()
+#5 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1719): Workerman\Events\Select->loop()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(1510): Workerman\Worker::forkOneWorkerForLinux()
+#8 /var/www/html/vendor/workerman/workerman/Worker.php(1484): Workerman\Worker::forkWorkersForLinux()
+#9 /var/www/html/vendor/workerman/workerman/Worker.php(1869): Workerman\Worker::forkWorkers()
+#10 /var/www/html/vendor/workerman/workerman/Worker.php(1805): Workerman\Worker::monitorWorkersForLinux()
+#11 /var/www/html/vendor/workerman/workerman/Worker.php(563): Workerman\Worker::monitorWorkers()
+#12 /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php(114): Workerman\Worker::runAll()
+#13 {main}
+2024-11-26 07:55:41 pid:2527488 ErrorException: Undefined property: Workerman\Connection\TcpConnection::$user_id in /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php:109
+Stack trace:
+#0 /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(255): Illuminate\Foundation\Bootstrap\HandleExceptions->handleError()
+#1 /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php(109): Illuminate\Foundation\Bootstrap\HandleExceptions->Illuminate\Foundation\Bootstrap\{closure}()
+#2 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(936): {closure}()
+#3 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(765): Workerman\Connection\TcpConnection->destroy()
+#4 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(577): Workerman\Connection\TcpConnection->doSslHandshake()
+#5 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1719): Workerman\Events\Select->loop()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(1510): Workerman\Worker::forkOneWorkerForLinux()
+#8 /var/www/html/vendor/workerman/workerman/Worker.php(1484): Workerman\Worker::forkWorkersForLinux()
+#9 /var/www/html/vendor/workerman/workerman/Worker.php(1869): Workerman\Worker::forkWorkers()
+#10 /var/www/html/vendor/workerman/workerman/Worker.php(1805): Workerman\Worker::monitorWorkersForLinux()
+#11 /var/www/html/vendor/workerman/workerman/Worker.php(563): Workerman\Worker::monitorWorkers()
+#12 /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php(114): Workerman\Worker::runAll()
+#13 {main}
+2024-11-26 07:55:41 pid:2527299 worker[none:2527486] exit with status 64000
+2024-11-26 07:55:41 pid:2527299 worker[none:2527488] exit with status 64000
+2024-11-26 07:55:43 pid:2527487 ErrorException: Undefined property: Workerman\Connection\TcpConnection::$user_id in /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php:109
+Stack trace:
+#0 /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(255): Illuminate\Foundation\Bootstrap\HandleExceptions->handleError()
+#1 /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php(109): Illuminate\Foundation\Bootstrap\HandleExceptions->Illuminate\Foundation\Bootstrap\{closure}()
+#2 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(936): {closure}()
+#3 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(765): Workerman\Connection\TcpConnection->destroy()
+#4 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(577): Workerman\Connection\TcpConnection->doSslHandshake()
+#5 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1719): Workerman\Events\Select->loop()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(1510): Workerman\Worker::forkOneWorkerForLinux()
+#8 /var/www/html/vendor/workerman/workerman/Worker.php(1484): Workerman\Worker::forkWorkersForLinux()
+#9 /var/www/html/vendor/workerman/workerman/Worker.php(1869): Workerman\Worker::forkWorkers()
+#10 /var/www/html/vendor/workerman/workerman/Worker.php(1805): Workerman\Worker::monitorWorkersForLinux()
+#11 /var/www/html/vendor/workerman/workerman/Worker.php(563): Workerman\Worker::monitorWorkers()
+#12 /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php(114): Workerman\Worker::runAll()
+#13 {main}
+2024-11-26 07:55:43 pid:2527489 ErrorException: Undefined property: Workerman\Connection\TcpConnection::$user_id in /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php:109
+Stack trace:
+#0 /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(255): Illuminate\Foundation\Bootstrap\HandleExceptions->handleError()
+#1 /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php(109): Illuminate\Foundation\Bootstrap\HandleExceptions->Illuminate\Foundation\Bootstrap\{closure}()
+#2 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(936): {closure}()
+#3 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(765): Workerman\Connection\TcpConnection->destroy()
+#4 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(577): Workerman\Connection\TcpConnection->doSslHandshake()
+#5 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1719): Workerman\Events\Select->loop()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(1510): Workerman\Worker::forkOneWorkerForLinux()
+#8 /var/www/html/vendor/workerman/workerman/Worker.php(1484): Workerman\Worker::forkWorkersForLinux()
+#9 /var/www/html/vendor/workerman/workerman/Worker.php(1869): Workerman\Worker::forkWorkers()
+#10 /var/www/html/vendor/workerman/workerman/Worker.php(1805): Workerman\Worker::monitorWorkersForLinux()
+#11 /var/www/html/vendor/workerman/workerman/Worker.php(563): Workerman\Worker::monitorWorkers()
+#12 /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php(114): Workerman\Worker::runAll()
+#13 {main}
+2024-11-26 07:55:43 pid:2527299 worker[none:2527487] exit with status 64000
+2024-11-26 07:55:44 pid:2527299 worker[none:2527489] exit with status 64000
+2024-11-26 07:55:44 pid:2527299 Workerman[002-server-ok-chat.php] stopping ...
+2024-11-26 07:55:44 pid:2527299 Workerman[002-server-ok-chat.php] has been stopped
+2024-11-26 07:58:15 pid:2527809 Workerman[public/train/websocket/Workerman/002-server-ok-chat.php] start in DEBUG mode
+2024-11-26 07:58:56 pid:2527878 Workerman[public/train/websocket/Workerman/002-server-ok-chat.php] status 
+2024-11-26 08:02:11 pid:2527809 Workerman[002-server-ok-chat.php] stopping ...
+2024-11-26 08:02:11 pid:2527809 Workerman[002-server-ok-chat.php] has been stopped
+2024-11-26 08:02:15 pid:2528279 Workerman[public/train/websocket/Workerman/002-server-ok-chat.php] start in DEBUG mode
+2024-11-26 08:03:04 pid:2528279 Workerman[002-server-ok-chat.php] stopping ...
+2024-11-26 08:03:04 pid:2528279 Workerman[002-server-ok-chat.php] has been stopped
+2024-11-26 08:03:06 pid:2528363 Workerman[public/train/websocket/Workerman/002-server-ok-chat.php] start in DEBUG mode
+2024-11-26 08:04:21 pid:2528363 Workerman[002-server-ok-chat.php] stopping ...
+2024-11-26 08:04:22 pid:2528363 Workerman[002-server-ok-chat.php] has been stopped
+2024-11-26 08:04:23 pid:2528520 Workerman[public/train/websocket/Workerman/002-server-ok-chat.php] start in DEBUG mode
+2024-11-26 08:05:36 pid:2528524 ErrorException: Undefined property: Workerman\Connection\TcpConnection::$user_id in /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php:118
+Stack trace:
+#0 /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(255): Illuminate\Foundation\Bootstrap\HandleExceptions->handleError()
+#1 /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php(118): Illuminate\Foundation\Bootstrap\HandleExceptions->Illuminate\Foundation\Bootstrap\{closure}()
+#2 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(936): {closure}()
+#3 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(843): Workerman\Connection\TcpConnection->destroy()
+#4 /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php(65): Workerman\Connection\TcpConnection->close()
+#5 /var/www/html/vendor/workerman/workerman/Protocols/Websocket.php(449): {closure}()
+#6 /var/www/html/vendor/workerman/workerman/Protocols/Websocket.php(73): Workerman\Protocols\Websocket::dealHandshake()
+#7 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(616): Workerman\Protocols\Websocket::input()
+#8 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead()
+#9 /var/www/html/vendor/workerman/workerman/Worker.php(1719): Workerman\Events\Select->loop()
+#10 /var/www/html/vendor/workerman/workerman/Worker.php(1510): Workerman\Worker::forkOneWorkerForLinux()
+#11 /var/www/html/vendor/workerman/workerman/Worker.php(1484): Workerman\Worker::forkWorkersForLinux()
+#12 /var/www/html/vendor/workerman/workerman/Worker.php(561): Workerman\Worker::forkWorkers()
+#13 /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php(123): Workerman\Worker::runAll()
+#14 {main}
+2024-11-26 08:05:36 pid:2528520 worker[none:2528524] exit with status 64000
+2024-11-26 08:05:38 pid:2528523 ErrorException: Undefined property: Workerman\Connection\TcpConnection::$user_id in /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php:118
+Stack trace:
+#0 /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(255): Illuminate\Foundation\Bootstrap\HandleExceptions->handleError()
+#1 /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php(118): Illuminate\Foundation\Bootstrap\HandleExceptions->Illuminate\Foundation\Bootstrap\{closure}()
+#2 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(936): {closure}()
+#3 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(843): Workerman\Connection\TcpConnection->destroy()
+#4 /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php(65): Workerman\Connection\TcpConnection->close()
+#5 /var/www/html/vendor/workerman/workerman/Protocols/Websocket.php(449): {closure}()
+#6 /var/www/html/vendor/workerman/workerman/Protocols/Websocket.php(73): Workerman\Protocols\Websocket::dealHandshake()
+#7 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(616): Workerman\Protocols\Websocket::input()
+#8 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead()
+#9 /var/www/html/vendor/workerman/workerman/Worker.php(1719): Workerman\Events\Select->loop()
+#10 /var/www/html/vendor/workerman/workerman/Worker.php(1510): Workerman\Worker::forkOneWorkerForLinux()
+#11 /var/www/html/vendor/workerman/workerman/Worker.php(1484): Workerman\Worker::forkWorkersForLinux()
+#12 /var/www/html/vendor/workerman/workerman/Worker.php(561): Workerman\Worker::forkWorkers()
+#13 /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php(123): Workerman\Worker::runAll()
+#14 {main}
+2024-11-26 08:05:39 pid:2528520 worker[none:2528523] exit with status 64000
+2024-11-26 08:05:40 pid:2528522 ErrorException: Undefined property: Workerman\Connection\TcpConnection::$user_id in /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php:118
+Stack trace:
+#0 /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(255): Illuminate\Foundation\Bootstrap\HandleExceptions->handleError()
+#1 /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php(118): Illuminate\Foundation\Bootstrap\HandleExceptions->Illuminate\Foundation\Bootstrap\{closure}()
+#2 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(936): {closure}()
+#3 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(843): Workerman\Connection\TcpConnection->destroy()
+#4 /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php(65): Workerman\Connection\TcpConnection->close()
+#5 /var/www/html/vendor/workerman/workerman/Protocols/Websocket.php(449): {closure}()
+#6 /var/www/html/vendor/workerman/workerman/Protocols/Websocket.php(73): Workerman\Protocols\Websocket::dealHandshake()
+#7 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(616): Workerman\Protocols\Websocket::input()
+#8 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead()
+#9 /var/www/html/vendor/workerman/workerman/Worker.php(1719): Workerman\Events\Select->loop()
+#10 /var/www/html/vendor/workerman/workerman/Worker.php(1510): Workerman\Worker::forkOneWorkerForLinux()
+#11 /var/www/html/vendor/workerman/workerman/Worker.php(1484): Workerman\Worker::forkWorkersForLinux()
+#12 /var/www/html/vendor/workerman/workerman/Worker.php(561): Workerman\Worker::forkWorkers()
+#13 /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php(123): Workerman\Worker::runAll()
+#14 {main}
+2024-11-26 08:05:41 pid:2528520 worker[none:2528522] exit with status 64000
+2024-11-26 08:05:43 pid:2528521 ErrorException: Undefined property: Workerman\Connection\TcpConnection::$user_id in /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php:118
+Stack trace:
+#0 /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(255): Illuminate\Foundation\Bootstrap\HandleExceptions->handleError()
+#1 /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php(118): Illuminate\Foundation\Bootstrap\HandleExceptions->Illuminate\Foundation\Bootstrap\{closure}()
+#2 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(936): {closure}()
+#3 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(843): Workerman\Connection\TcpConnection->destroy()
+#4 /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php(65): Workerman\Connection\TcpConnection->close()
+#5 /var/www/html/vendor/workerman/workerman/Protocols/Websocket.php(449): {closure}()
+#6 /var/www/html/vendor/workerman/workerman/Protocols/Websocket.php(73): Workerman\Protocols\Websocket::dealHandshake()
+#7 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(616): Workerman\Protocols\Websocket::input()
+#8 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead()
+#9 /var/www/html/vendor/workerman/workerman/Worker.php(1719): Workerman\Events\Select->loop()
+#10 /var/www/html/vendor/workerman/workerman/Worker.php(1510): Workerman\Worker::forkOneWorkerForLinux()
+#11 /var/www/html/vendor/workerman/workerman/Worker.php(1484): Workerman\Worker::forkWorkersForLinux()
+#12 /var/www/html/vendor/workerman/workerman/Worker.php(561): Workerman\Worker::forkWorkers()
+#13 /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php(123): Workerman\Worker::runAll()
+#14 {main}
+2024-11-26 08:05:43 pid:2528520 worker[none:2528521] exit with status 64000
+2024-11-26 08:05:45 pid:2528668 ErrorException: Undefined property: Workerman\Connection\TcpConnection::$user_id in /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php:118
+Stack trace:
+#0 /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(255): Illuminate\Foundation\Bootstrap\HandleExceptions->handleError()
+#1 /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php(118): Illuminate\Foundation\Bootstrap\HandleExceptions->Illuminate\Foundation\Bootstrap\{closure}()
+#2 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(936): {closure}()
+#3 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(843): Workerman\Connection\TcpConnection->destroy()
+#4 /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php(65): Workerman\Connection\TcpConnection->close()
+#5 /var/www/html/vendor/workerman/workerman/Protocols/Websocket.php(449): {closure}()
+#6 /var/www/html/vendor/workerman/workerman/Protocols/Websocket.php(73): Workerman\Protocols\Websocket::dealHandshake()
+#7 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(616): Workerman\Protocols\Websocket::input()
+#8 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead()
+#9 /var/www/html/vendor/workerman/workerman/Worker.php(1719): Workerman\Events\Select->loop()
+#10 /var/www/html/vendor/workerman/workerman/Worker.php(1510): Workerman\Worker::forkOneWorkerForLinux()
+#11 /var/www/html/vendor/workerman/workerman/Worker.php(1484): Workerman\Worker::forkWorkersForLinux()
+#12 /var/www/html/vendor/workerman/workerman/Worker.php(1869): Workerman\Worker::forkWorkers()
+#13 /var/www/html/vendor/workerman/workerman/Worker.php(1805): Workerman\Worker::monitorWorkersForLinux()
+#14 /var/www/html/vendor/workerman/workerman/Worker.php(563): Workerman\Worker::monitorWorkers()
+#15 /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php(123): Workerman\Worker::runAll()
+#16 {main}
+2024-11-26 08:05:45 pid:2528520 worker[none:2528668] exit with status 64000
+2024-11-26 08:05:47 pid:2528666 ErrorException: Undefined property: Workerman\Connection\TcpConnection::$user_id in /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php:118
+Stack trace:
+#0 /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(255): Illuminate\Foundation\Bootstrap\HandleExceptions->handleError()
+#1 /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php(118): Illuminate\Foundation\Bootstrap\HandleExceptions->Illuminate\Foundation\Bootstrap\{closure}()
+#2 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(936): {closure}()
+#3 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(843): Workerman\Connection\TcpConnection->destroy()
+#4 /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php(65): Workerman\Connection\TcpConnection->close()
+#5 /var/www/html/vendor/workerman/workerman/Protocols/Websocket.php(449): {closure}()
+#6 /var/www/html/vendor/workerman/workerman/Protocols/Websocket.php(73): Workerman\Protocols\Websocket::dealHandshake()
+#7 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(616): Workerman\Protocols\Websocket::input()
+#8 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead()
+#9 /var/www/html/vendor/workerman/workerman/Worker.php(1719): Workerman\Events\Select->loop()
+#10 /var/www/html/vendor/workerman/workerman/Worker.php(1510): Workerman\Worker::forkOneWorkerForLinux()
+#11 /var/www/html/vendor/workerman/workerman/Worker.php(1484): Workerman\Worker::forkWorkersForLinux()
+#12 /var/www/html/vendor/workerman/workerman/Worker.php(1869): Workerman\Worker::forkWorkers()
+#13 /var/www/html/vendor/workerman/workerman/Worker.php(1805): Workerman\Worker::monitorWorkersForLinux()
+#14 /var/www/html/vendor/workerman/workerman/Worker.php(563): Workerman\Worker::monitorWorkers()
+#15 /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php(123): Workerman\Worker::runAll()
+#16 {main}
+2024-11-26 08:05:47 pid:2528520 worker[none:2528666] exit with status 64000
+2024-11-26 08:05:49 pid:2528667 ErrorException: Undefined property: Workerman\Connection\TcpConnection::$user_id in /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php:118
+Stack trace:
+#0 /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(255): Illuminate\Foundation\Bootstrap\HandleExceptions->handleError()
+#1 /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php(118): Illuminate\Foundation\Bootstrap\HandleExceptions->Illuminate\Foundation\Bootstrap\{closure}()
+#2 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(936): {closure}()
+#3 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(843): Workerman\Connection\TcpConnection->destroy()
+#4 /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php(65): Workerman\Connection\TcpConnection->close()
+#5 /var/www/html/vendor/workerman/workerman/Protocols/Websocket.php(449): {closure}()
+#6 /var/www/html/vendor/workerman/workerman/Protocols/Websocket.php(73): Workerman\Protocols\Websocket::dealHandshake()
+#7 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(616): Workerman\Protocols\Websocket::input()
+#8 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead()
+#9 /var/www/html/vendor/workerman/workerman/Worker.php(1719): Workerman\Events\Select->loop()
+#10 /var/www/html/vendor/workerman/workerman/Worker.php(1510): Workerman\Worker::forkOneWorkerForLinux()
+#11 /var/www/html/vendor/workerman/workerman/Worker.php(1484): Workerman\Worker::forkWorkersForLinux()
+#12 /var/www/html/vendor/workerman/workerman/Worker.php(1869): Workerman\Worker::forkWorkers()
+#13 /var/www/html/vendor/workerman/workerman/Worker.php(1805): Workerman\Worker::monitorWorkersForLinux()
+#14 /var/www/html/vendor/workerman/workerman/Worker.php(563): Workerman\Worker::monitorWorkers()
+#15 /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php(123): Workerman\Worker::runAll()
+#16 {main}
+2024-11-26 08:05:49 pid:2528520 worker[none:2528667] exit with status 64000
+2024-11-26 08:05:51 pid:2528689 ErrorException: Undefined property: Workerman\Connection\TcpConnection::$user_id in /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php:118
+Stack trace:
+#0 /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(255): Illuminate\Foundation\Bootstrap\HandleExceptions->handleError()
+#1 /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php(118): Illuminate\Foundation\Bootstrap\HandleExceptions->Illuminate\Foundation\Bootstrap\{closure}()
+#2 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(936): {closure}()
+#3 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(843): Workerman\Connection\TcpConnection->destroy()
+#4 /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php(65): Workerman\Connection\TcpConnection->close()
+#5 /var/www/html/vendor/workerman/workerman/Protocols/Websocket.php(449): {closure}()
+#6 /var/www/html/vendor/workerman/workerman/Protocols/Websocket.php(73): Workerman\Protocols\Websocket::dealHandshake()
+#7 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(616): Workerman\Protocols\Websocket::input()
+#8 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead()
+#9 /var/www/html/vendor/workerman/workerman/Worker.php(1719): Workerman\Events\Select->loop()
+#10 /var/www/html/vendor/workerman/workerman/Worker.php(1510): Workerman\Worker::forkOneWorkerForLinux()
+#11 /var/www/html/vendor/workerman/workerman/Worker.php(1484): Workerman\Worker::forkWorkersForLinux()
+#12 /var/www/html/vendor/workerman/workerman/Worker.php(1869): Workerman\Worker::forkWorkers()
+#13 /var/www/html/vendor/workerman/workerman/Worker.php(1805): Workerman\Worker::monitorWorkersForLinux()
+#14 /var/www/html/vendor/workerman/workerman/Worker.php(563): Workerman\Worker::monitorWorkers()
+#15 /var/www/html/public/train/websocket/Workerman/002-server-ok-chat.php(123): Workerman\Worker::runAll()
+#16 {main}
+2024-11-26 08:05:51 pid:2528520 worker[none:2528689] exit with status 64000
+2024-11-26 08:05:53 pid:2528520 Workerman[002-server-ok-chat.php] stopping ...
+2024-11-26 08:05:53 pid:2528520 Workerman[002-server-ok-chat.php] has been stopped
+2024-11-26 08:06:31 pid:2528784 Workerman[public/train/websocket/Workerman/002-server-ok-chat.php] start in DEBUG mode
+2024-11-26 08:15:49 pid:2528784 Workerman[002-server-ok-chat.php] stopping ...
+2024-11-26 08:15:49 pid:2528784 Workerman[002-server-ok-chat.php] has been stopped
+2024-11-26 08:15:54 pid:2529989 Workerman[public/train/websocket/Workerman/003-server-ok-chat.php] start in DEBUG mode
+2024-11-26 08:16:39 pid:2529989 Workerman[003-server-ok-chat.php] stopping ...
+2024-11-26 08:16:39 pid:2529989 Workerman[003-server-ok-chat.php] has been stopped
+2024-11-26 08:16:43 pid:2530071 Workerman[public/train/websocket/Workerman/003-server-ok-chat.php] start in DEBUG mode
+2024-11-26 08:17:11 pid:2530071 Workerman[003-server-ok-chat.php] stopping ...
+2024-11-26 08:17:12 pid:2530071 Workerman[003-server-ok-chat.php] has been stopped
+2024-11-26 08:17:13 pid:2530147 Workerman[public/train/websocket/Workerman/003-server-ok-chat.php] start in DEBUG mode
+2024-11-26 08:22:30 pid:2530147 Workerman[003-server-ok-chat.php] stopping ...
+2024-11-26 08:22:30 pid:2530147 Workerman[003-server-ok-chat.php] has been stopped
+2024-11-26 08:22:32 pid:2530756 Workerman[public/train/websocket/Workerman/003-server-ok-chat.php] start in DEBUG mode
+2024-11-26 08:22:41 pid:2530756 Workerman[003-server-ok-chat.php] stopping ...
+2024-11-26 08:22:41 pid:2530756 Workerman[003-server-ok-chat.php] has been stopped
+2024-11-26 08:22:44 pid:2530760 Workerman[public/train/websocket/Workerman/003-server-ok-chat.php] start in DEBUG mode
+2024-11-26 08:27:40 pid:2530760 Workerman[003-server-ok-chat.php] stopping ...
+2024-11-26 08:27:40 pid:2530760 Workerman[003-server-ok-chat.php] has been stopped
+2024-11-26 08:27:43 pid:2531334 Workerman[public/train/websocket/Workerman/002-server-ok-chat.php] start in DEBUG mode
+2024-11-26 08:28:26 pid:2531334 Workerman[002-server-ok-chat.php] stopping ...
+2024-11-26 08:28:26 pid:2531334 Workerman[002-server-ok-chat.php] has been stopped
+2024-11-26 08:28:30 pid:2531445 Workerman[public/train/websocket/Workerman/003-server-ok-chat.php] start in DEBUG mode
+2024-11-26 08:47:49 pid:2531445 Workerman[003-server-ok-chat.php] stopping ...
+2024-11-26 08:47:49 pid:2531445 Workerman[003-server-ok-chat.php] has been stopped
+2024-11-26 08:47:51 pid:2533752 Workerman[public/train/websocket/Workerman/003-server-ok-chat.php] start in DEBUG mode
+2024-11-26 08:49:34 pid:2533752 Workerman[003-server-ok-chat.php] stopping ...
+2024-11-26 08:49:34 pid:2533752 Workerman[003-server-ok-chat.php] has been stopped
+2024-11-26 08:49:36 pid:2533968 Workerman[public/train/websocket/Workerman/003-server-ok-chat.php] start in DEBUG mode
+2024-11-26 08:54:02 pid:2533968 Workerman[003-server-ok-chat.php] stopping ...
+2024-11-26 08:54:02 pid:2533968 Workerman[003-server-ok-chat.php] has been stopped
+2024-11-26 08:54:03 pid:2534483 Workerman[public/train/websocket/Workerman/003-server-ok-chat.php] start in DEBUG mode
+2024-11-26 08:55:52 pid:2534483 Workerman[003-server-ok-chat.php] stopping ...
+2024-11-26 08:55:52 pid:2534483 Workerman[003-server-ok-chat.php] has been stopped
+2024-11-26 10:07:39 pid:2543133 Workerman[public/train/websocket/Workerman/004-server-ok-chat.php] start in DEBUG mode
+2024-11-26 10:08:51 pid:2543134 ErrorException: Undefined property: Workerman\Connection\TcpConnection::$user_id in /var/www/html/public/train/websocket/Workerman/004-server-ok-chat.php:57
+Stack trace:
+#0 /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(255): Illuminate\Foundation\Bootstrap\HandleExceptions->handleError()
+#1 /var/www/html/public/train/websocket/Workerman/004-server-ok-chat.php(57): Illuminate\Foundation\Bootstrap\HandleExceptions->Illuminate\Foundation\Bootstrap\{closure}()
+#2 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(936): handle_close()
+#3 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(843): Workerman\Connection\TcpConnection->destroy()
+#4 /var/www/html/public/train/websocket/Workerman/004-server-ok-chat.php(80): Workerman\Connection\TcpConnection->close()
+#5 /var/www/html/vendor/workerman/workerman/Protocols/Websocket.php(449): {closure}()
+#6 /var/www/html/vendor/workerman/workerman/Protocols/Websocket.php(73): Workerman\Protocols\Websocket::dealHandshake()
+#7 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(616): Workerman\Protocols\Websocket::input()
+#8 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead()
+#9 /var/www/html/vendor/workerman/workerman/Worker.php(1719): Workerman\Events\Select->loop()
+#10 /var/www/html/vendor/workerman/workerman/Worker.php(1510): Workerman\Worker::forkOneWorkerForLinux()
+#11 /var/www/html/vendor/workerman/workerman/Worker.php(1484): Workerman\Worker::forkWorkersForLinux()
+#12 /var/www/html/vendor/workerman/workerman/Worker.php(561): Workerman\Worker::forkWorkers()
+#13 /var/www/html/public/train/websocket/Workerman/004-server-ok-chat.php(94): Workerman\Worker::runAll()
+#14 {main}
+2024-11-26 10:08:51 pid:2543133 worker[none:2543134] exit with status 64000
+2024-11-26 10:08:53 pid:2543285 ErrorException: Undefined property: Workerman\Connection\TcpConnection::$user_id in /var/www/html/public/train/websocket/Workerman/004-server-ok-chat.php:57
+Stack trace:
+#0 /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(255): Illuminate\Foundation\Bootstrap\HandleExceptions->handleError()
+#1 /var/www/html/public/train/websocket/Workerman/004-server-ok-chat.php(57): Illuminate\Foundation\Bootstrap\HandleExceptions->Illuminate\Foundation\Bootstrap\{closure}()
+#2 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(936): handle_close()
+#3 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(843): Workerman\Connection\TcpConnection->destroy()
+#4 /var/www/html/public/train/websocket/Workerman/004-server-ok-chat.php(80): Workerman\Connection\TcpConnection->close()
+#5 /var/www/html/vendor/workerman/workerman/Protocols/Websocket.php(449): {closure}()
+#6 /var/www/html/vendor/workerman/workerman/Protocols/Websocket.php(73): Workerman\Protocols\Websocket::dealHandshake()
+#7 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(616): Workerman\Protocols\Websocket::input()
+#8 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead()
+#9 /var/www/html/vendor/workerman/workerman/Worker.php(1719): Workerman\Events\Select->loop()
+#10 /var/www/html/vendor/workerman/workerman/Worker.php(1510): Workerman\Worker::forkOneWorkerForLinux()
+#11 /var/www/html/vendor/workerman/workerman/Worker.php(1484): Workerman\Worker::forkWorkersForLinux()
+#12 /var/www/html/vendor/workerman/workerman/Worker.php(1869): Workerman\Worker::forkWorkers()
+#13 /var/www/html/vendor/workerman/workerman/Worker.php(1805): Workerman\Worker::monitorWorkersForLinux()
+#14 /var/www/html/vendor/workerman/workerman/Worker.php(563): Workerman\Worker::monitorWorkers()
+#15 /var/www/html/public/train/websocket/Workerman/004-server-ok-chat.php(94): Workerman\Worker::runAll()
+#16 {main}
+2024-11-26 10:08:54 pid:2543133 worker[none:2543285] exit with status 64000
+2024-11-26 10:08:56 pid:2543288 ErrorException: Undefined property: Workerman\Connection\TcpConnection::$user_id in /var/www/html/public/train/websocket/Workerman/004-server-ok-chat.php:57
+Stack trace:
+#0 /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(255): Illuminate\Foundation\Bootstrap\HandleExceptions->handleError()
+#1 /var/www/html/public/train/websocket/Workerman/004-server-ok-chat.php(57): Illuminate\Foundation\Bootstrap\HandleExceptions->Illuminate\Foundation\Bootstrap\{closure}()
+#2 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(936): handle_close()
+#3 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(843): Workerman\Connection\TcpConnection->destroy()
+#4 /var/www/html/public/train/websocket/Workerman/004-server-ok-chat.php(80): Workerman\Connection\TcpConnection->close()
+#5 /var/www/html/vendor/workerman/workerman/Protocols/Websocket.php(449): {closure}()
+#6 /var/www/html/vendor/workerman/workerman/Protocols/Websocket.php(73): Workerman\Protocols\Websocket::dealHandshake()
+#7 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(616): Workerman\Protocols\Websocket::input()
+#8 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead()
+#9 /var/www/html/vendor/workerman/workerman/Worker.php(1719): Workerman\Events\Select->loop()
+#10 /var/www/html/vendor/workerman/workerman/Worker.php(1510): Workerman\Worker::forkOneWorkerForLinux()
+#11 /var/www/html/vendor/workerman/workerman/Worker.php(1484): Workerman\Worker::forkWorkersForLinux()
+#12 /var/www/html/vendor/workerman/workerman/Worker.php(1869): Workerman\Worker::forkWorkers()
+#13 /var/www/html/vendor/workerman/workerman/Worker.php(1805): Workerman\Worker::monitorWorkersForLinux()
+#14 /var/www/html/vendor/workerman/workerman/Worker.php(563): Workerman\Worker::monitorWorkers()
+#15 /var/www/html/public/train/websocket/Workerman/004-server-ok-chat.php(94): Workerman\Worker::runAll()
+#16 {main}
+2024-11-26 10:08:56 pid:2543133 worker[none:2543288] exit with status 64000
+2024-11-26 10:08:58 pid:2543289 ErrorException: Undefined property: Workerman\Connection\TcpConnection::$user_id in /var/www/html/public/train/websocket/Workerman/004-server-ok-chat.php:57
+Stack trace:
+#0 /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(255): Illuminate\Foundation\Bootstrap\HandleExceptions->handleError()
+#1 /var/www/html/public/train/websocket/Workerman/004-server-ok-chat.php(57): Illuminate\Foundation\Bootstrap\HandleExceptions->Illuminate\Foundation\Bootstrap\{closure}()
+#2 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(936): handle_close()
+#3 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(843): Workerman\Connection\TcpConnection->destroy()
+#4 /var/www/html/public/train/websocket/Workerman/004-server-ok-chat.php(80): Workerman\Connection\TcpConnection->close()
+#5 /var/www/html/vendor/workerman/workerman/Protocols/Websocket.php(449): {closure}()
+#6 /var/www/html/vendor/workerman/workerman/Protocols/Websocket.php(73): Workerman\Protocols\Websocket::dealHandshake()
+#7 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(616): Workerman\Protocols\Websocket::input()
+#8 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead()
+#9 /var/www/html/vendor/workerman/workerman/Worker.php(1719): Workerman\Events\Select->loop()
+#10 /var/www/html/vendor/workerman/workerman/Worker.php(1510): Workerman\Worker::forkOneWorkerForLinux()
+#11 /var/www/html/vendor/workerman/workerman/Worker.php(1484): Workerman\Worker::forkWorkersForLinux()
+#12 /var/www/html/vendor/workerman/workerman/Worker.php(1869): Workerman\Worker::forkWorkers()
+#13 /var/www/html/vendor/workerman/workerman/Worker.php(1805): Workerman\Worker::monitorWorkersForLinux()
+#14 /var/www/html/vendor/workerman/workerman/Worker.php(563): Workerman\Worker::monitorWorkers()
+#15 /var/www/html/public/train/websocket/Workerman/004-server-ok-chat.php(94): Workerman\Worker::runAll()
+#16 {main}
+2024-11-26 10:08:58 pid:2543133 worker[none:2543289] exit with status 64000
+2024-11-26 10:08:59 pid:2543133 Workerman[004-server-ok-chat.php] stopping ...
+2024-11-26 10:08:59 pid:2543133 Workerman[004-server-ok-chat.php] has been stopped
+2024-11-26 10:12:45 pid:2543849 Workerman[public/train/websocket/Workerman/004-server-ok-chat.php] start in DEBUG mode
+2024-11-26 10:18:10 pid:2543849 Workerman[004-server-ok-chat.php] stopping ...
+2024-11-26 10:18:10 pid:2543849 Workerman[004-server-ok-chat.php] has been stopped
+2024-11-26 10:18:12 pid:2544490 Workerman[public/train/websocket/Workerman/004-server-ok-chat.php] start in DEBUG mode
+2024-11-26 10:36:56 pid:2544490 Workerman[004-server-ok-chat.php] stopping ...
+2024-11-26 10:36:56 pid:2544490 Workerman[004-server-ok-chat.php] has been stopped
+2024-11-26 10:36:58 pid:2546653 Workerman[public/train/websocket/Workerman/004-server-ok-chat.php] start in DEBUG mode
+2024-11-26 10:38:03 pid:2546653 Workerman[004-server-ok-chat.php] stopping ...
+2024-11-26 10:38:03 pid:2546653 Workerman[004-server-ok-chat.php] has been stopped
+2024-11-26 10:38:05 pid:2546794 Workerman[public/train/websocket/Workerman/004-server-ok-chat.php] start in DEBUG mode
+2024-11-27 10:42:30 pid:2720892 Workerman[public/train/websocket/Workerman/webconsole/1-server.php] start in DEBUG mode
+2024-11-27 10:43:49 pid:2720892 Workerman[1-server.php] stopping ...
+2024-11-27 10:43:49 pid:2720892 Workerman[1-server.php] has been stopped
+2024-11-27 10:43:51 pid:2721022 Workerman[public/train/websocket/Workerman/webconsole/1-server.php] start in DEBUG mode
+2024-11-27 10:44:24 pid:2721022 Workerman[1-server.php] stopping ...
+2024-11-27 10:44:24 pid:2721022 Workerman[1-server.php] has been stopped
+2024-11-27 10:44:27 pid:2721091 Workerman[public/train/websocket/Workerman/webconsole/1-server.php] start in DEBUG mode
+2024-11-27 10:51:26 pid:2721091 Workerman[1-server.php] stopping ...
+2024-11-27 10:51:26 pid:2721091 Workerman[1-server.php] has been stopped
+2024-11-27 10:51:27 pid:2722013 Workerman[public/train/websocket/Workerman/webconsole/1-server.php] start in DEBUG mode
+2024-11-27 10:52:56 pid:2722013 Workerman[1-server.php] stopping ...
+2024-11-27 10:52:56 pid:2722013 Workerman[1-server.php] has been stopped
+2024-11-27 10:52:58 pid:2722169 Workerman[public/train/websocket/Workerman/webconsole/1-server.php] start in DEBUG mode
+2024-11-27 10:53:22 pid:2722169 Workerman[1-server.php] stopping ...
+2024-11-27 10:53:22 pid:2722169 Workerman[1-server.php] stopping ...
+2024-11-27 10:53:22 pid:2722169 Workerman[1-server.php] stopping ...
+2024-11-27 10:53:24 pid:2722169 Workerman[1-server.php] stopping ...
+2024-11-27 10:53:24 pid:2722169 Workerman[1-server.php] stopping ...
+2024-11-27 10:53:24 pid:2722169 Workerman[1-server.php] stopping ...
+2024-11-27 10:53:24 pid:2722169 Workerman[1-server.php] stopping ...
+2024-11-27 10:53:24 pid:2722169 worker[none:2722170] exit with status 9
+2024-11-27 10:53:24 pid:2722169 Workerman[1-server.php] has been stopped
+2024-11-27 10:53:27 pid:2722230 Workerman[public/train/websocket/Workerman/webconsole/1-server.php] start in DEBUG mode
+2024-11-27 11:25:22 pid:2722230 Workerman[1-server.php] stopping ...
+2024-11-27 11:25:22 pid:2722230 Workerman[1-server.php] has been stopped
+2024-11-27 19:44:32 pid:2546794 Workerman[004-server-ok-chat.php] stopping ...
+2024-11-27 19:44:32 pid:2546794 Workerman[004-server-ok-chat.php] stopping ...
+2024-11-27 19:44:32 pid:2546794 Workerman[004-server-ok-chat.php] has been stopped

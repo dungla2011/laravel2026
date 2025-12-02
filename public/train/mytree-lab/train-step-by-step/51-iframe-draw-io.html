@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Draw.io Integration</title>
+    <style>
+        #drawio-frame {
+            width: 100%;
+            height: 600px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+<button onclick="updateStyles()">Update Styles</button>
+<!--<iframe id="drawio-frame" src="https://embed.diagrams.net/?embed=1&ui=min&spin=1&proto=json&configure=1"></iframe>-->
+<iframe id="drawio-frame" src="https://draw.mytree.vn/?url=https://mytree.vn/tool/testing/draw.io.get_file.php#Uhttps://mytree.vn/tool/testing/draw.io.get_file.php#%7B%22pageId%22%3A%22family-tree%22%7D"></iframe>
+
+<script>
+    const drawioFrame = document.getElementById('drawio-frame');
+
+    // Lắng nghe message từ iframe draw.io
+    window.addEventListener('message', function(evt) {
+        if (evt.origin !== 'https://draw.mytree.vn') return;
+
+        if (evt.data.length > 0) {
+            let msg = JSON.parse(evt.data);
+            console.log('Received message:', msg);
+
+            // Xử lý response từ các action
+            if (msg.event === 'configure') {
+                // Draw.io đã sẵn sàng, có thể gửi commands
+                console.log('Draw.io configured');
+            }
+        }
+    });
+
+    function testCommand() {
+        const command = {
+            action: 'status',
+            message: 'test'
+        };
+        drawioFrame.contentWindow.postMessage(JSON.stringify(command), '*');
+        console.log("Test...");
+    }
+
+    function updateStyles() {
+        console.log(" update...");
+        testCommand();
+        // Gửi command để cập nhật style
+        const command = {
+            action: 'execute',
+            command: 'updateStyles',
+            params: {
+                cells: [
+                    {
+                        className: 'family-node',
+                        styles: {
+                            fillColor: '#e6f3ff',
+                            strokeColor: '#0066cc',
+                            strokeWidth: '2'
+                        }
+                    },
+                    {
+                        className: 'gender-1',
+                        styles: {
+                            fillColor: '#cce5ff'
+                        }
+                    },
+                    {
+                        className: 'gender-2',
+                        styles: {
+                            fillColor: '#ffcce5'
+                        }
+                    },
+                    {
+                        className: 'parent-child-edge',
+                        styles: {
+                            strokeColor: '#006600',
+                            strokeWidth: '2'
+                        }
+                    }
+                ]
+            }
+        };
+
+        drawioFrame.contentWindow.postMessage(JSON.stringify(command), 'https://draw.mytree.vn/?url=https://mytree.vn/tool/testing/draw.io.get_file.php#Uhttps://mytree.vn/tool/testing/draw.io.get_file.php#%7B%22pageId%22%3A%22family-tree%22%7D');
+    }
+
+    // Khởi tạo custom actions trong draw.io
+    const initScript = `
+            // Tạo custom command để update styles
+            Draw.loadPlugin(function(ui) {
+                ui.editor.graph.addListener(mxEvent.CELLS_ADDED, function(sender, evt) {
+                    console.log('Cells added:', evt.properties.cells);
+                });
+
+                // Thêm custom command
+                ui.actions.addAction('updateStyles', function() {
+                    const graph = ui.editor.graph;
+                    const model = graph.getModel();
+
+                    model.beginUpdate();
+                    try {
+                        const cells = model.cells;
+                        for (let id in cells) {
+                            const cell = cells[id];
+                            if (cell.style) {
+                                // Update style based on class
+                                if (cell.style.includes('styleClass=family-node')) {
+                                    cell.style = cell.style + ';fillColor=#e6f3ff;strokeColor=#0066cc;strokeWidth=2';
+                                }
+                                if (cell.style.includes('gender-1')) {
+                                    cell.style = cell.style + ';fillColor=#cce5ff';
+                                }
+                                if (cell.style.includes('gender-2')) {
+                                    cell.style = cell.style + ';fillColor=#ffcce5';
+                                }
+                                if (cell.style.includes('parent-child-edge')) {
+                                    cell.style = cell.style + ';strokeColor=#006600;strokeWidth=2';
+                                }
+                            }
+                        }
+                    } finally {
+                        model.endUpdate();
+                    }
+                });
+            });
+        `;
+
+    // Sau khi iframe load, inject custom script
+    drawioFrame.addEventListener('load', function() {
+        const initCommand = {
+            action: 'init',
+            xml: '',
+            scriptCode: initScript
+        };
+        drawioFrame.contentWindow.postMessage(JSON.stringify(initCommand), 'https://draw.mytree.vn/?url=https://mytree.vn/tool/testing/draw.io.get_file.php#Uhttps://mytree.vn/tool/testing/draw.io.get_file.php#%7B%22pageId%22%3A%22family-tree%22%7D');
+    });
+</script>
+</body>
+</html>

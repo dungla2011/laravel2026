@@ -1,0 +1,63 @@
+<?php
+use App\Models\SiteMng;use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+try {
+
+    require "/var/www/html/public/index.php";
+
+    $cli = 0;
+    if (isCLI()) {
+        $cli = 1;
+    }
+
+    function ol1($str) {
+        global $cli;
+        if ($cli)
+            echo "\n$str";
+        else
+            echo "<br>$str";
+        $date = nowy();
+        $fileLog = basename(__FILE__);
+        outputT("/var/glx/weblog/$fileLog.log", $str);
+    }
+
+    $remoteIP = $_SERVER['REMOTE_ADDR'];
+
+//    $arrayIPValid = array("123.30.50.142",'16.0.0.151', "203.113.132.151", '203.113.132.155', '103.163');
+//
+//    if(nowy()> "2014-04-30")
+//    if(!isIPVpn($remoteIP) ){
+//        die("Error not valid IP!");
+//    }
+
+    if($_GET['u']){
+        $user = $_GET['u'];
+        $pass = $_GET['p'];
+
+        $us = User::where('email', $user)->orWhere('username', $user)->first();
+        if ($us) {
+            if (!$us->hasRole(DEF_GID_ROLE_MEMBER))
+                if (!$us->email_active_at) {
+                    bl3("Tài khoản chưa được kích hoạt", "- Hãy vào email để thấy link kích hoạt (kiểm tra thêm hộp thư Spam) <br>- <a href='https:/4share.vn/active-account'>Hoặc  Kích hoạt tài khoản tại đây </a>");
+                    return;
+                }
+
+            $sha = sha1($pass . $us->id);
+            $check = ($sha == $us->password);
+        }
+
+        if($check)
+        {
+//            ob_clean();
+            echo "1|".$us->email."|".$us->username;
+            return;
+        }
+//        ob_clean();
+        echo "0";
+        return;
+    }
+
+} catch (Exception $e) {
+    echo ' <br>\n Caught exception: ', $e->getMessage(), "\n";
+}
+?>

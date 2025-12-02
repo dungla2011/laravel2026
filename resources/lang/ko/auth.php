@@ -1,0 +1,28 @@
+<?php
+
+return [
+    'failed' => '이 자격 증명은 우리 기록과 일치하지 않습니다.',
+    'password' => '제공된 비밀번호가 올바르지 않습니다.',
+    'throttle' => '로그인 시도 횟수가 너무 많습니다. ',
+    'login' => '로그인',
+    'login_with' => '다음으로 로그인',
+    'register' => '등록하다',
+    'register_with' => '등록',
+    'logout' => '로그아웃',
+    'email_or_account' => '이메일 또는 계정',
+    'username' => '사용자 이름(영숫자 및 밑줄만)',
+    'account' => '계정',
+    'password_field' => '비밀번호',
+    'password_confirmation' => '비밀번호 확인',
+    'forgot_password' => '비밀번호를 잊으셨나요?',
+    'activate_account' => '계정 활성화',
+    'home' => '집',
+    'activation_message' => '계정을 활성화하려면 등록된 이메일을 입력하세요. (등록했지만 활성화 이메일을 받지 못한 경우)',
+    'enter_email' => '이메일 주소를 입력하세요',
+    'email' => '이메일',
+    'remember_me' => '나를 기억해',
+    'submit' => '제출하다',
+    'back_to_login' => '로그인으로 돌아가기',
+    'reset_password' => '비밀번호 재설정',
+    'email_reset_password' => '비밀번호를 받을 이메일',
+];

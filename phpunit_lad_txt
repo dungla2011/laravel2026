@@ -1,0 +1,2 @@
+https://stackoverflow.com/questions/7119886/re-run-last-failed-test-in-phpunit
+phpunit --order-by=defects --stop-on-failure

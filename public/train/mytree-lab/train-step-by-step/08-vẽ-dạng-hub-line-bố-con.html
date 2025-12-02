@@ -1,0 +1,311 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vẽ Gia Phả</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        svg {
+            border: 1px solid #ccc;
+            display: block;
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+<svg id="familyTreeSvg" width="1200" height="800"></svg>
+<script>
+
+
+    function sortFamilyTree(data) {
+        // Tạo map để tra cứu nhanh theo id
+        const idMap = new Map(data.map(item => [item.id, item]));
+
+        // Tạo map để lưu danh sách người phối ngẫu theo id
+        const spousesMap = new Map();
+
+        // Xây dựng map các cặp vợ chồng
+        data.forEach(person => {
+            if (person.married_with) {
+                // Thêm người phối ngẫu vào danh sách
+                if (!spousesMap.has(person.married_with)) {
+                    spousesMap.set(person.married_with, []);
+                }
+                spousesMap.get(person.married_with).push(person.id);
+
+                // Thêm người hiện tại vào danh sách phối ngẫu của người kia
+                if (!spousesMap.has(person.id)) {
+                    spousesMap.set(person.id, []);
+                }
+                spousesMap.get(person.id).push(person.married_with);
+            }
+        });
+
+        // Tạo mảng kết quả mới
+        const result = [];
+        const added = new Set();
+
+        // Hàm thêm người và các phối ngẫu vào kết quả
+        function addPersonAndSpouses(personId) {
+            if (added.has(personId)) return;
+
+            // Thêm người hiện tại
+            const person = idMap.get(personId);
+            result.push(person);
+            added.add(personId);
+
+            // Thêm các phối ngẫu
+            const spouses = spousesMap.get(personId) || [];
+            spouses.forEach(spouseId => {
+                if (!added.has(spouseId)) {
+                    const spouse = idMap.get(spouseId);
+                    result.push(spouse);
+                    added.add(spouseId);
+                }
+            });
+        }
+
+        // Duyệt qua từng người trong dữ liệu gốc
+        data.forEach(person => {
+            addPersonAndSpouses(person.id);
+        });
+
+        return result;
+    }
+
+    function centerTree(svgElement, treeData) {
+        const svgWidth = svgElement.node().getBoundingClientRect().width;
+
+        let minX = Infinity;
+        let maxX = -Infinity;
+        let minY = Infinity;
+        let maxY = -Infinity;
+
+        treeData.descendants().forEach(d => {
+            minX = Math.min(minX, d.x);
+            maxX = Math.max(maxX, d.x);
+            minY = Math.min(minY, d.y);
+            maxY = Math.max(maxY, d.y);
+        });
+
+        const treeWidth = maxX - minX;
+        const xOffset = (svgWidth - treeWidth) / 2 - minX;
+        const yOffset = 100 - minY;
+
+        const svgGroup = svgElement.select("g");
+
+        svgGroup.selectAll(".node")
+            .attr("transform", d => `translate(${d.x + xOffset},${d.y + yOffset})`);
+
+        svgGroup.selectAll(".link")
+            .attr("x1", d => d.source.x + xOffset)
+            .attr("y1", d => d.source.y + yOffset)
+            .attr("x2", d => d.target.x + xOffset)
+            .attr("y2", d => d.target.y + yOffset);
+
+        svgGroup.selectAll(".spouse-link")
+            .attr("x1", d => d.source.x + xOffset)
+            .attr("y1", d => d.source.y + yOffset)
+            .attr("x2", d => d.target.x + xOffset)
+            .attr("y2", d => d.target.y + yOffset);
+
+        return svgGroup;
+    }
+    function addSpouseLinks(svgGroup, treeData) {
+        const idToNode = {};
+        treeData.descendants().forEach(node => {
+            idToNode[node.data.id] = node;
+        });
+
+        const spouseLinks = [];
+        treeData.descendants().forEach(node => {
+            if (node.data.married_with && idToNode[node.data.married_with]) {
+                // Xác định bên trái và bên phải
+                const leftNode = node.x < idToNode[node.data.married_with].x ? node : idToNode[node.data.married_with];
+                const rightNode = node.x < idToNode[node.data.married_with].x ? idToNode[node.data.married_with] : node;
+
+                spouseLinks.push({
+                    source: leftNode,
+                    target: rightNode
+                });
+            }
+        });
+
+        svgGroup.selectAll(".spouse-link")
+            .data(spouseLinks)
+            .enter()
+            .append("line")
+            .attr("class", "spouse-link")
+            // Điểm bắt đầu: mép phải của node bên trái
+            .attr("x1", d => d.source.x + 200 + nodeWidth/2)
+            .attr("y1", d => d.source.y + 50)
+            // Điểm kết thúc: mép trái của node bên phải
+            .attr("x2", d => d.target.x + 200 - nodeWidth/2)
+            .attr("y2", d => d.target.y + 50)
+            .attr("stroke", "red")
+            .attr("stroke-dasharray", "2,2");
+    }
+
+    // Cập nhật hàm centerTree để xử lý đúng các đường nối vợ chồng
+    function centerTree(svgElement, treeData) {
+        const svgWidth = svgElement.node().getBoundingClientRect().width;
+
+        let minX = Infinity;
+        let maxX = -Infinity;
+        let minY = Infinity;
+        let maxY = -Infinity;
+
+        treeData.descendants().forEach(d => {
+            minX = Math.min(minX, d.x);
+            maxX = Math.max(maxX, d.x);
+            minY = Math.min(minY, d.y);
+            maxY = Math.max(maxY, d.y);
+        });
+
+        const treeWidth = maxX - minX;
+        const xOffset = (svgWidth - treeWidth) / 2 - minX;
+        const yOffset = 100 - minY;
+
+        const svgGroup = svgElement.select("g");
+
+        // Cập nhật vị trí các node
+        svgGroup.selectAll(".node")
+            .attr("transform", d => `translate(${d.x + xOffset},${d.y + yOffset})`);
+
+        // Cập nhật vị trí các đường nối cha-con
+        svgGroup.selectAll(".link")
+            .attr("d", d => {
+                const sourceX = d.source.x + xOffset;
+                const sourceY = d.source.y + yOffset;
+                const targetX = d.target.x + xOffset;
+                const targetY = d.target.y + yOffset;
+                const midY = sourceY + (targetY - sourceY) / 2;
+
+                // Hubline path
+                return `
+                M ${sourceX},${sourceY}
+                V ${midY}
+                H ${targetX}
+                V ${targetY}
+            `;
+            });
+
+        // Cập nhật vị trí các đường nối vợ chồng
+        svgGroup.selectAll(".spouse-link")
+            .attr("x1", d => d.source.x + xOffset + nodeWidth / 2)
+            .attr("y1", d => d.source.y + yOffset)
+            .attr("x2", d => d.target.x + xOffset - nodeWidth / 2)
+            .attr("y2", d => d.target.y + yOffset);
+
+        return svgGroup;
+    }
+
+
+
+    const rootId = 0;
+    let data = [
+        { "id": 321525, "parent_id": rootId, "name": "A0", "married_with": null, "gender": 1 },
+        { "id": 321543, "parent_id": rootId, "name": "B0", "married_with": 321525, "gender": 1 },
+        { "id": 321526, "parent_id": 321525, "name": "A1", "married_with": null, "gender": 1 },
+        { "id": 321531, "parent_id": 321525, "name": "A2", "married_with": null, "gender": 1 },
+        { "id": 321532, "parent_id": 321525, "name": "B1", "married_with": 321526, "gender": 2 },
+        { "id": 321535, "parent_id": 321525, "name": "A3", "married_with": null, "gender": 2 },
+        { "id": 321536, "parent_id": 321525, "name": "A4", "married_with": null, "gender": 1 },
+        { "id": 321541, "parent_id": 321525, "name": "B3", "married_with": 321535, "gender": 1 },
+        { "id": 321544, "parent_id": 321525, "name": "C3", "married_with": 321535, "gender": 1 },
+        { "id": 321527, "parent_id": 321526, "name": "A11", "married_with": null, "gender": 1 },
+        { "id": 321528, "parent_id": 321526, "name": "A12", "married_with": null, "gender": 1 },
+        { "id": 321530, "parent_id": 321526, "name": "A13", "married_with": null, "gender": 1 },
+        { "id": 321537, "parent_id": 321535, "name": "A31", "married_with": null, "gender": 1 },
+        { "id": 321538, "parent_id": 321535, "name": "A32", "married_with": null, "gender": 1 },
+        { "id": 321542, "parent_id": 321528, "name": "A121", "married_with": null, "gender": 1 },
+        { "id": rootId, "parent_id": null, "married_with": null, "gender": 1, "name": "Root" }
+    ];
+
+    data = sortFamilyTree(data);
+    console.log("Data = ", data);
+
+    const nodeWidth = 50;
+    const nodeHeight = 40;
+    const horizontalSpacing = 20;
+    const verticalSpacing = 50;
+
+    function buildTree(data, rootId) {
+        const idToNode = {};
+        data.forEach(node => {
+            idToNode[node.id] = { ...node, children: [] };
+        });
+
+        data.forEach(node => {
+            if (idToNode[node.parent_id]) {
+                idToNode[node.parent_id].children.push(idToNode[node.id]);
+            }
+        });
+
+        return idToNode[rootId] || null;
+    }
+
+    const root = buildTree(data, rootId);
+    const treeData = d3.hierarchy(root, d => d.children);
+    const treeLayout = d3.tree().nodeSize([nodeWidth + horizontalSpacing, nodeHeight + verticalSpacing]);
+    treeLayout(treeData);
+
+    const svg = d3.select("#familyTreeSvg")
+        .call(d3.zoom().on("zoom", (event) => {
+            svgGroup.attr("transform", event.transform);
+        }));
+
+    const svgGroup = svg.append("g");
+
+    addSpouseLinks(svgGroup, treeData);
+
+    svgGroup.selectAll(".link")
+        .data(treeData.links())
+        .enter()
+        .append("path")
+        .attr("class", "link")
+        .attr("d", d => {
+            const sourceX = d.source.x + 200;
+            const sourceY = d.source.y + 50;
+            const targetX = d.target.x + 200;
+            const targetY = d.target.y + 50;
+            const midY = sourceY + (targetY - sourceY) / 2; // Điểm giữa theo trục Y
+
+            // Tạo đường Hubline
+            return `
+            M ${sourceX},${sourceY}
+            V ${midY}
+            H ${targetX}
+            V ${targetY}
+        `;
+        })
+        .attr("stroke", "#ccc")
+        .attr("fill", "none");
+
+    const nodes = svgGroup.selectAll(".node")
+        .data(treeData.descendants())
+        .enter()
+        .append("g")
+        .attr("class", "node")
+        .attr("transform", d => `translate(${d.x + 200},${d.y + 50})`);
+
+    nodes.append("rect")
+        .attr("width", nodeWidth)
+        .attr("height", nodeHeight)
+        .attr("x", -nodeWidth / 2)
+        .attr("y", -nodeHeight / 2)
+        .attr("fill", "#fff")
+        .attr("stroke", "#000");
+
+    nodes.append("text")
+        .attr("text-anchor", "middle")
+        .attr("dy", "5")
+        .text(d => d.data.name);
+
+
+    centerTree(svg, treeData);
+</script>
+</body>
+</html>

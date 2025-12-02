@@ -1,0 +1,84 @@
+<?php
+//https://developers.zalo.me/docs/social-api/tham-khao/user-access-token-v4
+use Zalo\Zalo;
+use Zalo\ZaloEndPoint;
+use Zalo\Builder\MessageBuilder;
+
+//error_reporting(E_ALL);
+//ini_set('display_errors', 1);
+
+require_once "/var/www/html/public/index.php";
+
+try
+{
+    $code_verifier = env('ZALO_CODE_VERIFIER');
+    $hash = hash('sha256', $code_verifier);
+    $code_challenge = base64url_encode(pack('H*', $hash));
+    $callbackUrl = env('ZALO_CALLBACK_URL');
+    $app_id = env('ZALO_APP_ID');
+    $app_secret = env('ZALO_APP_SECRET');
+
+    $config = array(
+        'app_id' => $app_id,
+        'app_secret' => $app_secret
+    );
+    $zalo = new Zalo($config);
+
+    $helper = $zalo -> getRedirectLoginHelper();
+
+    $oauth_code = $_REQUEST['code'];
+
+    $url = 'https://oauth.zaloapp.com/v4/access_token';
+
+    $data = http_build_query([
+        'code' => $oauth_code,
+        'app_id' => $app_id,
+        'grant_type' => 'authorization_code',
+        'code_verifier' => $code_verifier
+    ]);
+
+    $options = [
+        'http' => [
+            'header' => "Content-Type: application/x-www-form-urlencoded\r\n" .
+                "secret_key: $app_secret\r\n",
+            'method' => 'POST',
+            'content' => $data
+        ]
+    ];
+    $context = stream_context_create($options);
+    $response = file_get_contents($url, false, $context);
+
+    if ($response === FALSE) {
+        die('Error occurred');
+    }
+    $std = json_decode($response);
+    echo "<br/>\n --- TEST GET USER LIST: --- ";
+    $accessToken = $std->access_token;
+    $params = ['fields' => 'id,name,picture'];
+    $response = $zalo->get(\Zalo\ZaloEndPoint::API_GRAPH_ME, $accessToken, $params);
+    $result = $response->getDecodedBody(); // result
+    echo "<pre> >>> " . __FILE__ . "(" . __LINE__ . ")<br/>";
+    print_r($result);
+    echo "</pre>";
+    $uid0 = $result['id'];
+    echo "<br/>\n Get UserList Done, UID = $uid0";
+    echo "<br/><br/>\n --- TEST SEND MESSAGE : -----";
+    // build data
+    $msgBuilder = new MessageBuilder(MessageBuilder::MSG_TYPE_TXT);
+    $msgBuilder->withUserId($uid0);
+    $msgBuilder->withText('Message Text123');
+    $msgText = $msgBuilder->build();
+// send request
+    $response = $zalo->post(ZaloEndPoint::API_OA_SEND_CONSULTATION_MESSAGE_V3, $accessToken, $msgText);
+    $result = $response->getDecodedBody(); // result
+
+    echo "<br/>\nRET = ";
+    echo "<pre> >>> " . __FILE__ . "(" . __LINE__ . ")<br/>";
+    print_r($result);
+    echo "</pre>";
+
+}
+catch (Exception $e) {
+    echo "<br/>\n Error: ";
+    echo $e->getMessage();
+}

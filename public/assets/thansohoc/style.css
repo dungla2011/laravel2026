@@ -1,0 +1,545 @@
+body {
+    background: #f5f5f5;
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding: 0;
+    margin: 0;
+}
+
+/* Custom Badge Colors */
+.bg-purple {
+    background-color: #9b59b6 !important;
+    color: white !important;
+}
+
+.bg-royalblue {
+    background-color: #4169e1 !important;
+    color: white !important;
+}
+
+.bg-orange {
+    background-color: #ff8c00 !important;
+    color: white !important;
+}
+
+/* Mobile First - Base styles */
+.container-fluid {
+    padding: 10px !important;
+}
+
+header h1 {
+    font-size: 1.5rem !important;
+}
+
+header p {
+    font-size: 0.9rem !important;
+}
+
+/* Tabs - Mobile */
+.nav-pills {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.nav-pills .nav-link {
+    background: white;
+    color: #333;
+    font-weight: 600;
+    margin: 0 5px;
+    border-radius: 10px;
+    transition: all 0.3s;
+    border: 2px solid #e0e0e0;
+    white-space: nowrap;
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+}
+
+.nav-pills .nav-link:hover {
+    background: #f8f9fa;
+    border-color: #667eea;
+    transform: translateY(-2px);
+}
+
+.nav-pills .nav-link.active {
+    background: #667eea;
+    color: white;
+    border-color: #667eea;
+    box-shadow: 0 3px 10px rgba(102, 126, 234, 0.3);
+}
+
+/* Cards - Mobile */
+.card {
+    border: none;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+.card-header {
+    border-radius: 10px 10px 0 0 !important;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+}
+
+.card-header h2,
+.card-header h3 {
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+.card-body {
+    padding: 0.75rem;
+}
+
+/* Number cards - Mobile optimized */
+.number-card {
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: none;
+    margin-bottom: 10px;
+}
+
+.number-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2) !important;
+}
+
+.number-label {
+    font-size: 0.8rem;
+    color: #666;
+    font-weight: 600;
+}
+
+.number-value {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.number-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: white;
+    background: #667eea;
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.number-meaning {
+    font-size: 0.75rem;
+    color: #666;
+    line-height: 1.3;
+}
+
+.btn-primary {
+    background: #667eea;
+    border: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 0.6rem 1rem;
+}
+
+.btn-primary:hover {
+    background: #5568d3;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.card {
+    border: none;
+    border-radius: 15px;
+}
+
+.card-header {
+    border-radius: 15px 15px 0 0 !important;
+    padding: 1rem 1.5rem;
+}
+
+/* Form controls - Mobile */
+.form-control,
+.form-control-lg {
+    font-size: 0.95rem;
+    padding: 0.6rem 0.75rem;
+}
+
+.form-label {
+    font-size: 0.9rem;
+    margin-bottom: 0.3rem;
+}
+
+/* Table - Mobile responsive */
+.table {
+    font-size: 0.85rem;
+}
+
+.table th,
+.table td {
+    padding: 0.5rem;
+    vertical-align: middle;
+}
+
+.table thead th {
+    font-size: 0.8rem;
+}
+
+.badge {
+    font-size: 0.8rem;
+    padding: 0.3rem 0.5rem;
+}
+
+.hint-text {
+    font-size: 0.7rem;
+    color: #666;
+    margin-top: 0.25rem;
+    font-style: italic;
+    line-height: 1.2;
+}
+
+.help-icon {
+    cursor: help;
+    margin-right: 3px;
+    font-size: 0.8rem;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+    color: #0d6efd;
+}
+
+.help-icon:hover {
+    opacity: 1;
+}
+
+/* Bootstrap tooltip text alignment */
+.tooltip-inner {
+    text-align: left !important;
+    max-width: 300px;
+}
+
+/* Cột chi tiết số chủ đạo */
+.detail-column {
+    max-width: 400px;
+    font-size: 0.85rem;
+    background-color: #f8f9fa;
+    display: none; /* Mặc định ẩn */
+}
+
+.detail-column strong {
+    /* color: #0d6efd; */
+}
+
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.85rem;
+}
+
+#basicInfo {
+    background: #e3f2fd;
+    border: none;
+    font-weight: 600;
+}
+
+/* Biểu đồ kim tự tháp - Mobile */
+.pyramid-cell {
+    background: white;
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+    border: 2px solid #e0e0e0;
+    transition: all 0.2s;
+}
+
+.pyramid-cell:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    border-color: #667eea;
+}
+
+.pyramid-number {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #667eea;
+    margin-bottom: 5px;
+}
+
+.pyramid-dots {
+    font-size: 1rem;
+    color: #764ba2;
+    margin: 5px 0;
+    min-height: 20px;
+}
+
+.pyramid-meaning {
+    font-size: 0.7rem;
+    color: #666;
+    margin-top: 3px;
+}
+
+/* Formula box */
+.formula-box {
+    background: #f8f9fa;
+    border-left: 4px solid #667eea;
+    padding: 12px;
+    border-radius: 8px;
+    height: 100%;
+}
+
+.formula-box h6 {
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+.formula-box p {
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
+.formula-box small {
+    color: #666;
+}
+
+/* Desktop - Larger screens */
+@media (min-width: 768px) {
+    .container-fluid {
+        padding: 20px !important;
+    }
+
+    header h1 {
+        font-size: 2.5rem !important;
+    }
+
+    header p {
+        font-size: 1.2rem !important;
+    }
+
+    .nav-pills .nav-link {
+        font-size: 1rem;
+        padding: 0.6rem 1.5rem;
+    }
+
+    .card-header h2,
+    .card-header h3 {
+        font-size: 1.5rem;
+    }
+
+    .card-body {
+        padding: 1.5rem;
+    }
+
+    .number-badge {
+        width: 60px;
+        height: 60px;
+        font-size: 2rem;
+    }
+
+    .number-label {
+        font-size: 0.9rem;
+    }
+
+    .number-meaning {
+        font-size: 0.85rem;
+    }
+
+    .pyramid-cell {
+        padding: 15px;
+    }
+
+    .pyramid-number {
+        font-size: 1.5rem;
+    }
+
+    .pyramid-dots {
+        font-size: 1.3rem;
+    }
+
+    .pyramid-meaning {
+        font-size: 0.75rem;
+    }
+
+    .table {
+        font-size: 0.95rem;
+    }
+
+    .table th,
+    .table td {
+        padding: 0.75rem;
+    }
+}
+
+@media (min-width: 992px) {
+    header h1 {
+        font-size: 3rem !important;
+    }
+}
+
+/* Accordion Styles */
+.accordion-button {
+    font-weight: 600;
+    font-size: 1rem;
+    background-color: #f8f9fa;
+}
+
+.accordion-button:not(.collapsed) {
+    background-color: #667eea;
+    color: white;
+}
+
+.accordion-button:focus {
+    box-shadow: none;
+    border-color: #667eea;
+}
+
+.accordion-body {
+    padding: 1rem;
+}
+
+.accordion-item {
+    border: 1px solid #dee2e6;
+    margin-bottom: 0.5rem;
+    border-radius: 8px !important;
+    overflow: hidden;
+}
+
+/* Table meaning styles */
+.table-bordered td {
+    vertical-align: middle;
+}
+
+.table-bordered tbody tr:hover {
+    background-color: #f8f9fa;
+    transition: background-color 0.2s;
+}
+
+/* Responsive History Table */
+.history-card-view {
+    display: block; /* Mobile mặc định hiển thị cards */
+}
+
+.history-table-view {
+    display: none; /* Mobile ẩn table */
+}
+
+/* Desktop: hiển thị table, ẩn cards */
+@media (min-width: 992px) {
+    .history-card-view {
+        display: none;
+    }
+    
+    .history-table-view {
+        display: block;
+    }
+}
+
+/* Card styles for mobile */
+.history-card {
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.history-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid #667eea;
+}
+
+.history-card-title {
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: #333;
+}
+
+.history-card-subtitle {
+    font-size: 0.85rem;
+    color: #6c757d;
+    white-space: nowrap;
+}
+
+.history-card-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+}
+
+.history-card-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.history-card-label {
+    font-size: 0.75rem;
+    color: #6c757d;
+    margin-bottom: 0.25rem;
+}
+
+.history-card-value {
+    font-weight: 600;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.history-card-value .hint-text {
+    font-weight: normal;
+    margin-top: 0;
+}
+
+.history-card-footer {
+    margin-top: 1rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid #dee2e6;
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* Detail column */
+.detail-column-card {
+    grid-column: 1 / -1;
+    background-color: #f8f9fa;
+    padding: 1px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    display: block; /* Hiển thị luôn trên mobile */
+}
+
+.detail-column-card.show {
+    display: block;
+}
+
+/* Desktop: ẩn detail card vì đã có trong table */
+@media (min-width: 992px) {
+    .detail-column-card {
+        display: none;
+    }
+}
+
+/* Result view - giống history view */
+.result-card-view {
+    display: block; /* Mobile mặc định hiển thị card */
+}
+
+.result-table-view {
+    display: none; /* Mobile ẩn table */
+}
+
+/* Desktop: hiển thị table, ẩn card */
+@media (min-width: 992px) {
+    .result-card-view {
+        display: none;
+    }
+    
+    .result-table-view {
+        display: block;
+    }
+}

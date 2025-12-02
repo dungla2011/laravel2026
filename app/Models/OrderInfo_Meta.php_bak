@@ -1,0 +1,609 @@
+<?php
+
+namespace App\Models;
+
+use App\Components\Helper1;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use LadLib\Common\Database\MetaOfTableInDb;
+use PhpOffice\PhpSpreadsheet\Writer\Ods\Meta;
+
+/**
+ * ABC123
+ * @param null $objData
+ */
+class OrderInfo_Meta extends MetaOfTableInDb
+{
+    protected static $api_url_admin = "/api/order-info";
+    protected static $web_url_admin = "/admin/order-info";
+
+    protected static $api_url_member = "/api/member-order-info";
+    protected static $web_url_member = "/member/order-info";
+
+    //public static $folderParentClass = OrderInfoFolderTbl::class;
+    public static $modelClass = OrderInfo::class;
+
+    /**
+     * @param $field
+     * @return MetaOfTableInDb
+     */
+    public function getHardCodeMetaObj($field){
+        $objMeta = new MetaOfTableInDb();
+        if($field == 'text_desc') {
+            $objMeta->dataType = DEF_DATA_TYPE_TEXT_AREA;
+        }
+        if($field == 'status'){
+            $objMeta->dataType = DEF_DATA_TYPE_STATUS;
+        }
+
+        if($field == 'image_list'){
+            $objMeta->dataType = DEF_DATA_TYPE_IS_MULTI_IMAGE_BROWSE;
+//            $objMeta->join_func = 'App\Models\News_Meta::joinFuncImageId';
+        }
+
+        if($field == 'phone_request'){
+//            $objMeta->join_api_field = 'name';
+//            $objMeta->join_relation_func = 'joinTags';
+//            $objMeta->join_api = '/api/tags/search';
+            $objMeta->join_api_field = 'phone_number';
+//            $objMeta->join_relation_func = 'joinUsers';
+            $objMeta->join_api = '/api/transport-info/search';
+            $objMeta->dataType = DEF_DATA_TYPE_NUMBER;
+            $objMeta->opt_field = 3;
+        }
+
+        if($field == 'service_require'){
+//            $objMeta->dataType = DEF_DATA_TYPE_TEXT_STRING;
+//            $objMeta->opt_field = 3;
+        }
+        return $objMeta;
+    }
+
+    function _to_address($obj, $val, $field){
+
+        ?>
+        <?php
+
+        $val = json_decode($obj->to_address);
+//        echo "<pre> >>> " . __FILE__ . "(" . __LINE__ . ")<br/>";
+//        print_r($val);
+//        echo "</pre>";
+//        return;
+        $detail = $val->detail ?? '';
+        $lv1 = $val->l1 ?? '';
+        $lv2 = $val->l2 ?? '';
+        $lv3 = $val->l3 ?? '';
+        $idl1 = $val->idl1 ?? '';
+        $idl2 = $val->idl2 ?? '';
+        $idl3 = $val->idl2 ?? '';
+        $ret = "<div style='padding: 3px'>";
+        $ret .= "<div data-code-pos='pp336800853445' data-address-id='' data-object-id='$obj->id' class='auto_address cls_sonha'><input value='$detail' type='text' placeholder='Số nhà,Ngõ,Đường,Tổ,Thôn...'  > <span> X </span> </div>";
+        $ret .= "<div data-code-pos='ppp16803085196' data-address-id='$idl1' data-object-id='$obj->id' class='auto_address lvx address_level1'><input value='$lv1'  type='text' placeholder='Tỉnh/Thành' >  <span> X </span> </div>";
+        $ret .= "<div data-code-pos='ppp16805656616' data-address-id='$idl2' data-object-id='$obj->id' class='auto_address lvx address_level2'><input value='$lv2'  type='text' placeholder='Quận/Huyện' >  <span> X </span> </div>";
+        $ret .= "<div data-code-pos='ppp16808899616' data-address-id='$idl3' data-object-id='$obj->id' class='auto_address lvx address_level3'><input value='$lv3'  type='text' placeholder='Phường/Xã' >  <span> X </span> </div>";
+        $ret .='</div>';
+
+        if(!isset($GLOBALS['ppp16sdf808899616_doing_tree_address'])){
+            $GLOBALS['ppp16sdf808899616_doing_tree_address'] = 1;
+            echo "<script> var doingAddress = [] </script>";
+        }
+
+         ?>
+
+        <script>
+
+            doingAddress[<?php echo $obj->id ?>] = <?php if($obj->to_address) echo $obj->to_address; else echo '{}'  ?>
+
+        </script>
+        <?php
+        return $ret;
+    }
+
+    function _user_id($obj, $val){
+
+        $user = User::find($val);
+        if($user)
+            return " <div style='font-size: small; padding: 3px'> $user->email </div> ";
+
+    }
+
+    function extraJsInclude()
+    {
+        ?>
+        <style>
+            div.auto_address span{
+                display: none;
+                color: red;
+            }
+            div.auto_address {
+                min-width: 150px;
+            }
+            div.auto_address span:hover{
+                cursor: pointer;
+            }
+            div.auto_address input{
+                border: 1px solid #ccc!important;
+                width: 88% !important;
+            }
+            input[data-field=to_address] {
+                display: none;
+            }
+        </style>
+
+        <script>
+
+            class clsAddress1 {
+                detail //Số nhà, thôn, tòa nhà...
+                l1 //Tỉnh thành
+                idl1
+                l2 //Quận Huyện
+                idl2
+                l3 //Phường xã
+                idl3
+
+                getJsonInputPost(){
+                    return JSON.stringify(this)
+                }
+
+                loadFromObj (obj){
+
+                    if(obj.detail != undefined)
+                        this.detail = obj.detail
+                    if(obj.l1 != undefined)
+                        this.l1 = obj.l1
+                    if(obj.l2 != undefined)
+                        this.l2 = obj.l2
+                    if(obj.l3 != undefined)
+                        this.l3 = obj.l3
+                    if(obj.idl1 != undefined)
+                        this.idl1 = obj.idl1
+                    if(obj.idl2 != undefined)
+                        this.idl2 = obj.idl2
+                    if(obj.idl3 != undefined)
+                        this.idl3 = obj.idl3
+                }
+
+                reset(lv){
+
+                    if(lv == 1)
+                    {
+                        this.l1 = ''
+                        this.idl1 = ''
+                        return;
+                    }
+                    if(lv == 2)
+                    {
+                        this.l2 = ''
+                        this.idl2 = ''
+                        return;
+                    }
+                    if(lv == 3)
+                    {
+                        this.l3 = ''
+                        this.idl3 = ''
+                        return;
+                    }
+
+                    this.detail = ''
+
+                    this.l1 = ''
+                    this.l2 = ''
+                    this.l3 = ''
+                    this.idl1 = ''
+                    this.idl2 = ''
+                    this.idl3 = ''
+                }
+
+            }
+
+            $(function() {
+
+                // var doingAddress = new clsAddress1();
+
+                //Load from UI:
+
+                console.log(" All DataAddress = ", doingAddress);
+                for(let i in doingAddress){
+                    let obj = doingAddress[i]
+                    console.log("OBJx ", obj);
+                    if(!obj)
+                        continue
+                    let obj1 = new clsAddress1()
+                    obj1.loadFromObj(obj)
+                    doingAddress[i] = obj1;
+                }
+                console.log(" All DataAddress2 = ", doingAddress);
+
+
+
+                $(".auto_address").each(function () {
+
+                    if($(this).attr('data-address-id')){
+                        $(this).find('input').css("color", 'red');
+                        $(this).find('input').attr('disabled', true);
+                        $(this).find('span').show()
+                    }
+
+                })
+
+                $(document).on('keyup', "div.auto_address.cls_sonha > input", function (e){
+                    let dataId = $(this).parent().attr('data-object-id');
+                    console.log("Keyup... auto_address.cls_sonha " , dataId);
+                    $(this).parent().find('input').attr('disabled', false);
+                    let cval = $("input.input_value_to_post.to_address[data-id=" + dataId +"]").val();
+                    console.log("CVal = ", cval);
+                    let doing = JSON.parse(cval);
+                    doing.detail = $(this).val();
+                    console.log(" DOING = ", doing);
+                    $("input.input_value_to_post.to_address[data-id=" + dataId +"]").val(JSON.stringify(doing));
+                })
+
+
+                $( "div.auto_address.address_level1 input").autocomplete({
+                    source: "/api/don-vi-hanh-chinh/search_address?pid=0",
+                    minLength: 0,
+                    select: function( event, ui ){
+                        let dataId = $(event.target).parent().attr('data-object-id');
+                        console.log(" Selected , " , ui, dataId);
+                        // console.log("Selected: " + ui.item.value + " / " + ui.item.id , ui.item, dataId);
+                        $(this).parent().find('input').attr('disabled', false);
+
+                        $("div.auto_address.address_level1[data-object-id="+ dataId +"] input").attr('disabled', true);
+                        $("div.auto_address.address_level1[data-object-id="+ dataId +"] input").css('color', 'black');
+                        $("div.auto_address.address_level1[data-object-id="+ dataId +"] span").show();
+
+                        $("div.auto_address.address_level1[data-object-id="+ dataId +"]").attr('data-address-id', ui.item.id);
+                        $("div.auto_address.address_level1[data-object-id="+ dataId +"]").prop('data-address-id', ui.item.id);
+
+                        $( "div.auto_address.address_level2 input").autocomplete('option', 'source',
+                            "/api/don-vi-hanh-chinh/search_address?pid=" + ui.item.id
+                        )
+                        doingAddress[dataId].reset()
+                        doingAddress[dataId].l1 = ui.item.label
+                        doingAddress[dataId].idl1 = ui.item.id
+                        doingAddress[dataId].detail = $("div.auto_address.cls_sonha[data-object-id="+ dataId +"] input").val();
+
+                        console.log(" doingAddress = " , doingAddress[dataId]);
+                        $("input.input_value_to_post.to_address[data-id=" + dataId +"]").val(doingAddress[dataId].getJsonInputPost());
+                    }
+                }).focus(function(event){
+                    let dataId = $(event.target).attr('data-object-id');
+                    $(this).autocomplete("search");
+                });
+
+                $( "div.auto_address.address_level2 input").autocomplete({
+                    source: "/api/don-vi-hanh-chinh/search_address?pid=",
+                    minLength: 0,
+                    select: function( event, ui ){
+                        let dataId = $(event.target).parent().attr('data-object-id');
+                        // console.log("Selected: " + ui.item.value + " / " + ui.item.id , ui.item, dataId);
+                        console.log(" Selected , " , ui, dataId);
+
+                        $("div.auto_address.address_level2[data-object-id="+ dataId +"] input").attr('disabled', true);
+
+                        $("div.auto_address.address_level2[data-object-id="+ dataId +"] input").css('color', 'black');
+                        $("div.auto_address.address_level2[data-object-id="+ dataId +"] span").show();
+                        $("div.auto_address.address_level2[data-object-id="+ dataId +"]").attr('data-address-id', ui.item.id);
+                        $("div.auto_address.address_level2[data-object-id="+ dataId +"]").prop('data-address-id', ui.item.id);
+
+
+                        $( "div.auto_address.address_level3 input").autocomplete('option', 'source',
+                            "/api/don-vi-hanh-chinh/search_address?pid=" + ui.item.id
+                        )
+
+                        doingAddress[dataId].l2 = ui.item.label
+                        doingAddress[dataId].idl2 = ui.item.id
+                        doingAddress[dataId].detail = $("div.auto_address.cls_sonha[data-object-id="+ dataId +"] input").val();
+                        $("input.input_value_to_post.to_address[data-id=" + dataId +"]").val(doingAddress[dataId].getJsonInputPost());
+                    }
+                }).focus(function(event){
+                    //Mỗi khi focus, thì tìm parentId để đưa vào api search
+                    console.log(" LV2 focus ...");
+                    let dataId = $(event.target).parent().attr('data-object-id');
+                    let pidApi = $( "div.auto_address.address_level1[data-object-id='" + dataId + "']").attr('data-address-id')
+                    console.log(" LV2 focus ..." , dataId, pidApi);
+                    $(this).autocomplete('option', 'source',
+                        "/api/don-vi-hanh-chinh/search_address?pid=" + pidApi
+                    )
+                    $(this).autocomplete("search");
+                });
+
+                $( "div.auto_address.address_level3 input").autocomplete({
+                    source: "/api/don-vi-hanh-chinh/search_address?pid=",
+                    minLength: 0,
+                    select: function( event, ui ){
+                        let dataId = $(event.target).parent().attr('data-object-id');
+                        // console.log("Selected: " + ui.item.value + " / " + ui.item.id , ui.item, dataId);
+                        console.log(" Selected , " , ui, dataId);
+                        $("div.auto_address.address_level3[data-object-id="+ dataId +"] input").attr('disabled', true);
+                        $("div.auto_address.address_level3[data-object-id="+ dataId +"] input").css('color', 'black');
+                        $("div.auto_address.address_level3[data-object-id="+ dataId +"] span").show();
+
+                        doingAddress[dataId].l3 = ui.item.label
+                        doingAddress[dataId].idl3 = ui.item.id
+                        doingAddress[dataId].detail = $("div.auto_address.cls_sonha[data-object-id="+ dataId +"] input").val();
+                        $("input.input_value_to_post.to_address[data-id=" + dataId +"]").val(doingAddress[dataId].getJsonInputPost());
+                    }
+                }).focus(function(event){
+                    console.log(" LV3 focus ...");
+                    let dataId = $(event.target).parent().attr('data-object-id');
+                    let pidApi = $( "div.auto_address.address_level2[data-object-id='" + dataId + "']").attr('data-address-id')
+                    console.log(" LV3 focus ..." , dataId, pidApi);
+                    $(this).autocomplete('option', 'source',
+                        "/api/don-vi-hanh-chinh/search_address?pid=" + pidApi
+                    )
+
+                    $(this).autocomplete("search");
+                });
+
+                $("div.auto_address span").on('click', function (){
+
+                    let dataId = $(event.target).parent().attr('data-object-id');
+                    $(this).parent().find('input').attr('disabled', false);
+                    $(this).parent().find('input').val('');
+                    $(this).parent().find('input').css('color', 'green');
+                    $(this).parent().find('input').focus();
+                    $(this).hide();
+                    console.log(" dataId ", dataId);
+
+                    if($(this).parent().hasClass('address_level1')){
+                        console.log(" Remove address_level1 ", dataId);
+                        //Remove not cac address SUB
+
+                        //xóa hết các cấp địa chỉ, giữ lại detail address
+                        $("div.auto_address.lvx[data-object-id=" + dataId + "] input").val('')
+                        $("div.auto_address.lvx[data-object-id=" + dataId + "] span").hide()
+                        $("div.auto_address.lvx[data-object-id=" + dataId + "] input").attr('disabled', false);
+
+                        $( "div.auto_address.address_level2 input").autocomplete('option', 'source',
+                            "/api/don-vi-hanh-chinh/search_address?pid="
+                        )
+                        $( "div.auto_address.address_level3 input").autocomplete('option', 'source',
+                            "/api/don-vi-hanh-chinh/search_address?pid="
+                        )
+                        doingAddress[dataId].reset()
+                        $("input.input_value_to_post.to_address[data-id=" + dataId +"]").val('');
+                    }
+
+                    if($(this).parent().hasClass('address_level2')){
+                        console.log(" Remove address_level2 ", dataId);
+                        //Remove not cac address SUB
+                        $("div.auto_address.address_level3[data-object-id=" + dataId + "] input").val('')
+                        $("div.auto_address.address_level3[data-object-id=" + dataId + "] span").hide()
+                        $("div.auto_address.address_level2[data-object-id=" + dataId + "] input").attr('disabled', false);
+                        $("div.auto_address.address_level3[data-object-id=" + dataId + "] input").attr('disabled', false);
+
+                        $( "div.auto_address.address_level3 input").autocomplete('option', 'source',
+                            "/api/don-vi-hanh-chinh/search_address?pid="
+                        )
+                        doingAddress[dataId].reset(2)
+                        doingAddress[dataId].reset(3)
+                        $("input.input_value_to_post.to_address[data-id=" + dataId +"]").val(doingAddress[dataId].getJsonInputPost());
+                    }
+
+                    console.log("Click ... span ", dataId);
+                })
+            })
+        </script>
+
+
+        <script data-code-pos="ppp1679218479092">
+
+
+            $( function() {
+
+                let globalBillId
+                let client_session_time
+                let globalDataClass
+
+                let user_token = jctool.getCookie('_tglx863516839');
+
+
+                $("#confirm_product_list").click(function (){
+                    console.log("Click confirm_product_list...");
+
+                    let mmBill = [];
+                    $('table.get_all_sku input[type=checkbox]:checked').each(function (){
+
+                        let this1 = $(this);
+                        let prtd = $(this).parent()
+                        let sku = $(this).attr('data-sku-id');
+                        console.log(" SKU = ", sku);
+
+                        let quantity_input = prtd.siblings().find("input.quantity_input").val()
+                        let price_input = prtd.siblings().find("input.price_input").val()
+                        console.log(" quantity_input price_input = ", quantity_input , price_input);
+
+                        let data = {
+                            sku: sku,
+                            quantity_input: quantity_input,
+                            price_input: price_input
+                        }
+
+                        mmBill.push(data);
+                    })
+
+                    if(mmBill.length <=0 )
+                    {
+                        if (!confirm("Bạn chưa chọn hàng hóa, số lượng?\nViệc này sẽ làm đơn hàng trống (Bỏ hàng hóa ra khỏi đơn)!\nBấm OK để xác nhận!"))
+                            return;
+                    }
+
+                    let dataClass = '';
+
+                    let url = "/api/member-order-info/postBill?order_id=" + globalBillId + '&client_session_time=' + client_session_time + "&globalDataClass="+globalDataClass;
+                    $.ajax({
+                        url: url,
+                        type: 'POST',
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader('Authorization', 'Bearer ' + user_token);
+                        },
+                        data: {bill_info: mmBill},
+                        success: function (data, status) {
+                            console.log("Data ret: ", data, " \nStatus: ", status);
+                            if(data.payload !== undefined && data.payload.html_ret !== undefined){
+                                $(".service_require_list_html[data-id="+ globalBillId +"]").html(data.payload.html_ret);
+                                $("input[data-field=money][data-id=" + globalBillId +"]").val(data.payloadEx)
+
+                                clsTableMngJs.updateListIdInsert(data.payload.new_bill);
+
+                                $( "#dialog_select_product" ).dialog( "close");
+
+                            }
+                            // $("#product_list_all").html(data);
+                            // $("#product_list_all").css({height:"100%", overflow:"auto"});
+                        },
+                        error: function () {
+                            console.log(" Eror....");
+                        },
+                    });
+                })
+
+                $(".delete_select_service").click(function (){
+                    let dataId = $(this).attr('data-id');
+                    globalBillId = dataId
+                    client_session_time = Date.now();
+                    globalDataClass = $(this).attr('data-class');
+                    $("#confirm_product_list").trigger("click");
+                })
+
+
+                $(".btn_select_service").click(function (){
+
+                    let dataId = $(this).attr('data-id');
+                    globalBillId = dataId
+                    client_session_time = Date.now();
+                    globalDataClass = $(this).attr('data-class');
+
+                    console.log("Click " , $(this).attr('data-id'));
+                    $( "#dialog_select_product" ).dialog( "open" );
+
+                    let url = "/api/member-order-info/getListProductSelect?billId=" + dataId;
+                    $.ajax({
+                        url: url,
+                        type: 'GET',
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader('Authorization', 'Bearer ' + user_token);
+                        },
+                        data: {},
+                        success: function (data, status) {
+                            console.log("Datax html: ", " \nStatus: ", status);
+                            $("#product_list_all").html(data);
+                            $("#product_list_all").css({height:"100%", overflow:"auto"});
+                        },
+                        error: function () {
+                            console.log(" Eror....");
+                        },
+                    });
+
+                })
+                $( "#dialog_select_product" ).dialog({
+                    autoOpen: false,
+                    height: 600,
+                    width: 800,
+                    modal: true,
+                });
+            } );
+        </script>
+
+        <style>
+            .service_require_list_html{
+                min-width: 200px;
+            }
+        </style>
+
+        <div data-code-pos="ppp1679218472216" id="dialog_select_product" title="Chọn các Sản phẩm cho Đơn hàng này" style="margin: 0px">
+            <div style="overflow:auto; padding: 10px 20px; background-color: snow; border-bottom: 1px solid #ccc">
+                <input class="form-control"  style="width: 200px; display: inline-block" type="text" placeholder="Tìm tên sản phẩm">
+                <div style="float: right; position: relative">
+
+                    <button style="float: right; display: block" class="btn btn-info" id="confirm_product_list">
+                        Xác nhận Đơn hàng</button>
+
+                    <br>
+                    <i style="font-size: small; float: right; display: block">(Chọn lại sản phẩm cho đơn - Chọn sản phẩm bên dưới và bấm Xác nhận)</i>
+                </div>
+            </div>
+            <div id="product_list_all" style="overflow:auto; padding: 20px">
+            </div>
+        </div>
+
+
+        <?php
+    }
+
+    function _service_require($obj, $val = null, $field = null){
+
+        $mBillP = OrderItem::where("order_id", $obj->id)->get();
+        $ret = '';
+        $totalPr = 0;
+        if($mBillP){
+            foreach ($mBillP AS $billP) {
+                $prod = Product::find($billP->product_id);
+                $pr = $billP->price * $billP->quantity;
+                $totalPr+=$pr;
+                $ret .= " <div style='margin-bottom: 2px; display: block; border: 1px solid #ccc; padding: 5px; background-color: lavender'> $prod->name , $billP->sku_string : <br> SL: $billP->quantity x $billP->price = $pr VND </div> ";
+            }
+        }
+
+        $ret .= " <b style='color: green'> Tổng giá: $totalPr VND </b>";
+
+
+        if($val == 'get_only_ret_html')
+            return $ret;
+
+        $cls = static::$modelClass;
+
+        return "<div class='service_require_list_html' data-id='$obj->id' data-code-pos='ppp1679274952879' style='font-size: small; padding: 5px'> $ret</div>
+<button data-id='$obj->id' data-class='$cls'  class='btn_select_service' type='button' style='font-size: small; margin: 5px'>
+Chọn sản phẩm
+</button>
+<button data-id='$obj->id' data-class='$cls'  class='delete_select_service' type='button' style='font-size: small; margin: 5px'>
+Hủy đơn
+</button>
+";
+    }
+
+    function _image_list($obj, $val, $field){
+        return Helper1::imageShow1($obj, $val, $field);
+    }
+
+    function _phone_request($objData, $value = null, $field = null){
+
+        if(!$objData)
+            return null;
+//        return "xxx1 $value / $field";
+//
+        $phoneOK = $value;
+        if($phoneOK)
+            if($phoneOK[0] != '0')
+                $phoneOK = "0$phoneOK";
+
+        $zalo = "<a href='https://zalo.me/$phoneOK' target='_blank'> <img style='width: 30px' src='/images/icon/icon-zalo.png' alt=''></a>";
+        $ret = '';
+        if($value && $obj = \App\Models\User::where('phone_number', $value)->first()){
+            $ret = "$zalo
+ <span data-code-pos='ppp16654984' class='span_auto_complete1' title='Xem thành viên này'> <a href='/admin/user-api/edit/$obj->id'> <i class='fa fa-edit'></i> </a> </span>
+ <span data-code-pos='ppp16654584' data-autocomplete-id='$objData->id-$field' class='span_auto_complete'
+data-item-value='$obj->phone_number' title='Remove this item'>$obj->phone_number / $obj->email [x]</span>
+
+
+";
+            $obj= json_decode($obj);
+            //return 'abc';
+            if(Helper1::isApiCurrentRequest())
+                return [$obj->phone_number=>$obj->phone_number];
+            return $ret;
+        }
+        elseif($value){
+            return "$zalo
+ <span data-code-pos='ppp166584' class='span_auto_complete1' title='Thêm thành viên với số mới này'> <i class='fa fa-edit'></i> </span>
+ <span title='Remove this item' data-code-pos='ppp1665' data-autocomplete-id='$objData->id-$field' class='span_auto_complete span_auto_complete1'>New Phone: $value [x] </span>
+
+
+";
+        }
+        return null;
+    }
+}

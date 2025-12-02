@@ -1,0 +1,28 @@
+<?php
+
+return [
+    'failed' => 'Những thông tin xác thực này không khớp với hồ sơ của chúng tôi.',
+    'password' => 'Mật khẩu được cung cấp không chính xác.',
+    'throttle' => 'Quá nhiều lần thử đăng nhập. ',
+    'login' => 'Đăng nhập',
+    'login_with' => 'Đăng nhập với',
+    'register' => 'Đăng ký',
+    'register_with' => 'Đăng ký với',
+    'logout' => 'Đăng xuất',
+    'email_or_account' => 'Email hoặc Tài khoản',
+    'username' => 'Tên người dùng (chỉ chữ và số và dấu gạch dưới)',
+    'account' => 'Tài khoản',
+    'password_field' => 'Mật khẩu',
+    'password_confirmation' => 'Xác nhận mật khẩu',
+    'forgot_password' => 'Quên mật khẩu',
+    'activate_account' => 'Kích hoạt tài khoản',
+    'home' => 'Trang chủ',
+    'activation_message' => 'Nhập email bạn đã đăng ký để kích hoạt tài khoản (nếu bạn đã đăng ký nhưng chưa nhận được email kích hoạt)',
+    'enter_email' => 'Nhập địa chỉ email',
+    'email' => 'E-mail',
+    'remember_me' => 'Nhớ tôi',
+    'submit' => 'Nộp',
+    'back_to_login' => 'Quay lại Đăng nhập',
+    'reset_password' => 'Đặt lại mật khẩu',
+    'email_reset_password' => 'Email nhận mật khẩu',
+];

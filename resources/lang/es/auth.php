@@ -1,0 +1,28 @@
+<?php
+
+return [
+    'failed' => 'Estas credenciales no coinciden con nuestros registros.',
+    'password' => 'La contraseña proporcionada es incorrecta.',
+    'throttle' => 'Demasiados intentos de inicio de sesión. ',
+    'login' => 'Acceso',
+    'login_with' => 'Inicia sesión con',
+    'register' => 'Registro',
+    'register_with' => 'Regístrese con',
+    'logout' => 'Cerrar sesión',
+    'email_or_account' => 'Correo electrónico o cuenta',
+    'username' => 'Nombre de usuario (solo alfanumérico y subrayado)',
+    'account' => 'Cuenta',
+    'password_field' => 'Contraseña',
+    'password_confirmation' => 'confirmar Contraseña',
+    'forgot_password' => 'Has olvidado tu contraseña',
+    'activate_account' => 'Activar cuenta',
+    'home' => 'Hogar',
+    'activation_message' => 'Ingrese su correo electrónico registrado para activar la cuenta (si se registró pero no ha recibido el correo electrónico de activación)',
+    'enter_email' => 'Introduzca la dirección de correo electrónico',
+    'email' => 'Correo electrónico',
+    'remember_me' => 'Acuérdate de mí',
+    'submit' => 'Entregar',
+    'back_to_login' => 'Volver a iniciar sesión',
+    'reset_password' => 'Restablecer contraseña',
+    'email_reset_password' => 'Correo electrónico para recibir contraseña',
+];

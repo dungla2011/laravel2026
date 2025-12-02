@@ -1,0 +1,16 @@
+{
+	"source" : {
+		"host" : "12.0.0.54",
+		"user" : "for_sync",
+		"password" : "Qaz@12abc_000",
+		"database" : "",
+        "port" : "3306"
+	},
+	"dest" : {
+		"host" : "12.0.0.54",
+		"user" : "for_sync",
+		"password" : "Qaz@12abc_000",
+		"database" : "demo6.mytree.vn",
+        "port" : "3306"
+	}
+}

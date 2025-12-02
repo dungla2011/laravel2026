@@ -1,0 +1,705 @@
+<?php
+use Illuminate\Support\Facades\Cache;
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+if (filemtime(public_path() . "/tool1/lad_tree_vn/clsTreeTopDown_src_glx.001.js") > filemtime(public_path() . "/tool1/lad_tree_vn/tree_glx01.js")) {
+    die("Error: need update code!");
+}
+if (isset($_GET['pid']) && !$_GET['pid']) {
+    bl3("Không tồn tại cây!", "<a href='/my-tree'> Trở lại</a>");
+    return;
+}
+
+?>
+    <!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+
+    <title data-code-pos="ppp1676255062649">
+        <?php
+
+        $title = 'Tạo cây tổ chức, cây gia phả, phả hệ';
+        $domain = strtoupper(\LadLib\Common\UrlHelper1::getDomainHostName());
+        if (isset($_GET['pid'])) {
+            $pid = $_GET['pid'];
+            if (!is_numeric($pid))
+                $pid = qqgetIdFromRand_($pid);
+            if (is_numeric($pid) && $gp = \App\Models\GiaPha::find($pid)) {
+
+                $title = "Cây: $gp->name | " . \LadLib\Common\UrlHelper1::getDomainHostName();
+                if ($treeInfo = \App\Models\MyTreeInfo::where(['tree_id' => $pid])->first()) {
+                    if ($treeInfo->user_id != $gp->user_id) {
+
+                    }
+                    $meta = \App\Models\MyTreeInfo::getMetaObj();
+                    $mFieldEdit = $meta->getShowEditAllowFieldList(DEF_GID_ROLE_MEMBER);
+                    if ($treeInfo instanceof \App\Models\ModelGlxBase) ;
+                    foreach ($treeInfo->getAttributes() AS $field => $val) {
+                        if ($field != 'id' && !in_array($field, $mFieldEdit))
+                            unset($treeInfo->$field);
+                    }
+                    $title = $treeInfo->name . " - " . $treeInfo->title . " - " . $domain;
+                    $title = str_replace("-  -", '-', $title);
+                } else {
+                    $treeInfo = \App\Models\MyTreeInfo::create(['name' => $gp->name, 'user_id' => $gp->user_id, 'title' => '', 'tree_id' => $gp->id]);
+
+                }
+            }
+        }
+        echo $title;
+        ?>
+    </title>
+
+    <?php
+    //
+    //    echo "<pre> >>> " . __FILE__ . "(" . __LINE__ . ")<br/>";
+    //    print_r($treeInfo->toArray());
+    //    echo "</pre>";
+    ?>
+
+    <meta name="description" content="Cây tổ chức, cây gia phả : <?php echo $title ?> ">
+    <meta name="keywords" content="MyTree, phần mềm tạo phả hệ online, gia phả online, sơ đồ tổ chức online">
+    <meta property="og:image" content="/images/logo/mytree1-square.png?v=1">
+    <meta property="og:title" content="<?php echo $title?>">
+    <meta property="og:description" content="Cây tổ chức, cây gia phả : <?php echo $title ?> ">
+
+    <link rel="stylesheet" href="/assert/library_ex/jquery-ui/jquery-ui.css">
+    <link rel="stylesheet" href="/vendor/bootstrap4/bootstrap.min.css">
+    <link rel="stylesheet" href="/assert/library_ex/js/jquery-context-menu2/jquery.contextMenu.css">
+    <link rel="stylesheet"
+          href="/tool1/lad_tree_vn/clsTreeTopDown.css?v=<?php echo filemtime(public_path() . "/tool1/lad_tree_vn/clsTreeTopDown.css") ?>">
+    <link rel="stylesheet" href="/vendor/font-awesome/font-awesome4.css">
+
+    <link rel="stylesheet" href="/vendor/lad_tree/clsTreeJs-v1.css?v=<?php echo filemtime(public_path().'/vendor/lad_tree/clsTreeJs-v1.css'); ?>">
+    <link rel="stylesheet" href="/vendor/toastr/toastr.min.css">
+
+
+    <script src="/vendor/jquery/jquery-3.6.0.js"></script>
+    <script src="/vendor/jquery/jquery-ui-1.13.2.js"></script>
+    <script src="/vendor/popper.min.js"></script>
+    <script src="/vendor/bootstrap4/bootstrap.min.js"></script>
+    <script src="/assert/library_ex/js/domti.js"></script>
+    <script src="/assert/library_ex/js/fsv.js"></script>
+    <script src="/assert/library_ex/js/svgpz.js"></script>
+    <script src="/assert/library_ex/js/hmer.js"></script>
+    <script src="/vendor/lazysizes.min.js"></script>
+    <script src="/vendor/galaxy/lib_base.js?v=1"></script>
+    <script src="/assert/library_ex/js/jquery-context-menu2/jquery.contextMenu.js"></script>
+    <script src="/assert/library_ex/js/jquery-image-upload-resizer.js"></script>
+    <script src="/assert/library_ex/jquery-ui/jquery.ui.position.js"></script>
+
+    <script src="/vendor/toastr/toastr.min.js"></script>
+    <script src="/admins/toast-show.js"></script>
+
+    {{--    <script src="/assert/js/circletype.min.js"></script>--}}
+
+    {{--    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>--}}
+
+    <?php
+    if(\App\Models\User::isSupperAdmin()){
+    ?>
+    <script
+        src="/tool1/lad_tree_vn/clsTreeTopDown_src_glx.001.js?v=<?php echo filemtime(public_path() . "/tool1/lad_tree_vn/clsTreeTopDown_src_glx.001.js") ?>"></script>
+    <?php
+    }else{
+    ?>
+    <script
+        src="/tool1/lad_tree_vn/tree_glx01.js?v=<?php echo filemtime(public_path() . "/tool1/lad_tree_vn/tree_glx01.js") ?>"></script>
+    <?php
+    }
+    ?>
+</head>
+
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Z364LBZ1KY"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-Z364LBZ1KY');
+</script>
+
+<body>
+<div class="menu_div">
+
+    <a href="/">
+        {{--        <img class="svg_home" style="width: 20px" src="/assert/Ionicons/src/home.svg" alt="">--}}
+        <img src="/images/logo/mytree1.png" style="height: 25px; padding-bottom: 2px; margin-right: 10px" alt="">
+        {{--        Trang Chủ--}}
+    </a>
+    <div style="float: right">
+        <a href="/my-tree" style="margin-right: 10px">
+            <img class="svg_home" style="width: 20px; " src="/assert/Ionicons/src/tree_9.svg" alt="">
+            Cây của tôi
+        </a>
+
+        <?php
+        $email = getUserEmailCurrent_();
+        if($email){
+        ?>
+        <a title="<?php echo $email ?>" href="/member" title="Tài khoản" style="">
+            <img class="svg_home" style="width: 22px" src="/assert/seekicon.com/user_1.svg" alt="">
+            <?php
+            echo substr(getUserEmailCurrent_(), 0, 10) . '..';
+            ?>
+        </a>
+
+        <?php
+        }else{
+        ?>
+
+        <script>//window.location = "/login";</script>
+
+        <a href="/login" title="Login" style="float: right">
+            <img class="svg_home" style="width: 22px" src="/assert/Ionicons/src/log-in.svg" alt=""> Đăng nhập
+        </a>
+        <?php
+        }
+        ?>
+    </div>
+</div>
+
+
+<div class="main_cont">
+
+
+    <?php
+    $uid = getUserIdCurrent_();
+
+    if (isset($_GET['pid'])) {
+        $pid = $_GET['pid'];
+//        echo "\nID = $pid";
+
+        $pid = $_GET['pid'];
+        $pid0 = qqgetIdFromRand_($pid);
+
+        if (!$objTree = \App\Models\GiaPha::find($pid0)) {
+            bl("Không tồn tại cây!", null, 100);
+            goto _END;
+        }
+
+    } else {
+        if ($email)
+            require_once resource_path() . "/views/giapha/list_tree.php";
+        else {
+            echo "<div data-code-pos='ppp1676969284387' class='container'> <div class='jumbotron text-center ' style='margin-top: 30px'><a style='text-decoration: none' href='/login'><h2>Đăng nhập để tạo cây của bạn</h2></a>";
+            echo "</div>
+<div style='padding: 30px 10px; border: 1px solid #eee; border-radius: 5px'>
+<a style='text-decoration: none' href='/my-tree?pid=js156958'> <h2 style='text-align: center'> Cây Mẫu </h2> <img style='width: 100%' src='/images/mytree/template1.png' alt=''> </a>
+</div>
+</div>";
+        }
+    }
+    ?>
+
+    <?php
+    if (isset($pid)) {
+        require_once resource_path() . "/views/giapha/html__tree.php";
+    }
+    ?>
+
+    <div id="app_gp" style="">
+        <div id="check_error_node" style="display: none"></div>
+        <div id="info_svg" style="display: none; float: right; color: red"></div>
+
+        <svg id="svg_grid" class="root_svg" xmlns="http://www.w3.org/2000/svg" style="">
+            <defs>
+                <filter id="whiteOutlineEffect" color-interpolation-filters="sRGB">
+                    <feMorphology in="SourceAlpha" result="MORPH" operator="dilate" radius="1"/>
+                    <feColorMatrix in="MORPH" result="WHITENED" type="matrix"
+                                   values="-1 0 0 0 1, 0 -1 0 0 1, 0 0 -1 0 1, 0 0 0 1 0"/>
+                    <feMerge>
+                        <feMergeNode in="WHITENED"/>
+                        <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                </filter>
+            </defs>
+        </svg>
+
+        <div id="debug_svg" style="display: none; font-size: smaller; color: #eee"></div>
+    </div>
+
+    <?php
+    _END:
+    ?>
+</div>
+
+<script>
+    let disableApiTreeText = 0
+</script>
+
+<?php
+$params = request()->all();
+//
+//echo "<pre> >>> " . __FILE__ . "(" . __LINE__ . ")<br/>";
+//print_r($params);
+//echo "</pre>";
+
+if (isset($_GET['pid']) && $_GET['pid']) {
+
+    if (!$objTree) {
+        return;
+    }
+
+    $model = new \App\Models\GiaPha();
+    $objMeta = \App\Models\GiaPha::getMetaObj();
+    if($objMeta instanceof \App\Models\GiaPha_Meta);
+    $objPr = new \App\Components\clsParamRequestEx();
+    $objPr->set_gid = 3;
+
+    //Không cần setUID
+    //Phải set chứ nhỉ?
+    if ($objTree)
+        $objPr->need_set_uid = $objTree->user_id;
+
+//
+//    echo "<pre> >>> " . __FILE__ . "(" . __LINE__ . ")<br/>";
+//    print_r($objPr->need_set_uid);
+//    echo "</pre>";
+
+//    $objPr->need_set_uid = null;
+    $objPr->module = 'member';
+    $objPr->ignore_check_userid = 1;
+//$pr = ['pid' => $pid, 'include_brother' => 1, 'get_all' => 1, 'order_by' => 'orders', 'order_type' => 'DESC'];
+//if(isSupperAdmin__())
+    {
+        //Lấy thêm vợ chồng
+        $pr = ['pid' => $pid, 'get_tree_all' => 1, 'order_by' => 'orders', 'order_type' => 'DESC'];
+    }
+
+
+    if (isSupperAdmin__()) {
+//    echo "<br/>\n xxx3";
+    }
+
+    try {
+
+        $t1 = microtime(1);
+
+//    if(isSupperAdmin__()){
+//        $mret = [];
+//    }else
+
+        $keyCache = "index_public_my_tree." . $_GET['pid'];
+        $keyCache = $objMeta->getCacheKeyPublic($_GET['pid']);
+
+        //nếu cây này thuộc về user:
+//    if ($objTree->user_id == auth()->id())
+//    //if(isset($_POST['clear_cache_this_url']))
+//    {
+        if (isSupperAdmin__()) {
+//            Cache::forget($keyCache);
+        }
+//    }
+//Cache::forget($key);
+//        Cache::flush();
+        if (Cache::has($keyCache) && $mretAll = Cache::get($keyCache)) {
+            echo "<!--GetCache-->";
+        } else {
+            echo "<!--NotGetCache-->";
+            $mret = $model->queryIndexTree($pr, $objPr);
+//        Cache::put($key, $mret, 360 * 60);
+
+
+//    $mret = $model->queryIndexTree($pr, $objPr);
+
+            if (isSupperAdmin__()) {
+//
+//       echo "<pre> xxx >>> " . __FILE__ . "(" . __LINE__ . ")<br/>";
+//       print_r($mret);
+//       echo "</pre>";
+            }
+
+
+//echo "<br/>\n DTime = " . (microtime(1) - $t1);
+
+
+            if ($mret && isset($mret[0]) && $mret[0] && is_array($mret[0])) {
+
+                $mLink = [];
+
+                foreach ($mret[0] AS $key => $obj) {
+                    if ($mret[0][$key]['image_list'] && is_numeric($mret[0][$key]['image_list'])) {
+                        if ($fileimg = \App\Models\FileUpload::find($mret[0][$key]['image_list'])) {
+                            if ($fileimg instanceof \App\Models\FileUpload) ;
+                            $linkCloud = $fileimg->getCloudLinkImage();
+                            $mret[0][$key]['_image_list'] = $linkCloud;
+                        }
+                    }
+
+                    if (isset($mret[0][$key]["link_remote"]) && $mret[0][$key]["link_remote"]) {
+                        $pidLinkStr = $mret[0][$key]["link_remote"];
+                        $pidLinkStr = trim($pidLinkStr, ',');
+                        $pidLinkStr = str_replace(' ', '', $pidLinkStr);
+                        $mPidLink = explode(",", $pidLinkStr);
+                        foreach ($mPidLink AS $pidLink)
+                        if ($pidLink && !is_numeric($pidLink))
+                        if (\App\Models\GiaPha::find(qqgetIdFromRand_($pidLink))) {
+                            $pidSet = $mret[0][$key]['id'];
+                            //Chuyển sang vợ chồng nếu có
+                            if ($mret[0][$key]["married_with"]) {
+                                $pidSet = $mret[0][$key]["married_with"];
+                            }
+                            //            $pid1 = qqgetIdFromRand_('rg047274');
+                            $pr2 = ['pid' => $pidLink, 'include_brother' => 0, 'get_tree_all' => 1, 'order_by' => 'orders', 'order_type' => 'DESC'];
+                            $mret1 = $model->queryIndexTree($pr2, $objPr);
+                            if ($mret1 && isset($mret1[0]) && $mret1[0]) {
+
+                                $loiTrungLap = 0;
+                                foreach ($mret1[0] AS $k1 => $v1) {
+
+                                    //Kiểm tra lại trên link xem có trùng lặp gì với id của gốc ko
+                                    foreach ($mret[0] AS $kx => $tmp1) {
+                                        if ($mret1[0][$k1]['id'] == $mret[0][$kx]['id']) {
+                                            $loiTrungLap = 1;
+                                            break;
+                                        }
+                                    }
+                                    if ($loiTrungLap)
+                                        break;
+
+                                    if ($mret1[0][$k1]['image_list'] && is_numeric($mret1[0][$k1]['image_list'])) {
+                                        if ($fileimg = \App\Models\FileUpload::find($mret1[0][$k1]['image_list'])) {
+                                            if ($fileimg instanceof \App\Models\FileUpload) ;
+                                            $linkCloud = $fileimg->getCloudLinkImage();
+                                            $mret1[0][$k1]['_image_list'] = $linkCloud;
+                                        }
+                                    }
+
+                                    if ($mret1[0][$k1]['parent_id'] == 0)
+                                        $mret1[0][$k1]['parent_id'] = $pidSet;
+                                    $mret1[0][$k1]['belong_other'] = 1;
+
+                                    //Không cho link remote tiếp
+                                    if ($mret1[0][$k1]['link_remote'])
+                                        $mret1[0][$k1]['link_remote'] = '';
+
+                                }
+
+                                if (!$loiTrungLap)
+                                    $mLink[] = $mret1[0];
+
+                                //
+                                //                        echo "<pre> >>> " . __FILE__ . "(" . __LINE__ . ")<br/>";
+                                //                        print_r($mLink);
+                                //                        echo "</pre>";
+                            }
+                        }
+                    }
+                }
+                if (isset($mLink) && $mLink) {
+                    foreach ($mLink AS $mX) {
+                        $mret[0] = array_merge($mret[0], $mX);
+                    }
+//        $mret[0] = array_merge($mret[0], $mLink[0]);
+//
+//        echo "<pre> >>> " . __FILE__ . "(" . __LINE__ . ")<br/>";
+//        print_r($mret[0]);
+//        echo "</pre>";
+                }
+
+
+                Cache::put($keyCache, $mret[0], 360 * 60);
+                $mretAll = $mret[0];
+            }
+        }
+    } catch (Throwable $e) { // For PHP 7
+        bl("Có lỗi: " . $e->getMessage() . "<br>" . substr($e->getTraceAsString(), 0, 1000) . "....");
+    } catch (Exception $e) {
+        bl("Có lỗi2: " . $e->getMessage() . "<br>" . substr($e->getTraceAsString(), 0, 1000) . "....");
+    }
+}
+
+if(isset($mretAll) && isset($objTree)){
+
+    $keyCacheCount = $objMeta->getCacheKeyCountTree($_GET['pid']);
+    Cache::put($keyCacheCount, count($mretAll), 30 * 24 * 60 * 60);
+
+?>
+<script>
+    let dataStaticTree = <?php echo json_encode($mretAll) ?>;
+
+    <?php
+    if(isSupperAdmin__()){
+    ?>
+    //        dataStaticTree = [{"id":1,"name":1,"parent_id": 'xk991519',"spouse":null,"child_of_spouse":null},{"id":2,"name":2,"parent_id": 1,"spouse":null,"child_of_spouse":null},{"id":3,"name":3,"parent_id":2,"spouse":null,"child_of_spouse":null},{"id":4,"name":4,"parent_id":2,"spouse":null,"child_of_spouse":null},{"id":5,"name":5,"parent_id":4,"spouse":null,"child_of_spouse":null},{"id":6,"name":6,"parent_id":5,"spouse":null,"child_of_spouse":null},{"id":7,"name":7,"parent_id":6,"spouse":null,"child_of_spouse":null},{"id":8,"name":8,"parent_id":6,"spouse":null,"child_of_spouse":null},{"id":9,"name":9,"parent_id":5,"spouse":null,"child_of_spouse":null},{"id":10,"name":10,"parent_id":9,"spouse":null,"child_of_spouse":null},{"id":11,"name":11,"parent_id":9,"spouse":null,"child_of_spouse":null},{"id":12,"name":12,"parent_id":9,"spouse":null,"child_of_spouse":null},{"id":13,"name":13,"parent_id":5,"spouse":null,"child_of_spouse":null},{"id":14,"name":14,"parent_id":13,"spouse":null,"child_of_spouse":null},{"id":15,"name":15,"parent_id":13,"spouse":null,"child_of_spouse":null},{"id":16,"name":16,"parent_id":4,"spouse":null,"child_of_spouse":null},{"id":17,"name":17,"parent_id":16,"spouse":null,"child_of_spouse":null},{"id":18,"name":18,"parent_id":17,"spouse":null,"child_of_spouse":null},{"id":19,"name":19,"parent_id":16,"spouse":null,"child_of_spouse":null},{"id":20,"name":20,"parent_id":19,"spouse":null,"child_of_spouse":null},{"id":21,"name":21,"parent_id":4,"spouse":null,"child_of_spouse":null},{"id":22,"name":22,"parent_id":21,"spouse":null,"child_of_spouse":null},{"id":23,"name":23,"parent_id":22,"spouse":null,"child_of_spouse":null},{"id":24,"name":24,"parent_id":22,"spouse":null,"child_of_spouse":null},{"id":25,"name":25,"parent_id":22,"spouse":null,"child_of_spouse":null},{"id":26,"name":26,"parent_id":2,"spouse":null,"child_of_spouse":null},{"id":27,"name":27,"parent_id":0,"spouse":null,"child_of_spouse":null},{"id":28,"name":28,"parent_id":27,"spouse":null,"child_of_spouse":null},{"id":29,"name":29,"parent_id":28,"spouse":null,"child_of_spouse":null},{"id":30,"name":30,"parent_id":29,"spouse":null,"child_of_spouse":null},{"id":31,"name":31,"parent_id":30,"spouse":null,"child_of_spouse":null},{"id":32,"name":32,"parent_id":30,"spouse":null,"child_of_spouse":null},{"id":33,"name":33,"parent_id":28,"spouse":null,"child_of_spouse":null},{"id":34,"name":34,"parent_id":33,"spouse":null,"child_of_spouse":null},{"id":35,"name":35,"parent_id":34,"spouse":null,"child_of_spouse":null},{"id":36,"name":36,"parent_id":33,"spouse":null,"child_of_spouse":null},{"id":37,"name":37,"parent_id":36,"spouse":null,"child_of_spouse":null},{"id":38,"name":38,"parent_id":36,"spouse":null,"child_of_spouse":null},{"id":39,"name":39,"parent_id":33,"spouse":null,"child_of_spouse":null},{"id":40,"name":40,"parent_id":39,"spouse":null,"child_of_spouse":null}]
+    <?php
+    }
+    ?>
+
+    <?php
+
+    if ($objTree->user_id != auth()->id())
+        echo 'disableApiTreeText = "Cây Không thuộc Tài khoản của bạn, nên không thể chỉnh sửa!"';
+    ?>
+</script>
+<?php
+}
+?>
+
+<script>
+    <?php
+
+
+
+    ?>
+    let domainUrl = '<?php
+        $domainUrl = \LadLib\Common\UrlHelper1::getUrlWithDomainOnly()
+        ?>'
+    let tree1 = new clsTreeTopDownCtrl()
+    let url
+    tree1.apiAdd = domainUrl + '/api/member-tree-mng/add'
+    tree1.apiUpdate = domainUrl + '/api/member-tree-mng/update'
+    tree1.apiDelete = domainUrl + '/api/member-tree-mng/delete'
+    tree1.apiUploadImage = domainUrl + '/api/member-file/upload'
+    tree1.apiBearToken = jctool.getCookie('_tglx863516839');
+    <?php
+        $setUrl = $domainUrl . "/api/member-tree-mng/tree?pid=0&get_all=1&order_by=orders&order_type=DESC";
+        if (isset($params['url1'])) {
+            $setUrl = 'https://giapha.galaxycloud.vn/train/_learn_html_css_js/svg%20train/get-data-from-giapha.php';
+        } else {
+            ?>
+
+    <?php
+        }
+        if (isset($_GET['pid'])){
+        $pid0 = $pid = $_GET['pid'];
+        if (isset($_GET['url1'])) {
+            $pid = qqgetIdFromRand_($pid);
+        }
+
+        //if($uid == 1 || $uid == 19)
+        {
+        ?>
+        tree1.optEnableMoveBtn = 1
+    <?php
+        }
+        ?>
+
+
+        <?php
+        if(isset($params['level']) && $params['level'] && is_numeric($params['level']))
+        {
+        ?>
+        tree1.optMaxRowLevelLimitShow =    <?php echo $params['level'] ?>
+        <?php
+        }
+        ?>
+
+        //111
+        tree1.optDisableApiTreeText = disableApiTreeText;
+    <?php
+        if(isset($treeInfo) && $treeInfo){
+        $imgInfo = \App\Components\Helper1::imageShow1($treeInfo, $treeInfo->image_list, 'image_list', 1);
+        ?>
+        tree1.objBannerTop = <?php echo json_encode($treeInfo) ?>;
+    if (!tree1.objBannerTop || tree1.objBannerTop.length == 0)
+        tree1.initTopBannerEmpty();
+
+    tree1.objBannerTop._image_list = '<?php if ($imgInfo) echo $imgInfo[0]->thumb ?>'
+    <?php
+        /**
+         *     {{--tree1.objBannerTop.id = '<?php echo $treeInfo->id ?>'--}}
+        {{--tree1.objBannerTop.name = '<?php echo $treeInfo->name ?>'--}}
+        {{--tree1.objBannerTop.title = '<?php echo $treeInfo->title ?>'--}}
+        {{--tree1.objBannerTop.image_list = '<?php if ($imgInfo) echo $treeInfo->image_list ?>'--}}
+         */
+
+        if(isSupperAdmin__()){
+        ?>
+        tree1.optDebugOpt = 11122
+    // tree1.optShowDebugIdAndOrders = 1
+    <?php
+    }
+    }
+
+    $params = $_GET;
+    if (!isset($pid))
+        $pid = 0;
+    $setUrl = \LadLib\Common\UrlHelper1::setUrlParam($setUrl, 'pid', $pid);
+    $setUrl = \LadLib\Common\UrlHelper1::setUrlParam($setUrl, 'include_brother', 1);
+    ?>
+    <?php
+    if(isset($params['tester'])){
+    ?>
+    $(function () {
+        clsTreeTopDownCtrl.tester1()
+    })
+    <?php
+    }
+    else {
+    ?>
+
+    $(function () {
+        tree1.widthCell = 80
+        tree1.heightCell = 132
+        tree1.spaceBetweenCellX = 20
+        tree1.spaceBetweenCellY = 50
+        tree1.idSvgSelector = 'svg_grid'
+        tree1.optShowMarried = 1
+        tree1.optShowOnlyMan = 0
+        tree1.optDisableApiForTestLocalOnly = 0
+        tree1.apiIndex = url
+        tree1.optFitViewPortToWindow = 1
+
+        <?php
+        if(isSupperAdmin__()){
+        ?>
+        // tree1.optMaxRowLevelLimitShow = 0
+        <?php
+        }
+
+
+        ?>
+        // console.log(" URLSET = ", tree1.apiIndex);
+
+        if (tree1.optDisableApiForTestLocalOnly) {
+            url = "data1.php"
+            if (jctool.getUrlParam('url1'))
+                url = "data2.php"
+        }
+
+        if (dataStaticTree) {
+            console.log(" dataStaticTree1 ", typeof dataStaticTree);
+            console.log(" dataStaticTree ", dataStaticTree);
+            tree1.dataAll = dataStaticTree
+            // tree1.dataPart = JSON.parse(JSON.stringify(dataStaticTree))
+            // tree1.dataPart = dataStaticTree.slice();
+            tree1.dataPart = dataStaticTree
+
+            tree1.setPid = '<?php echo $pid ?>';
+            // jQuery('.loader1').show();
+
+            if (tree1.dataPart && tree1.dataPart.length > 0) {
+                tree1.drawTreeSvg()
+                tree1.setZoomAble()
+
+                // if (tree1.dataPart.length > 10)
+                //     tree1.fit()
+                tree1.moveCenterSvgFirstLoad()
+            }
+            // jQuery('.loader1').hide();
+        } else if (0) {
+            <?php
+            if(0){
+            ?>
+            jQuery('.loader1').show();
+            $.ajax({
+                url: tree1.apiIndex,
+                type: 'GET',
+                beforeSend: function (xhr) {
+                    // xhr.setRequestHeader('Authorization', 'Bearer 123456');
+                },
+                data: {},
+                success: function (data, status) {
+                    jQuery('.loader1').hide();
+                    // console.log(" DataGet = ", data);
+
+                    let dataGet
+
+                    if (data.payload)
+                        dataGet = data.payload
+                    else {
+                        dataGet = JSON.parse(data)
+                        if (dataGet.payload)
+                            dataGet = dataGet.payload
+                    }
+                    tree1.dataAll = [...dataGet]
+                    tree1.dataPart = dataGet
+                    <?php
+                        if(isset($_GET['debug1'])){
+                        ?>
+                        tree1.optShowDebugGrid = 1
+                    <?php
+                        }
+                        if($pid){
+                        ?>
+                        tree1.setPid = '<?php echo $pid ?>';
+                    <?php
+                    }
+                    ?>
+                    tree1.drawTreeSvg()
+                    tree1.setZoomAble()
+                    // if (tree1.dataPart.length > 10)
+                    //     tree1.fit()
+
+                    tree1.moveCenterSvgFirstLoad()
+
+                    // }
+
+                },
+                error: function (request, status, error) {
+                    jQuery('.loader1').hide();
+
+                    alert("Error: " + error + "\n" + request.responseText);
+                    console.log(" Error get api....", error);
+                },
+            });
+
+            <?php
+            }
+            ?>
+        }
+    })
+    <?php
+    }
+    }
+    ?>
+</script>
+
+<script>
+
+
+    $(function () {
+
+
+    })
+
+
+</script>
+
+
+<script>
+
+
+    <?php
+    //Đưa đoạn này vào là tải ảnh sẽ lỗi
+    //    var app = new Vue({
+    //        el: '#app_gp',
+    //        data: {
+    //        }
+    //    })
+    ?>
+</script>
+<form style='display: none; width: 90%; height: 20px' method='post' action='/tool1/mytree/export_excel.php'>
+    <textarea name='data' id="data_to_export_excel" style='display: none;'></textarea>
+    <button style='display: none;' type='submit' id='export_to_ecxel'> ExportToExcel</button>
+    ";
+</form>
+
+<?php
+if (isset($pid)) {
+    require_once resource_path() . "/views/giapha/html__dialog.php";
+}
+
+if (isSupperAdmin__()) {
+
+}
+
+?>
+
+<div class="loader1"></div>
+
+<script></script>
+</body>
+</html>
+

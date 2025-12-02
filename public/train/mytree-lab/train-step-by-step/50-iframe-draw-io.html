@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Draw.io Integration</title>
+    <style>
+        #drawio-frame {
+            width: 100%;
+            /*height: 600px;*/
+            border: 1px solid #ccc;
+        }
+        .controls {
+            /*margin: 10px 0;*/
+        }
+        button {
+            margin: 5px;
+            padding: 8px 15px;
+        }
+        *{
+            margin: 0;
+            padding: 0;
+            border: 0;
+            font-size: 100%;
+            box-sizing: border-box;
+
+        }
+    </style>
+</head>
+<body>
+<div class="controls">
+    <button onclick="loadDiagram()">Load Diagram</button>
+    <button onclick="saveDiagram()">Save Diagram</button>
+    <button onclick="addNode()">Add Node</button>
+    <button onclick="zoomIn()">Zoom In</button>
+    <button onclick="zoomOut()">Zoom Out</button>
+    <button onclick="test1()">Test1</button>
+</div>
+
+<!-- Nhúng draw.io trong iframe -->
+<!--<iframe id="drawio-frame" src="https://draw.mytree.vn/?url=https://mytree.vn/tool/testing/draw.io.get_file.php"></iframe>-->
+<iframe id="drawio-frame" src="https://draw.mytree.vn/?url=https://mytree.vn/tool/testing/draw.io.get_file.php#Uhttps://mytree.vn/tool/testing/draw.io.get_file.php#%7B%22pageId%22%3A%22family-tree%22%7D"></iframe>
+<script>
+    window.addEventListener('resize', resizeIframe);
+
+    function resizeIframe() {
+        console.log(" Resize ....");
+        const controlsHeight = document.querySelector('.controls').offsetHeight;
+        const windowHeight = window.innerHeight;
+        const iframe = document.getElementById('drawio-frame');
+        iframe.style.height = (windowHeight - controlsHeight - 10) + 'px';
+    }
+
+    // Initial resize on page load
+    resizeIframe();
+</script>
+
+<script>
+    let drawioFrame = document.getElementById('drawio-frame');
+    let graph = null;
+    let editor = null;
+
+    // Lắng nghe message từ iframe draw.io
+    window.addEventListener('message', function(evt) {
+        if (evt.data.length > 0) {
+            let msg = JSON.parse(evt.data);
+
+            // Xử lý các event từ draw.io
+            if (msg.event === 'init') {
+                // Draw.io đã sẵn sàng
+                console.log('Draw.io initialized');
+                // Có thể load diagram tại đây
+            }
+            else if (msg.event === 'save') {
+                // Nhận data khi save
+                console.log('Diagram saved:', msg.xml);
+            }
+            else if (msg.event === 'export') {
+                // Nhận data khi export
+                console.log('Diagram exported:', msg.data);
+            }
+        }
+    });
+
+    function test1(){
+        // Lấy graph từ iframe draw.io
+        const drawioFrame = document.getElementById('drawio-frame');;
+        const graph = drawioFrame.contentWindow.editorUi.editor.graph;
+
+// Thay đổi style cho tất cả các node có class family-node
+        function updateFamilyNodes(styleProperties) {
+            const cells = graph.getModel().cells;
+            for (let id in cells) {
+                const cell = cells[id];
+                if (cell.style && cell.style.includes('styleClass=family-node')) {
+                    const style = graph.getCellStyle(cell);
+                    for (let prop in styleProperties) {
+                        style[prop] = styleProperties[prop];
+                    }
+                    graph.getModel().setStyle(cell, graph.cellRenderer.writeStyle(style));
+                }
+            }
+        }
+
+// Thay đổi style cho các node theo giới tính
+        function updateNodesByGender(gender, styleProperties) {
+            const cells = graph.getModel().cells;
+            for (let id in cells) {
+                const cell = cells[id];
+                if (cell.style && cell.style.includes(`gender-${gender}`)) {
+                    const style = graph.getCellStyle(cell);
+                    for (let prop in styleProperties) {
+                        style[prop] = styleProperties[prop];
+                    }
+                    graph.getModel().setStyle(cell, graph.cellRenderer.writeStyle(style));
+                }
+            }
+        }
+
+// Thay đổi style cho tất cả các đường nối cha-con
+        function updateParentChildEdges(styleProperties) {
+            const cells = graph.getModel().cells;
+            for (let id in cells) {
+                const cell = cells[id];
+                if (cell.style && cell.style.includes('styleClass=parent-child-edge')) {
+                    const style = graph.getCellStyle(cell);
+                    for (let prop in styleProperties) {
+                        style[prop] = styleProperties[prop];
+                    }
+                    graph.getModel().setStyle(cell, graph.cellRenderer.writeStyle(style));
+                }
+            }
+        }
+
+// Ví dụ sử dụng:
+        updateFamilyNodes({
+            fillColor: '#e6f3ff',
+            strokeColor: '#0066cc',
+            strokeWidth: 2
+        });
+
+        updateNodesByGender(1, {
+            fillColor: '#cce5ff'  // Nam
+        });
+
+        updateNodesByGender(2, {
+            fillColor: '#ffcce5'  // Nữ
+        });
+
+        updateParentChildEdges({
+            strokeColor: '#006600',
+            strokeWidth: 2
+        });
+    }
+
+    function loadDiagram() {
+        // Load diagram từ XML
+        let xml = '<your-diagram-xml>'; // XML từ bước export trước
+        drawioFrame.contentWindow.postMessage(JSON.stringify({
+            action: 'load',
+            xml: xml
+        }), '*');
+    }
+
+    function saveDiagram() {
+        // Yêu cầu save diagram
+        drawioFrame.contentWindow.postMessage(JSON.stringify({
+            action: 'save'
+        }), '*');
+    }
+
+    function addNode() {
+        // Thêm node mới
+        drawioFrame.contentWindow.postMessage(JSON.stringify({
+            action: 'prompt',
+            title: 'Add Node',
+            message: 'Enter node label:',
+            button: 'Add',
+            callback: function(value) {
+                if (value) {
+                    // Thêm node với label được nhập
+                    // Cần implement thêm logic để tạo node
+                }
+            }
+        }), '*');
+    }
+
+    function zoomIn() {
+        drawioFrame.contentWindow.postMessage(JSON.stringify({
+            action: 'zoom',
+            value: 1.2
+        }), '*');
+    }
+
+    function zoomOut() {
+        drawioFrame.contentWindow.postMessage(JSON.stringify({
+            action: 'zoom',
+            value: 0.8
+        }), '*');
+    }
+
+    // Function để tương tác với editor trực tiếp
+    function getEditor() {
+        try {
+            return drawioFrame.contentWindow.editorUi.editor;
+        } catch (e) {
+            console.error('Cannot access editor:', e);
+            return null;
+        }
+    }
+
+    // Function để tương tác với graph trực tiếp
+    function getGraph() {
+        const editor = getEditor();
+        return editor ? editor.graph : null;
+    }
+
+    // Ví dụ thêm một node theo cách trực tiếp
+    function addNodeDirect() {
+        const graph = getGraph();
+        if (graph) {
+            const parent = graph.getDefaultParent();
+            graph.getModel().beginUpdate();
+            try {
+                graph.insertVertex(parent, null, 'New Node', 20, 20, 80, 30);
+            } finally {
+                graph.getModel().endUpdate();
+            }
+        }
+    }
+</script>
+</body>
+</html>

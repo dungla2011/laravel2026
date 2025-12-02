@@ -1,0 +1,35 @@
+<?php
+
+return [
+
+    // Giá mặc định (K - thousands)
+    'default_prices' => [
+        'price_1core_cpu' => 50,
+        'price_1gb_ram' => 30,
+        'price_1gb_disk' => 1,
+        'price_100mbit_network' => 1000,
+        'price_1_ip' => 50,  // IP đầu tiên miễn phí, tính từ IP thứ 2
+    ],
+
+    // Default specs (khi không truyền parameter)
+    'defaults' => [
+        'n_cpu_core' => 1,
+        'n_ram_gb' => 1,
+        'n_gb_disk' => 20,
+        'n_network_mbit' => 200,
+        'n_network_dedicated_mbit' => 0,
+        'n_ip_address' => 1,
+    ],
+
+    // Network pricing
+    'network' => [
+        'free_bandwidth_mbit' => 200,  // Miễn phí tối đa 200 Mbps
+        'price_per_100mbit' => 1000,   // Giá cho mỗi 100 Mbps (tính phí khi vượt quá free_bandwidth_mbit)
+    ],
+
+    // Rounding rules
+    'rounding' => [
+        'disk_step' => 10,      // Làm tròn lên theo 10 GB
+        'network_step' => 100,  // Làm tròn lên theo 100 Mbps
+    ]
+];

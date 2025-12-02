@@ -1,0 +1,135 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "507cab9610da5419e7aa888927ff49b2",
+    "packages": [
+        {
+            "name": "sqonk/phext-context",
+            "version": "0.3.7",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sqonk/phext-context.git",
+                "reference": "d2934972721007fe345f122582d41d75dcca5812"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sqonk/phext-context/zipball/d2934972721007fe345f122582d41d75dcca5812",
+                "reference": "d2934972721007fe345f122582d41d75dcca5812",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8",
+                "sqonk/phext-core": "^1.1"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9"
+            },
+            "suggest": {
+                "ext-mysqli": "If you wish to use the MySQL transaction context manager.",
+                "ext-pdo": "If you wish to use the PDO transaction context manager.",
+                "ext-zip": "If you wish to use the ZIP context manager."
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/ContextManager.php",
+                    "src/Fascade.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Theo Howell",
+                    "email": "sqonk@sqonk.com.au"
+                }
+            ],
+            "description": "Contexts create a block level scope on a resource and automatically manage the creation and cleanup of that resource irrespective of any exceptions that arise while in use.",
+            "keywords": [
+                "context manager",
+                "file",
+                "resources",
+                "teardown"
+            ],
+            "support": {
+                "issues": "https://github.com/sqonk/phext-context/issues",
+                "source": "https://github.com/sqonk/phext-context/tree/0.3.7"
+            },
+            "time": "2022-09-29T00:25:04+00:00"
+        },
+        {
+            "name": "sqonk/phext-core",
+            "version": "1.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sqonk/phext-core.git",
+                "reference": "9c6f52418484a7e2d1a8d54642851a1583d46573"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sqonk/phext-core/zipball/9c6f52418484a7e2d1a8d54642851a1583d46573",
+                "reference": "9c6f52418484a7e2d1a8d54642851a1583d46573",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^1.9",
+                "phpunit/phpunit": "^9"
+            },
+            "suggest": {
+                "ext-iconv": "Needed for string cleaning functions.",
+                "ext-mbstring": "Needed for string cleaning functions."
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/global_functions.php"
+                ],
+                "psr-4": {
+                    "sqonk\\phext\\core\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Theo Howell",
+                    "email": "sqonk@sqonk.com.au"
+                }
+            ],
+            "description": "This is the core package to the PHEXT set of libraries for PHP. It includes general utility methods for strings, arrays, dates and numbers, each of which exist as a grouped class with the methods statically accessible.",
+            "keywords": [
+                "arrays",
+                "dates",
+                "numbers",
+                "strings",
+                "utilities"
+            ],
+            "support": {
+                "issues": "https://github.com/sqonk/phext-core/issues",
+                "source": "https://github.com/sqonk/phext-core/tree/1.2.1"
+            },
+            "time": "2022-12-17T23:46:58+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": {
+        "php": "^7.3 || ^7.4 || ^8.0"
+    },
+    "platform-dev": [],
+    "plugin-api-version": "2.0.0"
+}

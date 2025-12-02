@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Family Tree with Rectangular Nodes</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        svg {
+            border: 0px solid ;
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .node rect {
+            fill: #fff;
+            stroke: steelblue;
+            stroke-width: 3px;
+        }
+
+        .node text {
+            font: 12px sans-serif;
+            pointer-events: none;
+        }
+
+        .link {
+            fill: none;
+            stroke: #ccc;
+            stroke-width: 2px;
+        }
+
+        .spouseLink {
+            fill: none;
+            stroke: red;
+            stroke-width: 2px;
+            stroke-dasharray: 4,2;
+        }
+
+        /* Nút ở top */
+        #exportButton {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 9999;
+            padding: 8px 12px;
+            background: #4CAF50;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 4px;
+        }
+
+        #exportButton:hover {
+            background: #45a049;
+        }
+    </style>
+</head>
+<body>
+<button id="exportButton">Export to draw.io</button>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script>
+    // Hàm chuyển đổi dữ liệu phẳng thành dữ liệu phân cấp
+    function buildHierarchy(data, rootId) {
+        var nodesById = {};
+        data.forEach(function(d) {
+            nodesById[d.id] = {
+                ...d,
+                children: []
+            };
+        });
+
+        var root = null;
+        data.forEach(function(d) {
+            var node = nodesById[d.id];
+            if (d.parent_id && nodesById[d.parent_id]) {
+                nodesById[d.parent_id].children.push(node);
+            } else {
+                if (!d.parent_id || d.parent_id === null || d.parent_id === rootId) {
+                    root = node;
+                }
+            }
+        });
+
+        return root;
+    }
+
+    let data = [
+        { "id": 2598, "name": "La Thi Hoa", "parent_id": 2576, "married_with": 2597 },
+        { "id": 2597, "name": "Le Van Vinh", "parent_id": 2576, "married_with": null },
+        { "id": 2586, "name": "Le Van Thang", "parent_id": 2597, "married_with": null },
+        { "id": 2587, "name": "Pham Thi Loi", "parent_id": 2597, "married_with": 2586 },
+        { "id": 2580, "name": "Pham Thi Loi1", "parent_id": 2597, "married_with": 2586 },
+        { "id": 2599, "name": "Le Van Vui", "parent_id": 2597, "married_with": null },
+        { "id": 2602, "name": "Tran Thi Tuoi", "parent_id": 2597, "married_with": 2599 },
+        { "id": 2849, "name": "Le Thong Nhat", "parent_id": 2597, "married_with": null },
+        { "id": 2588, "name": "Le Van Dong", "parent_id": 2586, "married_with": null },
+        { "id": 5545, "name": "Le Van Mai", "parent_id": 2586, "married_with": null },
+        { "id": 2600, "name": "Le Van The", "parent_id": 2599, "married_with": null },
+        { "id": 2601, "name": "Le Thi Gioi", "parent_id": 2599, "married_with": null },
+        { "id": 2605, "name": "Le Van Ky", "parent_id": 2599, "married_with": null },
+        { "id": 2606, "name": "Le Thi Dieu", "parent_id": 2599, "married_with": null }
+    ];
+
+    var rootId = 2576;
+    var treeData = buildHierarchy(data, rootId);
+
+    var margin = {top: 20, right: 90, bottom: 30, left: 90},
+        width = 1200 - margin.left - margin.right,
+        height = 800 - margin.top - margin.bottom;
+
+    var svg = d3.select("body").append("svg")
+        .attr("preserveAspectRatio", "xMinYMin meet")
+        .attr("viewBox", [0, 0, width + margin.left + margin.right, height + margin.top + margin.bottom].join(' '));
+
+    var gZoom = svg.append("g");
+    var g = gZoom.append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    // Khởi tạo zoom behavior
+    var zoom = d3.zoom()
+        .scaleExtent([0.1, 3])
+        .on("zoom", function(event) {
+            gZoom.attr("transform", event.transform);
+        });
+
+    svg.call(zoom);
+
+    var duration = 750;
+    var treemap = d3.tree()
+        .nodeSize([80, 250])
+        .separation(function(a, b) {
+            return a.parent == b.parent ? 2 : 2.5;
+        });
+
+    var root = d3.hierarchy(treeData, d => d.children);
+    root.x0 = 0;
+    root.y0 = 0;
+
+    // Hàm convert sang draw.io XML
+    function toDrawioXML(nodes, links) {
+        var xmlParts = [];
+        xmlParts.push('<mxGraphModel><root>');
+        xmlParts.push('<mxCell id="0"/>');
+        xmlParts.push('<mxCell id="1" parent="0"/>');
+
+        nodes.forEach(node => {
+            let nodeId = 'n' + node.data.id;
+            let x = node.x;
+            let y = node.y;
+            let width = 100;
+            let height = 30;
+            let name = node.data.name;
+
+            xmlParts.push(`
+<mxCell id="${nodeId}" value="${name}" style="rectangle;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=#ffffff;" vertex="1" parent="1">
+  <mxGeometry x="${x}" y="${y}" width="${width}" height="${height}" as="geometry"/>
+</mxCell>
+            `);
+        });
+
+        links.forEach((link, i) => {
+            let edgeId = 'e' + i;
+            let sourceId = 'n' + link.source.data.id;
+            let targetId = 'n' + link.target.data.id;
+
+            xmlParts.push(`
+<mxCell id="${edgeId}" edge="1" parent="1" source="${sourceId}" target="${targetId}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;">
+  <mxGeometry relative="1" as="geometry"/>
+</mxCell>
+            `);
+        });
+
+        xmlParts.push('</root></mxGraphModel>');
+        return xmlParts.join('');
+    }
+
+    // Hàm tải về file .drawio
+    function downloadDrawioXML(xml) {
+        var blob = new Blob([xml], { type: 'text/xml;charset=utf-8' });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement("a");
+        a.href = url;
+        a.download = "family_tree.drawio";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+
+    function centerContent() {
+        var bbox = g.node().getBBox();
+        var svgWidth = window.innerWidth;
+        var svgHeight = window.innerHeight;
+
+        var x = (svgWidth / 2) - (bbox.x + bbox.width / 2);
+        var y = (svgHeight / 2) - (bbox.y + bbox.height / 2);
+
+        var initialTransform = d3.zoomIdentity.translate(x, y);
+        svg.call(zoom.transform, initialTransform);
+    }
+
+    // Initial call to center the content
+    update(root);
+    centerContent();
+
+    function update(source) {
+        var treeData = treemap(root);
+        var nodes = treeData.descendants();
+        var links = treeData.links().filter(d => !d.target.data.married_with); // Filter out nodes with married_with
+
+        positionSpouses(nodes);
+
+        var node = g.selectAll('g.node')
+            .data(nodes, d => d.data.id);
+
+        var nodeEnter = node.enter().append('g')
+            .attr('class', 'node')
+            .attr("transform", "translate(" + source.x0 + "," + source.y0 + ")")
+            .on('click', click);
+
+        nodeEnter.append('rect')
+            .attr('x', -50)
+            .attr('y', -100) // Center the rectangle vertically
+            .attr('width', 100)
+            .attr('height', 200) // Set the height to 200px
+            .attr('rx', 4)
+            .attr('ry', 4)
+            .style("fill", d => d._children ? "lightsteelblue" : "#fff");
+
+        nodeEnter.append('text')
+            .attr("dy", ".35em")
+            .attr("text-anchor", "middle")
+            .attr('y', 0) // Center the text vertically
+            .text(d => d.data.name);
+
+        var nodeUpdate = nodeEnter.merge(node);
+
+        nodeUpdate.transition()
+            .duration(duration)
+            .attr("transform", d => "translate(" + d.x + "," + d.y + ")");
+
+        nodeUpdate.select('rect')
+            .style("fill", d => d._children ? "lightsteelblue" : "#fff");
+
+        node.exit().transition()
+            .duration(duration)
+            .attr("transform", d => "translate(" + source.x + "," + source.y + ")")
+            .remove();
+
+        var link = g.selectAll('path.link')
+            .data(links, d => d.target.data.id);
+
+        var linkEnter = link.enter().insert('path', "g")
+            .attr('class', 'link')
+            .attr('d', d => {
+                var o = {x: source.x0, y: source.y0};
+                return hubline(o, o);
+            });
+
+        var linkUpdate = linkEnter.merge(link);
+
+        linkUpdate.transition()
+            .duration(duration)
+            .attr('d', d => hubline(d.source, d.target));
+
+        link.exit().transition()
+            .duration(duration)
+            .attr('d', d => {
+                var o = {x: source.x, y: source.y};
+                return hubline(o, o);
+            })
+            .remove();
+
+        nodes.forEach(d => {
+            d.x0 = d.x;
+            d.y0 = d.y;
+        });
+
+        drawSpouseLinks(nodes);
+
+        // Save nodes and links to global window object
+        window.__nodes = nodes;
+        window.__links = links;
+    }
+
+
+
+    function hubline(s, d) {
+        return `M ${s.x} ${s.y + 100}
+            L ${s.x} ${s.y + 130}
+            L ${d.x} ${s.y + 130}
+            L ${d.x} ${d.y - 100}`;
+    }
+
+    function diagonal(s, d) {
+        return `M ${s.x} ${s.y + 100}
+            C ${s.x} ${(s.y + d.y) / 2} ${d.x} ${(s.y + d.y) / 2} ${d.x} ${d.y - 100}`;
+    }
+
+    function positionSpouses(nodes) {
+        var spousePairs = [];
+        nodes.forEach(source => {
+            if (source.data.married_with) {
+                var target = nodes.find(n => n.data.id === source.data.married_with);
+                if (target) {
+                    if (!spousePairs.find(p => (p.a === source && p.b === target) || (p.a === target && p.b === source))) {
+                        spousePairs.push({a: source, b: target});
+                    }
+                }
+            }
+        });
+
+        spousePairs.forEach(pair => {
+            var a = pair.a;
+            var b = pair.b;
+
+            var midY = (a.y + b.y) / 2;
+            a.y = midY;
+            b.y = midY;
+
+            var leftNode = a.x < b.x ? a : b;
+            var rightNode = leftNode === a ? b : a;
+
+            rightNode.x = leftNode.x + 130;
+        });
+    }
+
+    function click(event, d) {
+        if (d.children) {
+            d._children = d.children;
+            d.children = null;
+        } else {
+            d.children = d._children;
+            d._children = null;
+        }
+        update(d);
+    }
+
+    function centerContent() {
+        var bbox = g.node().getBBox();
+        var svgWidth = window.innerWidth;
+        var svgHeight = window.innerHeight;
+
+        var x = (svgWidth / 2) - (bbox.x + bbox.width / 2);
+        var y = 100;
+
+        var initialTransform = d3.zoomIdentity.translate(x, y);
+        svg.call(zoom.transform, initialTransform);
+    }
+
+    function drawSpouseLinks(nodes) {
+        var spouseLinks = [];
+        nodes.forEach(source => {
+            if (source.data.married_with) {
+                var target = nodes.find(n => n.data.id === source.data.married_with);
+                if (target) {
+                    if (!spouseLinks.find(l => (l.source === target && l.target === source)
+                        || (l.source === source && l.target === target))) {
+                        spouseLinks.push({source: source, target: target});
+                    }
+                }
+            }
+        });
+
+        var sLink = g.selectAll('path.spouseLink')
+            .data(spouseLinks, d => d.source.data.id + "-" + d.target.data.id);
+
+        sLink.enter().append('path')
+            .attr('class', 'spouseLink')
+            .merge(sLink)
+            .attr('d', d => {
+                let sx = d.source.x;
+                let sy = d.source.y;
+                let tx = d.target.x;
+                let ty = d.target.y;
+
+                if (sx < tx) {
+                    sx += 50;
+                    tx -= 50;
+                } else {
+                    sx -= 50;
+                    tx += 50;
+                }
+
+                let lineY = (sy + ty) / 2;
+
+                return `
+    M ${sx} ${sy}
+    L ${sx} ${lineY}
+    L ${tx} ${lineY}
+    L ${tx} ${ty}
+  `;
+            });
+
+        sLink.exit().remove();
+    }
+
+    // Khi bấm nút, tạo XML và tải file
+    document.getElementById('exportButton').addEventListener('click', function() {
+        var nodes = window.__nodes;
+        var links = window.__links;
+        if (nodes && links) {
+            var drawioXML = toDrawioXML(nodes, links);
+            downloadDrawioXML(drawioXML);
+        } else {
+            alert("No data to export!");
+        }
+    });
+</script>
+</body>
+</html>

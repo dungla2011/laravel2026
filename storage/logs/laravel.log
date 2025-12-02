@@ -1,0 +1,55 @@
+[2024-12-07 14:38:33] testing.DEBUG: View: login.login  
+[2024-12-14 11:56:24] testing.DEBUG: View: login.login  
+[2024-12-14 13:39:37] testing.DEBUG: View: login.login  
+[2024-12-14 15:56:35] testing.DEBUG: View: login.login  
+[2024-12-14 19:26:50] testing.DEBUG: View: login.login  
+[2024-12-14 20:29:44] testing.DEBUG: View: login.login  
+[2024-12-14 20:54:01] testing.DEBUG: View: login.login  
+[2024-12-14 22:17:38] testing.DEBUG: View: login.login  
+[2024-12-15 09:40:54] testing.DEBUG: View: login.login  
+[2024-12-15 10:21:01] testing.DEBUG: View: login.login  
+[2024-12-15 14:14:24] testing.DEBUG: View: login.login  
+[2024-12-15 15:10:07] testing.DEBUG: View: login.login  
+[2024-12-29 08:23:49] testing.DEBUG: View: login.login  
+[2024-12-29 09:07:49] testing.DEBUG: View: login.login  
+[2025-01-23 19:31:42] testing.DEBUG: View: login.login  
+[2025-05-28 23:11:41] testing.DEBUG: View: login.login  
+[2025-05-29 07:14:11] testing.DEBUG: View: login.login  
+[2025-05-29 07:43:28] testing.DEBUG: View: login.login  
+[2025-09-07 18:45:03] production.ERROR: Telegram helper unexpected error {"error":"cURL error 28: Failed to connect to api.telegram.org port 443 after 10013 ms: Timeout was reached (see https://curl.haxx.se/libcurl/c/libcurl-errors.html) for https://api.telegram.org/bot8040174107:AAE-XqU-XaV0Y7v30pjZgbfGzHq88LQx0HQ/sendMessage","chat_id":"-4878499254"} 
+[2025-12-01 15:13:58] testing.ERROR: Debug info {"message":"","trace":[{"file":"E:\\Projects\\laravel2022-01\\laravel01\\vendor\\phpunit\\phpunit\\src\\Framework\\TestCase.php","line":1656,"function":"testUploadRealFile","class":"Tests\\Feature\\ApiUploadFileTest","object":{"Tests\\Feature\\ApiUploadFileTest":{"mockConsoleOutput":true,"expectsOutput":null,"expectedOutput":[],"expectedOutputSubstrings":[],"unexpectedOutput":[],"unexpectedOutputSubstrings":[],"expectedTables":[],"expectedQuestions":[],"expectedChoices":[],"tk":"TK1_eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMjUwNTk4MDUxODI2ODkzMCwiZXhwIjoxNzgwMTI4ODM4fQ.rA6uEBPIE4TqzxhnZ-cDI0Eb3qEIbgML9htZX7AA-bQ"}},"type":"->","args":[]},{"file":"E:\\Projects\\laravel2022-01\\laravel01\\vendor\\phpunit\\phpunit\\src\\Framework\\TestCase.php","line":514,"function":"runTest","class":"PHPUnit\\Framework\\TestCase","object":{"Tests\\Feature\\ApiUploadFileTest":{"mockConsoleOutput":true,"expectsOutput":null,"expectedOutput":[],"expectedOutputSubstrings":[],"unexpectedOutput":[],"unexpectedOutputSubstrings":[],"expectedTables":[],"expectedQuestions":[],"expectedChoices":[],"tk":"TK1_eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMjUwNTk4MDUxODI2ODkzMCwiZXhwIjoxNzgwMTI4ODM4fQ.rA6uEBPIE4TqzxhnZ-cDI0Eb3qEIbgML9htZX7AA-bQ"}},"type":"->","args":[]},{"file":"E:\\Projects\\laravel2022-01\\laravel01\\vendor\\phpunit\\phpunit\\src\\Framework\\TestRunner\\TestRunner.php","line":87,"function":"runBare","class":"PHPUnit\\Framework\\TestCase","object":{"Tests\\Feature\\ApiUploadFileTest":{"mockConsoleOutput":true,"expectsOutput":null,"expectedOutput":[],"expectedOutputSubstrings":[],"unexpectedOutput":[],"unexpectedOutputSubstrings":[],"expectedTables":[],"expectedQuestions":[],"expectedChoices":[],"tk":"TK1_eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMjUwNTk4MDUxODI2ODkzMCwiZXhwIjoxNzgwMTI4ODM4fQ.rA6uEBPIE4TqzxhnZ-cDI0Eb3qEIbgML9htZX7AA-bQ"}},"type":"->","args":[]},{"file":"E:\\Projects\\laravel2022-01\\laravel01\\vendor\\phpunit\\phpunit\\src\\Framework\\TestCase.php","line":361,"function":"run","class":"PHPUnit\\Framework\\TestRunner","object":{"PHPUnit\\Framework\\TestRunner":[]},"type":"->","args":[{"Tests\\Feature\\ApiUploadFileTest":{"mockConsoleOutput":true,"expectsOutput":null,"expectedOutput":[],"expectedOutputSubstrings":[],"unexpectedOutput":[],"unexpectedOutputSubstrings":[],"expectedTables":[],"expectedQuestions":[],"expectedChoices":[],"tk":"TK1_eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMjUwNTk4MDUxODI2ODkzMCwiZXhwIjoxNzgwMTI4ODM4fQ.rA6uEBPIE4TqzxhnZ-cDI0Eb3qEIbgML9htZX7AA-bQ"}}]},{"file":"E:\\Projects\\laravel2022-01\\laravel01\\vendor\\phpunit\\phpunit\\src\\Framework\\TestSuite.php","line":369,"function":"run","class":"PHPUnit\\Framework\\TestCase","object":{"Tests\\Feature\\ApiUploadFileTest":{"mockConsoleOutput":true,"expectsOutput":null,"expectedOutput":[],"expectedOutputSubstrings":[],"unexpectedOutput":[],"unexpectedOutputSubstrings":[],"expectedTables":[],"expectedQuestions":[],"expectedChoices":[],"tk":"TK1_eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMjUwNTk4MDUxODI2ODkzMCwiZXhwIjoxNzgwMTI4ODM4fQ.rA6uEBPIE4TqzxhnZ-cDI0Eb3qEIbgML9htZX7AA-bQ"}},"type":"->","args":[]},{"file":"E:\\Projects\\laravel2022-01\\laravel01\\vendor\\phpunit\\phpunit\\src\\Framework\\TestSuite.php","line":369,"function":"run","class":"PHPUnit\\Framework\\TestSuite","object":{"PHPUnit\\Framework\\TestSuite":[]},"type":"->","args":[]},{"file":"E:\\Projects\\laravel2022-01\\laravel01\\vendor\\phpunit\\phpunit\\src\\Framework\\TestSuite.php","line":369,"function":"run","class":"PHPUnit\\Framework\\TestSuite","object":{"PHPUnit\\Framework\\TestSuite":[]},"type":"->","args":[]},{"file":"E:\\Projects\\laravel2022-01\\laravel01\\vendor\\phpunit\\phpunit\\src\\TextUI\\TestRunner.php","line":64,"function":"run","class":"PHPUnit\\Framework\\TestSuite","object":{"PHPUnit\\Framework\\TestSuite":[]},"type":"->","args":[]},{"file":"E:\\Projects\\laravel2022-01\\laravel01\\vendor\\phpunit\\phpunit\\src\\TextUI\\Application.php","line":211,"function":"run","class":"PHPUnit\\TextUI\\TestRunner","object":{"PHPUnit\\TextUI\\TestRunner":[]},"type":"->","args":[{"PHPUnit\\TextUI\\Configuration\\Configuration":[]},{"PHPUnit\\Runner\\ResultCache\\DefaultResultCache":[]},{"PHPUnit\\Framework\\TestSuite":[]}]},{"file":"E:\\Projects\\laravel2022-01\\laravel01\\vendor\\phpunit\\phpunit\\phpunit","line":104,"function":"run","class":"PHPUnit\\TextUI\\Application","object":{"PHPUnit\\TextUI\\Application":[]},"type":"->","args":[["vendor/phpunit/phpunit/phpunit","--colors=always","--configuration=E:\\Projects\\laravel2022-01\\laravel01\\phpunit.xml","--no-output","--filter=uploadrealfile"]]}]} 
+[2025-12-01 15:55:58] testing.DEBUG: View: public.event-register  
+[2025-12-01 15:55:58] testing.DEBUG: View: public.event-register  
+[2025-12-01 15:56:01] testing.WARNING: reCAPTCHA response is empty  
+[2025-12-01 15:56:01] testing.DEBUG: View: index.glxv3.public  
+[2025-12-01 15:56:23] testing.DEBUG: View: index.glxv3.public  
+[2025-12-01 16:33:04] testing.DEBUG: View: public.event-register  
+[2025-12-01 16:33:04] testing.DEBUG: View: public.event-register  
+[2025-12-01 16:33:07] testing.WARNING: reCAPTCHA response is empty  
+[2025-12-01 16:33:07] testing.DEBUG: View: index.glxv3.public  
+[2025-12-01 16:33:29] testing.DEBUG: View: index.glxv3.public  
+[2025-12-01 19:04:52] testing.DEBUG: View: public.event-register  
+[2025-12-01 19:04:52] testing.DEBUG: View: public.event-register  
+[2025-12-01 19:04:54] testing.WARNING: reCAPTCHA response is empty  
+[2025-12-01 19:04:54] testing.DEBUG: View: index.glxv3.public  
+[2025-12-01 19:05:16] testing.DEBUG: View: index.glxv3.public  
+[2025-12-02 09:13:00] testing.DEBUG: View: public.event-register  
+[2025-12-02 09:13:04] testing.DEBUG: View: public.event-register  
+[2025-12-02 09:13:07] testing.WARNING: reCAPTCHA response is empty  
+[2025-12-02 09:13:07] testing.DEBUG: View: index.glxv3.public  
+[2025-12-02 09:13:36] testing.DEBUG: View: index.glxv3.public  
+[2025-12-02 10:23:33] testing.DEBUG: View: public.event-register  
+[2025-12-02 10:23:33] testing.DEBUG: View: public.event-register  
+[2025-12-02 10:23:36] testing.WARNING: reCAPTCHA response is empty  
+[2025-12-02 10:23:36] testing.DEBUG: View: index.glxv3.public  
+[2025-12-02 10:23:58] testing.DEBUG: View: index.glxv3.public  
+[2025-12-02 10:28:17] testing.DEBUG: View: public.event-register  
+[2025-12-02 10:28:17] testing.DEBUG: View: public.event-register  
+[2025-12-02 10:29:32] testing.WARNING: reCAPTCHA response is empty  
+[2025-12-02 10:29:32] testing.DEBUG: View: index.glxv3.public  
+[2025-12-02 10:29:54] testing.DEBUG: View: index.glxv3.public  
+[2025-12-02 10:59:32] testing.DEBUG: View: public.event-register  
+[2025-12-02 10:59:33] testing.DEBUG: View: public.event-register  
+[2025-12-02 11:00:07] testing.WARNING: reCAPTCHA response is empty  
+[2025-12-02 11:00:07] testing.DEBUG: View: index.glxv3.public  
+[2025-12-02 11:00:29] testing.DEBUG: View: index.glxv3.public  

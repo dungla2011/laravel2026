@@ -1,0 +1,97 @@
+<?php
+error_reporting(E_ALL & ~E_STRICT);
+ini_set('display_errors', 1);
+//ini_set('log_errors', 1);
+//ini_set('error_log', '/var/glx/weblog/error_webdav.log');
+function ol3($str)
+{
+    $bname = basename(__FILE__);
+    file_put_contents("/var/glx/weblog/$bname.log", date("Y-m-d H:i:s") ." # ". $str . "\n", FILE_APPEND);
+}
+
+$sr = serialize($_SERVER);
+//if(str_contains($sr, 'Zscaler'))
+//    ol3(" \n\n SERVER = " . serialize($_SERVER) . "\n\n");
+
+$_SERVER['HTTP_HOST'] = $_SERVER['SERVER_NAME'] = 'cloud1.mytree.vn';
+$_SERVER['HTTP_HOST'] = $_SERVER['SERVER_NAME'] = 'test2023.mytree.vn';
+
+$bname = basename(__FILE__);
+
+require '/var/www/html/vendor/autoload.php';
+require 'lib-webdav.php';
+$app = require_once '/var/www/html/bootstrap/app.php';
+
+$kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
+$response = $kernel->handle( $request = Illuminate\Http\Request::capture());
+//////////////////////////////// Kết thúc đoạn Init Framework Laravel///
+
+$uid = 1;
+$publicDir = '/share'; // WebDAV Bao loi
+$publicDir = "/var/www/html/public/images/tmp"; // WebDAV  OK
+$publicDir = "/"; // WebDAV  OK
+//$publicDir = "/share-web-dav";
+//$server = new \Sabre\DAV\Server(new \Sabre\DAV\FS\Directory($publicDir));
+//$server = new \Sabre\DAV\Server(new RemoteDirectory($publicDir, 1));
+
+$siteId = \App\Models\SiteMng::getSiteId();
+$pathRoot = "/share/dav/siteid_$siteId/$uid";
+
+if(!file_exists($pathRoot))
+    mkdir($pathRoot, 0777, true);
+
+$dir = new RemoteDirectory($publicDir, $pathRoot, $uid);
+
+$server = new Server2($dir);
+$server->pathRoot = $pathRoot;
+$server->uid = $uid;
+$server->siteId = $siteId;
+$server->tree->uid = $uid;
+$server->tree->server = $server;
+
+
+$server->setBaseUri('/train/web-dav-test/' . $bname);
+
+// Add the browser plugin
+$browser = new \Sabre\DAV\Browser\Plugin();
+$server->addPlugin($browser);
+$server->addPlugin(new CustomPutPlugin($server));
+$server->addPlugin(new CapturePutPlugin($server));
+
+
+// Bình luận hoặc loại bỏ đoạn mã liên quan đến xác thực
+// $callback = function($username, $password) {
+//     return $username === 'admin' && $password === '11112222';
+// };
+// $authBackend = new \Sabre\DAV\Auth\Backend\BasicCallBack($callback);
+// $authPlugin = new \Sabre\DAV\Auth\Plugin($authBackend, 'My Realm');
+// $server->addPlugin($authPlugin);
+
+// Neu ko co cai nay, se bao loi ra Log, du moi thu van chay bt
+$lockBackend = new \Sabre\DAV\Locks\Backend\File('/share/dav/locks');
+$lockPlugin = new \Sabre\DAV\Locks\Plugin($lockBackend);
+$server->addPlugin($lockPlugin);
+
+// Enable detailed logging for SabreDAV
+//if(0)
+$server->on('beforeMethod', function($request, $response) {
+    ol3(" \n\n Request1 getMethod = " . $request->getMethod() . "\n\n");
+//    echo "<br/>\nRequest: " . $request->getMethod() . " " . $request->getUrl();
+});
+//if(0)
+$server->on('exception', function(Exception $e) {
+    ob_clean();
+    $msg = $e->getMessage() ?? ' NO_MESS';
+    $trace = $e->getTraceAsString() ?? ' NO_TRACE';
+    $trace = '';
+    ol3("\n\n *** Error: $msg \n  $trace \n\n");
+
+#        echo "<br/>\nException123: $msg";
+#        echo "<br/>";
+#        print_r($trace0);
+
+#    die();
+});
+
+$server->exec();
+

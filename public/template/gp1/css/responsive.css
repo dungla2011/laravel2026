@@ -1,0 +1,379 @@
+/* Mobile & Table */
+@media (max-width: 1023px) {}
+
+/* Table */
+@media (min-width: 740px) and (max-width: 1023px) {}
+
+/* Table Lanscape */
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : landscape) {}
+
+/* Mobile */
+
+@media (max-width: 739px) {
+    .crumb {
+        padding: 10px 0px;
+    }
+
+    .ditich {
+        padding: 40px 0 70px;
+    }
+
+    .hometitle {
+        font-size: 22px;
+    }
+
+    .ditich .hometitle {
+        margin-bottom: 22px;
+    }
+    
+    .ditich .title-line,
+    .filter {
+        margin-bottom: 32px;
+    }
+
+    .filter {
+        flex-wrap: wrap;
+    }
+
+    .filter-input {
+        width: 100%;
+        margin-bottom: 5px;
+        padding: 0 20px;
+        height: 50px;
+        margin-right: 0;
+        font-size: 15px;
+    }
+
+    .filter-btn {
+        width: 100%;
+    }
+
+    .ditich {
+        padding: 32px 0 50px;
+    }
+
+    .ditich-item {
+        margin-bottom: 40px;
+    }
+
+    .btn-viewleader {
+        padding: 14px 60px;
+    }
+
+    .tocWrap {
+        width: 100%;
+        padding: 15px 10px;
+    }
+
+    .dt-name {
+        font-size: 20px;
+        margin-bottom: 20px;
+    }
+
+    .ditich-dt {
+        padding: 44px 0 12px;
+    }
+
+    .left-col__title {
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+
+
+    .footer-top {
+        padding: 40px 0 36px;
+    }
+
+    .giapha {
+        padding: 40px 0 30px;
+    }
+
+    .info {
+        padding: 40px 0 50px;
+    }
+
+    .menutab-item {
+        padding: 14px 10px;
+    }
+
+    .info .menutab {
+        margin-bottom: 40px;
+    }
+
+    .infoblock-content  {
+        margin-bottom: 20px;
+    }
+    .infoblock-2 {
+        padding: 42px 0;
+    }
+
+    .infoblock-item__left, .infoblock-item__right {
+        width: 100%;
+    }
+
+    .infoblock-item {
+        flex-wrap: wrap;
+    }
+
+    .infoblock-item__img {
+        width: 200px;
+        height: 200px;
+    }
+    .infoblock-2 .info-title {
+        margin-bottom: 30px;
+    }
+    .infoblock-item:nth-child(odd) .infoblock-item__name {
+        margin-right: auto;
+    }
+    .infoblock-item__left,
+    .infoblock-item:nth-child(even) .infoblock-item__left {
+        justify-content: center;
+    }
+
+    .infoblock-item__name  {
+        margin-top: 10px;
+    }
+
+    .infoblock-1 {
+        padding-bottom: 56px;
+    }
+
+    .infoblock-item:nth-child(even) .infoblock-item__intro {
+        text-align: left;
+    }
+
+    .infoblock-3 {
+        padding: 32px 0;
+    }
+
+    .infoblock-3 .info-title {
+        margin-bottom: 32px;
+    }
+    .leader-item {
+        flex-wrap: wrap;
+    }
+    .leader-item,
+    .leader-item__img,
+    .leader-item__info {
+        width: 100%;
+    }
+    .leader-item__info {
+        padding: 20px 20px 30px;
+    }
+
+    .title-line {
+        margin: 0 auto 40px;
+    }
+
+    .footer-title {
+        margin-bottom: 15px;
+    }
+
+    .footer-text {
+        margin-bottom: 20px;
+    }
+
+
+    .leader-right {
+        margin-left: 0;
+        padding: 30px 20px 40px;
+        border-bottom: 50px solid rgb(218, 67, 38);
+    }
+
+    .leader-title {
+        font-size: 18px;
+        margin-bottom: 20px;
+    }
+
+    .leader-right .title-line {
+        margin-bottom: 26px;
+    }
+
+    .leader-left__img {
+        margin-top: 0;
+    }
+
+    .leader-details {
+        padding: 52px 0 50px;
+    }
+
+    .homeinfo-wrapper {
+        margin-top: 20px;
+        padding: 35px 15px 20px;
+        margin-bottom: 40px;
+    }
+
+    .homeintro {
+        font-size: 14px;
+        margin-bottom: 25px;
+    }
+
+    .btn-next, .btn-prev {
+        width: 38px;
+        height: 38px;
+    }
+
+    .btn-next {
+        right: -26px;
+    }
+
+    .btn-prev {
+        left: -26px;
+    }
+
+    .homenews {
+        padding: 35px 0 40px;
+    }
+
+    .homenews-item,
+    .homenews-item:not(:last-child) {
+        margin-bottom: 20px;
+    }
+
+    .homenews-item--big .homenews-item__title {
+        padding: 18px;
+        font-size: 15px;
+    }
+
+    .homeditich {
+        padding: 32px 0 34px;
+    }
+
+    .homeleader-note {
+        font-size: 14px;
+    }
+    .homeleader-name {
+        font-size: 18px;
+    }
+
+    .homeleader {
+        padding: 44px 0 46px;
+    }
+
+    .btn-viewcat {
+        padding: 12px 32px;
+        margin-bottom: 20px;
+        font-size: 14px;
+    }
+
+    .gallery-top {
+        margin-bottom: 20px;
+    }
+    .homeclub {
+        padding: 42px 0 10px;
+    }
+
+    .homeclub-title {
+        font-size: 18px;
+    }
+
+    .homeclub .hometitle {
+        margin-bottom: 10px;
+    }
+
+    .homeclub-block {
+        padding: 20px 0;
+    }
+
+    .homevideo {
+        background-color: #2c2c2c;
+        padding: 46px 0;
+    }
+
+    .homevideo-item--big .homevideo-item__title {
+        padding: 15px;
+        font-size: 14px;
+    }
+
+    .logo {
+        max-width: 62px;
+        padding: 4px;
+    }
+}
+
+
+
+/* Ipad pro */
+
+
+@media only screen and (min-device-width: 1024px) and (max-device-height: 1366px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait) {}
+
+
+/* PC LARGE */
+/* 
+@media (min-width: 1400px) {
+    .grid {
+        width: 100%;
+        max-width: 1320px;
+        margin: 0 auto;
+    }
+
+    .homenews-name {
+        font-size: 16px;
+    }
+
+    .btn-viewmore {
+        padding: 16px 2px;
+        margin-top: 27px;
+    }
+
+    .homenews-item:not(:last-child) {
+        margin-bottom: 32px;
+    }
+
+    .homeintro {
+        font-size: 16px;
+    }
+
+    .nav>li {
+        font-size: 14px;
+    }
+
+    .nav>li>a {
+        padding: 0 11px;
+    }
+
+    .infoblock-intro {
+        font-size: 16px;
+    }
+
+    .infoblock-content {
+        font-size: 16px;
+    }
+
+    .infoblock-item__img {
+        height: 380px;
+        width: 380px;
+    }
+
+    .infoblock-item__name  {
+        font-size: 22px;
+    }
+
+    .infoblock-item__intro {
+        font-size: 16px;
+    }
+
+    .leader-item__info {
+        padding: 36px 35px 20px 0;
+    }
+
+    
+    .leader-item__intro,
+    .leader-item__danhhieu {
+        font-size: 16px;
+    }
+
+    .btn-viewleader {
+        padding: 22px 100px;
+    }
+
+    .leader-name {
+        font-size: 20px;
+    }
+
+    .leader-intro {
+        font-size: 16px;
+    }
+
+} */

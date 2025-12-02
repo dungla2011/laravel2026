@@ -1,0 +1,450 @@
+define({ "api": [
+  {
+    "type": "get",
+    "url": "?cmd=check_token",
+    "title": "Kiểm tra access token",
+    "version": "1.0.1",
+    "name": "AccessToken",
+    "group": "AccessToken",
+    "success": {
+      "fields": {
+        "- (Success)": [
+          {
+            "group": "- (Success)",
+            "type": "json",
+            "optional": false,
+            "field": "ReturnString",
+            "description": "<p>Trả lại user email</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Sample Success:",
+          "content": "{\n\"errorNumber\": 0,\n\"payload\": \"Token is valid, email: abc123@gmail.com\",\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "examples": [
+      {
+        "title": "Example usage in PHP:",
+        "content": "$url = \"https://4share.vn/api/?cmd=check_token\";\n$opts = [\"http\" => [\"header\" => \"accesstoken01: 7b2275696....\"]];\n$context = stream_context_create($opts);\n$ret = file_get_contents($url, false, $context);\necho \"Return String: \" . $ret;\n//Return object:\n$retObj = json_decode($ret);",
+        "type": "php"
+      }
+    ],
+    "filename": "E:/Projects/galaxy2018.pm33.net/tool/api/index.html",
+    "groupTitle": "AccessToken",
+    "sampleRequest": [
+      {
+        "url": "https://4share.vn/api/?cmd=check_token"
+      }
+    ],
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "accesstoken01",
+            "description": "<p>User Access token, lấy tai: https://4share.vn/member <br>(Chỉ tài khoản Vip có quyền tương tác với API)</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "- Có lỗi": [
+          {
+            "group": "- Có lỗi",
+            "type": "json",
+            "optional": false,
+            "field": "ReturnJson",
+            "description": "<p>errorNumber: &lt;&gt;0: ; payload: Message</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Sample Error:",
+          "content": "{\n\"errorNumber\": 10,\n\"payload\": \"Some error: ...\",\n}",
+          "type": "json"
+        }
+      ]
+    }
+  },
+  {
+    "type": "post",
+    "url": "?cmd=get_file_info",
+    "title": "Get file infomation",
+    "version": "1.0.1",
+    "name": "Get_File_Info",
+    "group": "File_and_Folder",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "file_id",
+            "description": "<p>Id of File</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "- (Success)": [
+          {
+            "group": "- (Success)",
+            "type": "json",
+            "optional": false,
+            "field": "ReturnJson",
+            "description": "<p>errorNumber: =0: ; payload: {json file info, nếu là file của tài khoản}</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Sample Success:",
+          "content": "{\n\"errorNumber\": 0,\n\"payload\": \"{'name': 'Ten file','size': 123 , 'createdAt': '2020-01-02 15:55:51'}\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "E:/Projects/galaxy2018.pm33.net/tool/api/index.html",
+    "groupTitle": "File_and_Folder",
+    "sampleRequest": [
+      {
+        "url": "https://4share.vn/api/?cmd=get_file_info"
+      }
+    ],
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "accesstoken01",
+            "description": "<p>User Access token, lấy tai: https://4share.vn/member <br>(Chỉ tài khoản Vip có quyền tương tác với API)</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "- Có lỗi": [
+          {
+            "group": "- Có lỗi",
+            "type": "json",
+            "optional": false,
+            "field": "ReturnJson",
+            "description": "<p>errorNumber: &lt;&gt;0: ; payload: Message</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Sample Error:",
+          "content": "{\n\"errorNumber\": 10,\n\"payload\": \"Some error: ...\",\n}",
+          "type": "json"
+        }
+      ]
+    }
+  },
+  {
+    "type": "post",
+    "url": "?cmd=list_file",
+    "title": "List File in Folder",
+    "version": "1.0.1",
+    "name": "List_File_in_Folder",
+    "group": "File_and_Folder",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "folder_id",
+            "description": "<p>Id of Folder cần list ra, để trống nếu list toàn bộ file, =0 nếu file ở folder gốc</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Int",
+            "optional": false,
+            "field": "limit",
+            "description": "<p>giới hạn số file list/1 page, default:100, max: 1000</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Int",
+            "optional": false,
+            "field": "page",
+            "description": "<p>số trang: 0,1....</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "- (Success)": [
+          {
+            "group": "- (Success)",
+            "type": "json",
+            "optional": false,
+            "field": "ReturnJson",
+            "description": "<p>errorNumber: =0: ; payload: {json folder list}</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Sample Success:",
+          "content": "{\n\"errorNumber\": 0,\n\"payload\": \"[{'name': 'Ten file1' , 'createdAt': '2020-01-02 15:55:51', 'size': 123}, {'name': 'Ten file' , 'createdAt': '2020-01-02 15:55:51', 'size': 65154}]\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "E:/Projects/galaxy2018.pm33.net/tool/api/index.html",
+    "groupTitle": "File_and_Folder",
+    "sampleRequest": [
+      {
+        "url": "https://4share.vn/api/?cmd=list_file"
+      }
+    ],
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "accesstoken01",
+            "description": "<p>User Access token, lấy tai: https://4share.vn/member <br>(Chỉ tài khoản Vip có quyền tương tác với API)</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "- Có lỗi": [
+          {
+            "group": "- Có lỗi",
+            "type": "json",
+            "optional": false,
+            "field": "ReturnJson",
+            "description": "<p>errorNumber: &lt;&gt;0: ; payload: Message</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Sample Error:",
+          "content": "{\n\"errorNumber\": 10,\n\"payload\": \"Some error: ...\",\n}",
+          "type": "json"
+        }
+      ]
+    }
+  },
+  {
+    "type": "post",
+    "url": "?cmd=list_folder",
+    "title": "List Folder in Folder",
+    "version": "1.0.1",
+    "name": "List_Folder_in_Folder",
+    "group": "File_and_Folder",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "folder_id",
+            "description": "<p>Id of Folder cần list ra, để trống nếu list toàn bộ folder, =0 nếu folder ở folder gốc</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Int",
+            "optional": false,
+            "field": "limit",
+            "description": "<p>giới hạn số folder list/1 page, default:100, max: 1000</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Int",
+            "optional": false,
+            "field": "page",
+            "description": "<p>số trang: 0,1....</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "- (Success)": [
+          {
+            "group": "- (Success)",
+            "type": "json",
+            "optional": false,
+            "field": "ReturnJson",
+            "description": "<p>errorNumber: =0: ; payload: {json folder list}</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Sample Success:",
+          "content": "{\n\"errorNumber\": 0,\n\"payload\": \"[{'name': 'Ten folder1' , 'createdAt': '2020-01-02 15:55:51'}, {'name': 'Ten folder2' , 'createdAt': '2020-01-02 15:55:51'}]\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "E:/Projects/galaxy2018.pm33.net/tool/api/index.html",
+    "groupTitle": "File_and_Folder",
+    "sampleRequest": [
+      {
+        "url": "https://4share.vn/api/?cmd=list_folder"
+      }
+    ],
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "accesstoken01",
+            "description": "<p>User Access token, lấy tai: https://4share.vn/member <br>(Chỉ tài khoản Vip có quyền tương tác với API)</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "- Có lỗi": [
+          {
+            "group": "- Có lỗi",
+            "type": "json",
+            "optional": false,
+            "field": "ReturnJson",
+            "description": "<p>errorNumber: &lt;&gt;0: ; payload: Message</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Sample Error:",
+          "content": "{\n\"errorNumber\": 10,\n\"payload\": \"Some error: ...\",\n}",
+          "type": "json"
+        }
+      ]
+    }
+  },
+  {
+    "type": "post",
+    "url": "?cmd=upload_done",
+    "title": "Finish Upload file",
+    "version": "1.0.1",
+    "name": "UploadDone",
+    "group": "File_and_Folder",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "transaction_id_filename_uploaded",
+            "description": "<p>Tên file đã upload thành công qua FTP, nên là tên duy nhất ở một thời điểm upload, xem như transaction_id upload. <br>Mục đích cần upload qua FTP để có thể Resume với file lớn, tránh bị lỗi giữa chừng <br> Có thể đặt transaction_id_filename_uploaded = file_name + timestamp <br> Các file không hoàn thành sẽ bị xóa sau khoảng 24h</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "file_name",
+            "description": "<p>Tên file</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Int",
+            "optional": false,
+            "field": "file_size",
+            "description": "<p>Kích thước file</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "folder_id",
+            "description": "<p>ID folder muốn upload lên, để trống sẽ là folder gốc</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "- (Success)": [
+          {
+            "group": "- (Success)",
+            "type": "json",
+            "optional": false,
+            "field": "ReturnJson",
+            "description": "<p>errorNumber: =0: ; payload: Link upload thành công</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Sample Success:",
+          "content": "{\n\"errorNumber\": 0,\n\"payload\": \"https://4share.vn/f/2342348afud980\",\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "E:/Projects/galaxy2018.pm33.net/tool/api/index.html",
+    "groupTitle": "File_and_Folder",
+    "sampleRequest": [
+      {
+        "url": "https://4share.vn/api/?cmd=upload_done"
+      }
+    ],
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "accesstoken01",
+            "description": "<p>User Access token, lấy tai: https://4share.vn/member <br>(Chỉ tài khoản Vip có quyền tương tác với API)</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "- Có lỗi": [
+          {
+            "group": "- Có lỗi",
+            "type": "json",
+            "optional": false,
+            "field": "ReturnJson",
+            "description": "<p>errorNumber: &lt;&gt;0: ; payload: Message</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Sample Error:",
+          "content": "{\n\"errorNumber\": 10,\n\"payload\": \"Some error: ...\",\n}",
+          "type": "json"
+        }
+      ]
+    }
+  }
+] });

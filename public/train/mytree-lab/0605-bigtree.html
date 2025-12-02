@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Family Tree with Rectangular Nodes</title>
+<style>
+.node rect {
+  fill: #fff;
+  stroke: steelblue;
+  stroke-width: 3px;
+}
+
+.node text {
+  font: 12px sans-serif;
+  pointer-events: none;
+}
+
+.link {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 2px;
+}
+</style>
+</head>
+<body>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script>
+// Dữ liệu mẫu (giữ nguyên)
+function buildHierarchy(data, rootId) {
+  // Tạo map tham chiếu các node theo id
+  var nodesById = {};
+
+  // Khởi tạo các node trong map, mỗi node có children = []
+  data.forEach(function(d) {
+    nodesById[d.id] = {
+      ...d,
+      children: []
+    };
+  });
+
+  var root = null;
+
+  // Gắn các node con vào node cha
+  data.forEach(function(d) {
+    var node = nodesById[d.id];
+    if (d.parent_id && nodesById[d.parent_id]) {
+      nodesById[d.parent_id].children.push(node);
+    } else {
+      // Nếu không có parent_id hoặc parent_id không tồn tại trong danh sách
+      // thì đây là root
+      if (!d.parent_id || d.parent_id === null || d.parent_id === rootId) {
+        root = node;
+      }
+    }
+  });
+
+  return root;
+}
+
+
+let data = [ { "id": 4935, "name": "To Ba", "parent_id": 0, "married_with": 4934 }, { "id": 4934, "name": "Ong To", "parent_id": 0, "married_with": null }, { "id": 4936, "name": "Con ong To 1", "parent_id": 4934, "married_with": null }, { "id": 4937, "name": "Con ong To 2", "parent_id": 4934, "married_with": null }, { "id": 4938, "name": "Con ong To 3", "parent_id": 4934, "married_with": null }, { "id": 4939, "name": "Con ong To 4", "parent_id": 4934, "married_with": null }, { "id": 4940, "name": "Vo - Con ong To 4", "parent_id": 4934, "married_with": 4939 }, { "id": 171127, "name": "111", "parent_id": 4934, "married_with": null }, { "id": 4941, "name": "1.Le Huu Chinh Uy", "parent_id": 4939, "married_with": null }, { "id": 4942, "name": "Ba", "parent_id": 4939, "married_with": 4941 }, { "id": 4943, "name": "2.Le Huu Lenh Hai", "parent_id": 4939, "married_with": null }, { "id": 4944, "name": "Le Thi Tu Thanh", "parent_id": 4939, "married_with": 4943 }, { "id": 4945, "name": "Le Thi Rieu Xanh", "parent_id": 4939, "married_with": 4943 }, { "id": 4946, "name": "3.Le Huu Hoa Tai", "parent_id": 4939, "married_with": null }, { "id": 4947, "name": "4.Le Huu Vi", "parent_id": 4939, "married_with": null }, { "id": 4948, "name": "Gai 1", "parent_id": 4939, "married_with": null }, { "id": 4949, "name": "Gai 2", "parent_id": 4939, "married_with": null }, { "id": 4950, "name": "Gai 3", "parent_id": 4939, "married_with": null }, { "id": 4951, "name": "Gai 4", "parent_id": 4939, "married_with": null }, { "id": 4952, "name": "Gai 5", "parent_id": 4939, "married_with": null }, { "id": 4953, "name": "5.Le Huu Duc Luong", "parent_id": 4939, "married_with": null }, { "id": 4954, "name": "Ba Luong", "parent_id": 4939, "married_with": 4953 }, { "id": 4955, "name": "1.Le Huu Ba", "parent_id": 4941, "married_with": null }, { "id": 4956, "name": "Ba Ba", "parent_id": 4941, "married_with": 4955 }, { "id": 4957, "name": "2.Le Huu Tach", "parent_id": 4941, "married_with": null }, { "id": 4958, "name": "Ba Tach", "parent_id": 4941, "married_with": 4957 }, { "id": 4973, "name": "1.Le Huu Xa Dinh", "parent_id": 4943, "married_with": null }, { "id": 4974, "name": "Le Thi Rien", "parent_id": 4943, "married_with": 4973 }, { "id": 4975, "name": "Nguyen Thi Xanh", "parent_id": 4943, "married_with": 4973 }, { "id": 4976, "name": "Le Thi 1", "parent_id": 4943, "married_with": null }, { "id": 4977, "name": "Le Thi 2", "parent_id": 4943, "married_with": null }, { "id": 311526, "name": "333", "parent_id": 4948, "married_with": null }, { "id": 311388, "name": "111", "parent_id": 4951, "married_with": null }, { "id": 311390, "name": "123", "parent_id": 4951, "married_with": null }, { "id": 5279, "name": "1.Le Huu Nhan", "parent_id": 4953, "married_with": null }, { "id": 5280, "name": "2.Le Huu Ty", "parent_id": 4953, "married_with": null }, { "id": 5281, "name": "Ba Ty", "parent_id": 4953, "married_with": 5280 }, { "id": 5282, "name": "3.Le Huu Ranh", "parent_id": 4953, "married_with": null }, { "id": 5283, "name": "Ba Ranh", "parent_id": 4953, "married_with": 5282 }, { "id": 4959, "name": "1.Le Huu Kien", "parent_id": 4955, "married_with": null }, { "id": 4960, "name": "Ba Kien", "parent_id": 4955, "married_with": 4959 }, { "id": 4965, "name": "1.Le Huu Phe", "parent_id": 4957, "married_with": null }, { "id": 4966, "name": "Ba Phe", "parent_id": 4957, "married_with": 4965 }, { "id": 4978, "name": "1.Le Huu Ly Chuong", "parent_id": 4973, "married_with": null }, { "id": 4979, "name": "Nguyen Thi Phan", "parent_id": 4973, "married_with": 4978 }, { "id": 4980, "name": "Le Thi Diem", "parent_id": 4973, "married_with": 4978 }, { "id": 4981, "name": "2.Le Thi 1", "parent_id": 4973, "married_with": null }, { "id": 5284, "name": "1.Le Huu To", "parent_id": 5280, "married_with": null }, { "id": 5285, "name": "Ba To", "parent_id": 5280, "married_with": 5284 }, { "id": 5293, "name": "1.Le Huu Kiem", "parent_id": 5282, "married_with": null }, { "id": 4961, "name": "1.Le Huu Tiep", "parent_id": 4959, "married_with": null }, { "id": 4962, "name": "2.Le Huu Sy", "parent_id": 4959, "married_with": null }, { "id": 4963, "name": "Ba Sy", "parent_id": 4959, "married_with": 4962 }, { "id": 4967, "name": "Le Huu Luoi", "parent_id": 4965, "married_with": null }, { "id": 4968, "name": "Ba Luoi", "parent_id": 4965, "married_with": 4967 }, { "id": 4982, "name": "1.1.Le Huu Uyen", "parent_id": 4978, "married_with": null }, { "id": 4983, "name": "Ba Uyen", "parent_id": 4978, "married_with": 4982 }, { "id": 4984, "name": "1.2.Le Huu Quyen Thua", "parent_id": 4978, "married_with": null }, { "id": 4985, "name": "Nguyen Thi Tinh", "parent_id": 4978, "married_with": 4984 }, { "id": 4986, "name": "Le Thi Khoan-Tu Thuc", "parent_id": 4978, "married_with": 4984 }, { "id": 4987, "name": "2.1.Le Huu Trinh", "parent_id": 4978, "married_with": null }, { "id": 4988, "name": "Ba Trinh", "parent_id": 4978, "married_with": 4987 }, { "id": 4989, "name": "2.2.Le Huu Tuan", "parent_id": 4978, "married_with": null }, { "id": 4990, "name": "1.3Le Thi 1", "parent_id": 4978, "married_with": null }, { "id": 4991, "name": "1.4.Le Thi 2", "parent_id": 4978, "married_with": null }, { "id": 4992, "name": "1.5.Le Thi 3", "parent_id": 4978, "married_with": null }, { "id": 4993, "name": "1.6.Le Thi 4", "parent_id": 4978, "married_with": null }, { "id": 5286, "name": "1.Le Huu Quang", "parent_id": 5284, "married_with": null }, { "id": 5287, "name": "Ba Quang", "parent_id": 5284, "married_with": 5286 }, { "id": 5288, "name": "2.Le Huu Liem", "parent_id": 5284, "married_with": null }, { "id": 5289, "name": "Ba Liem", "parent_id": 5284, "married_with": 5288 }, { "id": 4964, "name": "1.Le Huu Lac", "parent_id": 4962, "married_with": null }, { "id": 4969, "name": "1.Le Huu Thien", "parent_id": 4967, "married_with": null }, { "id": 4970, "name": "2.Le Huu Quyen", "parent_id": 4967, "married_with": null }, { "id": 4971, "name": "Ba Quyen", "parent_id": 4967, "married_with": 4970 }, { "id": 4994, "name": "1.Trai", "parent_id": 4982, "married_with": null }, { "id": 4995, "name": "2.Trai", "parent_id": 4982, "married_with": null }, { "id": 4996, "name": "3.Trai", "parent_id": 4982, "married_with": null }, { "id": 4997, "name": "Trai 1-Mat som", "parent_id": 4984, "married_with": null }, { "id": 4998, "name": "1.Le Huu Cai Thuc", "parent_id": 4984, "married_with": null }, { "id": 4999, "name": "1.Tran Thi Lo(Man Truc)", "parent_id": 4984, "married_with": 4998 }, { "id": 5000, "name": "2.To Thi Hinh(Tu Thien)", "parent_id": 4984, "married_with": 4998 }, { "id": 5001, "name": "2.Le Huu Tuan Nhung", "parent_id": 4984, "married_with": null }, { "id": 5002, "name": "Khuc Thi Hue", "parent_id": 4984, "married_with": 5001 }, { "id": 5003, "name": "Tran Thi Chuc", "parent_id": 4984, "married_with": 5001 }, { "id": 5004, "name": "3.Le Huu Ly Xe", "parent_id": 4984, "married_with": null }, { "id": 5005, "name": "Le Thi Danh", "parent_id": 4984, "married_with": 5004 }, { "id": 5006, "name": "4.Le Huu Khoa Lan", "parent_id": 4984, "married_with": null }, { "id": 5007, "name": "Do Thi Chau", "parent_id": 4984, "married_with": 5006 }, { "id": 5008, "name": "5.Le Huu Kien(Cam)", "parent_id": 4984, "married_with": null }, { "id": 5290, "name": "1.Le Huu Lien", "parent_id": 5286, "married_with": null }, { "id": 5291, "name": "1.Le Huu Khiet", "parent_id": 5288, "married_with": null }, { "id": 5292, "name": "Ba Khiet", "parent_id": 5288, "married_with": 5291 }, { "id": 4972, "name": "2.Le Huu Kinh", "parent_id": 4970, "married_with": null }, { "id": 5009, "name": "1.1.Le Huu Su", "parent_id": 4998, "married_with": null }, { "id": 5010, "name": "1.2.Le Thi Ngan", "parent_id": 4998, "married_with": null }, { "id": 5011, "name": "2.1.Le Huu Hao", "parent_id": 4998, "married_with": null }, { "id": 5012, "name": "Nguyen Thi Van", "parent_id": 4998, "married_with": 5011 }, { "id": 5013, "name": "1.3.Le Thi Lai", "parent_id": 4998, "married_with": null }, { "id": 5014, "name": "2.2.Le Huu Que", "parent_id": 4998, "married_with": null }, { "id": 5015, "name": "Nguyen Thi Um", "parent_id": 4998, "married_with": 5014 }, { "id": 5016, "name": "Nguyen Thi Bi", "parent_id": 4998, "married_with": 5014 }, { "id": 5017, "name": "1.4.Gai 3", "parent_id": 4998, "married_with": null }, { "id": 5018, "name": "2.3.Le Thi Ghe", "parent_id": 4998, "married_with": null }, { "id": 5019, "name": "1.5 Gai 4", "parent_id": 4998, "married_with": null }, { "id": 5114, "name": "1.Le Huu Khung", "parent_id": 5001, "married_with": null }, { "id": 5115, "name": "Le Thi Ngoet", "parent_id": 5001, "married_with": 5114 }, { "id": 5116, "name": "2.Le Huu Nhi", "parent_id": 5001, "married_with": null }, { "id": 5117, "name": "Nguyen Thi Cuu", "parent_id": 5001, "married_with": 5116 }, { "id": 5118, "name": "3.Le Huu Riep", "parent_id": 5001, "married_with": null }, { "id": 5119, "name": "Nguyen Thi Cau", "parent_id": 5001, "married_with": 5118 }, { "id": 5120, "name": "Le Thi Sai", "parent_id": 5001, "married_with": 5118 }, { "id": 5121, "name": "4.Le Huu Ngu", "parent_id": 5001, "married_with": null }, { "id": 5122, "name": "Tran Thi Rap", "parent_id": 5001, "married_with": 5121 }, { "id": 5123, "name": "5.Le Thi Don", "parent_id": 5001, "married_with": null }, { "id": 5124, "name": "6.Le Thi Nhon", "parent_id": 5001, "married_with": null }, { "id": 5125, "name": "7.Le Huu Thu", "parent_id": 5001, "married_with": null }, { "id": 5126, "name": "Le Thi Nip", "parent_id": 5001, "married_with": 5125 }, { "id": 5127, "name": "Ba Nhan", "parent_id": 5001, "married_with": 5125 }, { "id": 5210, "name": "1.Le Huu Ruoc", "parent_id": 5004, "married_with": null }, { "id": 5211, "name": "Ba Nham", "parent_id": 5004, "married_with": 5210 }, { "id": 5212, "name": "2.Le Huu Hoang", "parent_id": 5004, "married_with": null }, { "id": 5213, "name": "Nguyen Thi Xo", "parent_id": 5004, "married_with": 5212 }, { "id": 5214, "name": "3.Le Huu Cu(Tuong)", "parent_id": 5004, "married_with": null }, { "id": 5215, "name": "Nguyen Thi Lot", "parent_id": 5004, "married_with": 5214 }, { "id": 5252, "name": "1.Le Huu Lai", "parent_id": 5006, "married_with": null }, { "id": 5253, "name": "Le Thi Tuong", "parent_id": 5006, "married_with": 5252 }, { "id": 5254, "name": "2.Le Huu Luong", "parent_id": 5006, "married_with": null }, { "id": 5255, "name": "Do Thi Mup", "parent_id": 5006, "married_with": 5254 }, { "id": 5256, "name": "3.Le Thi Dong", "parent_id": 5006, "married_with": null }, { "id": 5257, "name": "4.Le Thi Nho", "parent_id": 5006, "married_with": null }, { "id": 5020, "name": "1.Le Huu Hang", "parent_id": 5011, "married_with": null }, { "id": 5021, "name": "Le Thi Dich", "parent_id": 5011, "married_with": 5020 }, { "id": 5022, "name": "2.Le Huu Hoan(Tuy)", "parent_id": 5011, "married_with": null }, { "id": 5023, "name": "Ba Doi", "parent_id": 5011, "married_with": 5022 }, { "id": 5024, "name": "3.Le Huu Hy", "parent_id": 5011, "married_with": null }, { "id": 5025, "name": "Dao Thi Ta", "parent_id": 5011, "married_with": 5024 }, { "id": 5026, "name": "4.Le Huu Kieu (Hong Kieu)", "parent_id": 5011, "married_with": null }, { "id": 5027, "name": "Tran Thi Huong", "parent_id": 5011, "married_with": 5026 }, { "id": 5028, "name": "5.Le Thi Van", "parent_id": 5011, "married_with": null }, { "id": 5094, "name": "Le Huu Le", "parent_id": 5014, "married_with": null }, { "id": 5095, "name": "Ba Sit", "parent_id": 5014, "married_with": 5094 }, { "id": 5096, "name": "Le Thi Yen", "parent_id": 5014, "married_with": null }, { "id": 5097, "name": "Le Huu Binh(Luu)", "parent_id": 5014, "married_with": null }, { "id": 5098, "name": "Ba Ghin", "parent_id": 5014, "married_with": 5097 }, { "id": 5099, "name": "Le Thi Luong", "parent_id": 5014, "married_with": null }, { "id": 5128, "name": "1.Le Huu", "parent_id": 5114, "married_with": null }, { "id": 5129, "name": "2.Le Thi 1", "parent_id": 5114, "married_with": null }, { "id": 5130, "name": "3.Le Thi 2", "parent_id": 5114, "married_with": null }, { "id": 5131, "name": "1.Le Huu Tieu", "parent_id": 5116, "married_with": null }, { "id": 5132, "name": "Ba Nhuong", "parent_id": 5116, "married_with": 5131 }, { "id": 5133, "name": "2.Le Huu Tiu", "parent_id": 5116, "married_with": null }, { "id": 5134, "name": "Ba Day", "parent_id": 5116, "married_with": 5133 }, { "id": 5135, "name": "3.Le Thi Do", "parent_id": 5116, "married_with": null }, { "id": 5136, "name": "4.Le Thi Tua", "parent_id": 5116, "married_with": null }, { "id": 5137, "name": "5.Le Thi Day", "parent_id": 5116, "married_with": null }, { "id": 5155, "name": "6.Le Huu Thai", "parent_id": 5118, "married_with": null }, { "id": 5156, "name": "Ba Hoi", "parent_id": 5118, "married_with": 5155 }, { "id": 5157, "name": "1.Le Huu Can", "parent_id": 5118, "married_with": null }, { "id": 5158, "name": "Ba Ly", "parent_id": 5118, "married_with": 5157 }, { "id": 5159, "name": "Ba Duyen", "parent_id": 5118, "married_with": 5157 }, { "id": 5160, "name": "2.Le Huu Ban", "parent_id": 5118, "married_with": null }, { "id": 5161, "name": "Ba Ban", "parent_id": 5118, "married_with": 5160 }, { "id": 5162, "name": "3.Le Huu Khanh", "parent_id": 5118, "married_with": null }, { "id": 5163, "name": "Ba Lap", "parent_id": 5118, "married_with": 5162 }, { "id": 5164, "name": "4.Le Huu Thanh", "parent_id": 5118, "married_with": null }, { "id": 5165, "name": "Ba Thanh", "parent_id": 5118, "married_with": 5164 }, { "id": 5166, "name": "5.Le Thi Nhat", "parent_id": 5118, "married_with": null }, { "id": 5185, "name": "1.Le Huu Loc", "parent_id": 5121, "married_with": null }, { "id": 5186, "name": "Ba Mui", "parent_id": 5121, "married_with": 5185 }, { "id": 5187, "name": "2.Le Huu Lo", "parent_id": 5121, "married_with": null }, { "id": 5188, "name": "Ba Lo", "parent_id": 5121, "married_with": 5187 }, { "id": 5203, "name": "1.Le Thi Thu", "parent_id": 5125, "married_with": null }, { "id": 5204, "name": "2.Le Thi Thu", "parent_id": 5125, "married_with": null }, { "id": 5205, "name": "3.Le Thi Xuyen", "parent_id": 5125, "married_with": null }, { "id": 5206, "name": "4.Le Huu Phuong", "parent_id": 5125, "married_with": null }, { "id": 5207, "name": "Ba Phuong", "parent_id": 5125, "married_with": 5206 }, { "id": 5216, "name": "1.Le Huu Phuong", "parent_id": 5210, "married_with": null }, { "id": 5217, "name": "Ba Cam", "parent_id": 5210, "married_with": 5216 }, { "id": 5218, "name": "2.Le Thi 1", "parent_id": 5210, "married_with": null }, { "id": 5219, "name": "3.Le Thi 2", "parent_id": 5210, "married_with": null }, { "id": 5220, "name": "4.Le Thi 3", "parent_id": 5210, "married_with": null }, { "id": 5230, "name": "1.Le Huu Nhue", "parent_id": 5212, "married_with": null }, { "id": 5231, "name": "Tran Thi Huan", "parent_id": 5212, "married_with": 5230 }, { "id": 5232, "name": "2.Le Huu Han", "parent_id": 5212, "married_with": null }, { "id": 5233, "name": "Ba", "parent_id": 5212, "married_with": 5232 }, { "id": 5234, "name": "3.Le Thi Ga", "parent_id": 5212, "married_with": null }, { "id": 5235, "name": "4.Le Thi Phin", "parent_id": 5212, "married_with": null }, { "id": 5236, "name": "5.Le Thi Toan", "parent_id": 5212, "married_with": null }, { "id": 5243, "name": "1.Le Huu Ang", "parent_id": 5214, "married_with": null }, { "id": 5244, "name": "Ba", "parent_id": 5214, "married_with": 5243 }, { "id": 5245, "name": "2.Le Huu Dam", "parent_id": 5214, "married_with": null }, { "id": 5246, "name": "3.Le Huu Ap(Cuong)", "parent_id": 5214, "married_with": null }, { "id": 5247, "name": "Ba", "parent_id": 5214, "married_with": 5246 }, { "id": 5248, "name": "4.Le Thi Set", "parent_id": 5214, "married_with": null }, { "id": 5249, "name": "3.Le Thi Vanh", "parent_id": 5214, "married_with": null }, { "id": 5258, "name": "2.Le Huu Mai", "parent_id": 5252, "married_with": null }, { "id": 5259, "name": "Ba Mai", "parent_id": 5252, "married_with": 5258 }, { "id": 5260, "name": "1.Le Thi Rum", "parent_id": 5252, "married_with": null }, { "id": 5261, "name": "Le Huu Lang", "parent_id": 5254, "married_with": null }, { "id": 5262, "name": "Ba Nguyet", "parent_id": 5254, "married_with": 5261 }, { "id": 5263, "name": "Le Thi Luon", "parent_id": 5254, "married_with": null }, { "id": 5264, "name": "Le Thi Luon", "parent_id": 5254, "married_with": null }, { "id": 5029, "name": "1.Le Huu Khoanh", "parent_id": 5020, "married_with": null }, { "id": 5030, "name": "Le Thi Ha", "parent_id": 5020, "married_with": 5029 }, { "id": 5031, "name": "4.Le Huu Dinh", "parent_id": 5020, "married_with": null }, { "id": 5032, "name": "Do Thi Chanh", "parent_id": 5020, "married_with": 5031 }, { "id": 5033, "name": "5.Le Huu Hiet", "parent_id": 5020, "married_with": null }, { "id": 5034, "name": "Tran Thi Chien", "parent_id": 5020, "married_with": 5033 }, { "id": 5035, "name": "6.Le Huu Pha(Tu)", "parent_id": 5020, "married_with": null }, { "id": 5036, "name": "Tran Thi Mai", "parent_id": 5020, "married_with": 5035 }, { "id": 5037, "name": "7.Le Huu Minh (Duc)", "parent_id": 5020, "married_with": null }, { "id": 5038, "name": "Le Thi Tuyet", "parent_id": 5020, "married_with": 5037 }, { "id": 5039, "name": "3.Le Thi Mot", "parent_id": 5020, "married_with": null }, { "id": 5040, "name": "2.Le Thi Mau", "parent_id": 5020, "married_with": null }, { "id": 5071, "name": "1.Le Huu Lam", "parent_id": 5022, "married_with": null }, { "id": 5072, "name": "Ba Ngoan", "parent_id": 5022, "married_with": 5071 }, { "id": 5073, "name": "2.Le Huu Hoa", "parent_id": 5022, "married_with": null }, { "id": 5074, "name": "Ba Xa", "parent_id": 5022, "married_with": 5073 }, { "id": 5082, "name": "2.Le Huu Hon", "parent_id": 5024, "married_with": null }, { "id": 5083, "name": "1.Le Thi Tach", "parent_id": 5024, "married_with": null }, { "id": 5084, "name": "1.Le Huu Quan", "parent_id": 5026, "married_with": null }, { "id": 5085, "name": "Nguyen Thi Mung", "parent_id": 5026, "married_with": 5084 }, { "id": 5086, "name": "4.Le Huu Bang(Huy Bang)", "parent_id": 5026, "married_with": null }, { "id": 5087, "name": "Dinh Phuong Loan", "parent_id": 5026, "married_with": 5086 }, { "id": 5088, "name": "2.Le Thi Thuy", "parent_id": 5026, "married_with": null }, { "id": 5089, "name": "3.Le Thi Quyen", "parent_id": 5026, "married_with": null }, { "id": 5100, "name": "Le Huu Chuyen", "parent_id": 5094, "married_with": null }, { "id": 5101, "name": "Tran Thi Cap", "parent_id": 5094, "married_with": 5100 }, { "id": 5102, "name": "Le Thi Tham", "parent_id": 5094, "married_with": null }, { "id": 5110, "name": "Le Huu Thu", "parent_id": 5097, "married_with": null }, { "id": 5111, "name": "Le Thi Nguyet", "parent_id": 5097, "married_with": 5110 }, { "id": 5138, "name": "Le Huu Du(Ru)", "parent_id": 5131, "married_with": null }, { "id": 5139, "name": "Bui Thi Khanh", "parent_id": 5131, "married_with": 5138 }, { "id": 5140, "name": "Le Thi Bong", "parent_id": 5131, "married_with": null }, { "id": 5147, "name": "1.Le Huu Nga", "parent_id": 5133, "married_with": null }, { "id": 5148, "name": "2.Le Huu Son", "parent_id": 5133, "married_with": null }, { "id": 5149, "name": "Le Thi", "parent_id": 5133, "married_with": 5148 }, { "id": 5150, "name": "3.Le Huu Nam", "parent_id": 5133, "married_with": null }, { "id": 5151, "name": "4.Le Huu Trung", "parent_id": 5133, "married_with": null }, { "id": 5152, "name": "5.Le Thi Nguyet", "parent_id": 5133, "married_with": null }, { "id": 5153, "name": "6.Le Thi Ha", "parent_id": 5133, "married_with": null }, { "id": 5167, "name": "Le Huu Thinh", "parent_id": 5155, "married_with": null }, { "id": 5168, "name": "Ba Thinh", "parent_id": 5155, "married_with": 5167 }, { "id": 5169, "name": "Le Huu Hai", "parent_id": 5155, "married_with": null }, { "id": 5170, "name": "Ba Hai", "parent_id": 5155, "married_with": 5169 }, { "id": 5173, "name": "Le Huu Son", "parent_id": 5157, "married_with": null }, { "id": 5174, "name": "Ba Sa", "parent_id": 5157, "married_with": 5173 }, { "id": 5175, "name": "Le Thi Ly", "parent_id": 5157, "married_with": null }, { "id": 5178, "name": "1.Le Huu Khanh", "parent_id": 5162, "married_with": null }, { "id": 5179, "name": "Ba Nga", "parent_id": 5162, "married_with": 5178 }, { "id": 5180, "name": "2.Le Huu Duong", "parent_id": 5162, "married_with": null }, { "id": 5181, "name": "3.Le Huu Tinh", "parent_id": 5162, "married_with": null }, { "id": 5182, "name": "Ba Tinh", "parent_id": 5162, "married_with": 5181 }, { "id": 5189, "name": "Le Huu Dai", "parent_id": 5185, "married_with": null }, { "id": 5190, "name": "Ba Dai", "parent_id": 5185, "married_with": 5189 }, { "id": 5191, "name": "Le Huu Phong", "parent_id": 5185, "married_with": null }, { "id": 5192, "name": "Ba Phong", "parent_id": 5185, "married_with": 5191 }, { "id": 5193, "name": "Le Huu Luu", "parent_id": 5185, "married_with": null }, { "id": 5194, "name": "Ba Luu", "parent_id": 5185, "married_with": 5193 }, { "id": 5208, "name": "Le Huu Bac", "parent_id": 5206, "married_with": null }, { "id": 5209, "name": "Le Huu", "parent_id": 5206, "married_with": null }, { "id": 5221, "name": "2.Le Huu Thieu", "parent_id": 5216, "married_with": null }, { "id": 5222, "name": "Ba Thieu", "parent_id": 5216, "married_with": 5221 }, { "id": 5223, "name": "1.Le Thi Phuong", "parent_id": 5216, "married_with": null }, { "id": 5224, "name": "3.Le Huu Loi", "parent_id": 5216, "married_with": null }, { "id": 5225, "name": "Ba Loi", "parent_id": 5216, "married_with": 5224 }, { "id": 5226, "name": "4.Le Thi Tham", "parent_id": 5216, "married_with": null }, { "id": 5237, "name": "1.Le Huu Vinh", "parent_id": 5230, "married_with": null }, { "id": 5238, "name": "3.Le Huu Hoa", "parent_id": 5230, "married_with": null }, { "id": 5239, "name": "Ba Hoa", "parent_id": 5230, "married_with": 5238 }, { "id": 5240, "name": "2.Le Thi", "parent_id": 5230, "married_with": null }, { "id": 5241, "name": "Vo", "parent_id": 5230, "married_with": 5237 }, { "id": 5250, "name": "Le Huu", "parent_id": 5243, "married_with": null }, { "id": 5251, "name": "Le Huu", "parent_id": 5246, "married_with": 0 }, { "id": 5265, "name": "1.Le Huu Vinh", "parent_id": 5261, "married_with": null }, { "id": 5266, "name": "Ba Vinh", "parent_id": 5261, "married_with": 5265 }, { "id": 5267, "name": "3.Le Huu Thuong", "parent_id": 5261, "married_with": null }, { "id": 5268, "name": "Ba Thuong", "parent_id": 5261, "married_with": 5267 }, { "id": 5269, "name": "5.Le Huu Duc", "parent_id": 5261, "married_with": null }, { "id": 5270, "name": "Ba Duc", "parent_id": 5261, "married_with": 5269 }, { "id": 5271, "name": "2.Le Thi Binh", "parent_id": 5261, "married_with": null }, { "id": 5272, "name": "4.Le Thi Huong", "parent_id": 5261, "married_with": null }, { "id": 5041, "name": "1.Le Huu Tuan", "parent_id": 5029, "married_with": null }, { "id": 5042, "name": "Dinh Thi Kim Lien", "parent_id": 5029, "married_with": 5041 }, { "id": 5043, "name": "2.Le Huu Tu", "parent_id": 5029, "married_with": null }, { "id": 5044, "name": "Le Thi Ai Chinh", "parent_id": 5029, "married_with": 5043 }, { "id": 5049, "name": "3.Le Huu Ngoc", "parent_id": 5031, "married_with": null }, { "id": 5050, "name": "Le Thi Giang", "parent_id": 5031, "married_with": 5049 }, { "id": 5051, "name": "1.Le Thi Duyen", "parent_id": 5031, "married_with": null }, { "id": 5052, "name": "2.Le Thi Dao", "parent_id": 5031, "married_with": null }, { "id": 5053, "name": "4.Le Thi Bich", "parent_id": 5031, "married_with": null }, { "id": 5056, "name": "2.Le Huu Nhan", "parent_id": 5033, "married_with": null }, { "id": 5057, "name": "Hanh", "parent_id": 5033, "married_with": 5056 }, { "id": 5058, "name": "1.Le Thi Huyen", "parent_id": 5033, "married_with": null }, { "id": 5061, "name": "1.Le Thi Cuc", "parent_id": 5035, "married_with": null }, { "id": 5062, "name": "2.Le Thi Tam", "parent_id": 5035, "married_with": null }, { "id": 5063, "name": "1.Le Huu Nam", "parent_id": 5037, "married_with": null }, { "id": 5064, "name": "Le Thi", "parent_id": 5037, "married_with": 5063 }, { "id": 5065, "name": "2.Le Huu Tiep", "parent_id": 5037, "married_with": null }, { "id": 5066, "name": "Le Thi", "parent_id": 5037, "married_with": 5065 }, { "id": 5075, "name": "2.Le Huu Nang", "parent_id": 5071, "married_with": null }, { "id": 5076, "name": "Le Tham", "parent_id": 5071, "married_with": 5075 }, { "id": 5077, "name": "1.Le Thi Na", "parent_id": 5071, "married_with": null }, { "id": 5078, "name": "3.Le Thi No", "parent_id": 5071, "married_with": null }, { "id": 5080, "name": "1.Le Huu Huy", "parent_id": 5073, "married_with": null }, { "id": 5081, "name": "2.Le Huu Hoan", "parent_id": 5073, "married_with": null }, { "id": 5090, "name": "2.Le Huu Minh(Tuan Minh)", "parent_id": 5084, "married_with": null }, { "id": 5091, "name": "1.Le Thi Thu Phuong", "parent_id": 5084, "married_with": null }, { "id": 5092, "name": "1.Le Dang Huy", "parent_id": 5086, "married_with": null }, { "id": 5093, "name": "2.Le Bao Son", "parent_id": 5086, "married_with": null }, { "id": 5103, "name": "Le Huu Tuyen", "parent_id": 5100, "married_with": null }, { "id": 5104, "name": "Le Huu Tuan", "parent_id": 5100, "married_with": null }, { "id": 5105, "name": "Le Thi Hien", "parent_id": 5100, "married_with": null }, { "id": 5106, "name": "Le Thi Hoa", "parent_id": 5100, "married_with": null }, { "id": 5107, "name": "Vo", "parent_id": 5100, "married_with": 5103 }, { "id": 5108, "name": "Vo", "parent_id": 5100, "married_with": 5104 }, { "id": 5112, "name": "Le Huu", "parent_id": 5110, "married_with": null }, { "id": 5113, "name": "Le Thi", "parent_id": 5110, "married_with": null }, { "id": 5141, "name": "Le Huu Minh", "parent_id": 5138, "married_with": null }, { "id": 5142, "name": "Vo", "parent_id": 5138, "married_with": 5141 }, { "id": 5143, "name": "Le Huu Nghia", "parent_id": 5138, "married_with": null }, { "id": 5144, "name": "Le Thi Thuy", "parent_id": 5138, "married_with": null }, { "id": 5154, "name": "Le Huu Tun", "parent_id": 5148, "married_with": null }, { "id": 5171, "name": "Le Huu", "parent_id": 5167, "married_with": null }, { "id": 5172, "name": "Le Huu", "parent_id": 5169, "married_with": null }, { "id": 5176, "name": "Le Huu Minh", "parent_id": 5173, "married_with": null }, { "id": 5177, "name": "Le Thi", "parent_id": 5173, "married_with": null }, { "id": 5183, "name": "Le Huu Tuan", "parent_id": 5178, "married_with": null }, { "id": 5184, "name": "Le Thi", "parent_id": 5178, "married_with": null }, { "id": 5195, "name": "Le Huu Luan", "parent_id": 5189, "married_with": null }, { "id": 5196, "name": "Le Thi", "parent_id": 5189, "married_with": null }, { "id": 5197, "name": "Vo", "parent_id": 5189, "married_with": 5195 }, { "id": 5199, "name": "1.Le Huu Doan", "parent_id": 5191, "married_with": null }, { "id": 5200, "name": "2.Le Huu Dinh", "parent_id": 5191, "married_with": null }, { "id": 5201, "name": "Le Huu", "parent_id": 5193, "married_with": null }, { "id": 5202, "name": "Le Thi", "parent_id": 5193, "married_with": null }, { "id": 5227, "name": "Le Thi", "parent_id": 5221, "married_with": null }, { "id": 5228, "name": "Le Thi", "parent_id": 5221, "married_with": null }, { "id": 5229, "name": "Le Thi", "parent_id": 5221, "married_with": null }, { "id": 5242, "name": "Le Huu", "parent_id": 5237, "married_with": null }, { "id": 5273, "name": "Le Huu", "parent_id": 5265, "married_with": null }, { "id": 5274, "name": "2.Gai", "parent_id": 5265, "married_with": null }, { "id": 5275, "name": "Vo", "parent_id": 5265, "married_with": 5273 }, { "id": 5277, "name": "Le Huu", "parent_id": 5267, "married_with": null }, { "id": 5278, "name": "Le Huu", "parent_id": 5269, "married_with": null }, { "id": 5045, "name": "Le Huu Tuan Khoi", "parent_id": 5041, "married_with": null }, { "id": 5046, "name": "Le Cat Nha Uyen", "parent_id": 5041, "married_with": null }, { "id": 5047, "name": "Le Huu Anh Khoa", "parent_id": 5043, "married_with": null }, { "id": 5048, "name": "Le Thi Truc Anh", "parent_id": 5043, "married_with": null }, { "id": 5054, "name": "Le Huu", "parent_id": 5049, "married_with": null }, { "id": 5055, "name": "Le Thi", "parent_id": 5049, "married_with": null }, { "id": 5059, "name": "Le Thi", "parent_id": 5056, "married_with": null }, { "id": 5060, "name": "Le Thi", "parent_id": 5056, "married_with": null }, { "id": 5067, "name": "Le Huu", "parent_id": 5063, "married_with": null }, { "id": 5068, "name": "Le Huu", "parent_id": 5063, "married_with": null }, { "id": 5069, "name": "Le Huu", "parent_id": 5065, "married_with": null }, { "id": 5070, "name": "Le Thi", "parent_id": 5065, "married_with": null }, { "id": 5079, "name": "Le Huu Long", "parent_id": 5075, "married_with": null }, { "id": 5109, "name": "Le Huu", "parent_id": 5104, "married_with": null }, { "id": 5145, "name": "Le Thi", "parent_id": 5141, "married_with": null }, { "id": 5146, "name": "Le Huu", "parent_id": 5141, "married_with": null }, { "id": 5198, "name": "Gai", "parent_id": 5195, "married_with": null }, { "id": 5276, "name": "Trai", "parent_id": 5273, "married_with": null } ]
+
+
+var rootId = 2576; // root gốc
+var treeData = buildHierarchy(data, rootId);
+console.log(JSON.stringify(treeData, null, 2));
+
+
+
+// Thiết lập kích thước
+var margin = {top: 20, right: 90, bottom: 30, left: 90},
+    width = 1200 - margin.left - margin.right,
+    height = 800 - margin.top - margin.bottom; // tăng height để có không gian
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.right + margin.left)
+    .attr("height", height + margin.top + margin.bottom);
+
+var gZoom = svg.append("g");
+
+var g = gZoom.append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+var i = 0,
+    duration = 750,
+    root;
+
+// Sử dụng nodeSize để đặt khoảng cách cố định, ví dụ: cách nhau 80px dọc và 250px ngang
+// Sử dụng separation để tăng thêm khoảng cách giữa các node cùng cha.
+var treemap = d3.tree()
+    .nodeSize([80, 250])
+    .separation(function(a, b) {
+      // Nếu cùng cha, để khoảng cách gấp đôi bình thường
+      return a.parent == b.parent ? 2 : 2.5; 
+    });
+
+root = d3.hierarchy(treeData, function(d) { return d.children; });
+root.x0 = 0;
+root.y0 = 0;
+
+// if (root.children) root.children.forEach(collapse);
+update(root);
+
+// Zoom behavior
+svg.call(d3.zoom()
+    .scaleExtent([0.1, 5]) // cho phép thu nhỏ đến 0.1 và phóng to đến 5 lần
+    .on("zoom", function(event) {
+      gZoom.attr("transform", event.transform);
+    })
+);
+
+function collapse(d) {
+  if(d.children) {
+    d._children = d.children;
+    d._children.forEach(collapse);
+    d.children = null;
+  }
+}
+
+function update(source) {
+  var treeData = treemap(root);
+
+  var nodes = treeData.descendants(),
+      links = treeData.descendants().slice(1);
+
+  var node = g.selectAll('g.node')
+      .data(nodes, function(d) {return d.id || (d.id = ++i); });
+
+  var nodeEnter = node.enter().append('g')
+      .attr('class', 'node')
+      .attr("transform", function(d) {
+        return "translate(" + source.x0 + "," + source.y0 + ")";
+      })
+      .on('click', click);
+
+  nodeEnter.append('rect')
+      .attr('x', -50)
+      .attr('y', -15)
+      .attr('width', 100)
+      .attr('height', 30)
+      .attr('rx', 4)
+      .attr('ry', 4)
+      .style("fill", function(d) {
+          return d._children ? "lightsteelblue" : "#fff";
+      });
+
+  nodeEnter.append('text')
+      .attr("dy", ".35em")
+      .attr("text-anchor", "middle")
+      .text(function(d) { return d.data.name; });
+
+  var nodeUpdate = nodeEnter.merge(node);
+
+  nodeUpdate.transition()
+    .duration(duration)
+    .attr("transform", function(d) {
+        return "translate(" + d.x + "," + d.y + ")";
+     });
+
+  nodeUpdate.select('rect')
+    .style("fill", function(d) {
+        return d._children ? "lightsteelblue" : "#fff";
+    });
+
+  var nodeExit = node.exit().transition()
+      .duration(duration)
+      .attr("transform", function(d) {
+          return "translate(" + source.x + "," + source.y + ")";
+      })
+      .remove();
+
+  var link = g.selectAll('path.link')
+      .data(links, function(d) { return d.id; });
+
+  var linkEnter = link.enter().insert('path', "g")
+      .attr("class", "link")
+      .attr('d', function(d){
+        var o = {x: source.x0, y: source.y0}
+        return diagonal(o, o)
+      });
+
+  var linkUpdate = linkEnter.merge(link);
+
+  linkUpdate.transition()
+      .duration(duration)
+      .attr('d', function(d){ return diagonal(d, d.parent) });
+
+  var linkExit = link.exit().transition()
+      .duration(duration)
+      .attr('d', function(d) {
+        var o = {x: source.x, y: source.y}
+        return diagonal(o, o)
+      })
+      .remove();
+
+  nodes.forEach(function(d){
+    d.x0 = d.x;
+    d.y0 = d.y;
+  });
+
+  function diagonal(s, d) {
+    var path = `M ${s.x} ${s.y}
+            C ${(s.x + d.x) / 2} ${s.y},
+              ${(s.x + d.x) / 2} ${d.y},
+              ${d.x} ${d.y}`;
+    return path;
+  }
+
+  function click(event, d) {
+    if (d.children) {
+        d._children = d.children;
+        d.children = null;
+      } else {
+        d.children = d._children;
+        d._children = null;
+      }
+    update(d);
+  }
+}
+
+</script>
+</body>
+</html>

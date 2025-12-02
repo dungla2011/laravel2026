@@ -1,0 +1,1522 @@
+<?php
+
+//view-source:http://4share.vn/tool/?folder=MDAwQzI5RjhENzBBIzIuNTYvenp6enoxLzExMTExMTExMTE=
+
+
+use App\Models\FileUpload;
+use App\Models\TmpDownloadSession;
+
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+define("MAIN_DOMAIN", "4share.vn");
+define("DEBUG_GLX", 0);
+
+define("GLOBAL_ERROR_FILE","/var/glx/weblog/_error_global.log");
+define("GLOBAL_ACCESS_FILE","/var/glx/weblog/_access_global.log");
+define("GLOBAL_DEBUG_FILE","/var/glx/weblog/_debug.log");
+defined("DEF_MAX_DOWNLOAD_DAY_GB") || define("DEF_MAX_DOWNLOAD_DAY_GB", 120);
+
+require '../../vendor/autoload.php';
+
+$app = require_once '../../bootstrap/app.php';
+$kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
+$response = $kernel->handle(
+    $request = Illuminate\Http\Request::capture()
+);
+
+// Kết thúc đoạn Init Framework Laravel
+////////////////////////////////////////////////////////////////////
+
+if (isset($_GET['online'])) {
+    return;
+}
+function gen_path_file($id, $location = "") {
+    return "$location/" . gen_path_from_number($id);
+}
+$is4Share = 1;
+
+if(0){
+    //$xml_data_detail = "<a href='http://" . MAIN_DOMAIN . "'>Welcome to " . strtoupper(MAIN_DOMAIN) . "</a>";
+    $xml = "<userinfo>";
+    $xml.= "\n<detail>";
+    $xml.= "Hệ thống đang được nâng cấp!";
+    $xml .= "\n</detail>";
+    $xml .= "\n<param1>0</param1>";
+    $xml .= "\n<param2>0</param2>";
+    $xml .= "\n<reason1>Hệ thống đang nâng cấp</reason1>";
+    $xml .= "\n<reason2>Hệ thống đang nâng cấp</reason2>";
+    $xml .= "\n<svr>4share.vn</svr>";
+    $xml .= "\n<svp>12121</svp>";
+    $xml .= "\n</userinfo>";
+    ob_clean();
+    echo $xml;
+    die();
+}
+
+//die(" He thong dang bao duong den 10hAM 03.03.2019");
+
+$remoteIP = $_SERVER['REMOTE_ADDR'];
+
+$g_toolDisableUploadGlobal = 0;
+$_today = nowyh();
+
+function outputLog($strlog) {
+    global $remoteIP;
+    $file = "/var/glx/weblog/4s.tool.log";
+    if (file_exists($file) &&  filesize($file) > 100 * _MB)
+        rename($file, $file . '.' . time());
+    outputT($file, $remoteIP . " - " . $strlog);
+}
+
+function ol1($strlog) {
+    outputLog($strlog);
+}
+
+function loiLg($show_user, $detail_to_log = "") {
+    $detail = "";
+    if (!empty($detail_to_log))
+        ;
+    $detail = " , Detail: ($detail_to_log)";
+    dumperrorglobal(" $show_user $detail");
+    //CToolLad::notifyError("$show_user $detail");
+
+    loi($show_user);
+}
+
+outputT("/var/glx/weblog/4s.tool_access.log" , " Tool Access: $remoteIP / "  . \LadLib\Common\UrlHelper1::getFullUrl());
+
+if(isset($_GET['debug'])){
+    foreach ($_GET AS $par){
+        $x = decodeParam($par);
+        echo "<br/> $x ";
+    }
+    die();
+}
+
+//////////////
+$thongTinTop = "<span style='color: red; font-size: 13px'> H&#7878; TH&#7888;NG &#272;ANG B&#7842;O D&#431;&#7904;NG UPLOAD v&#7899;i TOOL.
+    (B&#7841;n c&#243; th&#7875; Download b&#236;nh th&#432;&#7901;ng)!</span>
+    <br/>";
+
+$thongTinTop = " <a href='https://4share.vn/' >4Share.vn</a> Tài khoản Google hay Facebook chưa có mật khẩu, có thể đặt mật khẩu <a href='https://4share.vn/member/index/change-password'>Tại đây</a>";
+$thongTinTop = " <a href='https://4share.vn/' >4Share.vn</a> T&#224;i kho&#7843;n Google hay Facebook ch&#432;a c&#243; m&#7853;t kh&#7849;u, c&#243; th&#7875; &#273;&#7863;t m&#7853;t kh&#7849;u <a href='https://4share.vn/member/index/change-password'>T&#7841;i &#273;&#226;y</a>";
+
+
+if(nowy() < '2019-03-15'){
+
+//    $thongTinTop.=" <span style='color: red'> Thông báo: có lỗi upload đã xảy ra từ khoảng ngày 05 đến 07/03, 4share đã fix và tiếp tục theo dõi </span>";
+
+    $thongTinTop.=" <span style='color: red'><b> Th&#244;ng b&#225;o: c&#243; l&#7895;i upload &#273;&#227; x&#7843;y ra t&#7915; kho&#7843;ng ng&#224;y 05 &#273;&#7871;n 07/03, l&#224;m m&#7897;t s&#7889; file upload tool b&#7883; m&#7845;t, 4share &#273;&#227; fix v&#224; ti&#7871;p t&#7909;c theo d&#245;i. Xin l&#7895;i b&#7841;n v&#236; s&#7921; c&#7889; n&#224;y! </b></span> <br/>";
+
+}
+
+function decodeParam($par){
+    $SERVER_PORT = $_SERVER['SERVER_PORT'];
+
+    global $is4Share;
+    if(!$is4Share){
+        //if($SERVER_PORT == 56668) {
+        //die($par);
+        //die (HTS($par));
+        return HTS($par);
+    }
+    else
+        return base64_decode($par);
+}
+//Done 2024
+
+//Done 2024
+function GetUserListXML($userid, $folderID = "", $dirOnly = 0, $option = '') {
+    //dumpdebug(" GetUserListXML , U=$userid , FID=$folderID");
+
+    $limitNfile = 1000;
+    global $is4Share;
+//    $db = MysqliDb::getInstance();
+    $_strvalid_xml = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890~!@#$%^*()-_=+,./?:;'[{]}<> \n\r";
+
+    $file = new \App\Models\FileUpload();
+    $dir = new \App\Models\FolderFile();
+
+    if(!$folderID){
+        $folderID = 0;
+    }
+
+    $folderID = str_replace("/", '', $folderID);
+
+    $thisId = $folderID;
+    $parentId= 0;
+
+    if($folderID) {
+        if(!is_numeric($folderID))
+            loi("Not valid folder id!");
+        if(!$dir = $dir->find($folderID)){
+            loi("Not found folder ($folderID)?");
+        }
+        $thisId = $folderID;
+        $parentId = $dir->parent_id;
+    }
+
+    if(!$parentId)
+        $parentId = 0;
+
+    if(isDebugIp()){
+//        die("$folderID  xxx1 / $thisId / PID= $dir->parent_id");
+    }
+
+    $padDebug = '';
+
+    if(!$is4Share)
+        if($folderID == -1)
+            $folderID = 0;
+
+//    $aFile = $file->getArrayWhereSql_("userid = $userid AND parent = '$folderID' AND (delete_date IS NULL OR delete_date = '') $padDebug LIMIT $limitNfile");
+    $aFile = $file->where("user_id", $userid)->where("parent_id", $folderID)->limit($limitNfile)->get();
+
+//    $aDir = $dir->getArrayWhereSql_("userid = $userid AND parent = '$folderID' AND (delete_date IS NULL OR delete_date = '')  $padDebug LIMIT $limitNfile");
+    $aDir = $dir->where("user_id", $userid)->where("parent_id", $folderID)->limit($limitNfile)->get();
+
+    if(!$aDir && !$aFile){
+        return "<listdata>
+            <parent_folder_id>$parentId</parent_folder_id>
+            <current_folder_id>$folderID</current_folder_id>
+            </listdata>";
+
+    }
+
+    $XML="";
+    $XML.=("\n<listdata>");
+    $XML.=("\n<parent_folder_id>$parentId</parent_folder_id>");
+    $XML.=("\n<current_folder_id>$thisId</current_folder_id>");
+
+
+    if($aDir) {
+        foreach ($aDir AS $dir) {
+            if ($dir instanceof \App\Models\FolderFile) {
+                $dir->name = str_replace(["&", '?', '$', '\'', '"', '`', '#', '~', '*', ';'], "_", $dir->name);
+                $link1 = "https://" . MAIN_DOMAIN . "/d/" . $dir->link1;
+                $XML.=("\n<folder>");
+                $XML.=("\n<id>folder_$dir->link1</id>");
+                //$XML.=("\n<id>$dir->link1</id>");
+                $XML.=("\n<name>$dir->name</name>");
+                $XML.=("\n<data_type></data_type>");
+                $XML.=("\n<time>$dir->created_at</time>");
+                $XML.=("\n<link>$link1</link>");
+                $XML.=("\n</folder>");
+            }
+
+        }
+        if(count($aDir) >$limitNfile){
+            $XML.=("\n<file>");
+            $XML.=("\n<id>1</id>");
+            //$XML.=("\n<id>$file->link1</id>");
+            $XML.=("\n<name>Z-Note: LIMIT SHOW $limitNfile FILEs in One Folder, You can create Folder to move file to</name>");
+//                $XML.=("\n<id>$file->link1</id>");
+//                $XML.=("\n<name>name</name>");
+            $XML.=("\n<size>0</size>");
+            $XML.=("\n<data_type></data_type>");
+            $XML.=("\n<time>0</time>");
+            $XML.=("\n<link>https://".DOMAIN_MAIN."</link>");
+            $XML.=("\n</file>");
+        }
+    }
+
+    if($aFile) {
+        foreach ($aFile AS $file) {
+            if ($file instanceof \App\Models\FileUpload) {
+
+                $file->name = str_replace("&", "_", $file->name);
+
+                $link1 = "https://" . MAIN_DOMAIN . "/f/" . $file->link1 . "";
+                $XML.=("\n<file>");
+                $XML.=("\n<id>file_$file->link1</id>");
+                //$XML.=("\n<id>$file->link1</id>");
+                $XML.=("\n<name>$file->name</name>");
+//                $XML.=("\n<id>$file->link1</id>");
+//                $XML.=("\n<name>name</name>");
+                $XML.=("\n<size>$file->file_size</size>");
+                $XML.=("\n<data_type></data_type>");
+                $XML.=("\n<time>$file->created_at</time>");
+                $XML.=("\n<link>$link1</link>");
+                $XML.=("\n</file>");
+            }
+        }
+
+        if(count($aFile) >$limitNfile){
+            $XML.=("\n<file>");
+            $XML.=("\n<id>1</id>");
+            //$XML.=("\n<id>$file->link1</id>");
+            $XML.=("\n<name>Z-Note: LIMIT SHOW $limitNfile FILEs in One Folder, You can create Folder to move file to</name>");
+//                $XML.=("\n<id>$file->link1</id>");
+//                $XML.=("\n<name>name</name>");
+            $XML.=("\n<size>0</size>");
+            $XML.=("\n<data_type></data_type>");
+            $XML.=("\n<time>0</time>");
+            $XML.=("\n<link>https://".DOMAIN_MAIN."</link>");
+            $XML.=("\n</file>");
+        }
+    }
+
+    $XML.=('</listdata>');
+
+    _END_FUNCTION_USERLIST_XML:
+
+    $ret = $XML;
+    //For test XML valid:
+    $xml = @simplexml_load_string($ret);
+
+
+    if (!$xml) {
+        //baoloi(" XML ERROR ! $ret");
+        for ($i = 0; $i < strlen($ret); $i++)
+            if (strstr($_strvalid_xml, $ret[$i]) == FALSE)
+                $ret[$i] = '_';
+
+        //For test XML valid:
+
+        $xml = simplexml_load_string($ret);
+        if (!$xml)
+            loi("Error GetUserListXML2: Not valid XML form! FolderID = $folderID, UID = $userid");
+    }
+
+
+    return $XML;
+}
+
+//Done 2024
+function toolStartUp($get) {
+
+    global $remoteIP;
+
+    global $thongTinTop;
+
+    $forDev = 0;
+    if (isset($get['fordev']) && $get['fordev'] == 1)
+        $forDev = 1;
+
+    $xml_data_detail = "<a href='http://" . MAIN_DOMAIN . "'>Welcome to " . strtoupper(MAIN_DOMAIN) . "</a>";
+    $xml = "\n<userinfo>";
+    $xml.= "\n<detail>"; //(<strong>$clientSign</strong>)
+
+//    if(ClassNetwork::getPortServer() == 56668)
+//    $xml.= " TEST 123";
+//        else
+    $xml.= "\n<div style='font-family: arial; font-size: 13px ; color: DarkBlue    ; border: 1px solid green ; margin: 5px ; padding: 5px ;background-color: ;'>
+$thongTinTop</div>";
+    $xml .= "\n</detail>";
+    $xml .= "\n<version_on_server>2.39</version_on_server>";
+    $xml .= "\n<url_download>http://4share.vn:56666/download/lastupdatewin.html</url_download>";
+    //$xml .= "\n<md5_lastver>a71ba1065f9d4f8cb627f77b9c6063b6</md5_lastver>"; //2.38 20.08.2015
+    $xml .= "\n<md5_lastver>053c97c03b54b2471dd871a51cd02cdd</md5_lastver>"; //2.38 : 2021
+
+    $xml .= "\n<param1>1</param1>";
+    $xml .= "\n<param2>1</param2>";
+
+    //Neu la sv cua mrDinh
+//    if($remoteIP == '222.252.30.149')
+    if(0)
+    if($remoteIP == gethostbyname("webup.4share.vn"))
+    {
+//        $xml .= "\n<svr>sv18.4share.vn</svr>";
+        $xml .= "\n<svr>10.0.0.20</svr>";
+    }
+    else
+//        $xml .= "\n<svr>4share.vn</svr>";
+        $xml .= "\n<svr>webup.4share.vn</svr>";
+
+    //$xml .= "\n<svr>webup.4share.vn</svr>";
+    $xml .= "\n<svr>v2up.4share.vn</svr>";
+
+    //$xml .= "\n<svp>36868</svp>";
+    //$xml .= "\n<svr>4share.vn</svr>";
+    //FTP port upload
+
+    if($remoteIP == '118.68.64.162'){
+        $xml .= "\n<svp>36880</svp>";
+    }
+    else{
+        if ($forDev)
+            $xml .= "\n<svp>56868</svp>";
+        else
+    //        $xml .= "\n<svp>36868</svp>";
+    //        $xml .= "\n<svp>36869</svp>";
+        $xml .= "\n<svp>36880</svp>";
+    }
+
+    $xml .= "\n</userinfo>";
+
+    //ob_clean();
+    echo $xml;
+    return;
+}
+
+//Done 2024
+function toolGetFolder($get) {
+
+    $_today = nowyh();
+    global $thongTinTop , $g_toolDisableUploadGlobal, $is4Share, $remoteIP;
+
+    $thongTinTop = "<H3 style='color: red'>Xin loi ban! 4Share Tool Dang bao duong! <br> Ban co the su dung Web de Upload!</H3> <a href='https://4share.vn/' >4Share.vn</a> ";
+    $thongTinTop = "<a href='https://4share.vn/' >4Share.vn</a> ";
+
+
+//////////////////////////////
+//FolderList:
+//Sample URL:
+//  http://test.pm33.net/tool/info.php?folder=base64($csign,$userid,$pass, $folderid_enc)
+//  http://test.pm33.net/tool/info.php?folder=4142313132323333343435352f7465737430312f313233343536
+//  http://test.pm33.net/tool/info.php?folder=323531343133316431373136313131302f7465737430312f3132333435362f3332333733323336333033373332
+    if (isset($get['folder'])) {
+
+        ol1(" | toolGetFolder " . \LadLib\Common\UrlHelper1::getFullUrl());
+
+        //AssertValidGetPost($_GET['folder']);
+
+        //$cret = new CReturnError();
+
+
+        //if($remoteIP == 'xx14.231.223.15'){
+//        if(ClassNetwork::getPortServer() == 56668){
+//            ob_clean();
+//            $x =  file_get_contents(__DIR__."/1.html");
+//            die($x);
+//        }
+
+        $get = $get['folder'];
+        $get = decodeParam($get);
+        //$get = HTS($get);
+        $get = strip_tags($get);
+
+//        echo "<br/>$get";
+
+        @list($csign, $username_or_email, $pass, $fid_enc) = explode("/", ($get));
+
+        $str_debug = "";
+        if (DEBUG_GLX == 1)
+            $str_debug = "'$csign,$username_or_email,$pass, $fid_enc'";
+
+        $fid_enc = str_replace("folder_", "", $fid_enc);
+
+
+        $oUserCms = checkAuthTool($username_or_email, $pass);
+
+
+        $userid = $oUserCms->id;
+
+        $tmpUsing = FileUpload::getUserQuotaUsingCache($userid);
+        $countUsing = $tmpUsing['count_file'];
+        $sumByteUsing = $tmpUsing['size_byte'];
+        if(isDebugIp()){
+
+        }
+        $allowUpload = 0;
+        $allowDownload = 0;
+
+        if($is4Share)
+            if (1) {
+                ///////////////// USER INFO  ///////////////////////////////////
+//                $userinfo = new ClassUser4S();
+//                $userinfo->userid = $userid;
+//
+//                //Lấy từ cache, (cho phép over 60 phut)
+//                $cret = $userinfo->getAllInfo($userid, 1);
+//
+//                if($oUserCms->lastRunTimerUnix < time() - 3600 * 3)
+//                    $userinfo->runTimer();
+//
+
+                $endTime = "2024-11-11";
+                $banned_time = '2022-11-11';
+
+                $notVIp = 0;
+                if ($endTime > time()) {
+                    $allowUpload = 1;
+                    $allowDownload = 1;
+                } else {
+                    $notVIp = 1;
+                }
+
+
+                $banned_account = 0;
+
+                $userobj = $oUserCms;
+//                $userobj->getOne($userid);
+
+
+                $banned_account = 0;
+                if (0) {
+                    //bl("Tài khoản '$userobj->username' đã bị khóa!<br/>$userobj->banned_reason");
+
+                    $banned_account = 1;
+                }
+
+
+                $username = $userobj->username;
+//Chú ý: Tool chủ yếu để Upload File lớn. Để tải file, bạn nên dùng trình duyệt kết hợp IDM, hoặc Cốc Cốc hỗ trợ sẵn tải đa luồng!
+                //$userInfoString = "<span style='color: red'> Ch&#250; &#253;: Tool ch&#7911; y&#7871;u &#273;&#7875; Upload File l&#7899;n. &#272;&#7875; t&#7843;i file, b&#7841;n n&#234;n d&#249;ng Tr&#236;nh duy&#7879;t Web Chrome, IDM, ho&#7863;c C&#7889;c C&#7889;c h&#7895; tr&#7907; s&#7861;n t&#7843;i &#273;a lu&#7891;ng!
+
+                $userInfoString = "<span style='color: ; '>
+ $thongTinTop
+T&#224;i kho&#7843;n <a class='tbold' style='color: ;hover color:  ;' href='http://4share.vn/member'>$username</a> </span> ";
+                $lockDate = $endTime;
+
+                //$userInfoString.="<br/> END DATE = $lockDate <br/>";
+
+                if ($banned_account) {
+                    $userInfoString .= "<br/><span style='color: red; font-size: 15px'>Tai khoan khoa da bi khoa! Thoi han: $banned_time<br/></span>";
+                }
+
+                $pad = "";
+                $pad2 = "";
+
+                $isVIP = 0;
+
+
+                if ($notVIp == 0) {
+                    $userInfoString.=" [<strong>VIP</strong>] Han su dung: $lockDate ";
+                    $isVIP = 1;
+                }
+                else {
+
+                    $userInfoString.=" (<strong>MEMBER</strong>) | &#272;&#227; h&#7871;t h&#7841;n VIP $pad ";
+                }
+
+                $userInfoString.= " . <a href='http://4share.vn/member'><strong>Qu&#7843;n l&#253;</strong></a> |  <a href='http://4share.vn/information/guide'><strong>H&#7895; tr&#7907;</strong></a></span>";
+
+                if (!$isVIP)
+                    $userInfoString.= "<div style='margin-top: 3px; padding: 0px; color: Maroon ; font-weight: border : 0px; background-color: lavender;'><strong>B&#7841;n c&#243; th&#7875; N&#7841;p gold VIP <a style='color: red' href='http://4share.vn/payment'> <ins>T&#7840;I &#272;&#194;Y</ins></a> &#273;&#7875; c&#243; m&#7885;i t&#237;nh n&#259;ng VIP! </strong></div>T&#224;i kho&#7843;n ch&#432;a ph&#7843;i l&#224; VIP n&#234;n t&#7841;m th&#7901;i kh&#244;ng th&#7875; Download/Upload!";
+
+                /// QUOTA INFO:
+                $downloadtoday = 100000000;
+                $userInfoString.= "<br />B&#7841;n &#273;&#227; download h&#244;m nay: " . ByteSize($downloadtoday) . " / Toi da 1 ngay: " . DEF_MAX_DOWNLOAD_DAY_GB . " GB";
+                $reachMaxDownload = 0;
+
+                if ($downloadtoday > DEF_MAX_DOWNLOAD_DAY_GB * _GB) {
+                    $userInfoString.=("<br /><blink><span style= 'color: red'>T&#224;i kho&#7843;n ($username) &#273;&#227; download
+            <strong>" . ByteSize($downloadtoday) . "</strong>,
+                v&#432;&#7907;t qu&#225; dung l&#432;&#7907;ng cho ph&#233;p m&#7897;t ng&#224;y (<strong>" . DEF_MAX_DOWNLOAD_DAY_GB  . " GB</strong>)! </span></blink>");
+                    $reachMaxDownload = 1;
+                }
+
+                $objCloud = \App\Models\UserCloud::where("user_id", $userid)->first();
+
+
+//                if($objCloud instanceof ModelCloudUser);
+
+                $totalSizeFormat = ByteSize($objCloud->glx_bytes_in_used);
+
+//                $bs = ByteSize($gpUser->quota_size);
+//                $countUsing = FileUpload::where('user_id', $userid)->count();
+//                $sumByteUsing = FileUpload::where('user_id', '=', $userid)->sum('file_size');
+
+
+
+                $totalSizeFormat = ByteSize($sumByteUsing);
+
+
+                //About file in used:
+                $userInfoString.=("<br /> B&#7841;n &#273;&#227; upload <strong>$totalSizeFormat</strong> ($countUsing file) / T&#7893;ng s&#7889; cho ph&#233;p: <strong>" . ByteSize($objCloud->quota_size) . "</strong> ($objCloud->quota_file File)");
+
+                if ($objCloud->quota_size < $objCloud->glx_bytes_in_used)
+                    $userInfoString.=("<br /> <span style='color: red; font-weight: bold'> Dung l&#432;&#7907;ng upload &#273;&#227; v&#432;&#7907;t gi&#7899;i h&#7841;n: " . ByteSize($objCloud->glx_bytes_in_used) . "  (>= " . ByteSize($objCloud->quota_size) . ") </span>");
+                if ($objCloud->quota_file < $objCloud->glx_files_in_used)
+                    $userInfoString.=("<br /> <span style='color: red; font-weight: bold'> S&#7889; file upload &#273;&#227; v&#432;&#7907;t gi&#7899;i h&#7841;n: $objCloud->glx_files_in_used (>$objCloud->quota_file) </span>");
+            }
+
+        ////
+        ////////////////////////
+        ////////////////////////////////////
+        /////////Begin net UserList/////////
+        $fid_ok = $fid_enc;
+        if (empty($fid_enc))
+            $fid_ok = 0;
+        //if(!is_numeric($fid_ok) || $fid_ok > 10000000000)
+
+        if($fid_ok > 0)
+        {
+            $fidx = dfh1b($fid_enc);
+
+            //Nếu sai thì bỏ qua, vì ID đã đúng, ko cần decode
+            if(!is_numeric($fidx)){
+                //loiLg(" Not valid number fid0($fidx)!");
+            }
+            else
+                $fid_ok = $fidx;
+        }
+
+        $xml_data_detail = GetUserListXML($userid, $fid_ok);
+//        $xml_data_detail = "\n<listdata>
+//            <parent_folder_id>1</parent_folder_id>
+//            <current_folder_id>1</current_folder_id>
+//            </listdata>\n";
+
+        $xml = "<userinfo> <value>1</value><string></string>";
+        $xml.= "\n<detail>";
+        //$xml.= "\n<div style='font-family: Arial; font-size: ; border: 1px solid green ; margin: 5px ; padding: 5px ;background-color: white'>(<strong>$clientSign</strong>) WELLCOME TO ABC <BR/> LOGIN PLEASE!</div>";
+//        if(ClassNetwork::getPortServer() == 56668)
+//            $xml.= "\n<span style='color: red;'>TEST 123 / $port </span>";
+//        else
+        {
+            $xml .= "\n<div style='border: 1px solid green ; margin: 0px ; padding: 5px ;background-color: ; min-height: 200px'>$userInfoString</div>"; //<span style='color: red'> <b>Quota Reach</b></span>";
+            //$xml.= "\n<span style='color: red;'>SORRY, TESTING ERROR / $port</span>";
+        }
+        $xml .= "\n</detail>";
+        $xml.= $xml_data_detail;
+        //$xml .= "\n<param1>$allowUpload</param1>";
+        //$xml .= "\n<param2>1</param2>";
+        if ($reachMaxDownload == 1)
+            $allowDownload = 0;
+
+        //Kiểm tra xem có phải uploader không
+        //nếu là uploader, không đủ 50 gold thưởng trong quá khứ, thì không thể tiếp tục download:
+        $isUploaderNotEnoughGold = 0;
+
+//        $cret = $arrUploader = ClassUser4S::getUploaderArrayCache();
+
+        if(0)
+        if (in_array($userid, $arrUploader)) {
+
+            $objUploader = new ClassUploader;
+            $cret = $objUploader->getOneWhereSql(" userid = $userid");
+            $timeUnix = strtotime($objUploader->time);
+            $tinhSoGoldThuongByAdmin = ClassUser4S::getSoGoldType($userid, DEF_GOLDTYPE_ADMIN_INSERT);
+            $soGoldFreeCanDeDownload = $tinhSoGoldThuongByAdmin + 1 - 15 * floor((time() - $timeUnix ) / _NSECOND_DAY);
+        }
+        //bl("xxx: $count > $obj->quota_file")  ;
+
+        if ($banned_account) {
+            $xml .= "\n<param1>0</param1>";
+            $xml .= "\n<reason1>Tài khoản đã bị khóa, $userobj->banned_reason! </reason1>";
+        } elseif (isset($g_toolDisableUploadGlobal) && $g_toolDisableUploadGlobal == 1 && $username <> 'zzzzz1') {
+            $xml .= "\n<param1>0</param1>";
+            $xml .= "\n<reason1> Hệ thống tạm dừng Upload để bảo dưỡng!</reason1>";
+        } else {
+
+            if (!$isVIP) {
+                $allowUpload = 0;
+                if(!$is4Share)
+                    $allowUpload = 1;
+                $xml .= "\n<param1>$allowUpload</param1>";
+                $xml .= "\n<reason1> Bạn chưa có quyền Upload(Tải file lên) vì tài khoản chưa phải là VIP!</reason1>";
+            } elseif ($countUsing > $objCloud->quota_file || $sumByteUsing > $objCloud->quota_size) {
+                $allowUpload = 0;
+                if(!$is4Share)
+                    $allowUpload = 1;
+                $xml .= "\n<param1>$allowUpload</param1>";
+                $xml .= "\n<reason1> Tài khoản đã quá dung lượng/số file lưu trữ nên không thể Upload (Tải file lên)!</reason1>";
+            } else { //Cho phép upload:
+                $allowUpload = 1;
+                $xml .= "\n<param1>$allowUpload</param1>";
+            }
+        }
+
+
+        if ($banned_account)
+            $allowDownload = 0;
+        if ($isUploaderNotEnoughGold)
+            $allowDownload = 0;
+
+        if(!$is4Share)
+            $allowDownload = 1;
+
+        //Param1 : allow download if =1
+        $xml .= "\n<param2>$allowDownload</param2>";
+
+        if ($banned_account)
+            $xml .= "\n<reason2>Tài khoản đã bị khóa, $userobj->banned_reason! </reason2>";
+        elseif (!$isVIP)
+            $xml .= "\n<reason2> Bạn chưa có quyền Download vì tài khoản chưa phải là VIP!</reason2>";
+        elseif ($isUploaderNotEnoughGold) {
+            $xml .= "\n<reason2>$lyDoUploader!</reason2>";
+        } else {
+            if ($allowDownload == 0)
+                if ($reachMaxDownload == 0)
+                    $xml .= "\n<reason2> Bạn chưa có quyền Download vì tài khoản chưa phải là VIP!</reason2>";
+                else
+                    $xml .= "\n<reason2> Tài khoản đã download vượt quá dung lượng cho phép/ngày!</reason2>";
+        }
+
+        //Nếu là uploader thì bỏ qua không set tốc độ
+        //else
+        //Upload speed  max:
+        //$xml .= "\n<max_usp>5000</max_usp>";
+
+        $xml .= "\n</userinfo>";
+
+        ob_clean();
+        //echo 'xxx';
+        echo $xml;
+        return;
+    }
+}
+//Done 2024
+function toolCreateFolder($get) {
+
+    if (isset($get['create_folder'])) {
+        //AssertValidGetPost($_GET['create_folder']);
+        //dumpdebug(__FILE__. "(".__LINE__.") : ". $_SERVER['REQUEST_URI']);
+
+        $get = $get['create_folder'];
+        $get = decodeParam($get);
+        //$get = HTS($get);
+        $get = strip_tags($get);
+
+        list($csign, $username_or_email, $pass, $CurrentFolderID, $NewFolderNameToCreate) = explode("/", ($get));
+
+        if (!\clsValidate::isFilename($NewFolderNameToCreate)) {
+            loiLg("Error: Not valid filename ($NewFolderNameToCreate)");
+        }
+
+        $fidx = $CurrentFolderID = str_replace("folder_", "", $CurrentFolderID);
+
+        $oUserCms = checkAuthTool($username_or_email, $pass);
+
+        $userid = $oUserCms->id;
+        ////
+        ////////////////////////
+
+//        echo " $csign,$userid,$pass, $CurrentFolderID , $NewFolderNameToCreate<br /><br />";
+        //return;
+        if (empty($CurrentFolderID))
+            $CurrentFolderID = 0;
+        else
+            //if(!is_numeric($CurrentFolderID) || $CurrentFolderID > 10000000000)
+        {
+            $CurrentFolderID = dfh1b($CurrentFolderID);
+            if(!is_numeric($CurrentFolderID))
+                $CurrentFolderID = $fidx;
+            if(!is_numeric($CurrentFolderID))
+                loiLg(" Not valid number fid6($fidx) !");
+        }
+
+        if($CurrentFolderID > 0)
+            if(!\App\Models\FolderFile::find($CurrentFolderID)){
+                loi("Not valid your folder id?");
+            }
+
+        //2021
+        if($CurrentFolderID < 0)
+            $CurrentFolderID = 0;
+
+
+        $cfile = new \App\Models\FolderFile();
+        $cfile->name = $NewFolderNameToCreate;
+
+        $cfile->parent_id = $CurrentFolderID;
+        $cfile->user_id = $userid;
+        $cfile->link1  =  '';
+//        $cfile->status = 1;
+        ob_clean();
+        if($cfile->save())
+        {
+            $cfile->link1 =  eth1b($cfile->id);
+//            $cfile->id = $id;
+            $cfile->save();
+            xmlreturn("Create folder successfully ($NewFolderNameToCreate) ");
+        }
+        xmlreturn_error("Can not create folder ($NewFolderNameToCreate)");
+    }
+}
+
+//Done 2024
+function toolRenameF($get) {
+    //Ex: http://test.pm33.net/tool/info.php?rename_f=4142313132323333343435352f7465737430312f3132333435362f33323337333233363330333733322f436f6e616e2063e1bb996e672068c3b2612078c3a32068e1bb9969
+    if (isset($get['rename_f'])) {
+
+        $get = $get['rename_f'];
+        $get = decodeParam($get);
+        //$get = HTS($get);
+        $get = strip_tags($get);
+
+        list($csign, $username_or_email, $pass, $fid_enc, $newName, $currentFolderID) = explode("/", ($get));
+
+        if (!\clsValidate::isFilename($newName)) {
+            loiLg("Error: Not valid filename ($newName)");
+        }
+
+        $oUserCms = checkAuthTool($username_or_email, $pass);
+
+        $userid = $oUserCms->id;
+        ////
+        ////////////////////////
+        ///
+        ///
+
+
+        //echo " $csign,$userid,$pass, $CurrentFolderID , $NewFolderNameToCreate<br /><br />";
+        if(strstr($fid_enc, "file_"))
+            $cfile = new \App\Models\FileUpload();
+        else
+            $cfile = new \App\Models\FolderFile();
+        $fid_enc = str_replace("folder_", "", $fid_enc);
+        $fid_enc = str_replace("file_", "", $fid_enc);
+
+        //if(!is_numeric($fid_enc) || $fid_enc > 10000000000)
+        {
+            $fidx = $fid_enc = dfh1b($fid_enc);
+            if(!is_numeric($fid_enc))
+                loiLg(" Not valid number fid1 ($fidx)!");
+        }
+
+        //xmlreturn_error("DEBUG: ($fid_enc)");
+        if($cfile = $cfile::where('id', $fid_enc)->where('user_id', $userid)->first()){
+            $cfile->name = $newName;
+            if($cfile->save()){
+                xmlreturn("Rename successfully ($newName)");
+                die();
+            }
+        }
+
+        xmlreturn_error("Can not rename to ($newName)");
+    }
+}
+//Done 2024
+function toolDeleteF($get) {
+
+    //Delete File/Folder:
+//http://test.pm33.net/tool/info.php?delete_f=<StringToHex(ClientSignature/user/pass/FID)>
+//Ex: http://test.pm33.net/tool/info.php?delete_f=323531343133316431373136313131302f7465737430312f3132333435362f3332333733323336333033373332
+    if (isset($get['delete_f'])) {
+        //AssertValidGetPost($get['delete_f']);
+        $get = $_GET['delete_f'];
+        $get = decodeParam($get);
+        //$get = HTS($get);
+        $get = strip_tags($get);
+
+        list($csign, $username_or_email, $pass, $fid_enc) = explode("/", $get);
+
+
+        $oUserCms = checkAuthTool($username_or_email, $pass);
+
+        //xmlreturn_error(" Delete test1: " . $fid_enc);
+
+        $userid = $oUserCms->id;
+        ////
+        ////////////////////////
+
+        //echo " $csign,$userid,$pass, $CurrentFolderID , $NewFolderNameToCreate<br /><br />";
+
+        ob_clean();
+//        if (deleteGlx(d_f_h_1b($fid_enc), $userid) > 0)
+//            xmlreturn("Delete successfully!");
+//        else
+//            xmlreturn_error("ERROR Delete ? $str_debug");
+
+        if(strstr($fid_enc, "file_") !== false)
+            $cfile = new \App\Models\FileUpload();
+        elseif(strstr($fid_enc, "folder_") !== false) {
+            xmlreturn_error("Sorry: can not delete folder now, you can remove to a temporary folder!");
+            $cfile = new \App\Models\FolderFile();
+        }
+        else
+            loiLg(" Not valid id to delete?");
+
+        $fid_enc = str_replace("folder_", "", $fid_enc);
+        $fid_enc = str_replace("file_", "", $fid_enc);
+
+        //if(!is_numeric($fid_enc) || $fid_enc > 10000000000)
+        {
+            $fidx = $fid_enc = dfh1b($fid_enc);
+            if(!is_numeric($fid_enc))
+                loiLg(" Not valid number fid2 ($fidx)!");
+        }
+
+        if($cfile = $cfile->find($fid_enc)) {
+            ol1("User $oUserCms->id / $oUserCms->username / deletef $cfile->id / " . get_class($cfile));
+            if ($cfile->delete())
+                xmlreturn("Delete successfully!");
+        }
+        else
+            xmlreturn_error("File not found?");
+
+        xmlreturn_error("Can not Delete!");
+    }
+}
+
+//Done 2024
+function toolMoveF($get) {
+
+    //http://test.pm33.net/tool/info.php?move_f=<StringToHex(ClientSignature/user/pass/FID)>
+    //Ex: http://test.pm33.net/tool/info.php?move_f=323531343133316431373136313131302f7465737430312f3132333435362f3332333733323336333033373332
+    if (isset($get['move_f'])) {
+        //AssertValidGetPost($get['move_f']);
+        $get = $get['move_f'];
+        $get = decodeParam($get);
+        //$get = HTS($get);
+        $get = strip_tags($get);
+
+        list($csign, $username_or_email, $pass, $fid_to_move, $fid_to) = explode("/", ($get));
+
+//        echo "<pre> >>> " . __FILE__ . "(" . __LINE__ . ")<br/>";
+//        print_r(explode("/", ($get)));
+//        echo "</pre>";
+//
+//        echo "<br/> $csign, $username_or_email, $pass, $fid_to_move, $fid_to";
+//        die();
+
+        $oUserCms = checkAuthTool($username_or_email, $pass);
+
+        $userid = $oUserCms->id;
+        ////
+        ////////////////////////
+
+        $fid_to = str_replace("folder_", "", $fid_to);
+
+        if (empty($fid_to))
+            $fid_to = 0;
+        else{
+
+            if(!is_numeric($fid_to) || $fid_to > 10000000000)
+            {
+                $tmp1 = $fid_to;
+                $fidx = $fid_to = dfh1b($fid_to);
+                if(!is_numeric($fid_to))
+                    loiLg(" Not valid number fid3 ($fidx , $tmp1)!");
+            }
+
+            $folderTo = new \App\Models\FolderFile();
+            if(!($folderTo = $folderTo::where('id',$fid_to)->where('user_id', $userid)->first())){
+                loi(" Not found destination folder?");
+            }
+        }
+
+
+        //echo " $csign,$userid,$pass, $CurrentFolderID , $NewFolderNameToCreate<br /><br />";
+
+        //$fid_to_move = d_f_h_1b($fid_to_move);
+
+
+        if(str_starts_with($fid_to_move, "file_"))
+            $cfile = new \App\Models\FileUpload();
+        else
+            $cfile = new \App\Models\FolderFile();
+
+        $fid_to_move = str_replace("folder_", "", $fid_to_move);
+        $fid_to_move = str_replace("file_", "", $fid_to_move);
+
+        if(!is_numeric($fid_to_move) || $fid_to_move > 10000000000)
+        {
+            $fidx = $fid_to_move = dfh1b($fid_to_move);
+            if(!is_numeric($fid_to_move))
+                loiLg(" Not valid number fid4 ($fidx)!");
+        }
+
+        if(!($cfile = $cfile->where("id",$fid_to_move)->where('user_id', $userid)->first()))
+            loiLg("Not found file?");
+
+        if($fid_to < 0)
+            $fid_to = 0;
+        $cfile->parent_id = $fid_to;
+        if($cfile->save())
+            xmlreturn("Move successfully!");
+
+        xmlreturn_error("Can not move!");
+    }
+}
+
+
+function toolUploadDone($get) {
+
+    $remoteIP = $_SERVER['REMOTE_ADDR'];
+    //$hostIP = gethostbyname(MAIN_DOMAIN);
+    //$dbname = GLX_DB_NAME;
+
+    $_today = nowyh();
+    //global $dblink;
+
+//      http://test.pm33.net/tool/info.php?upload_done =<base64(ABCDEF001122/test01/123456/piano1.mp3.2013-11-11-01-02-03-1231231235656567/piano1.mp3/123000/A1B2C3)>
+//Ex:   http://test.pm33.net/tool/info.php?upload_done=QUJDREVGMDAxMTIyL3Rlc3QwMS8xMjM0NTYvcGlhbm8xLm1wMy4yMDEzLTExLTExLTAxLTAyLTAzLTEyMzEyMzEyMzU2NTY1NjcvcGlhbm8xLm1wMy8xMjMwMDAvQTFCMkMz
+    if (isset($get['upload_done'])) {
+
+        //echo base64("ABC1122334455/test01/123456/jdk123.exe/jdk-6u37-windows-i586.exe/14680064/2d31");
+        //return;
+        //echo "<br />03";
+        //AssertValidGetPost($get['upload_done']);
+        $get0 = $get = $get['upload_done'];
+
+        $get = decodeParam($get);
+        @list($csign, $username_or_email, $pass, $filename_on_server, $basename, $filesize_org, $folderID) = explode("/", $get);
+        $username_or_email = trim($username_or_email);
+        if (!\clsValidate::isFilename($basename)) {
+            loiLg("Error, ten file khong hop le: ($basename)");
+        }
+
+        $domainX = \LadLib\Common\UrlHelper1::getDomainHostName();
+        if($domainX == '4share.vn')
+        {
+            $url = "https://v2up.4share.vn/tool/index.html?upload_done=$get0";
+            ol1("--- Redirect to $url");
+            $ret = file_get_contents($url);
+            if(!$ret){
+                ol1("ERROR upload_done $url");
+            }
+            die($ret);
+        }
+
+
+        //Nếu dạng base64 thì encode đôi khi dấu + bị biến thành Space
+        //$get = str_replace(" ", "+", $get);
+
+        //$get = HTS($get);
+
+        //$get = strip_tags($get); //Bị lỗi nếu là tiếng việt
+
+        @list($csign, $username_or_email, $pass, $filename_on_server, $basename, $filesize_org, $folderID) = explode("/", $get);
+        $username_or_email = trim($username_or_email);
+
+        //ol1("Upload done info get2 = $csign, $username_or_email, $pass, $filename_on_server, $basename, $filesize_org, $folderID");
+
+//        die("xxx $csign, $username_or_email, $pass, $filename_on_server, $basename, $filesize_org, $folderID <br /><br />");
+
+        $objUser = checkAuthTool($username_or_email, $pass);
+
+        if (!\clsValidate::isFilename($basename)) {
+            loiLg("Error, ten file khong hop le: ($basename)");
+        }
+
+        if(!$folderID)
+            $folderID = 0;
+        if(!is_numeric($folderID) || $folderID > 1000000000) {
+            $fidx = $folderID = dfh1b($folderID);
+            if(!is_numeric($folderID))
+                loiLg(" Not valid number fid5 ($fidx)!");
+        }
+
+        $uCloud = \App\Models\UserCloud::where("user_id", $objUser->id)->first();
+
+
+        $std = new stdClass();
+        $std->file_name = $basename;
+        $std->file_size = $filesize_org;
+        $std->file_path_local_upload_ = $filename_on_server;
+        $std->folder_id = $folderID;
+        $std->user_id = $objUser->id;
+
+        dumpdebug("file upload done call." . json_encode($std));
+
+        try{
+            $ret = \App\Http\ControllerApi\FileUploadControllerApi::uploadStatic($std);
+        }
+        catch (\Throwable $e) { // For PHP 7
+            xmlreturn_error($e->getMessage());
+//            return rtJsonApiError($e->getMessage());
+            return;
+        }
+        $obj = (object)($ret->getData(1));
+
+//        echo "<pre> >>> " . __FILE__ . "(" . __LINE__ . ")<br/>";
+//        print_r($obj);
+//        echo "</pre>";
+
+        if(!($obj->code ?? '')){
+            xmlreturn_error("Upload Error: Not valid data return?");
+            return;
+        }
+
+        if($obj->code < 0){
+            xmlreturn_error("Upload Error: $obj->message");
+            return;
+        }
+        if(!($obj->payload ?? '')){
+            xmlreturn_error("Upload Error: Not found payload data?");
+            return;
+        }
+        if(!($obj->payload['link1'] ?? '')){
+            xmlreturn_error("Upload Error: Not found link1?");
+            return;
+        }
+        $link = "https://4share.vn/f/" . $obj->payload['link1'];
+        xmlreturn("Upload done: <a href='$link'>$link</a>", 1);
+
+        return;
+
+        ol1("------ Error upload_done $filepath ------");
+    }
+    ob_clean();
+    xmlreturn("Not done upload file?",0);
+}
+
+function toolDownloadFileOld($get) {
+
+    global $remoteIP;
+
+
+//    dumpdebug(__FILE__. "(".__LINE__.") : ". $_SERVER['REQUEST_URI']);
+    //http://test.pm33.net/tool/info.php?dlfile=<StringToHex(ABCDEF001122/test01/123456/FILE_ID_DOWNLOAD)>
+//http://test.pm33.net/tool/info.php?dlfile=4142313132323333343435352f7465737430312f3132333435362f3331333333323330333833333330
+    if (isset($get['dlfile'])) {
+
+        $forDev = 0;
+        if (isset($get['fordev']) && $get['fordev'] == 1)
+            $forDev = 1;
+
+        $get = $get['dlfile'];
+
+        $get = decodeParam($get);
+        //$get = HTS($get);
+
+        $get = strip_tags($get);
+
+        list($csign, $username_or_email, $pass, $fid_enc) = explode("/", ($get));
+
+        $str_debug = "";
+        if (DEBUG_GLX == 1)
+            $str_debug = "'Debug info: $csign, $username_or_email, $pass, $fid_enc'";
+
+        $fid_enc = str_replace("file_", "", $fid_enc);
+
+        $oUserCms = checkAuthTool($username_or_email, $pass);
+
+
+        $userid = $oUserCms->id;
+
+        if (empty($fid_enc)) {
+            loiLg("ERROR dlfile : not valid FID($fid_enc) $str_debug / $get");
+        }
+
+        $objUser4S = new ClassUser4S();
+        $objUser4S->getAllInfo($userid);
+        $time = $objUser4S->getVipExpiredDate();
+        if($time < time()){
+            ob_clean();
+            xmlreturn_error(" Your account is expired using time! ". nowyh($time));
+            return;
+        }
+
+        //Kiểm tra xem user đã download quá 60GB chưa:
+        $downToday = $objUser4S->getDownloadToday();
+
+        if(!$objUser4S->objUserCloud->quota_limit_data)
+            $objUser4S->objUserCloud->quota_limit_data = DEF_MAX_DOWNLOAD_DAY_GB;
+
+        if ($downToday > $objUser4S->objUserCloud->quota_limit_data * _GB) {
+            xmlreturn_error("Xin loi, ban da Download qua " . $objUser4S->objUserCloud->quota_limit_data . " GB/ngay!");
+            die();
+        }
+
+        //inl($idEnc);
+        //inl();
+
+        //if(!is_numeric($fid_enc) || $fid_enc > 10000000000)
+        $fid = d_f_h_1b($fid_enc);
+//        else
+//            $fid = ($fid_enc);
+
+        if (!is_numeric($fid)) {
+            loiLg("ERROR dlfile: Not valid FID($fid_enc) #1 $str_debug");
+        }
+
+        $file = new \App\Models\FileUpload();
+        if(!$file->getOne($fid)){
+            loiLg("Not valid file id?");
+        }
+
+        if ($idlink = $file->getIdLink()) {
+            $fileLink = new \App\Models\FileUpload();
+            if($fileLink->getOne($idlink))
+                $file->LoadFromObj($fileLink);
+        }
+
+        // die("111 - " . __LINE__);
+
+        $dirRang = $file->id - $file->id % 1000;
+        $dirRang.="-" . ($dirRang + 1000);
+
+        $location = "/" . $file->location1 . "/$dirRang/$file->id";
+        //echo "<info>\n<pos>$server</pos>\n<loca>/$location</loca>\n<ac1>$_userdlVIP</ac1>\n<ac2>$_passdlVIP</ac2>\n<fn>$basename</fn>\n<fs>$filesize</fs>\n<fid>$idEnc</fid></info>";
+
+
+        if (empty($file->server1) || $file->server1 == "") {
+            $file->server1 = CONTROLLER_INTERNET_NAME;
+            $location = ($file->file_path);
+            //dumpdebug(__FILE__." : LOCATION 1 = $location");
+        }
+
+        if (!file_exists(FOLDER_STORE_TOOL_COUND_DOWNLOAD)) {
+            mkdir(FOLDER_STORE_TOOL_COUND_DOWNLOAD, 755, 1);
+        }
+
+        //Đánh dấu file đang được lấy info:
+        outputW(FOLDER_STORE_TOOL_COUND_DOWNLOAD . "/$userid.$csign.$fid", $file->file_size);
+
+
+        $port = 36868;
+
+        if ($forDev)
+            $port = 56868;
+
+        $dlInfoCacheVIP = new ClassDownloadInfoCache;
+        $dlInfoCacheVIP->basename = urldecode($file->name);
+        $dlInfoCacheVIP->fidEnc = $file->link1;
+        $dlInfoCacheVIP->location = $file->getFileFullPathGlx();
+        ;
+        $dlInfoCacheVIP->multithread = '4'; //force multi thread with tool
+        $dlInfoCacheVIP->multithread = 1;
+        $dlInfoCacheVIP->vip_download = 1;
+        $dlInfoCacheVIP->directlink = 0;
+        $dlInfoCacheVIP->remote_ip = $remoteIP;
+        $dlInfoCacheVIP->userid_download = $userid;
+        $dlInfoCacheVIP->userid_of_file = $file->userid;
+        $dlInfoCacheVIP->time = time();
+        $dlInfoCacheVIP->tool_download = 1;
+
+        $linkCache = ClassUser4S::setDownloadInfoCache($file->id, $remoteIP, 'vip', serialize($dlInfoCacheVIP), $userid);
+
+        $serverDl = ClassUser4S::getProxyDownloadServer($file->server1);
+
+        $DLINK = "https://$serverDl:8443/8/?info=$linkCache";
+//if($userid == 888980 || $userid == 3)
+        //  $DLINK = "http://$file->server1/1618/?info=$linkCache";
+
+        $vlcExtArray = array('3g2', '3gp', 'a52', 'aac', 'ac3', 'asf', 'asx', 'avi', 'b4s', 'bin', 'bup', 'cue', 'dat', 'divx', 'dts', 'dv', 'flac', 'flv', 'gxf', 'ifo', 'm1v', 'm2ts', 'm2v', 'm3u', 'm4a', 'm4p', 'm4v', 'mka', 'mkv', 'mod', 'mov', 'mp1', 'mp2', 'mp3', 'mp4', 'mpeg', 'mpeg1', 'mpeg2', 'mpeg4', 'mpg', 'mts', 'mxf', 'ogg', 'ogm', 'oma', 'part', 'pls', 'spx', 'srt', 'ts', 'vlc', 'vob', 'wav', 'wma', 'wmv', 'xm', 'xspf');
+
+        $playVLC = 0;
+        $ext = strtolower(CFile::getExt($file->name));
+        if (in_array($ext, $vlcExtArray))
+            $playVLC = 1;
+
+        //dumpdebug(" Request Download Tool: $userid , /f/$file->link1/$file->basename ");
+
+        ob_clean();
+        $filename = urldecode($file->name);
+        echo "<dl_file>
+    <direct_link>$DLINK</direct_link>
+    <playable>$playVLC</playable>
+    <filename>$filename</filename>
+    <size>$file->file_size</size>
+    <fileid>$fid_enc</fileid>
+    </dl_file>";
+        return;
+    }
+}
+
+
+function toolDownloadFile($get) {
+
+    global $remoteIP;
+
+
+//    dumpdebug(__FILE__. "(".__LINE__.") : ". $_SERVER['REQUEST_URI']);
+    //http://test.pm33.net/tool/info.php?dlfile=<StringToHex(ABCDEF001122/test01/123456/FILE_ID_DOWNLOAD)>
+//http://test.pm33.net/tool/info.php?dlfile=4142313132323333343435352f7465737430312f3132333435362f3331333333323330333833333330
+    if (isset($get['dlfile'])) {
+
+        loi("Tai file bang tool dang bao duong; hay tai voi Web, IDM, Coccoc ");
+        $forDev = 0;
+        if (isset($get['fordev']) && $get['fordev'] == 1)
+            $forDev = 1;
+
+        $get = $get['dlfile'];
+
+        dumpdebug("get1: $get");
+
+        $get = decodeParam($get);
+//        $get = HTS($get);
+
+        $get = strip_tags($get);
+
+        dumpdebug("get2: $get");
+
+//        echo "<br/>\n $get  ";
+//        die("111: " . __LINE__);
+
+        list($csign, $username_or_email, $pass, $fid_enc) = explode("/", ($get));
+//        $username_or_email = 'zzzzz1';
+//        $pass = '1111111111';
+//        $fid_enc = '784e49404e404e4d';
+//
+//        echo "<br/>\n $csign, $username_or_email, $pass, $fid_enc";
+//        die();
+
+        $str_debug = "";
+        if (DEBUG_GLX == 1)
+            $str_debug = "'Debug info: $csign, $username_or_email, $pass, $fid_enc'";
+
+        $fid_enc = str_replace("file_", "", $fid_enc);
+
+        $oUserCms = checkAuthTool($username_or_email, $pass);
+
+
+        $userid = $oUserCms->id;
+
+        if (empty($fid_enc)) {
+            loiLg("ERROR dlfile : not valid FID($fid_enc) $str_debug / $get");
+        }
+
+        $fid = d_f_h_1b($fid_enc);
+        if (!is_numeric($fid)) {
+            loiLg("ERROR dlfile: Not valid FID($fid_enc) #1 $str_debug");
+        }
+
+        if(!$file = \App\Models\FileUpload::find($fid)){
+            loiLg("Not valid file id?");
+        }
+
+//        $vlcExtArray = array('3g2', '3gp', 'a52', 'aac', 'ac3', 'asf', 'asx', 'avi', 'b4s', 'bin', 'bup', 'cue', 'dat', 'divx', 'dts', 'dv', 'flac', 'flv', 'gxf', 'ifo', 'm1v', 'm2ts', 'm2v', 'm3u', 'm4a', 'm4p', 'm4v', 'mka', 'mkv', 'mod', 'mov', 'mp1', 'mp2', 'mp3', 'mp4', 'mpeg', 'mpeg1', 'mpeg2', 'mpeg4', 'mpg', 'mts', 'mxf', 'ogg', 'ogm', 'oma', 'part', 'pls', 'spx', 'srt', 'ts', 'vlc', 'vob', 'wav', 'wma', 'wmv', 'xm', 'xspf');
+        $playVLC = 1;
+        $mm = TmpDownloadSession::getLinkDownload4s($fid_enc, $userid);
+
+        $DLINK = $mm['dlink'];
+
+        //dumpdebug(" Request Download Tool: $userid , /f/$file->link1/$file->basename ");
+
+        dumpdebug("get3: $DLINK");
+        ob_clean();
+        $filename = urldecode($file->name);
+        echo "<dl_file>
+<direct_link>$DLINK</direct_link>
+<playable>$playVLC</playable>
+<filename>$filename</filename>
+<size>$file->file_size</size>
+<fileid>$fid_enc</fileid>
+</dl_file>";
+        die();
+    }
+}
+
+function toolDownloadDone($get) {
+
+//http://test.pm33.net/tool/info.php?dl_done=<StringToHex(ABCDEF001122/test01/123456/user_download/FILE_ID_DOWNLOAD)>
+//http://test.pm33.net/tool/info.php?dl_done=
+    if (isset($get['dlfile_ok'])) {
+        xmlreturn("Server return: download DONE!");
+        return;
+        //Sleep để tránh lợi dụng update download xong
+        sleep(1);
+
+        //AssertValidGetPost($get['dlfile_ok']);
+
+        $get = $_GET['dlfile_ok'];
+        $get = decodeParam($get);
+        //$get = HTS($get);
+
+        $get = strip_tags($get);
+
+        list($csign, $username_or_email, $pass, $fid_enc) = explode("/", ($get));
+
+        $str_debug = "";
+        if (DEBUG_GLX == 1)
+            $str_debug = "'Debug info: csign, $userid, $pass, $fid_enc'";
+
+
+        $oUserCms = checkAuthTool($username_or_email, $pass);
+
+        $userid = $oUserCms->id;
+        ////
+        ////////////////////////
+
+
+
+
+        if (empty($fid_enc)) {
+            loiLg("ERROR dlfile_ok: not valid FID! ($fid) $str_debug");
+            return;
+        }
+
+        $fid = d_f_h_1b($fid_enc);
+
+        $fileDone = FOLDER_STORE_TOOL_COUND_DOWNLOAD . "/$userid.$csign.$fid";
+
+        if (!file_exists($fileDone)) {
+            loiLg("Error dlfile_ok: Not valid retry, mark file not found!) $str_debug");
+        } else {
+            $filesize = file_get_contents($fileDone);
+
+            $dtime = time() - filemtime($fileDone) + 0.0001;
+
+            //5 giây tối thiểu để download xong 1 file
+            if ($dtime < 5) {
+                loiLg("Error dlfile_ok: Not valid retry (DTIME = $dtime) $str_debug");
+            }
+            $str_debug .= "filesize = $filesize , Dtime =  $dtime";
+            //Tốc độ tối đa download là 10MB/s (100Mbit) nếu nhanh hơn thì Download done sẽ không hợp lệ
+            if ($filesize / (10 * _MB) > $dtime) {
+                loiLg("Error dlfile_ok: Not valid Dtime ( $dtime s)? Must greater " . number_format($filesize / (10 * _MB)) . " seconds! $str_debug");
+            }
+
+
+            $time = time();
+            //Nếu không phải resume thì sẽ update count download
+            //if($bytesize>0)
+            if ($filesize > _LIMIT_SIZE_UPDATE_POINT) {
+
+                $file = new \App\Models\FileUpload();
+                $file = $file->find($fid);
+                if (!$file) {
+                    loiLg("dldone file not found!");
+                }
+
+                if (!update_download_info($file->file_size, $dtime, $file->user_id, $fid, "", $userid, 0, $remoteIP, 1, 1)) {
+                    loiLg("ERROR dlfile_ok: Update DB! $str_debug");
+                } else
+                    xmlreturn("Download DONE!");
+            } else
+                xmlreturn("Download DONE!");
+
+
+            return;
+        }
+    }
+}
+
+function toolOnline($get) {
+
+    $remoteIP = $_SERVER['REMOTE_ADDR'];
+
+
+    if (isset($get['online']) && $get['online'] == 1) {
+        $sign = strip_tags($get['sign']);
+        $online = strip_tags($get['online']);
+
+        if (strlen($sign) > 10 && $sign <> "000000000000") {
+            if (file_exists("/var/glx/weblog/tool2013/")) {
+                if (!file_exists("/var/glx/weblog/tool2013/$sign")) {
+                    mkdir("/var/glx/weblog/tool2013/$sign", 0755, 1);
+                }
+                outputT("/var/glx/weblog/tool2013/$sign/log.txt." . nowy(), $remoteIP);
+            }
+
+            if (!file_exists("/mnt/glx/weblog/tool2013/")) {
+                mkdir("/mnt/glx/weblog/tool2013/", 0755, 1);
+            }
+            outputW("/mnt/glx/weblog/tool2013/$sign.txt", "$remoteIP");
+        }
+        ob_clean();
+        echo date("Y-m-d h:i:s");
+        return;
+    }
+}
+
+function toolCheckAndFixLink($get) {
+    $mainDomain = MAIN_DOMAIN;
+    $ret = "ERROR GetFileInfo? Contact administrator!";
+    if (isset($get)) {
+        $idEnc = $get['checkAndReturnLink'];
+        $fid = d_f_h_1b($idEnc);
+
+        if (!is_numeric($fid)) {
+            $ret = "ERROR: not valid link!";
+        } else {
+            $cfile = new \App\Models\FileUpload();
+            $cfile = $cfile->find($fid);
+            if ($cfile) {
+                $ret = "https://" . MAIN_DOMAIN . "/f/" . $idEnc . "/" . $cfile->name;
+            } else {
+                $ret = "ERROR: Not found this file or Deleted? https://$mainDomain/f/$idEnc/ ";
+            }
+        }
+    }
+
+    ob_clean();
+    echo $ret;
+    die();
+}
+
+try {
+
+    if (isset($_GET['startup'])) {
+        $get = $_GET;
+        toolStartUp($get);
+        return;
+    }
+
+    if (isset($_GET['folder'])) {
+        $get = $_GET;
+        toolGetFolder($get);
+        return;
+    }
+
+//CreateFolder:
+//http://test.pm33.net/tool/info.php?create_folder=<StringToHex(ClientSignature/user/pass/CurrentFolderID/NewFolderNameToCreate)
+//Ex: http://test.pm33.net/tool/info.php?create_folder=4142313132323333343435352f7465737430312f3132333435362f33323337333233363330333733322f43e1bb996e672068c3b2612078c3a32068e1bb9969206e6577
+
+
+    if (isset($_GET['create_folder'])) {
+        $get = $_GET;
+        ol1(" ToolX " .  \LadLib\Common\UrlHelper1::getFullUrl());
+        toolCreateFolder($get);
+        return;
+    }
+
+
+    if (isset($_GET['rename_f'])) {
+        ol1(" ToolX " .  \LadLib\Common\UrlHelper1::getFullUrl());
+        $get = $_GET;
+        toolRenameF($get);
+        return;
+    }
+
+
+    if (isset($_GET['delete_f'])) {
+        ol1(" ToolX " .  \LadLib\Common\UrlHelper1::getFullUrl());
+        $get = $_GET;
+        toolDeleteF($get);
+        return;
+    }
+
+    if (isset($_GET['dlfile'])) {
+        ol1(" ToolX " .  \LadLib\Common\UrlHelper1::getFullUrl());
+        $get = $_GET;
+        toolDownloadFile($get);
+        return;
+    }
+
+    if (isset($_GET['dlfile_ok'])) {
+        $get = $_GET;
+        toolDownloadDone($get);
+        return;
+    }
+
+    if (isset($_GET['move_f'])) {
+        $get = $_GET;
+        toolMoveF($get);
+        return;
+    }
+
+    if (isset($_GET['upload_done'])) {
+        ol1(" ToolX " .  \LadLib\Common\UrlHelper1::getFullUrl());
+        $get = $_GET;
+        toolUploadDone($get);
+        return;
+    }
+
+    if (isset($_GET['checkAndReturnLink'])) {
+
+
+        //tmplad: tam thoi stop xem co giam CPU khong
+        $get = $_GET;
+        toolCheckAndFixLink($get);
+        return;
+    }
+
+    if (isset($_GET['online'])) {
+
+        //tmplad: tam thoi stop xem co giam CPU khong
+
+        ?>
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-26965513-1"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'UA-26965513-1');
+        </script>
+
+        <?php
+
+
+        return;
+
+        $get = $_GET['online'];
+        toolOnline($get);
+        return;
+    }
+} catch (Exception $e) {
+
+    ol1( " *** ERROR: " . $e->getMessage() . " - " . $e->getTraceAsString());
+    xmlreturn_error($e->getMessage());
+    return;
+}
+?>

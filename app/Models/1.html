@@ -1,0 +1,2851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta data-code-pos="ppp1678337934479" charset="utf-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta name="csrf-token" content="aDFMBq3dGG3Py4KQN9YaHKuS9sdkYdpkyxn6ELOU"/>
+
+    <title>
+            REPORT EVENT
+    </title>
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+
+    
+    
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="/adminlte/plugins/fontawesome-free/css/all.min.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="/assert/css/ionicons.min.css">
+    <link href="/assert/css/bootstrap5.0.2.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="/assert/library_ex/jquery-ui/jquery-ui.css">
+    <!-- Tempusdominus Bootstrap 4 -->
+    
+    <!-- iCheck -->
+    
+
+    
+    <!-- JQVMap -->
+    
+    <!-- Theme style -->
+    <link rel="stylesheet" href="/adminlte/dist/css/adminlte.min.css">
+    <!-- overlayScrollbars -->
+    
+    <!-- Daterange picker -->
+    
+    <!-- summernote -->
+    
+    <link rel="stylesheet" href="/vendor/toastr/toastr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.0.0/css/flag-icons.min.css">
+
+    <link rel="stylesheet"
+          href="/assert/css/lad-common.css?v=1759739556">
+
+
+
+        <link rel="stylesheet"
+          href="/vendor/div_table2/div_table2.css?v=1757520609">
+    <link rel="stylesheet" href="/admins/upload_file.css?v=1725510479">
+
+    <style>
+        .highlight {
+            color: red;
+        }
+        .table-striped td {
+            padding: 3px 6px;
+            font-size: 85%;
+        }
+        label {
+            font-size: 90%;
+        }
+        b.blue {
+            color: royalblue;
+        }
+        .info-box-text {
+            /*font-style: italic;*/
+            display: inline-block;
+            padding-top: 2px;
+        }
+        table.table-striped {
+            border-spacing: 1px;
+        }
+        .table thead th {
+            border-bottom: 2px solid #bbb!important;
+        }
+        .table-striped th {
+            font-size: 85%;
+            padding: 3px 5px;
+        }
+        select.form-control{
+            padding: 1px 10px;
+            font-size: 90%;
+        }
+
+        /*body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .content-wrapper, body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .main-footer, body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .main-header*/
+        /*{*/
+        /*    margin-left: 0px !important;*/
+        /*}*/
+        /*aside {*/
+        /*    display: none;*/
+        /*}*/
+        /*.content-header {*/
+        /*     padding: 0px;*/
+        /*}*/
+        /*nav.navbar{*/
+        /*    display: none!important;*/
+        /*}*/
+        /*::-webkit-scrollbar {*/
+        /*    height: 4px;              !* height of horizontal scrollbar ← You're missing this *!*/
+        /*    width: 4px;               !* width of vertical scrollbar *!*/
+        /*    border: 1px solid gray;*/
+        /*}*/
+    </style>
+
+
+</head>
+
+<body data-code-pos='ppp17326762752951' class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed
+sidebar-collapse">
+
+
+<div class="wrapper">
+        <style>
+    #ul_top_bar select.hide_pos {
+        display: none;
+    }
+
+    #ul_top_bar li.hide_pos {
+        display: none;
+    }
+
+    #ul_top_bar:hover select.hide_pos {
+        display: block;
+    }
+
+    #ul_top_bar:hover li.hide_pos {
+        display: list-item;
+    }
+
+
+</style>
+
+
+<nav data-code-pos="qqq1709196309063" class="main-header navbar navbar-expand navbar-white navbar-light">
+
+    
+    <div style="border:  0px solid #ccc; padding: 0px; position: fixed; top: 0px; z-index: 100000; right: 350px"
+         data-code-pos='ppp17402744724801'>
+                </div>
+        
+
+        <!-- Left navbar links -->
+    <ul class="navbar-nav">
+
+
+        <li class="nav-item">
+
+            
+            <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars "></i></a>
+        </li>
+        
+        
+        
+        
+        
+        
+    </ul>
+
+    
+    <b style="color: gray">
+
+
+        <span data-code-pos='ppp17134889478761' data-code-pos="qqq1709221833500" style="white-space: nowrap;">
+
+            <a data-pos='489753947593745' href='/admin' style=''>Admin</a>
+    <i class='fa fa-fw fa-angle-right'> </i>  
+            
+            
+            
+            
+            
+
+
+            <span style='color: transparent'>pp259817</span>        </span>
+
+    </b>
+
+    <!-- Right navbar links -->
+    <ul class="navbar-nav ml-auto" id="ul_top_bar">
+
+                <style>
+            .ui-menu .ui-menu-item {
+                font-size: small;
+                padding: 1px;
+            }
+
+            .ui-menu {
+                z-index: 10000;
+            }
+        </style>
+
+        <select class="hide_pos" data-code-pos="ppp1675573422318" name=""
+                title="Các tài khoản user khác Bạn đã vào gần đây (Admin có thể vào các Tài khoản user khác tại đây)"
+                style="border: 1px solid #eee; color: gray; width: 40px; height: 22px; margin-top: 10px; border-radius: 5px; "
+                onchange="changeUser_()"
+                id="changeUserOther">
+            <option value="">-</option>
+                            <option style="color: black;" value="17">
+                    megamail.vn@gmail.com - 17             </option>
+                        </select>
+
+
+        <li class="hide_pos dropdown notifications-menu">
+
+                            <button class="" style="background-color: transparent; border: 0px; color: white"
+                    onclick="ClassApi.changeOtherUser(1)">
+                <i class="fa fa-gear" title="return admin"></i>
+            </button>
+                            <input id="loginAsUser1"
+                   title="Nhập email hoặc UID tài khoản của User bạn muốn vào  (Admin có thể vào các Tài khoản user khác tại đây)"
+                   type="text" style="display: inline-block; width: 50px; margin-top: 10px;
+                        background-color: transparent; border: 1px solid #eee; border-radius: 5px; font-size: small; padding: 0px 5px">
+        </li>
+
+            
+            <!-- Navbar Search -->
+        <li class="nav-item">
+            
+            
+            
+            <div class="navbar-search-block">
+                <form class="form-inline">
+                    <div class="input-group input-group-sm">
+                        <input class="form-control form-control-navbar" type="search" placeholder="Search"
+                               aria-label="Search">
+                        <div class="input-group-append">
+                            
+                            
+                            
+                            <button class="btn btn-navbar" type="button" data-widget="navbar-search">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </li>
+        <li class="nav-item" data-code-pos='ppp17373368826041'>
+            <a class="nav-link" style="color: dodgerblue" href="/member" title="dungla2011@gmail.com">
+
+
+                dungla20...
+
+            </a>
+        </li>
+
+        
+
+
+        <li class="nav-item">
+            <a class="nav-link" data-widget="fullscreen" href="#" role="button">
+                <i class="fas fa-expand-arrows-alt"></i>
+            </a>
+        </li>
+
+
+        
+        
+        
+        
+        
+    </ul>
+</nav>
+
+        <style>
+    [class*=sidebar-dark-] {
+
+        background-color: #303030;
+    }
+    [class*=sidebar-dark] .brand-link, [class*=sidebar-dark] .brand-link .pushmenu {
+        background: #dc3545!important;
+    }
+    [class*=sidebar-dark] .brand-link {
+        border-bottom: 0px;
+    }
+
+</style>
+<!-- Main Sidebar Container -->
+<aside class="main-sidebar sidebar-dark-cyan elevation-4" data-code-pos="ppp1681392990292">
+
+
+    <!-- Brand Logo -->
+    <a href="/" class="brand-link">
+        <img src="/adminlte/dist/img/AdminLTELogo.png" alt="GLX Logo" class="brand-image img-circle elevation-3"
+             style="opacity: .8">
+        <span class="brand-text font-weight-light" data-code-pos="ppp1679890174525">
+            DAV PlanEd        </span>
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <!-- Sidebar user panel (optional) -->
+
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    <!-- Sidebar Menu -->
+        <nav data-code-pos="ppp1679323461186" class="mt-2">
+            <ul class="nav nav-pills nav-sidebar text-sm  flex-column" data-widget="treeview" role="menu"
+                data-accordion="false">
+                <!-- Add icons to the links using the .nav-icon class
+                     with font-awesome or any other icon font library -->
+
+
+                                <li class="nav-item">
+                    <a href="/admin" class="nav-link" style="color: white">
+                        <i class="nav-icon fa fa-info"></i>
+                        <p style="">ACP</p>
+                    </a>
+                </li>
+                    
+
+                <li class="nav-item menu-open">
+                <ul class="nav nav-treeview nav-sidebar nav-child-indent"><li id='_menu_/admin/event-info' class='nav-item'><a  href='/admin/event-info' class='text-sm nav-link'><i class='nav-icon fas fa-wrench'></i><p>Quản lý Sự kiện</p></a></li><li id='_menu_/admin/event-user-info' class='nav-item'><a  href='/admin/event-user-info' class='text-sm nav-link'><i class='nav-icon fas fa-th'></i><p>Quản lý Khách</p></a></li><li id='_menu_/admin/event-user-group' class='nav-item'><a  href='/admin/event-user-group' class='text-sm nav-link'><i class='nav-icon fas fa-th'></i><p>Quản lý Nhóm khách</p></a></li><li id='_menu_/admin/department' class='nav-item'><a  href='/admin/department' class='text-sm nav-link'><i class='nav-icon fas fa-th'></i><p>Quản lý Phòng Ban</p></a></li><li id='_menu_https://6957-117-6-99-200.ngrok-free.app/events' class='nav-item'><a  target='_blank'  href='https://6957-117-6-99-200.ngrok-free.app/events' class='text-sm nav-link'><i class='far fa-circle nav-icon'></i><p>Utilities</p></a></li><li id='_menu_/admin/event-user-payment' class='nav-item'><a  href='/admin/event-user-payment' class='text-sm nav-link'><i class='far fa-circle nav-icon'></i><p>Thanh toán SK</p></a></li><li id='_menu_/admin/event-setting' class='nav-item'><a  href='/admin/event-setting' class='text-sm nav-link'><i class='nav-icon fas fa-th'></i><p>Cài đặt Sự kiện</p></a></li><li id='_menu_' class='nav-item'><a  href='' class='text-sm nav-link'><i class='nav-icon fas fa-th'></i><p>Sự kiện - Tính năng khác<i class='right fas fa-angle-left'></i></p></a><ul class="nav nav-treeview nav-sidebar nav-child-indent"><li id='_menu_/admin/event-send-info-log' class='nav-item'><a  href='/admin/event-send-info-log' class='text-sm nav-link'><i class='far fa-circle nav-icon'></i><p>Chi tiết gửi tin Sự kiện</p></a></li><li id='_menu_/admin/event-and-user' class='nav-item'><a  href='/admin/event-and-user' class='text-sm nav-link'><i class='far fa-circle nav-icon'></i><p>Bảng Sự kiện và Khách</p></a></li><li id='_menu_/admin/event-send-action' class='nav-item'><a  href='/admin/event-send-action' class='text-sm nav-link'><i class='far fa-circle nav-icon'></i><p>Lệnh gửi tin Sự kiện</p></a></li><li id='_menu_/admin/event-register' class='nav-item'><a  href='/admin/event-register' class='text-sm nav-link'><i class='far fa-circle nav-icon'></i><p>Đăng ký Sự kiện</p></a></li><li id='_menu_/admin/department-user' class='nav-item'><a  href='/admin/department-user' class='text-sm nav-link'><i class='far fa-circle nav-icon'></i><p>Phòng Ban và Thành viên</p></a></li><li id='_menu_/admin/event-face-info' class='nav-item'><a  href='/admin/event-face-info' class='text-sm nav-link'><i class='far fa-circle nav-icon'></i><p>Nhận dạng Khách mời</p></a></li></ul></li><li id='_menu_' class='nav-item'><a  href='' class='text-sm nav-link'><i class='nav-icon fas fa-th'></i><p>QL NCBĐ<i class='right fas fa-angle-left'></i></p></a><ul class="nav nav-treeview nav-sidebar nav-child-indent"><li id='_menu_/admin/conference-info' class='nav-item'><a  href='/admin/conference-info' class='text-sm nav-link'><i class='far fa-circle nav-icon'></i><p>Quản lý NCBD</p></a></li><li id='_menu_/admin/conference-cat' class='nav-item'><a  href='/admin/conference-cat' class='text-sm nav-link'><i class='far fa-circle nav-icon'></i><p>Hội Thảo - Catagory</p></a></li></ul></li><li id='_menu_/admin/file' class='nav-item'><a  href='/admin/file' class='text-sm nav-link'><i class='nav-icon fas fa-th'></i><p>Files, Images</p></a></li><li id='_menu_/member' class='nav-item'><a  href='/member' class='text-sm nav-link'><i class='nav-icon fas fa-user'></i><p>My Account</p></a></li><li id='_menu_/admin/site-mng' class='nav-item'><a  href='/admin/site-mng' class='text-sm nav-link'><i class='nav-icon fas fa-th'></i><p>Cấu hình Trang</p></a></li><li id='_menu_' class='nav-item'><a  href='' class='text-sm nav-link'><i class='nav-icon fa fa-cog'></i><p>Admin Tools<i class='right fas fa-angle-left'></i></p></a><ul class="nav nav-treeview nav-sidebar nav-child-indent"><li id='_menu_/admin/user-api' class='nav-item'><a  href='/admin/user-api' class='text-sm nav-link'><i class='nav-icon fas fa-users'></i><p>User - Thành Viên</p></a></li><li id='_menu_/admin/user-group' class='nav-item'><a  href='/admin/user-group' class='text-sm nav-link'><i class='far fa-circle nav-icon'></i><p>User Group- Nhóm</p></a></li><li id='_menu_/admin/change-log' class='nav-item'><a  href='/admin/change-log' class='text-sm nav-link'><i class='far fa-circle nav-icon'></i><p>Logs thay đổi nội dung</p></a></li><li id='_menu_/admin/block-ui' class='nav-item'><a  href='/admin/block-ui' class='text-sm nav-link'><i class='nav-icon far fa-plus-square'></i><p>Khối Giao diện - UI Block</p></a></li><li id='_menu_/admin/role' class='nav-item'><a  href='/admin/role' class='text-sm nav-link'><i class='nav-icon fas fa-th'></i><p>Roles - Vai trò nhóm</p></a></li><li id='_menu_/admin/role-user' class='nav-item'><a  href='/admin/role-user' class='text-sm nav-link'><i class='far fa-circle nav-icon'></i><p>Role users</p></a></li><li id='_menu_' class='nav-item'><a  href='' class='text-sm nav-link'><i class='far fa-circle nav-icon'></i><p>Cloud Files<i class='right fas fa-angle-left'></i></p></a><ul class="nav nav-treeview nav-sidebar nav-child-indent"><li id='_menu_/admin/user-cloud' class='nav-item'><a  href='/admin/user-cloud' class='text-sm nav-link'><i class='far fa-circle nav-icon'></i><p>Cloud-User</p></a></li><li id='_menu_/admin/file' class='nav-item'><a  href='/admin/file' class='text-sm nav-link'><i class='far fa-circle nav-icon'></i><p>User Files</p></a></li><li id='_menu_/admin/file-cloud' class='nav-item'><a  href='/admin/file-cloud' class='text-sm nav-link'><i class='nav-icon fas fa-th'></i><p>Cloud Files Unique</p></a></li><li id='_menu_/admin/folder-file' class='nav-item'><a  href='/admin/folder-file' class='text-sm nav-link'><i class='far fa-circle nav-icon'></i><p>Folder Files</p></a></li></ul></li><li id='_menu_/admin/menu-tree/tree?pid=4&gid=1&open_all=1' class='nav-item'><a  href='/admin/menu-tree/tree?pid=4&gid=1&open_all=1' class='text-sm nav-link'><i class='nav-icon far fa-plus-square'></i><p>Quản lý Menu</p></a></li></ul></li></ul>                <li class="nav-item">
+                    <a href="/logout" class="nav-link">
+                        <p> &nbsp; [Logout]</p>
+                    </a>
+                </li>
+            </ul>
+            </li>
+
+            </ul>
+        </nav>
+        <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+</aside>
+<script>
+
+    window.addEventListener('load',function (){
+
+        var uri = window.location.pathname;
+        var uriWithoutParams = uri.split('?')[0];
+
+        console.log("uriWithoutParams = ", uriWithoutParams);
+
+        console.log("window.onload...........  ");
+        setTimeout(function (){
+            document.getElementById('_menu_' + uriWithoutParams)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        },1000)
+
+    });
+
+</script>
+    <!-- Content Wrapper. Contains page content -->
+            <div class="content-wrapper">
+        <!-- Main content -->
+        <section class="content" data-code-pos='ppp17222453708171'>
+            <div class="container-fluid">
+
+                <div class="row pt-3">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <select onchange="location.href=this.value" class="custom-select" style="font-weight: bold; color: dodgerblue; border-color: #ccc">
+                                <option value=""> :: Select Event :: </option>
+                                <option value='/admin/event-info/report-sum?id=161'>  161 . Book Introduction “Divergent Worlds: What the Ancient Mediterranean and Indian Ocean Can Tell Us About the Future of International Order”</option><option value='/admin/event-info/report-sum?id=160'>  160 . [Trực tuyến] Hội thảo khoa học quốc tế về Biển Đông lần thứ 17</option><option value='/admin/event-info/report-sum?id=159'>  159 . Buổi nói chuyện của ông Thomas J. Vallely, Chương trình Vietnam Studies, Đại học Colombia, Mỹ với Giảng viên, sinh viên Học viện Ngoại giao</option><option value='/admin/event-info/report-sum?id=158'>  158 . Workshop "International Publishing: Skills and Practical Experience"</option><option value='/admin/event-info/report-sum?id=157'>  157 . International Conference " Doi Moi Turns 40: Revisiting Viet Nam's Trasition and Its Foreign Policy"</option><option value='/admin/event-info/report-sum?id=156'>  156 . [Đăng ký Phóng viên] Sự kiện bên lề - Hội thảo quốc gia “Hợp tác khoa học công nghệ: Động lực thúc đẩy phát triển xanh, bền vững”</option><option value='/admin/event-info/report-sum?id=155'>  155 . [Đăng ký Phóng viên] Hội thảo quốc tế về Biển Đông lần thứ 17</option><option value='/admin/event-info/report-sum?id=154'>  154 . Đêm giao lưu học thuật trẻ</option><option value='/admin/event-info/report-sum?id=153'>  153 . Trao đổi chuyên môn về những phát triển mới của luật pháp quốc tế</option><option value='/admin/event-info/report-sum?id=152'>  152 . Tọa đàm "Nâng cao vai trò của Phụ nữ trong Ngoại giao"</option><option value='/admin/event-info/report-sum?id=151'>  151 . Đối thoại Liên thế hệ</option><option value='/admin/event-info/report-sum?id=149'>  149 . Đối thoại với Chuyên gia</option><option value='/admin/event-info/report-sum?id=148'>  148 . Chương trình Lãnh đạo trẻ 2025: "Sức mạnh thế hệ trẻ: Củng cố đoàn kết, vượt qua bất định"</option><option value='/admin/event-info/report-sum?id=147'>  147 . Đối thoại An ninh biển Việt Nam - Úc kênh 1.5</option><option value='/admin/event-info/report-sum?id=145'>  145 . Toạ đàm chia sẻ, bình luận về kết quả  các Hội thảo, đối thoại ở nước ngoài 6 tháng vừa qua</option><option value='/admin/event-info/report-sum?id=144'>  144 . Closing Dinner - 4th International Sinology Symposium</option><option value='/admin/event-info/report-sum?id=143'>  143 . Tọa đàm xây dựng Dự thảo Nghị quyết của Quốc Hội</option><option value='/admin/event-info/report-sum?id=142'>  142 . Hội thảo Các nhân tố tác động đến tình hình Biển Đông</option><option value='/admin/event-info/report-sum?id=141'>  141 . Tọa đàm "Vai trò của các yếu tố giá trị và chuẩn mực trong hoạch định chính sách"</option><option value='/admin/event-info/report-sum?id=140'>  140 . MẪU - TEST 2</option><option value='/admin/event-info/report-sum?id=139'>  139 . FIPAD Young Lecturer's Series</option><option value='/admin/event-info/report-sum?id=138'>  138 . Phiên 2: Chính sách an ninh của các cường quốc hiện nay - Trường hợp Nga và Mỹ</option><option value='/admin/event-info/report-sum?id=137'>  137 . Phiên 1: Bản sắc và chuẩn mực trong Quan hệ quốc tế - Trường hợp EU và các nước châu Âu</option><option value='/admin/event-info/report-sum?id=136'>  136 . Test máy quét</option><option value='/admin/event-info/report-sum?id=135'>  135 . The 4th International Sinology Symposium</option><option value='/admin/event-info/report-sum?id=134'>  134 . Hội thảo "Vấn đề sử dụng vũ lực trong quan hệ quốc tế: Thực tiễn quốc tế và bài học cho Việt Nam"</option><option value='/admin/event-info/report-sum?id=133'>  133 . Diễn đàn quốc tế Mê Công 2025</option><option value='/admin/event-info/report-sum?id=132'>  132 . Hội thảo “Dự báo môi trường đối ngoại tới năm 2030 và kiến nghị chính sách cho Việt Nam”</option><option value='/admin/event-info/report-sum?id=131'>  131 . Hội thảo quốc gia về phát triển bền vững</option><option value='/admin/event-info/report-sum?id=130' selected> 130 . SCSC17 - Welcome Dinner (Tiệc tối Chào mừng - Hội thảo Biển Đông)</option><option value='/admin/event-info/report-sum?id=129'>  129 . SCS17 - Họp ASEAN -Pacific Island</option><option value='/admin/event-info/report-sum?id=128'>  128 . SCSC17- Họp hẹp ASEAN</option><option value='/admin/event-info/report-sum?id=127'>  127 . SCSC17- Panelist</option><option value='/admin/event-info/report-sum?id=126'>  126 . Hội thảo khoa học quốc tế về Biển Đông lần thứ 17</option><option value='/admin/event-info/report-sum?id=125'>  125 . Buổi Tọa đàm với  Tiến sỹ Robert Floyd, Thư ký điều hành Tổ chức Cấm thử Hạt nhân toàn diện (CTBTO) về nỗ lực chống phổ biến vũ khí hạt nhân quốc tế</option><option value='/admin/event-info/report-sum?id=124'>  124 . Hội thảo “Thực trạng hội nhập kinh tế quốc tế của doanh nghiệp ngành thuỷ sản Việt Nam vào thị trường EU”</option><option value='/admin/event-info/report-sum?id=123'>  123 . Khóa học “Quy định pháp lý và thực tiễn về giải quyết tranh chấp quốc tế lần thứ hai"</option><option value='/admin/event-info/report-sum?id=122'>  122 . Khóa bồi dưỡng kỹ năng làm việc trong môi trường quốc tế</option><option value='/admin/event-info/report-sum?id=120'>  120 . Hội thảo RSIS-CSIS-DAV về  “Đánh giá các ưu tiên an ninh hàng hải của Đông Nam Á”</option><option value='/admin/event-info/report-sum?id=119'>  119 . Hội thảo khoa học: "Ngoại giao thời đại Hồ Chí Minh: 80 năm tận tụy phụng sự quốc gia, dân tộc"</option><option value='/admin/event-info/report-sum?id=118'>  118 . Hội thảo "Căng thẳng giữa Campuchia và Thái Lan: bản chất, dự báo và tác động"</option><option value='/admin/event-info/report-sum?id=117'>  117 . Cuộc họp giữa Thứ Trưởng Nguyễn Mạnh Cường với Viện Nghiên cứu chiến lược, Học viện Ngoại giao</option><option value='/admin/event-info/report-sum?id=116'>  116 . Tọa đàm: "Tình hình Biển Đông 6 tháng đầu năm 2025: Cơ hội, thách thức và hàm ý chính sách cho Việt Nam"</option><option value='/admin/event-info/report-sum?id=115'>  115 . Họp nội bộ Viện Biển Đông và Lãnh đạo Bộ</option><option value='/admin/event-info/report-sum?id=114'>  114 . Trao đổi "Điều chỉnh chính sách đối ngoại của Trung Quốc và gợi ý chính sách cho Việt Nam"</option><option value='/admin/event-info/report-sum?id=113'>  113 . Tọa đàm "Tình hình thế giới, khu vực 6 tháng đầu năm và  dự báo 6 tháng cuối năm 2025"</option><option value='/admin/event-info/report-sum?id=112'>  112 . test1</option><option value='/admin/event-info/report-sum?id=111'>  111 . Tiệc chia tay Thứ trưởng Đỗ Hùng Việt</option><option value='/admin/event-info/report-sum?id=110'>  110 . Hội thảo "Ứng dụng công nghệ số, phát triển ngoại giao số: Thực trạng và giải pháp"</option><option value='/admin/event-info/report-sum?id=109'>  109 . Expert Talk: The Future of European Engagement in the Indo-Pacific: Navigating Shifting Currents</option><option value='/admin/event-info/report-sum?id=108'>  108 . Toạ đàm Đóng góp ý kiến và thảo luận kế hoạch triển khai Đề tài Nhà nước</option><option value='/admin/event-info/report-sum?id=107'>  107 . TỌA ĐÀM: “DẤU ẤN TỰ HÀO: CÁC NHÀ NGOẠI GIAO NỮ VÀ HÀNH TRÌNH KHẲNG ĐỊNH VỊ THẾ VIỆT NAM  TRÊN TRƯỜNG QUỐC TẾ”</option><option value='/admin/event-info/report-sum?id=106'>  106 . Trao đổi chuyên môn về “Chuyến thăm Việt Nam của TBT Trung Quốc Tập Cận Bình ngày 14-15/4/2025”</option><option value='/admin/event-info/report-sum?id=105'>  105 . Roundtable: “EU - ASEAN cooperation in light of  the current developments in the US - China relations”</option><option value='/admin/event-info/report-sum?id=104'>  104 . test1</option><option value='/admin/event-info/report-sum?id=103'>  103 . Hội thảo khoa học quốc tế "50 năm thống nhất đất nước: Vai trò kiến tạo hoà bình của ngoại giao trong lịch sử và hiện tại" (50 Years of Vietnam Reunification: The Peacebuilding Role of Diplomacy in History and Present)</option><option value='/admin/event-info/report-sum?id=102'>  102 . Hội thảo "Cơ sở lý luận và thực tiễn về hiệu quả hội nhập kinh tế quốc tế của doanh nghiệp ngành thuỷ sản"</option><option value='/admin/event-info/report-sum?id=101'>  101 . The 10th Biennial Conference 2025 of the Asian Society of International Law - Student Workshop Otober 8, 2025</option><option value='/admin/event-info/report-sum?id=100'>  100 . The 10th Biennial Conference 2025 of the Asian Society of International Law - October 9-10, 2025</option><option value='/admin/event-info/report-sum?id=99'>  99 . Hội thảo "Chính sách thúc đẩy hợp tác kinh tế của Trung Quốc ở Đông Nam Á giai đoạn 2017-2024"</option><option value='/admin/event-info/report-sum?id=98'>  98 . Hội thảo "Ngoại giao Việt Nam giai đoạn 2016-2026 và 40 năm Đổi mới: bài học kinh nghiệm và kiến nghị chính sách đối ngoại trong kỷ nguyên mới"</option><option value='/admin/event-info/report-sum?id=97'>  97 . Tọa đàm hẹp về Tình hình Trung Quốc và các vấn đề đặt ra đối với công tác nghiên cứu Trung Quốc hiện nay</option><option value='/admin/event-info/report-sum?id=96'>  96 . Ocean Dialogue 14</option><option value='/admin/event-info/report-sum?id=93'>  93 . Workshop chia sẻ kiến thức về AI và kinh nghiệm sử dụng các công cụ AI</option><option value='/admin/event-info/report-sum?id=92'>  92 . Khóa học "Quy định pháp lý và thực tiễn về giải quyết tranh chấp quốc tế"</option><option value='/admin/event-info/report-sum?id=91'>  91 . Đối thoại biển DAV-NMF: “Hợp tác thúc đẩy an ninh biển toàn diện tại khu vực”</option><option value='/admin/event-info/report-sum?id=90'>  90 . Hội thảo “Triển vọng cạnh tranh nước lớn tại khu vực Ấn Độ Dương - Thái Bình Dương đến 2030, và tác động đến ASEAN và Việt Nam”</option><option value='/admin/event-info/report-sum?id=88'>  88 . Hội thảo khoa học “Tầm nhìn của ASEAN về Ấn Độ Dương-Thái Bình Dương: Những phát triển mới, cơ hội và thách thức”</option><option value='/admin/event-info/report-sum?id=87'>  87 . ĐẠI HỘI ĐẢNG BỘ HỌC VIỆN NGOẠI GIAO, NHIỆM KỲ 2025 - 2030</option><option value='/admin/event-info/report-sum?id=86'>  86 . Đoàn đại biểu MGIMO trao đổi, giao lưu với cựu sinh viên MGIMO tại Việt Nam</option><option value='/admin/event-info/report-sum?id=85'>  85 . Hội thảo Việt Nam vươn mình trở thành quốc gia dẫn đầu khu vực</option><option value='/admin/event-info/report-sum?id=83'>  83 . Hội thảo China Talk 25</option><option value='/admin/event-info/report-sum?id=81'>  81 . AFF Gala Dinner</option><option value='/admin/event-info/report-sum?id=80'>  80 . AFF 2025_Luncheon at Melia Hotel</option><option value='/admin/event-info/report-sum?id=79'>  79 . Hội thảo “Triển vọng giải quyết xung đột Nga – Ukraine hậu bầu cử Mỹ 2024”</option><option value='/admin/event-info/report-sum?id=78'>  78 . AFF 2025 - Press Conference</option><option value='/admin/event-info/report-sum?id=77'>  77 . Hướng tới kỷ niệm 80 năm thành lập ngành ngoại giao</option><option value='/admin/event-info/report-sum?id=76'>  76 . AFF2025 Pre-event - Photo Exhibition: "Vietnam’s 30-Year Journey in ASEAN: Integration and Development"</option><option value='/admin/event-info/report-sum?id=75'>  75 . Hội thảo Khoa học cấp Quốc gia Đối ngoại và ngoại giao Việt Nam trong kỷ nguyên mới - Kỷ nguyên vươn mình của dân tộc</option><option value='/admin/event-info/report-sum?id=74'>  74 . Chương trình tập huấn: Giải quyết tranh chấp biên giới</option><option value='/admin/event-info/report-sum?id=73'>  73 . Tham gia tiệc liên hoan Học viện Ngoại giao</option><option value='/admin/event-info/report-sum?id=72'>  72 . AFF 2025 - Tech Lunch: " A Future-ready ASEAN: Harnessing the power of emerging technologies" - Toạ đàm ăn trưa làm việc: "ASEAN đón đầu tương lai: khai thác nguồn lực từ  những công nghệ mới nổi"</option><option value='/admin/event-info/report-sum?id=67'>  67 . ASEAN FUTURE FORUM 2025 (Virtual)</option><option value='/admin/event-info/report-sum?id=66'>  66 . [ONLINE] AFF2025 - Pre-event Smart Agriculture for Regional Food Security Roundtable</option><option value='/admin/event-info/report-sum?id=65'>  65 . Tổng kết năm 2024 của Học viện Ngoại giao</option><option value='/admin/event-info/report-sum?id=64'>  64 . AFF2025 Pre-event - Smart Agriculture for Regional Food Security Roundtable</option><option value='/admin/event-info/report-sum?id=63'>  63 . ASEAN FUTURE FORUM 2025</option><option value='/admin/event-info/report-sum?id=62'>  62 . TOẠ ĐÀM “Những nét lớn của tình hình thế giới, khu vực năm 2024  và dự báo năm 2025”</option><option value='/admin/event-info/report-sum?id=61'>  61 . AFF2025  Pre-event - Special Roundtable "Women, Peace and Security - Digital Inclusion for Sustainable Peace"</option><option value='/admin/event-info/report-sum?id=60'>  60 . Khóa đào tạo về kỹ năng hòa giải</option><option value='/admin/event-info/report-sum?id=59'>  59 . Trao đổi với Quốc vụ khanh Bộ ngoại giao Ba Lan và Trung tâm nghiên cứu Phương Đông Ba Lan</option><option value='/admin/event-info/report-sum?id=56'>  56 . Toạ đàm Tổng kết tình hình Biển Đông năm 2024 và dự báo năm 2025</option><option value='/admin/event-info/report-sum?id=55'>  55 . Capacity Building - Số hoá Sử ký và Tổ chức sự kiện</option><option value='/admin/event-info/report-sum?id=54'>  54 . Hội thảo  “Dự báo quan hệ Mỹ-Trung dưới chính quyền mới của Mỹ: Tác động và đối sách của Việt Nam”</option><option value='/admin/event-info/report-sum?id=53'>  53 . Toạ đàm "Ứng dụng trí tuệ nhân tạo trong phát triển kinh tế: cơ hội và thách thức"</option><option value='/admin/event-info/report-sum?id=51'>  51 . Conference: Global Diplomacy in a Changing World/Hội thảo: Xu thế Ngoại giao hiện đại thế giới trước những biến chuyển của thời đại</option><option value='/admin/event-info/report-sum?id=44'>  44 . Toạ đàm: “Dự báo chiều hướng chính sách kinh tế của chính quyền mới tại Mỹ và tác động đối với Việt Nam”</option><option value='/admin/event-info/report-sum?id=43'>  43 . Khóa học Luật môi trường biển quốc tế</option><option value='/admin/event-info/report-sum?id=41'>  41 . Welcome Dinner - The 3rd International Sinology Symposium</option><option value='/admin/event-info/report-sum?id=40'>  40 . Hội thảo về các vấn đề an ninh trong khu vực với GS. Nayan Chanda, Đại học Ashoka</option><option value='/admin/event-info/report-sum?id=39'>  39 . Hội thảo "Chính sách quản lý thương mại của Mỹ: Kinh nghiệm của các nước và hàm ý cho Việt Nam"</option><option value='/admin/event-info/report-sum?id=38'>  38 . Các xu thế mới của Ngoại giao hiện đại và vấn đề đặt ra với Việt Nam</option><option value='/admin/event-info/report-sum?id=37'>  37 . The 3rd International Sinology Symposium - Hội thảo Khoa học Quốc tế về Nghiên cứu Trung Quốc</option><option value='/admin/event-info/report-sum?id=36'>  36 . Hội thảo "Nhìn lại chính sách của Campuchia thời gian gần đây và tác động đối với Việt Nam"</option><option value='/admin/event-info/report-sum?id=35'>  35 . Training phần mềm Tổ chức và Quản lý sự kiện</option><option value='/admin/event-info/report-sum?id=30'>  30 . The 13th Ocean Dialogue</option><option value='/admin/event-info/report-sum?id=29'>  29 . Tổng kết Hội thảo Biển Đông 16</option><option value='/admin/event-info/report-sum?id=26'>  26 . Test trước htbđ</option><option value='/admin/event-info/report-sum?id=23'>  23 . Tổng duyệt test chức năng quét mã checkin HTBĐ16</option><option value='/admin/event-info/report-sum?id=22'>  22 . The 16th South China Sea International Conference</option><option value='/admin/event-info/report-sum?id=19'>  19 . Giới thiệu phần mềm Tổ chức và quản lý Sự kiện-Hội thảo</option><option value='/admin/event-info/report-sum?id=18'>  18 . Vòng 1 thi viết Kỳ thi Tuyển dụng Viện Biển Đông</option><option value='/admin/event-info/report-sum?id=17'>  17 . Tọa đàm sơ kết tình hình Biển Đông 6 tháng đầu năm 2024</option><option value='/admin/event-info/report-sum?id=16'>  16 . Quản trị trí tuệ nhân tạo (AI) tại Đông Nam Á</option><option value='/admin/event-info/report-sum?id=15'>  15 . Test phần mềm ngày 4/6/2024 3</option><option value='/admin/event-info/report-sum?id=14'>  14 . Họp trù bị HTBD 16</option><option value='/admin/event-info/report-sum?id=13'>  13 . Hop SCS16</option><option value='/admin/event-info/report-sum?id=12'>  12 . Test phần mềm Sự kiện ngày 26-4-2024</option><option value='/admin/event-info/report-sum?id=11'>  11 . Hung Son testing</option><option value='/admin/event-info/report-sum?id=6'>  6 . MẪU - TEST CHỨC NĂNG, CÓ THỂ CLONE RA CÁC SỰ KIỆN</option><option value='/admin/event-info/report-sum?id=5'>  5 . Thử phần mềm</option><option value='/admin/event-info/report-sum?id=4'>  4 . Test 12</option><option value='/admin/event-info/report-sum?id=3'>  3 . Hội thảo An ninh biển đông Asian 2024</option><option value='/admin/event-info/report-sum?id=2'>  2 . Khoá học Nghiên cứu biển đông 2024</option><option value='/admin/event-info/report-sum?id=1'>  1 . Hội thảo Biển đông thường niên 2024</option>                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!--
+                <div class="row">
+
+                    <div class="col-md-4">
+                        <div class="info-box">
+                            <span class="info-box-icon bg-primary"><i class="fa fa-users"></i></span>
+                            <div class="info-box-content">
+                                <span class="info-box-text">User</span>
+                                <span class="info-box-number">101</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="info-box">
+                            <span class="info-box-icon bg-success"><i class="far fa-flag"></i></span>
+                            <div class="info-box-content">
+                                <span class="info-box-text">Checked-in</span>
+                                <span class="info-box-number">0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="info-box">
+                            <span class="info-box-icon bg-warning"><i class="far fa-question-circle"></i></span>
+                            <div class="info-box-content">
+                                <span class="info-box-text">Haven’t checked-in</span>
+                                <span class="info-box-number">101</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+-->
+
+                <div class="row" style="">
+                    <div class="col-sm-6">
+                        <div class="mb-2">
+                            <div class="input-group">
+                                <input style="color: red" type="search" class="for_search form-control form-control-sm"
+                                       placeholder="Nhập từ tìm kiếm">
+                                <div class="input-group-append">
+                                    <button type="submit" class="btn btn-sm btn-default">
+                                        <i class="fa fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6" style="font-size: 90%">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <span class="info-box-text" data-code-pos='ppp17526743013521'>User: <b class="blue" id="n_user_select"> 101 </b></span>
+                            </div>
+                            <div class="col-md-4">
+                                <span class="info-box-text">Checked-in: <b class="blue">0 </b></span>
+                            </div>
+                            <div class="col-md-4">
+                                <span class="info-box-text">
+                                    Haven’t checked-in: <b class="blue"> 101 </b></span>
+
+                                <div style="float: right" id='export_excel1' title="export excel">
+                                    <i title="Export to Excel" style="float: right; color: green;  font-size: 1.4em" class="fa fa-file-excel ml-3"></i>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="table_list_user_all" style="">  </div>
+
+                
+
+
+
+                <div class="row" style="display: none">
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label>Chọn nhóm</label>
+                            <select onchange="location.href=this.value || '/admin/event-info/report-sum?id=130'" class="form-control form-control-sm set_color">
+                                <option value='' selected>:: Chọn nhóm ::</option><option value='/admin/event-info/report-sum?id=130&group_id=12'>Viện Biển Đông</option><option value='/admin/event-info/report-sum?id=130&group_id=126'>Cố vấn, chuyên gia Campuchia</option><option value='/admin/event-info/report-sum?id=130&group_id=78'>Cố vấn Học viện</option><option value='/admin/event-info/report-sum?id=130&group_id=24'>Viện NCCL</option><option value='/admin/event-info/report-sum?id=130&group_id=128'>Cán bộ lão thành BNG</option><option value='/admin/event-info/report-sum?id=130&group_id=32'>Panelists mở rộng</option><option value='/admin/event-info/report-sum?id=130&group_id=33'>DS đại biểu Việt Nam</option><option value='/admin/event-info/report-sum?id=130&group_id=101'>Nguyên Lãnh đạo Bộ</option><option value='/admin/event-info/report-sum?id=130&group_id=106'>Khoa CTQT và NGVN</option><option value='/admin/event-info/report-sum?id=130&group_id=80'>Ngoại giao đoàn</option><option value='/admin/event-info/report-sum?id=130&group_id=82'>Các Học giả nước ngoài</option><option value='/admin/event-info/report-sum?id=130&group_id=34'>DS qtế lược Panelists</option><option value='/admin/event-info/report-sum?id=130&group_id=108'>Khoa Luật</option><option value='/admin/event-info/report-sum?id=130&group_id=64'>3.1. Ambassadors to Viet Nam</option><option value='/admin/event-info/report-sum?id=130&group_id=122'>Bộ công an</option><option value='/admin/event-info/report-sum?id=130&group_id=127'>Nguyên lãnh đạo ban đối ngoại trung ương</option><option value='/admin/event-info/report-sum?id=130&group_id=25'>Ban Giám Đốc</option><option value='/admin/event-info/report-sum?id=130&group_id=81'>Các Bộ Ban Ngành</option><option value='/admin/event-info/report-sum?id=130&group_id=79'>Các tổ chức quốc tế tại VN</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="col-sm-2" >
+                        <div class="form-group">
+                            <label>Trạng thái tham dự.</label>
+                            <select onchange="location.href=this.value || '/admin/event-info/report-sum?id=130'" class="form-control form-control-sm set_color">
+                            <option value="">:: Chọn ::</option>
+                                <option value='/admin/event-info/report-sum?id=130&user_status=confirm_join'>Đã xác nhận tham gia</option><option value='/admin/event-info/report-sum?id=130&user_status=not_confirm_join'>Chưa xác nhận tham gia</option><option value='/admin/event-info/report-sum?id=130&user_status=check_in'>Đã check-in</option><option value='/admin/event-info/report-sum?id=130&user_status=not_check_in'>Chưa check-in</option>                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label>Select 3</label>
+                            <select class="form-control form-control-sm set_color" >
+                                <option value="">:: Chọn ::</option>
+                                <option>Chọn 3</option>
+                                <option>option 2</option>
+                                <option>option 3</option>
+                                <option>option 4</option>
+                                <option>option 5</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label>Select 4</label>
+                            <select class="form-control form-control-sm set_color" >
+                                <option value="">:: Chọn ::</option>
+                                <option>option 2</option>
+                                <option>option 3</option>
+                                <option>option 4</option>
+                                <option>option 5</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label>Select 5</label>
+                            <select class="form-control form-control-sm set_color" >
+                                <option value="">:: Chọn ::</option>
+                                <option>option 2</option>
+                                <option>option 3</option>
+                                <option>option 4</option>
+                                <option>option 5</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label>Select 6</label>
+                            <select class="form-control form-control-sm set_color" >
+                                <option value="">Chọn 3</option>
+                                <option>option 2</option>
+                                <option>option 3</option>
+                                <option>option 4</option>
+                                <option>option 5</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" data-code-pos='ppp17222453531761' style="display: none">
+                    <div class="col-sm-12">
+                        <table id="example2" class="table table-bordered table-striped dataTable dtr-inline"
+                               aria-describedby="example2_info">
+                            <thead>
+                            <tr>
+                                <th class="sorting sorting_asc text-center" tabindex="0" aria-controls="example2" rowspan="1"
+                                    colspan="1" aria-sort="ascending">
+                                    No
+                                </th>
+                                <th class="sorting sorting_asc" tabindex="0" aria-controls="example2" rowspan="1"
+                                    colspan="1" aria-sort="ascending">
+                                    Title
+                                </th>
+
+                                <th class="sorting sorting_asc" tabindex="0" aria-controls="example2" rowspan="1"
+                                    colspan="1" aria-sort="ascending">
+                                    Lastname
+                                </th>
+
+
+                                <th class="sorting sorting_asc" tabindex="0" aria-controls="example2" rowspan="1"
+                                    colspan="1" aria-sort="ascending">
+                                                                        <a href="/admin/event-info/report-sum?id=130&amp;sort=first_name_desc">
+                                    <i class="fas fa-sort" title="Bấm vào để sắp xếp Tăng giảm"></i>
+                                        Firstname
+                                    </a>
+
+
+
+                                </th>
+
+                                <th class="sorting sorting_asc" tabindex="0" aria-controls="example2" rowspan="1"
+                                    colspan="1" aria-sort="ascending">
+                                    Group
+
+                                </th>
+
+                                <th class="sorting sorting_asc" tabindex="0" aria-controls="example2" rowspan="1"
+                                    colspan="1" aria-sort="ascending">
+                                    Organization
+
+                                </th>
+
+                                <th class="sorting sorting_asc" tabindex="0" aria-controls="example2" rowspan="1"
+                                    colspan="1" aria-sort="ascending">
+                                    Info
+                                </th>
+                                <th class="sorting sorting_asc text-center" tabindex="0" aria-controls="example2" rowspan="1"
+                                    colspan="1" aria-sort="ascending">
+                                    
+                                    <a href="/admin/event-info/report-sum?id=130&amp;sort=confirm_join_at_desc">
+                                        <i class="fas fa-sort" title="Bấm vào để sắp xếp Tăng giảm"></i>
+                                        Confirmed
+                                    </a>
+
+                                </th>
+                                <th class="sorting sorting_asc text-center" tabindex="0" aria-controls="example2" rowspan="1"
+                                    colspan="1" aria-sort="ascending">
+                                                                        <a href="/admin/event-info/report-sum?id=130&amp;sort=attend_at_desc">
+                                        <i class="fas fa-sort" title="Bấm vào để sắp xếp Tăng giảm"></i>
+                                        Check-in
+                                    </a>
+
+
+                                </th>
+
+
+                                <th class="sorting sorting_asc" tabindex="0" aria-controls="example2" rowspan="1"
+                                    colspan="1" aria-sort="ascending">
+                                    Note
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>1</td><td>TS.</td><td class='for_search last_name '>Vũ Hải</td><td class='for_search first_name'>Đăng</td><td class='for_search parent_text' data-x='12312312334'> Viện Biển Đông;  </td><td class='for_search organization'>  </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>2</td><td>ThS.</td><td class='for_search last_name '>Đỗ Mạnh</td><td class='for_search first_name'>Hoàng</td><td class='for_search parent_text' data-x='12312312334'> Viện Biển Đông;  </td><td class='for_search organization'>  </td><td></td><td class='text-center'> 2025-10-30 14:10:43</td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>3</td><td>Đại sứ</td><td class='for_search last_name '>Đặng Đình</td><td class='for_search first_name'>Quý</td><td class='for_search parent_text' data-x='12312312334'> Cố vấn, chuyên gia Campuchia; Cố vấn Học viện; Cố vấn, chuyên gia Campuchia;  </td><td class='for_search organization'>  </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>4</td><td>TS.</td><td class='for_search last_name '>Nguyễn Thị Bích</td><td class='for_search first_name'>Ngọc</td><td class='for_search parent_text' data-x='12312312334'> Viện NCCL;  </td><td class='for_search organization'>  </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>5</td><td>Đại sứ</td><td class='for_search last_name '>Phạm Lan</td><td class='for_search first_name'>Dung</td><td class='for_search parent_text' data-x='12312312334'> Cán bộ lão thành BNG; Panelists mở rộng;  </td><td class='for_search organization'> Bộ Ngoại giao </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>6</td><td>Ông</td><td class='for_search last_name '>Đặng Quyết</td><td class='for_search first_name'>Tiến</td><td class='for_search parent_text' data-x='12312312334'> DS đại biểu Việt Nam;  </td><td class='for_search organization'> Vụ trưởng, Vụ I, Bộ Tài chính </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>7</td><td>Đại sứ</td><td class='for_search last_name '>Phạm Quang</td><td class='for_search first_name'>Vinh</td><td class='for_search parent_text' data-x='12312312334'> Nguyên Lãnh đạo Bộ;  </td><td class='for_search organization'> Nguyên thứ trưởng Bộ Ngoại giao, nguyên Đại sứ VN tại Mỹ, Cố vấn HVNG </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>8</td><td>PGS. TS.</td><td class='for_search last_name '>Hà Anh</td><td class='for_search first_name'>Tuấn</td><td class='for_search parent_text' data-x='12312312334'> Khoa CTQT và NGVN; DS đại biểu Việt Nam;  </td><td class='for_search organization'> Trưởng Khoa Chính trị Quốc tế và Ngoại giao, Học viện Ngoại giao </td><td></td><td class='text-center'> 2025-10-30 20:56:01</td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>9</td><td>Ông</td><td class='for_search last_name '>Phạm Minh</td><td class='for_search first_name'>Sơn</td><td class='for_search parent_text' data-x='12312312334'> DS đại biểu Việt Nam;  </td><td class='for_search organization'> Giám đốc, Học viện Báo chí và Tuyên truyền </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>10</td><td>H.E. Mr.</td><td class='for_search last_name '>Jaya</td><td class='for_search first_name'>Ratnam</td><td class='for_search parent_text' data-x='12312312334'> Panelists mở rộng;  </td><td class='for_search organization'> Singaporean Ambassador to Viet Nam </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>11</td><td>H.E. Ms.</td><td class='for_search last_name '>Carmen Cano</td><td class='for_search first_name'>De Lasala</td><td class='for_search parent_text' data-x='12312312334'> Panelists mở rộng;  </td><td class='for_search organization'> Spanish Ambassador to Viet Nam </td><td></td><td class='text-center'> 2025-10-30 10:14:15</td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>12</td><td>Mr.</td><td class='for_search last_name '>Zamzari</td><td class='for_search first_name'>Feny</td><td class='for_search parent_text' data-x='12312312334'> Ngoại giao đoàn;  </td><td class='for_search organization'> Counsellor, Embassy of Indonesia in Viet Nam </td><td></td><td class='text-center'> 2025-10-30 14:04:09</td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>13</td><td>Mrs.</td><td class='for_search last_name '>Lei</td><td class='for_search first_name'>Xiaolu</td><td class='for_search parent_text' data-x='12312312334'> Các Học giả nước ngoài;  </td><td class='for_search organization'> Professor, China Institute of Boundary and Ocean Studies, Wuhan University, China </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>14</td><td>Ms.</td><td class='for_search last_name '>Jane Chan</td><td class='for_search first_name'>Git Yin</td><td class='for_search parent_text' data-x='12312312334'> Các Học giả nước ngoài;  </td><td class='for_search organization'> Senior Fellow and Coordinator, Maritime Security Programme, S. Rajaratnam School of International Studies (RSIS), Nanyang Technological University, Singapore </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>15</td><td>Colonel.</td><td class='for_search last_name '>Gaboy E.</td><td class='for_search first_name'>Ronald</td><td class='for_search parent_text' data-x='12312312334'> Ngoại giao đoàn;  </td><td class='for_search organization'> Embassy of the Philippines </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>16</td><td>Ms.</td><td class='for_search last_name '></td><td class='for_search first_name'>Anne Isabelle Valerie Brun</td><td class='for_search parent_text' data-x='12312312334'> Ngoại giao đoàn;  </td><td class='for_search organization'> French Embassy in Ha Noi </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>17</td><td>Mr.</td><td class='for_search last_name '>Mattia</td><td class='for_search first_name'>Farris</td><td class='for_search parent_text' data-x='12312312334'> Ngoại giao đoàn;  </td><td class='for_search organization'> Embassy of Italy </td><td></td><td class='text-center'> 2025-10-29 16:06:27</td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>18</td><td>H.E. Mr.</td><td class='for_search last_name '>Nicolai</td><td class='for_search first_name'>Prytz</td><td class='for_search parent_text' data-x='12312312334'> DS qtế lược Panelists;  </td><td class='for_search organization'> Danish Ambassador to Viet Nam </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>19</td><td>Mr.</td><td class='for_search last_name '>Tóbiás</td><td class='for_search first_name'>Gábor</td><td class='for_search parent_text' data-x='12312312334'> Ngoại giao đoàn;  </td><td class='for_search organization'> Embassy of Hungary </td><td></td><td class='text-center'> 2025-10-29 15:54:58</td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>20</td><td>Mr.</td><td class='for_search last_name '>Jaroslav</td><td class='for_search first_name'>Zukerstein</td><td class='for_search parent_text' data-x='12312312334'> Ngoại giao đoàn;  </td><td class='for_search organization'> Embassy of the Czech Republic </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>21</td><td>Mr.</td><td class='for_search last_name '>William Fingleton</td><td class='for_search first_name'></td><td class='for_search parent_text' data-x='12312312334'> DS qtế lược Panelists;  </td><td class='for_search organization'> Deputy Head of Political, Press and Information Section, EU Delegation </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>22</td><td>Ms.</td><td class='for_search last_name '>Leigh McCumber</td><td class='for_search first_name'></td><td class='for_search parent_text' data-x='12312312334'> DS qtế lược Panelists;  </td><td class='for_search organization'> Counsellor, Embassy of Canada </td><td></td><td class='text-center'> 2025-10-31 09:56:49</td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>23</td><td>Ms.</td><td class='for_search last_name '>Eleanor Kennon</td><td class='for_search first_name'></td><td class='for_search parent_text' data-x='12312312334'> DS qtế lược Panelists;  </td><td class='for_search organization'> First Secretary, Australian Embassy </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>24</td><td>Dr</td><td class='for_search last_name '>Bao Yinan</td><td class='for_search first_name'></td><td class='for_search parent_text' data-x='12312312334'> DS qtế lược Panelists;  </td><td class='for_search organization'> Associate Research Fellow, Huayang Center for Maritime Cooperation and Ocean Governance </td><td></td><td class='text-center'> 2025-10-30 14:10:55</td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>25</td><td>Ms.</td><td class='for_search last_name '>OTHMAN</td><td class='for_search first_name'>Aida Safura Niza</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> Embassy of Malaysia in Vietnam </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>26</td><td>Đại sứ</td><td class='for_search last_name '>Nguyễn Đức</td><td class='for_search first_name'>Hùng</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> Cố vấn cấp cao HVNG </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>27</td><td>Đại sứ</td><td class='for_search last_name '>Nguyễn Vũ</td><td class='for_search first_name'>Tùng</td><td class='for_search parent_text' data-x='12312312334'> Cố vấn Học viện;  </td><td class='for_search organization'> Học viện Ngoại giao </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>28</td><td>H.E</td><td class='for_search last_name '>Thai</td><td class='for_search first_name'>Dato' Tan Yang</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> Embassy of Malaysia </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>29</td><td>Bà</td><td class='for_search last_name '>Lê</td><td class='for_search first_name'>Ngọc Hân</td><td class='for_search parent_text' data-x='12312312334'> Khoa CTQT và NGVN;  </td><td class='for_search organization'> Khoa CTQT&amp;NG </td><td></td><td class='text-center'> 2025-10-31 10:33:22</td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>30</td><td>Ông</td><td class='for_search last_name '>Trần Hữu Duy</td><td class='for_search first_name'>Minh</td><td class='for_search parent_text' data-x='12312312334'> Khoa Luật;  </td><td class='for_search organization'> Khoa LQT </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>31</td><td>H.E</td><td class='for_search last_name '>Gass</td><td class='for_search first_name'>Thomas</td><td class='for_search parent_text' data-x='12312312334'> 3.1. Ambassadors to Viet Nam;  </td><td class='for_search organization'> Embassy of Switzerland in Hanoi </td><td></td><td class='text-center'> 2025-10-30 14:13:52</td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>32</td><td>H.E.</td><td class='for_search last_name '>Skoczek</td><td class='for_search first_name'>Joanna</td><td class='for_search parent_text' data-x='12312312334'> 3.1. Ambassadors to Viet Nam;  </td><td class='for_search organization'> Embassy of Poland to Vietnam </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>33</td><td>H.E.</td><td class='for_search last_name '>Beresford</td><td class='for_search first_name'>Caroline</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> New Zealand Embassy Hanoi </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>34</td><td>Ms.</td><td class='for_search last_name '>Deschamps</td><td class='for_search first_name'>Renee</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> Australian Embassy Vietnam </td><td></td><td class='text-center'> 2025-10-30 12:04:01</td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>35</td><td></td><td class='for_search last_name '>Nguyễn Trường</td><td class='for_search first_name'>Sơn</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> Báo Thế giới và Việt Nam </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>36</td><td>PGS.TS</td><td class='for_search last_name '>Nguyễn Quang</td><td class='for_search first_name'>Chiến</td><td class='for_search parent_text' data-x='12312312334'> Bộ công an;  </td><td class='for_search organization'> Cục Khoa học, Chiến lược và Lịch sử Công an, Bộ Công an </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>37</td><td></td><td class='for_search last_name '>Trần</td><td class='for_search first_name'>Văn Thùy</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> Vụ Chính sách, Pháp lý và Thông tin, Ủy ban biên giới quốc gia </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>38</td><td>Ms.</td><td class='for_search last_name '>Maric</td><td class='for_search first_name'>Chloe</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> Australian Embassy Vietnam </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>39</td><td>H.E.</td><td class='for_search last_name '></td><td class='for_search first_name'>Julien Guerrier</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> Delegation of the European Union to Vietnam </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>40</td><td>Ông</td><td class='for_search last_name '>Nguyễn Vinh</td><td class='for_search first_name'>Quang</td><td class='for_search parent_text' data-x='12312312334'> Nguyên lãnh đạo ban đối ngoại trung ương;  </td><td class='for_search organization'> Trung tâm CSSD </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>41</td><td>Mr./Ms.</td><td class='for_search last_name '>Hutchison</td><td class='for_search first_name'>Huw</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> Australian Embassy </td><td></td><td class='text-center'> 2025-10-29 16:50:53</td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>42</td><td>H.E.</td><td class='for_search last_name '>Prytz</td><td class='for_search first_name'>Nicolai</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> Embassy of Denmark </td><td></td><td class='text-center'> 2025-10-30 10:09:31</td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>43</td><td>Ông</td><td class='for_search last_name '>Nguyễn Hùng</td><td class='for_search first_name'>Sơn</td><td class='for_search parent_text' data-x='12312312334'> Ban Giám Đốc;  </td><td class='for_search organization'> DAV </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>44</td><td>H.E.</td><td class='for_search last_name '>Barth</td><td class='for_search first_name'>Helga Margarete</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> German Embassy in Hanoi </td><td></td><td class='text-center'> 2025-10-30 12:08:37</td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>45</td><td>Ms.</td><td class='for_search last_name '>Skoczek</td><td class='for_search first_name'>Joanna</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> Embassy of Poland in Viet Nam </td><td></td><td class='text-center'> 2025-10-29 17:07:56</td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>46</td><td>Ông</td><td class='for_search last_name '>Vũ Thanh</td><td class='for_search first_name'>Ca</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> Trường Đại học Tài nguyên và Môi trường Hà Nội </td><td></td><td class='text-center'> 2025-10-30 14:21:51</td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>47</td><td>Ms.</td><td class='for_search last_name '>Beresford</td><td class='for_search first_name'>Caroline</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> New Zealand Embassy in Hanoi </td><td></td><td class='text-center'> 2025-10-30 13:05:57</td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>48</td><td>Ông</td><td class='for_search last_name '>Trần Công</td><td class='for_search first_name'>Truc</td><td class='for_search parent_text' data-x='12312312334'> Cán bộ lão thành BNG;  </td><td class='for_search organization'> BNG </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>49</td><td>PGS.TS</td><td class='for_search last_name '>Nguyễn Chu</td><td class='for_search first_name'>Hồi</td><td class='for_search parent_text' data-x='12312312334'> Các Bộ Ban Ngành;  </td><td class='for_search organization'> Hội Thủy sản Việt Nam </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>50</td><td>Mrs.</td><td class='for_search last_name '>Ekeroth</td><td class='for_search first_name'>Mette</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> Danish Embassy in Hanoi, 194 Tran Quang Khai, Hoan Kiem, Hanoi </td><td></td><td class='text-center'> 2025-10-31 10:29:09</td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>51</td><td>Ông</td><td class='for_search last_name '>Nguyên Thanh</td><td class='for_search first_name'>Hải</td><td class='for_search parent_text' data-x='12312312334'> Các Bộ Ban Ngành; Các Bộ Ban Ngành;  </td><td class='for_search organization'> Văn phòng chính phủ </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>52</td><td>Bà</td><td class='for_search last_name '>Oanh</td><td class='for_search first_name'>Hoang</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> Học viện Ngoại giao </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>53</td><td>Mr</td><td class='for_search last_name '>Powell</td><td class='for_search first_name'>Ray</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> Stanford University, USA </td><td></td><td class='text-center'> 2025-10-30 13:42:57</td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>54</td><td>Mr</td><td class='for_search last_name '></td><td class='for_search first_name'>Jay Terriela</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> Philippine Coast Guard Spokesperson on West Philippine Sea Concerns </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>55</td><td>Mr</td><td class='for_search last_name '></td><td class='for_search first_name'>Dr. Sam Man CHUNG</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> Center for Maritime Security, Korea Institute for Maritime Security (retired ROK Navy Captain) </td><td></td><td class='text-center'> 2025-10-30 14:51:16</td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>56</td><td>Dr</td><td class='for_search last_name '></td><td class='for_search first_name'>Frances Anggadi</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> Australian National Centre for Ocean Resources and Security (ANCORS) </td><td></td><td class='text-center'> 2025-10-31 03:23:22</td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>57</td><td>Ms</td><td class='for_search last_name '></td><td class='for_search first_name'>Henrietta Levin</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> China Studies, CSIS </td><td></td><td class='text-center'> 2025-10-30 12:59:12</td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>58</td><td>Mr</td><td class='for_search last_name '></td><td class='for_search first_name'>Leonito Bacalando</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> Department of Justice, Federated States of Micronesia </td><td></td><td class='text-center'> 2025-10-30 19:11:08</td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>59</td><td>Dr</td><td class='for_search last_name '></td><td class='for_search first_name'>Katsuo Hirano</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> Coast Guard </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>60</td><td>Prof</td><td class='for_search last_name '>ZHAO</td><td class='for_search first_name'>Minghao</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> the Institute of International and Strategic Studies(IISS), Peking University(PKU) </td><td></td><td class='text-center'> 2025-10-30 18:12:12</td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>61</td><td>Ms.</td><td class='for_search last_name '>Ganchoon</td><td class='for_search first_name'>Fretti</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> Department of Justice (DOJ) of the Philippines </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>62</td><td>Mrs</td><td class='for_search last_name '>Ekeroth</td><td class='for_search first_name'>Mette</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> Embassy of Denmark in Vietnam </td><td></td><td class='text-center'> 2025-10-30 10:09:45</td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>63</td><td>Mr</td><td class='for_search last_name '>Davis</td><td class='for_search first_name'>Pierce</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> U.S. Department of State </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>64</td><td>H.E.</td><td class='for_search last_name '>Nickel</td><td class='for_search first_name'>James</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> Embassy of Canada to Vietnam </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>65</td><td>Mr</td><td class='for_search last_name '>Tobias</td><td class='for_search first_name'>Gabor</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> Embassy of Hungary </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>66</td><td>Mr</td><td class='for_search last_name '>Tsang</td><td class='for_search first_name'>Donald</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> Embassy of Singapore </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>67</td><td>Mr</td><td class='for_search last_name '>Emmers</td><td class='for_search first_name'>Ralf</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> SOAS, University of London </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>68</td><td>Mr</td><td class='for_search last_name '>Postec</td><td class='for_search first_name'>Yves</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> ESIWA+ </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>69</td><td>Ms.</td><td class='for_search last_name '>MCCUMBER</td><td class='for_search first_name'>LEIGH</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> EMBASSY OF CANADA TO VIETNAM </td><td></td><td class='text-center'> 2025-10-29 16:10:11</td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>70</td><td>Mr</td><td class='for_search last_name '>Cartaxo</td><td class='for_search first_name'>Manuel</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> Embassy of Portugal in Hanoi </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>71</td><td>Ms.</td><td class='for_search last_name '>Buckland</td><td class='for_search first_name'>Rachael</td><td class='for_search parent_text' data-x='12312312334'> Ngoại giao đoàn;  </td><td class='for_search organization'> Embassy of Australia to Viet Nam </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>72</td><td>Mr</td><td class='for_search last_name '>GASS</td><td class='for_search first_name'>Thomas</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> Embassy of Switzerland in Vietnam </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>73</td><td>Mr.</td><td class='for_search last_name '></td><td class='for_search first_name'>Lewe Paul</td><td class='for_search parent_text' data-x='12312312334'> Các tổ chức quốc tế tại VN;  </td><td class='for_search organization'> Konrad-Adenauer-Stiftung Viet Nam </td><td></td><td class='text-center'> 2025-10-30 12:12:01</td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>74</td><td>Mr</td><td class='for_search last_name '>Gaman</td><td class='for_search first_name'>Oleksandr</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> Embassy of Ukraine in Viet Nam </td><td></td><td class='text-center'> 2025-10-31 09:44:23</td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>75</td><td>Mr</td><td class='for_search last_name '>Payne</td><td class='for_search first_name'>Paul</td><td class='for_search parent_text' data-x='12312312334'> Ngoại giao đoàn;  </td><td class='for_search organization'> Embassy of Canada </td><td></td><td class='text-center'> 2025-10-29 16:47:57</td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>76</td><td>Ông</td><td class='for_search last_name '>QUÝ BÍNH</td><td class='for_search first_name'>NGUYỄN</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> Uỷ Ban Biên giới Quốc gia, MOFA. </td><td></td><td class='text-center'> 2025-10-31 09:11:57</td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>77</td><td>Ông</td><td class='for_search last_name '>Đồng</td><td class='for_search first_name'>Huy Cương</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> Liên hiệp các tổ chức hữu nghị Việt Nam </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>78</td><td>Mrs</td><td class='for_search last_name '>Han</td><td class='for_search first_name'>Younghee</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> Đại sứ quán Hàn Quốc </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>79</td><td>Mrs</td><td class='for_search last_name '>Cano de Lasala</td><td class='for_search first_name'>Carmen</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> Embassy of the Kingdom of Spain </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>80</td><td>Mr</td><td class='for_search last_name '>PHOMMACHACK</td><td class='for_search first_name'>PHOUSAVANG</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> GENERAL CONSULATE OF TH LAO PDR IN DA NANG CITY </td><td></td><td class='text-center'> 2025-10-31 09:02:55</td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>81</td><td>Prof.</td><td class='for_search last_name '></td><td class='for_search first_name'>Bec Strating</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> La Trobe Asia, La Trobe University, Australia </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>82</td><td>Mr.</td><td class='for_search last_name '></td><td class='for_search first_name'>Michal Bogusz</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> OSW Center for Eastern Studies, Poland </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>83</td><td>Dr.</td><td class='for_search last_name '></td><td class='for_search first_name'>Shr Yi Chin</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> College of Business, Fintech and Green Finance Center, National Taipei University, Chinese Taipei </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>84</td><td>Mr</td><td class='for_search last_name '></td><td class='for_search first_name'>Soham Agarwal</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> National Maritime Foundation, India </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>85</td><td>Dr.</td><td class='for_search last_name '></td><td class='for_search first_name'>Hanna Shelest</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> Security Studies and Global Outreach Programmes, Foreign Policy Council 'Ukrainian Prism' </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>86</td><td>Dr.</td><td class='for_search last_name '></td><td class='for_search first_name'>Nguyen Thi Thuy Trang</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> University of Social Science and Humanities, Vietnam National University </td><td></td><td class='text-center'> 2025-10-30 13:06:50</td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>87</td><td>HE.</td><td class='for_search last_name '></td><td class='for_search first_name'>Ito Naoki</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> Embassy of Japan to Vietnam </td><td></td><td class='text-center'> 2025-10-30 16:00:50</td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>88</td><td>H.E.</td><td class='for_search last_name '></td><td class='for_search first_name'>Gillian Bird</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> Embassy of Australia to Vietnam </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>89</td><td>Mr</td><td class='for_search last_name '>Canuel</td><td class='for_search first_name'>Hugh</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> Department of National Defence of Canada </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>90</td><td>Mrs</td><td class='for_search last_name '>Seppälä</td><td class='for_search first_name'>Riikka</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> Embassy of Finland in Hanoi </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>91</td><td>Ông</td><td class='for_search last_name '>Lê Công</td><td class='for_search first_name'>Kỷ</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> Ban Tuyên giáo và Dân vận Trung ương </td><td></td><td class='text-center'> 2025-10-31 09:15:56</td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>92</td><td>Ông</td><td class='for_search last_name '>Chu</td><td class='for_search first_name'>Tuấn Đức</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> Vụ Luật pháp và Điều ước quốc tế </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>93</td><td>Mr</td><td class='for_search last_name '>Yoshimura</td><td class='for_search first_name'>Thomas</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> KAS Head Quarter in Berlin </td><td></td><td class='text-center'> 2025-10-30 19:06:05</td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>94</td><td>Mrs</td><td class='for_search last_name '>Mizonova</td><td class='for_search first_name'>Maria</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> Consulate General of Russia in Danang </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>95</td><td>Mr</td><td class='for_search last_name '>Asmussen</td><td class='for_search first_name'>Jan</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> Christian-Albrechts-University, Kiel, Germany </td><td></td><td class='text-center'> 2025-10-29 16:56:39</td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>96</td><td>Ông</td><td class='for_search last_name '>MINH HUYNH</td><td class='for_search first_name'>CHINH</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> Uy ban bien gioi quoc gia - Bo Ngoai giao </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>97</td><td>Mr</td><td class='for_search last_name '>Hu</td><td class='for_search first_name'>Yang</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> Chinese EMBASSY to Vietnam </td><td></td><td class='text-center'> 2025-10-30 10:43:52</td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>98</td><td>Mrs</td><td class='for_search last_name '>VU</td><td class='for_search first_name'>Phuong</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> KAS Vietnam </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>99</td><td>Ông</td><td class='for_search last_name '>Đoàn Khắc</td><td class='for_search first_name'>Việt</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> Vụ Thông tin Báo chí, Bộ Ngoại giao </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>100</td><td>Ms</td><td class='for_search last_name '></td><td class='for_search first_name'>Yana Leksyutina</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> Institute of China and Contemporary Asia, Russian Academy of Sciences, Russia </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr><tr data-code-pos='ppp17222457116281' class='one_row user-row'><td class='text-center'>101</td><td>Bà</td><td class='for_search last_name '>To</td><td class='for_search first_name'>Minh Thu</td><td class='for_search parent_text' data-x='12312312334'>  </td><td class='for_search organization'> Mofa Viet Nam </td><td></td><td class='text-center'> </td><td class='text-center'></td><td></td></tr>                            <tr class="odd">
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+        <!-- /.content -->
+    </div>
+
+
+
+    <script>
+
+    // Function to build HTML table from user data
+    function buildHtmlTable(data) {
+        // Extract unique organizations for dropdown
+        const uniqueOrganizations = [];
+        data.forEach(user => {
+            if (user.organization && !uniqueOrganizations.includes(user.organization)) {
+                uniqueOrganizations.push(user.organization);
+            }
+        });
+        // Sort organizations alphabetically
+        uniqueOrganizations.sort();
+
+        // Create organization dropdown options
+        let orgOptions = `<option value="all"> - Đơn vị - </option>`;
+        uniqueOrganizations.forEach(org => {
+            orgOptions += `<option value="${org}">${org}</option>`;
+        });
+
+        // Extract unique groups for dropdown
+        const uniqueGroups = [];
+        data.forEach(user => {
+            if (user.parent_name && !uniqueGroups.includes(user.parent_name)) {
+                uniqueGroups.push(user.parent_name);
+            }
+        });
+        // Sort groups alphabetically
+        uniqueGroups.sort();
+
+        // Create group dropdown options
+        let groupOptions = `<option value="all"> - Nhóm - </option>`;
+        uniqueGroups.forEach(group => {
+            groupOptions += `<option value="${group}">${group}</option>`;
+        });
+
+        // Create the HTML table template string
+        let tableHtml = `
+<table class="table table-bordered table-striped select_all1" id="tbl_user_list_tin">
+
+    <tr style="border-top: 0px solid gray!important">
+      <th scope="col">#</th>
+      <th scope="col" style="min-width: 200px">
+      <input type="text" placeholder="Họ tên" class="form-control form-control-sm name_select">
+      </th>
+      <th scope="col" style="display: ">
+      <input type="text" placeholder="Email" class="form-control form-control-sm email_select">
+      </th>
+      <th scope="col" style="max-width: 100px; display: none">
+        <input type="text" placeholder="Số phone" class="form-control form-control-sm phone_select">
+       </th>
+      <th scope="col" style="max-width: 150px">
+      <input type="text" placeholder="Tổ chức" class="form-control form-control-sm org-filter">
+      </th>
+      <th scope="col" style="min-width: 180px;">
+      <select class="form-control form-control-sm group-filter">
+        ${groupOptions}
+      </select>
+      </th>
+      <th scope="col" style="text-align: center; width: 100px">
+      <input type="text" placeholder="Ghi chú" class="form-control form-control-sm note_select">
+
+      </th>
+        <th scope="col" style="text-align: center; width: 100px">
+          <select class="form-control form-control-sm select_lang">
+                <option value="">-Ngôn ngữ</option>
+                <option value="vi">Việt</option>
+                <option value="en">Anh</option>
+          </select>
+      </th>
+
+      <th scope="col" style="text-align: center; width: 100px">
+      <select class="form-control form-control-sm confirm_join_at">
+            <option value="">-Xác nhận</option>
+            <option value="1">Đã xác nhận</option>
+            <option value="0">Chưa xác nhận</option>
+      </select>
+
+      </th>
+
+      <th scope="col" style="text-align: center; width: 100px">
+          <select class="form-control form-control-sm deny_join_at">
+                <option value="">-Từ chối</option>
+                <option value="1">Đã từ chối</option>
+                <option value="0">Chưa từ chối</option>
+          </select>
+      </th>
+      <th scope="col" style="text-align: center; width: 100px">
+          <select class="form-control form-control-sm attend_at">
+                <option value="">-CheckIn</option>
+                <option value="1">Đã CheckIn</option>
+                <option value="0">Chưa CheckIn</option>
+          </select>
+      </th>
+    </tr>
+
+  `;
+
+        let nShow = 0;
+        // Process data array and add rows
+        data.forEach((user, index) => {
+            nShow++;
+            // DEBUG: Log user data to check confirm_join_at values
+            if (user.confirm_join_at) {
+                console.log(`User ${index + 1}: ${user.name}, confirm_join_at: "${user.confirm_join_at}"`);
+            }
+
+            tableHtml += `
+    <tr class="user-row" data-organization="${user.organization || ''}" data-group="${user.parent_name || ''}" data-confirm="${user.confirm_join_at ? '1' : '0'}">
+      <td>${index + 1}</td>
+      <td class="for_search user_full_name">${user.title || ''} ${user.name || ''}</td>
+      <td style="display: " class="for_search email_to_send1">${user.email || ''}</td>
+      <td style="display: none" class="for_search">${user.phone || ''}</td>
+      <td class="for_search">${user.organization || ''}</td>
+      <td class="for_search">${user.parent_name || ''}</td>
+      <td class="for_search">${user.note_u || user.note_eau || ''}</td>
+      <td class="for_search select_lang1" style="text-align: center">${user.language || 'vi'}</td>
+      <td class="for_search confirm-status" style="text-align: center" title="confirm_join_at: ${user.confirm_join_at || 'null'}">${user.confirm_join_at ? '✔' : ''}</td>
+      <td class="for_search" style="text-align: center">${user.deny_join_at ? '✔' : ''}</td>
+      <td class="for_search" style="text-align: center">${user.attend_at ? '✔️' : ''}</td>
+    </tr>`;
+        });
+
+        // Close the table
+        tableHtml += `
+
+</table>`;
+
+        return tableHtml;
+    }
+
+
+
+    // Helper function to format date
+    function formatDate(dateString) {
+        if (!dateString) return '';
+
+        const date = new Date(dateString);
+
+        // Check if date is valid
+        if (isNaN(date.getTime())) return dateString;
+
+        // Format as DD/MM/YYYY HH:MM
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+
+        return `${day}/${month}/${year} ${hours}:${minutes}`;
+    }
+
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // Thêm các style để modal luôn hiển thị ở vị trí cố định
+        const modalStyle = document.createElement('style');
+        modalStyle.innerHTML = `
+                    #exampleModalCenter {
+                        padding: 0 !important;
+                    }
+
+                    #exampleModalCenter .modal-dialog {
+                        position: fixed !important;
+                        top: 50% !important;
+                        left: 50% !important;
+                        transform: translate(-50%, -50%) !important;
+                        margin: 0 !important;
+                        max-height: 90vh;
+                        width: 90%;
+                        max-width: 1200px;
+                    }
+
+                    #exampleModalCenter .modal-content {
+                        height: 85vh;
+                        max-height: 85vh;
+                        display: flex;
+                        flex-direction: column;
+                    }
+
+                    #exampleModalCenter .modal-header,
+                    #exampleModalCenter .modal-footer {
+                        flex-shrink: 0;
+                    }
+
+                    #exampleModalCenter .modal-body {
+                        overflow-y: auto;
+                        flex-grow: 1;
+                    }
+
+                    /* Đảm bảo thanh cuộn chỉ xuất hiện khi cần thiết */
+                    #exampleModalCenter .table-responsive {
+                        overflow-y: auto;
+                        max-height: 100%;
+                    }
+                `;
+        document.head.appendChild(modalStyle);
+
+        // Add CSS for highlighting filtered selects
+        const filterStyle = document.createElement('style');
+        filterStyle.innerHTML = `
+            .select_all1 select.filtered-select {
+                background-color: #ffdddd;
+                color: #cc0000;
+                border-color: #cc0000;
+            }
+            .select_all1 input.filtered-input {
+                background-color: #ffdddd;
+                color: #cc0000;
+                border-color: #cc0000;
+            }
+        `;
+        document.head.appendChild(filterStyle);
+
+        // Xử lý sự kiện khi modal mở
+        const modal = document.getElementById('exampleModalCenter');
+        if (modal) {
+            // Khi modal hiển thị
+            modal.addEventListener('show.bs.modal', function() {
+                document.body.classList.add('modal-open');
+
+                // Tạo một observer để theo dõi thay đổi của content trong modal
+                const observer = new MutationObserver(() => {
+                    // Mỗi khi nội dung modal thay đổi, đảm bảo modal vẫn ở vị trí giữa
+                    const modalDialog = modal.querySelector('.modal-dialog');
+                    if (modalDialog) {
+                        modalDialog.style.position = 'fixed';
+                        modalDialog.style.top = '50%';
+                        modalDialog.style.left = '50%';
+                        modalDialog.style.transform = 'translate(-50%, -50%)';
+                    }
+                });
+
+                // Theo dõi thay đổi trong modal-body
+                const modalBody = modal.querySelector('.modal-body');
+                if (modalBody) {
+                    observer.observe(modalBody, {
+                        childList: true,
+                        subtree: true,
+                        characterData: true,
+                        attributes: true
+                    });
+                }
+            });
+
+            // Khi modal đóng
+            modal.addEventListener('hidden.bs.modal', function() {
+                document.body.classList.remove('modal-open');
+            });
+        }
+    });
+
+    // Debounce timer để tránh gọi filterUserRows nhiều lần
+    let filterDebounceTimer = null;
+
+    function debouncedFilterUserRows() {
+        clearTimeout(filterDebounceTimer);
+        filterDebounceTimer = setTimeout(() => {
+            filterUserRows();
+        }, 100); // Đợi 100ms trước khi gọi
+    }
+
+    // Hàm lọc dữ liệu kết hợp nhiều tiêu chí
+    function filterUserRows() {
+        console.log(" filterUserRows2 ... ");
+
+        // Lấy giá trị tìm kiếm chung
+        const generalSearchValue = document.querySelector('input.for_search')?.value?.trim().toLowerCase() || '';
+
+        // Lấy giá trị từ các filter cụ thể
+        const orgFilter = document.querySelector('.org-filter');
+        const groupFilter = document.querySelector('.group-filter');
+        const phoneFilter = document.querySelector('.phone_select');
+        const nameFilter = document.querySelector('.name_select');
+        const emailFilter = document.querySelector('.email_select');
+        const noteFilter = document.querySelector('.note_select');
+        const confirmFilter = document.querySelector('.confirm_join_at');
+        const denyFilter = document.querySelector('.deny_join_at');
+        const attendFilter = document.querySelector('.attend_at');
+        const langFilter = document.querySelector('.select_lang');
+
+        const orgText = orgFilter ? orgFilter.value.trim().toLowerCase() : '';
+        const selectedGroup = groupFilter ? groupFilter.value : 'all';
+        const phoneText = phoneFilter ? phoneFilter.value.trim().toLowerCase() : '';
+        const nameText = nameFilter ? nameFilter.value.trim().toLowerCase() : '';
+        const emailText = emailFilter ? emailFilter.value.trim().toLowerCase() : '';
+        const noteText = noteFilter ? noteFilter.value.trim().toLowerCase() : '';
+        const confirmValue = confirmFilter ? confirmFilter.value : '';
+        const denyValue = denyFilter ? denyFilter.value : '';
+        const attendValue = attendFilter ? attendFilter.value : '';
+        const langValue = langFilter ? langFilter.value : '';
+
+        // DEBUG: Log confirm filter value
+        if (confirmValue !== '') {
+            console.log("🔍 Filtering by confirm_join_at:", confirmValue);
+        }
+
+        const rows = document.querySelectorAll('.user-row');
+        let nShow = 0;
+
+        // Xóa highlight cũ
+        document.querySelectorAll('td.for_search').forEach(td => {
+            td.classList.remove('highlight');
+        });
+
+        rows.forEach(row => {
+            const rowOrg = row.getAttribute('data-organization');
+            const rowGroup = row.getAttribute('data-group');
+
+            // Get cell contents
+            const orgCell = row.querySelector('td:nth-child(5)');
+            const phoneCell = row.querySelector('td:nth-child(4)');
+            const nameCell = row.querySelector('td:nth-child(2)');
+            const emailCell = row.querySelector('td:nth-child(3)');
+            const noteCell = row.querySelector('td:nth-child(7)');
+            const confirmCell = row.querySelector('td:nth-child(9)'); // Fixed: confirm is column 9, not 8
+            const langCell = row.querySelector('td:nth-child(8)'); // Fixed: lang is column 8, not 9
+            const denyCell = row.querySelector('td:nth-child(10)');
+            const attendCell = row.querySelector('td:nth-child(11)');
+
+            // Get text values from cells
+            const orgValue = orgCell ? orgCell.textContent.toLowerCase() : '';
+            const phoneValue = phoneCell ? phoneCell.textContent.toLowerCase() : '';
+            const nameValue = nameCell ? nameCell.textContent.toLowerCase() : '';
+            const emailValue = emailCell ? emailCell.textContent.toLowerCase() : '';
+            const noteValue = noteCell ? noteCell.textContent.toLowerCase() : '';
+
+            // Check if cells have checkmark (✓) for status - IMPROVED LOGIC
+            // Method 1: Check via data attribute (more reliable)
+            const dataConfirm = row.getAttribute('data-confirm');
+            const hasConfirmFromData = dataConfirm === '1';
+
+            // Method 2: Check via cell text content (fallback)
+            const hasConfirmFromText = confirmCell ? (confirmCell.textContent.trim() === '✔' || confirmCell.textContent.trim() === '✓') : false;
+
+            // Use data attribute as primary method, text as fallback
+            const hasConfirm = hasConfirmFromData;
+
+            const language = langCell ? (langCell.textContent.trim().toLowerCase() === 'en' ? 'en' : 'vi') : 'vi';
+            const hasDeny = denyCell ? (denyCell.textContent.trim() === '✔' || denyCell.textContent.trim() === '✓') : false;
+            const hasAttend = attendCell ? (attendCell.textContent.trim() === '✔️' || attendCell.textContent.trim() === '✔' || attendCell.textContent.trim() === '✓') : false;
+
+            // DEBUG: Log confirm cell details if filtering
+            if (confirmValue !== '') {
+                console.log(`Row ${nShow + 1}: dataConfirm: "${dataConfirm}", hasConfirmFromData: ${hasConfirmFromData}, hasConfirmFromText: ${hasConfirmFromText}, hasConfirm: ${hasConfirm}`);
+                console.log(`  confirmCell text: "${confirmCell ? confirmCell.textContent.trim() : 'NULL'}"`);
+            }
+
+            // ===== KIỂM TRA TÌM KIẾM CHUNG =====
+            let matchesGeneralSearch = true;
+            if (generalSearchValue) {
+                const allRowText = (nameValue + ' ' + emailValue + ' ' + phoneValue + ' ' + orgValue + ' ' + noteValue).toLowerCase();
+                matchesGeneralSearch = allRowText.includes(generalSearchValue);
+
+                // Highlight matching cells nếu tìm thấy
+                if (matchesGeneralSearch) {
+                    [nameCell, emailCell, phoneCell, orgCell, noteCell].forEach(cell => {
+                        if (cell && cell.textContent.toLowerCase().includes(generalSearchValue)) {
+                            cell.classList.add('highlight');
+                        }
+                    });
+                }
+            }
+
+            // ===== KIỂM TRA CÁC FILTER CỤ THỂ =====
+            const matchesGroup = selectedGroup === 'all' || rowGroup === selectedGroup;
+            const matchesOrg = !orgText || orgValue.includes(orgText);
+
+            // Enhanced phone matching for comma-separated terms
+            let matchesPhone = true;
+            if (phoneText) {
+                const phoneTerms = phoneText.split(',').map(term => term.trim()).filter(Boolean);
+                matchesPhone = phoneTerms.length === 0 ||
+                    phoneTerms.some(term => phoneValue.includes(term));
+            }
+
+            const matchesName = !nameText || nameValue.includes(nameText);
+
+            // Enhanced email matching for comma-separated terms
+            let matchesEmail = true;
+            if (emailText) {
+                const emailTerms = emailText.split(',').map(term => term.trim()).filter(Boolean);
+                matchesEmail = emailTerms.length === 0 ||
+                    emailTerms.some(term => emailValue.includes(term));
+            }
+
+            const matchesNote = !noteText || noteValue.includes(noteText);
+
+            // Match conditions for status dropdowns - IMPROVED LOGIC
+            const matchesConfirm =
+                confirmValue === '' ||
+                (confirmValue === '1' && hasConfirm) ||
+                (confirmValue === '0' && !hasConfirm);
+
+            const matchesLang =
+                langValue === '' ||
+                (langValue === language);
+
+            const matchesDeny =
+                denyValue === '' ||
+                (denyValue === '1' && hasDeny) ||
+                (denyValue === '0' && !hasDeny);
+
+            const matchesAttend =
+                attendValue === '' ||
+                (attendValue === '1' && hasAttend) ||
+                (attendValue === '0' && !hasAttend);
+
+            // DEBUG: Log filter results if filtering by confirm
+            if (confirmValue !== '') {
+                console.log(`Row ${nShow + 1}: matchesConfirm: ${matchesConfirm}, confirmValue: ${confirmValue}, hasConfirm: ${hasConfirm}`);
+            }
+
+            // ===== KẾT HỢP TẤT CẢ ĐIỀU KIỆN =====
+            // Show row if ALL conditions match (including general search)
+            if (matchesGeneralSearch && matchesOrg && matchesGroup && matchesPhone && matchesName &&
+                matchesEmail && matchesNote && matchesConfirm && matchesDeny &&
+                matchesAttend && matchesLang) {
+                row.style.display = ''; // Show the row
+                nShow++;
+            } else {
+                row.style.display = 'none'; // Hide the row
+            }
+        });
+
+        $(".numberOfMemberToSend").html("Đang chọn <b style='color: red'> " + nShow + " </b> thành viên");
+        console.log("Number of rows shown: ", nShow);
+        $("#n_user_select").text(nShow);
+
+
+
+        // DEBUG: Summary if filtering by confirm
+        if (confirmValue !== '') {
+            console.log(`🔍 SUMMARY: Filtering by confirm_join_at="${confirmValue}", showing ${nShow} rows`);
+        }
+    }
+
+    let dataToExportExcel = null
+
+    function getUserDataList(dataId){
+
+        showWaittingIcon();
+        fetch('/api/event-info/getUserListEvent?eid=' + dataId)
+            .then(response => response.json())
+            .then(data => {
+                console.log("Get data...", data.payload);
+
+                dataToExportExcel = data.payload;
+
+                hideWaittingIcon()
+
+                // Generate the HTML table
+                const htmlTable = buildHtmlTable(data.payload);
+
+                // Populate the modal body with the fetched content
+                //
+                if(elm1 = document.querySelector('#table_list_user_all')){
+                    elm1.innerHTML = htmlTable;
+                }else
+                    document.querySelector('#exampleModalCenter .modal-body .user_list').innerHTML = htmlTable;
+
+                // Thêm event listener sau khi nội dung HTML đã được thêm vào DOM
+                setTimeout(function() {
+                    // Remove existing event listeners to prevent duplicates
+                    const existingGroupFilter = document.querySelector('.group-filter');
+                    const existingOrgFilter = document.querySelector('.org-filter');
+                    const existingPhoneFilter = document.querySelector('.phone_select');
+                    const existingNameFilter = document.querySelector('.name_select');
+                    const existingEmailFilter = document.querySelector('.email_select');
+                    const existingNoteFilter = document.querySelector('.note_select');
+                    const existingConfirmFilter = document.querySelector('.confirm_join_at');
+                    const existingDenyFilter = document.querySelector('.deny_join_at');
+                    const existingAttendFilter = document.querySelector('.attend_at');
+                    const existingLangFilter = document.querySelector('.select_lang');
+
+                    // Clone and replace elements to remove all event listeners
+                    if (existingGroupFilter) {
+                        const newGroupFilter = existingGroupFilter.cloneNode(true);
+                        existingGroupFilter.parentNode.replaceChild(newGroupFilter, existingGroupFilter);
+                    }
+                    if (existingOrgFilter) {
+                        const newOrgFilter = existingOrgFilter.cloneNode(true);
+                        existingOrgFilter.parentNode.replaceChild(newOrgFilter, existingOrgFilter);
+                    }
+                    if (existingPhoneFilter) {
+                        const newPhoneFilter = existingPhoneFilter.cloneNode(true);
+                        existingPhoneFilter.parentNode.replaceChild(newPhoneFilter, existingPhoneFilter);
+                    }
+                    if (existingNameFilter) {
+                        const newNameFilter = existingNameFilter.cloneNode(true);
+                        existingNameFilter.parentNode.replaceChild(newNameFilter, existingNameFilter);
+                    }
+                    if (existingEmailFilter) {
+                        const newEmailFilter = existingEmailFilter.cloneNode(true);
+                        existingEmailFilter.parentNode.replaceChild(newEmailFilter, existingEmailFilter);
+                    }
+                    if (existingNoteFilter) {
+                        const newNoteFilter = existingNoteFilter.cloneNode(true);
+                        existingNoteFilter.parentNode.replaceChild(newNoteFilter, existingNoteFilter);
+                    }
+                    if (existingConfirmFilter) {
+                        const newConfirmFilter = existingConfirmFilter.cloneNode(true);
+                        existingConfirmFilter.parentNode.replaceChild(newConfirmFilter, existingConfirmFilter);
+                    }
+                    if (existingDenyFilter) {
+                        const newDenyFilter = existingDenyFilter.cloneNode(true);
+                        existingDenyFilter.parentNode.replaceChild(newDenyFilter, existingDenyFilter);
+                    }
+                    if (existingAttendFilter) {
+                        const newAttendFilter = existingAttendFilter.cloneNode(true);
+                        existingAttendFilter.parentNode.replaceChild(newAttendFilter, existingAttendFilter);
+                    }
+                    if (existingLangFilter) {
+                        const newLangFilter = existingLangFilter.cloneNode(true);
+                        existingLangFilter.parentNode.replaceChild(newLangFilter, existingLangFilter);
+                    }
+
+                    // Now add fresh event listeners
+                    // // Xử lý lọc theo tổ chức
+                    // const orgFilter1 = document.querySelector('.org-filter111');
+                    // if (orgFilter1) {
+                    //     orgFilter1.addEventListener('change', function() {
+                    //         filterUserRows();
+                    //         // Highlight if a filter is active
+                    //         this.classList.toggle('filtered-select', this.value !== 'all');
+                    //     });
+                    // } else {
+                    //     console.error('Cannot find .org-filter element');
+                    // }
+
+                    // Xử lý lọc theo nhóm
+                    const groupFilter = document.querySelector('.group-filter');
+                    if (groupFilter) {
+                        groupFilter.addEventListener('change', function() {
+                            filterUserRows();
+                            // Highlight if a filter is active
+                            this.classList.toggle('filtered-select', this.value !== 'all');
+                        });
+                    } else {
+                        console.error('Cannot find .group-filter element');
+                    }
+
+                    const orgFilter = document.querySelector('.org-filter');
+                    if (orgFilter) {
+                        orgFilter.addEventListener('keyup', function() {
+                            filterUserRows();
+                            // Highlight if a filter is active
+                            this.classList.toggle('filtered-input', this.value.trim() !== '');
+                        });
+                    } else {
+                        console.error('Cannot find .orgFilter element');
+                    }
+
+                    // Xử lý lọc theo số điện thoại
+                    const phoneFilter = document.querySelector('.phone_select');
+                    if (phoneFilter) {
+                        phoneFilter.addEventListener('keyup', function() {
+                            filterUserRows();
+                            // Highlight if a filter is active
+                            this.classList.toggle('filtered-input', this.value.trim() !== '');
+                        });
+                    } else {
+                        console.error('Cannot find .phone_select element');
+                    }
+
+                    // Xử lý lọc theo tên
+                    const nameFilter = document.querySelector('.name_select');
+                    if (nameFilter) {
+                        nameFilter.addEventListener('keyup', function() {
+                            filterUserRows();
+                            // Highlight if a filter is active
+                            this.classList.toggle('filtered-input', this.value.trim() !== '');
+                        });
+                    } else {
+                        console.error('Cannot find .name_select element');
+                    }
+
+                    // Xử lý lọc theo email
+                    const emailFilter = document.querySelector('.email_select');
+                    if (emailFilter) {
+                        emailFilter.addEventListener('keyup', function() {
+                            filterUserRows();
+                            // Highlight if a filter is active
+                            this.classList.toggle('filtered-input', this.value.trim() !== '');
+                        });
+                    } else {
+                        console.error('Cannot find .email_select element');
+                    }
+
+                    // Xử lý lọc theo ghi chú
+                    const noteFilter = document.querySelector('.note_select');
+                    if (noteFilter) {
+                        noteFilter.addEventListener('keyup', function() {
+                            filterUserRows();
+                            // Highlight if a filter is active
+                            this.classList.toggle('filtered-input', this.value.trim() !== '');
+                        });
+                    } else {
+                        console.error('Cannot find .note_select element');
+                    }
+
+                    // Xử lý lọc theo trạng thái xác nhận
+                    const confirmFilter = document.querySelector('.confirm_join_at');
+                    if (confirmFilter) {
+                        confirmFilter.addEventListener('change', function() {
+                            filterUserRows();
+                            // Highlight if a filter is active
+                            this.classList.toggle('filtered-select', this.value !== '');
+                        });
+                    } else {
+                        console.error('Cannot find .confirm_join_at element');
+                    }
+
+                    // Xử lý lọc theo trạng thái từ chối
+                    const denyFilter = document.querySelector('.deny_join_at');
+                    if (denyFilter) {
+                        denyFilter.addEventListener('change', function() {
+                            filterUserRows();
+                            // Highlight if a filter is active
+                            this.classList.toggle('filtered-select', this.value !== '');
+                        });
+                    } else {
+                        console.error('Cannot find .deny_join_at element');
+                    }
+
+                    // Xử lý lọc theo trạng thái check-in
+                    const attendFilter = document.querySelector('.attend_at');
+                    if (attendFilter) {
+                        attendFilter.addEventListener('change', function() {
+                            filterUserRows();
+                            // Highlight if a filter is active
+                            this.classList.toggle('filtered-select', this.value !== '');
+                        });
+                    } else {
+                        console.error('Cannot find .attend_at element');
+                    }
+
+                    // Xử lý lọc theo ngôn ngữ
+                    // NOTE: existingLangFilter đã được clone ở trên (line 520)
+                    const langFilter = document.querySelector('.select_lang');
+                    if (langFilter) {
+                        // Attach listener cho newLangFilter (đã được clone từ existingLangFilter)
+                        langFilter.addEventListener('change', function() {
+                            console.log('Language filter changed to:', this.value);
+                            debouncedFilterUserRows(); // ← Dùng debounced version
+                            // Highlight if a filter is active
+                            this.classList.toggle('filtered-select', this.value !== '');
+                        });
+                    } else {
+                        console.error('Cannot find .select_lang element');
+                    }
+
+                }, 100); // Đợi 100ms để đảm bảo DOM đã được cập nhật
+            })
+            .catch(error => console.error('Error fetching content:', error));
+    }
+
+
+    // DEBUG FUNCTION: Test filter manually in console
+    window.debugConfirmFilter = function() {
+        console.log("=== DEBUG CONFIRM FILTER ===");
+        const confirmFilter = document.querySelector('.confirm_join_at');
+        const currentValue = confirmFilter ? confirmFilter.value : 'not found';
+        console.log("Current confirm filter value:", currentValue);
+
+        const rows = document.querySelectorAll('.user-row');
+        console.log("Total rows found:", rows.length);
+
+        rows.forEach((row, index) => {
+            const dataConfirm = row.getAttribute('data-confirm');
+            const confirmCell = row.querySelector('.confirm-status');
+            const confirmText = confirmCell ? confirmCell.textContent.trim() : '';
+            const displayStyle = row.style.display;
+
+            console.log(`Row ${index + 1}:`);
+            console.log(`  data-confirm: "${dataConfirm}"`);
+            console.log(`  cell text: "${confirmText}"`);
+            console.log(`  display: "${displayStyle}"`);
+        });
+
+        console.log("=== END DEBUG ===");
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+
+
+        document.getElementById('exampleModalCenter')?.addEventListener('show.bs.modal', function (event) {
+            // Make an AJAX request to fetch content from the API
+            getUserDataList(130);
+        });
+
+    });
+
+    document.querySelector('.sub_event_zone')?.addEventListener('click', function (event) {
+        if (event.target.classList.contains('remove_ev'))
+        {
+            //
+            let id = event.target.getAttribute("data-id");
+            // let id = $(this).prop("data-id");
+            console.log("Remove id = ", id);
+            let url = "/api/event-info/removeSubEvent";
+            let user_token = jctool.getCookie('_tglx863516839');
+            showWaittingIcon();
+            $.ajax({
+                url: url,
+                type: 'POST',
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader
+                },
+                data: {sub_id: id},
+                success: function (data, status) {
+                    hideWaittingIcon();
+                    console.log("Data ret2: ", data, " \nStatus: ", status);
+                    if (data.code) {
+                        showToastInfoTop(data.payload);
+
+                        //Remove div
+                        $(".sub_event_info[data-id='" + id + "']").remove();
+
+                    } else {
+                        alert("Có lỗi: " + JSON.stringify(data))
+                    }
+                    console.log("Data: ", data, " \nStatus: ", status);
+                },
+                error: function (data) {
+                    hideWaittingIcon();
+                    console.log(" DATAx ", data);
+                    if (data.responseJSON && data.responseJSON.message)
+                        alert('Error call api: ' + "\n" + data.responseJSON.message)
+                    else
+                        alert('Error call api: ' + "\n" + url + "\n\n" + JSON.stringify(data).substr(0, 1000));
+                }
+
+            });
+
+        }
+
+    })
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const selectElement = document.getElementById('dynamic-select_child_130');
+
+        if(!selectElement) {
+            console.error('Select element with ID dynamic-select_child_130 not found.');
+            return;
+        }
+
+        const choices_sub_event = new Choices(selectElement, {
+            shouldSort: false,
+            searchEnabled: true,
+            removeItemButton: true,
+            placeholder: true,
+            itemSelectText: 'Select',
+        });
+
+        const defaultValue = 126; // Replace with the actual default value
+
+        fetch('/api/event-info/list?soby_s1=desc&limit=30')
+            .then(response => response.json())
+            .then(data => {
+                if (data.code === 1 && data.payload?.data) {
+                    const options = data.payload.data.map(item => ({
+                        value: item.id,
+                        label: "(" + item.id + ") " + item.name,
+                    }));
+                    choices_sub_event.setChoices(options, 'value', 'label', true);
+                    // choices_sub_event.setChoiceByValue(defaultValue); // Set the default selected option
+                } else {
+                    console.error('Invalid API response:', data);
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+
+        selectElement.addEventListener('choice', function(event) {
+            let val = event.detail.value;
+            console.log('--- Option selected Child:', val);
+
+            //Lấy thông tin html sub event
+            let url = "/api/event-info/addSubEventAndGetHtml";
+            let user_token = jctool.getCookie('_tglx863516839');
+            showWaittingIcon();
+            $.ajax({
+                url: url,
+                type: 'POST',
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader
+                },
+                data: {parent_id: '130' , sub_id: val},
+                success: function (data, status) {
+                    hideWaittingIcon();
+                    console.log("Data ret2: ", data, " \nStatus: ", status);
+                    if (data.code) {
+
+                        showToastInfoTop(data.message);
+
+                        let sub_event_zone = document.querySelector(".sub_event_zone");
+                        // sub_event_zone.insertAdjacentHTML("beforeend", data.payload);
+                        sub_event_zone.insertAdjacentHTML("afterbegin", data.payload);
+
+
+                        //Sau khi add xong, reset lai select
+                        // After adding the new option, reset the select element to the first option
+                        choices_sub_event.setChoiceByValue('0');
+
+
+                    } else {
+                        alert("Có lỗi: " + JSON.stringify(data))
+                    }
+                    console.log("Data: ", data, " \nStatus: ", status);
+                },
+                error: function (data) {
+                    hideWaittingIcon();
+                    console.log(" DATAx ", data);
+                    if (data.responseJSON && data.responseJSON.message)
+                        alert('Error call api: ' + "\n" + data.responseJSON.message)
+                    else
+                        alert('Error call api: ' + "\n" + url + "\n\n" + JSON.stringify(data).substr(0, 1000));
+                }
+
+            });
+
+
+            // document.querySelector("input.input_value_to_post[data-field='parent_id']").value = val;
+        });
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const selectElement = document.getElementById('dynamic-select_130');
+        if(!selectElement) {
+            console.error('Select element with ID dynamic-select_130 not found.');
+            return;
+        }
+        const choices = new Choices(selectElement, {
+            shouldSort: false,
+            searchEnabled: true,
+            removeItemButton: true,
+            placeholder: true,
+            itemSelectText: 'Select',
+        });
+
+        const defaultValue = 126; // Replace with the actual default value
+
+        fetch('/api/event-info/list?soby_s1=desc&limit=30')
+            .then(response => response.json())
+            .then(data => {
+                if (data.code === 1 && data.payload?.data) {
+                    const options = data.payload.data.map(item => ({
+                        value: item.id,
+                        label: "(" + item.id + ") " + item.name,
+                    }));
+                    choices.setChoices(options, 'value', 'label', true);
+                    choices.setChoiceByValue(defaultValue); // Set the default selected option
+                } else {
+                    console.error('Invalid API response:', data);
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+
+        selectElement.addEventListener('choice', function(event) {
+            let val = event.detail.value;
+            console.log('--- Option selected:', val);
+
+
+
+            document.querySelector("input.input_value_to_post[data-field='parent_id']").value = val;
+        });
+    });
+</script>
+
+<script src="https://js.pusher.com/7.0/pusher.min.js"></script>
+
+<script>
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+
+        $("#btn_chanel_save").on("click", function () {
+            let chanel_name = $("#chanel_name").val();
+            console.log(" VAL = ", chanel_name);
+            let user_token = jctool.getCookie('_tglx863516839');
+            let url = "/api/event-info/saveEventChannel";
+            showWaittingIcon();
+            $.ajax({
+                url: url,
+                type: 'POST',
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('Authorization', 'Bearer ' + user_token);
+                },
+                data: {chanel_name: chanel_name},
+                success: function (data, status) {
+                    hideWaittingIcon();
+                    console.log("Data ret2: ", data, " \nStatus: ", status);
+                    if (data.code) {
+                        showToastInfoTop(data.payload)
+                    } else {
+                        alert("Có lỗi: " + JSON.stringify(data))
+                    }
+                    console.log("Data: ", data, " \nStatus: ", status);
+                },
+                error: function (data) {
+                    hideWaittingIcon();
+                    console.log(" DATAx ", data);
+                    if (data.responseJSON && data.responseJSON.message)
+                        alert('Error call api: ' + "\n" + data.responseJSON.message)
+                    else
+                        alert('Error call api: ' + "\n" + url + "\n\n" + JSON.stringify(data).substr(0, 1000));
+                }
+            });
+        })
+
+        // Enable pusher logging - don't include this in production
+        Pusher.logToConsole = true;
+        var pusher = new Pusher('e2d3c27e21727e9f9804', {
+            cluster: 'ap1'
+        });
+        var channel = pusher.subscribe("ev000");
+        channel.bind('my-event-pusher-web-130', function (data) {
+            //alert(JSON.stringify(data));
+            console.log("Data = ", data);
+
+            // document.getElementById('cont').insertAdjacentHTML("afterend","<br> Add text: " + data.message);
+            // document.getElementById('event_send_status_' + data.event_id).innerHTML = data.message;
+            //Get by Class
+            document.querySelectorAll('.event_send_status_' + data.event_id).forEach(function(elm){
+                elm.innerHTML = data.message;
+            });
+
+        });
+
+    });
+
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+        $(".action_zone2").on('click', function () {
+            $(".action_zone21").toggle();
+        });
+        $(".action_zone1").on('click', function () {
+            $(".action_zone11").toggle();
+        });
+
+        $("#sendTin3").on('click', function () {
+            console.log(" Click sendTin3 ...");
+
+            //confirm js
+            if (!confirm("Bạn có chắc chắn muốn gửi tin cho tất cả thành viên đã chọn không?\n\n" +
+                "- Kiểm tra kỹ danh sách và nội dung để tránh gửi nhầm, lặp lại...\n- Các tin sẽ được gửi tuần tự\n- Mỗi email/sms có thể cần vài giây để hoàn thành việc gửi\n" +
+                "- Theo dõi trạng thái gửi tin ở thông tin sự kiện này Hoặc trong phần Log của từng 'Lệnh gửi tin'\n\n" +
+                "Bấm 'OK' để gửi, hoặc 'Huỷ' để bỏ qua!")){
+                return;
+            }
+
+            //Tim tat ca email trong td.email_to_send1
+            let emailList = '';
+            $(".email_to_send1").each(function () {
+                //Các TD cha của nó phải là không là display none
+                if ($(this).closest('tr').css('display') == 'none') {
+                    return;
+                }
+                emailList += $(this).text() + ',';
+            });
+
+            console.log("emailList = ", emailList);
+
+            //get option of message_content_send
+            let message_field_send = $("#message_field_send").val();
+
+            let typeX = null
+            if(message_field_send.startsWith('sms')){
+                typeX = 'sms'
+            }
+            if(message_field_send.startsWith('content')){
+                typeX = 'email'
+            }
+
+            if(!typeX){
+                alert("Chưa chọn loại tin gửi, hãy chọn loại tin gửi trước khi gửi!")
+                return;
+            }
+
+            sendTinJs(130, typeX, message_field_send, emailList);
+
+        })
+
+        $(".sync_sms").on('click', function () {
+            let evid = $(this).attr("data-ev-id");
+            console.log("sync_sms tin ...", evid);
+            // return;
+            let user_token = jctool.getCookie('_tglx863516839');
+            let url = "/api/event-info/syncSms?cmd=sync_sms_request&evid=" + evid;
+            showWaittingIcon();
+            $.ajax({
+                url: url,
+                type: 'GET',
+                async: false,
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('Authorization', 'Bearer ' + user_token);
+                },
+                success: function (data, status) {
+                    hideWaittingIcon();
+                    console.log("Data ret3: ", data, " \nStatus: ", status);
+                    if (data.code) {
+                        showToastInfoTop(data.payload)
+                    } else {
+                        alert("Có lỗi: " + JSON.stringify(data))
+                    }
+                },
+                error: function (data) {
+                    hideWaittingIcon();
+                    console.log(" DATAx ", data);
+                    if (data.responseJSON && data.responseJSON.message)
+                        alert('Error call api: ' + "\n" + data.responseJSON.message)
+                    else
+                        alert('Error call api: ' + "\n" + url + "\n\n" + JSON.stringify(data).substr(0, 1000));
+                }
+            });
+        })
+
+
+        $(".select_user_type").on('change', function () {
+            console.log(" VAL = ", $(this).val());
+            if ($(this).val() == 'only_list_user') {
+                console.log(" Val = only_list_user");
+
+
+            }
+        })
+
+    async function sendEventInfo(event_id, typeX, select_content, user_email_send_override, select_user_type) {
+        const user_token = jctool.getCookie('_tglx863516839');
+        const url = "/api/event-info/sendTinAll";
+        let dataPost = {
+            event_id,
+            typeX,
+            select_content,
+            user_email_send_override,
+            select_user_type
+        };
+
+        console.log("Data send: ", dataPost);
+
+        try {
+
+            showWaittingIcon();
+            try {
+                // First API call
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${user_token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(dataPost)
+                });
+
+                const data = await response.json();
+                console.log("Data returned: ", data);
+
+
+                // Handle response for first call
+                if (data.payload === -1) {
+                    const confirmSend = confirm(
+                        "Lệnh Gửi tin tương tự đã được thực hiện và đã đánh dấu hoàn thành trước đây, bạn muốn gửi lại không?\n\n" +
+                        "- Chú ý: Việc này có thể sẽ GỬI LẠI cho các user đã nhận tin rồi."
+                    );
+
+                    if (confirmSend) {
+                        showWaittingIcon();
+                        try {
+                            dataPost.force_send = 1;
+
+                            // Second API call (forced send)
+                            const forceResponse = await fetch(url, {
+                                method: 'POST',
+                                headers: {
+                                    'Authorization': `Bearer ${user_token}`,
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(dataPost)
+                            });
+
+                            const forceData = await forceResponse.json();
+
+                            console.log("forceData = " , forceData);
+
+                            $('#previewMessage').modal('hide');
+
+                            if(!forceData || !forceData.message){
+                                alert("Có lỗi: " + JSON.stringify(forceData));
+                            }
+                            else{
+                                alert(forceData.message);
+                            }
+
+                            return forceData; // Nếu cần trả về dữ liệu
+                        } catch (error) {
+                            console.error("Error during forced API call:", error);
+                            throw error; // Ném lỗi để xử lý ở cấp cao hơn nếu cần
+                        } finally {
+                            hideWaittingIcon(); // Sẽ luôn chạy, dù thành công hay thất bại
+                        }
+                        // const forceData = await forceResponse.json();
+                        // console.log("Force send data: ", forceData);
+                        //
+                        // hideWaittingIcon();
+                        //
+                        // if (forceData.message) {
+                        //     showToastInfoTop(forceData.message, '', 10000);
+                        //     if (forceData.payload === 2 || forceData.payload === 3) {
+                        //         sendSmsAll(wsGlobal);
+                        //     }
+                        // } else {
+                        //     alert("Có lỗi: " + JSON.stringify(forceData));
+                        // }
+                    }
+                } else if (data.message) {
+                    if (data.payload === 2 || data.payload === 3) {
+                        // sendSmsAll(wsGlobal);
+                    }
+                    alert(data.message);
+                } else {
+                    alert("Có lỗi: " + JSON.stringify(data));
+                }
+
+            } catch (error) {
+                console.error("Error during API call:", error);
+                throw error; // Ném lỗi để xử lý ở cấp cao hơn nếu cần
+            } finally {
+                hideWaittingIcon(); // Luôn chạy dù thành công hay thất bại
+            }
+
+
+        } catch (error) {
+            console.log("Error: ", error);
+
+            if (error.response && error.response.json) {
+                const errorData = await error.response.json();
+                alert("Error call api: " + errorData.message);
+            } else {
+                alert("Error call api: " + url + "\n\n" + JSON.stringify(error).substr(0, 1000));
+            }
+        }
+        finally {
+            hideWaittingIcon();
+
+        }
+    }
+
+    function sendTinJs(event_id, typeX, select_content, user_email_send_override){
+
+        console.log("sendTinJs ...", event_id, typeX, select_content);
+
+        let select_user_type = $('.select_user_type[data-ev-id=' + event_id + ']').val();
+        ;
+        console.log("select_user_type = ", select_user_type);
+
+
+
+        if (user_email_send_override) {
+            // if (!confirm("Bạn sẽ gửi mail cho danh sách sau:\n" + user_email_send_override)) {
+            //     return;
+            // }
+        }
+
+        console.log(" select_mail_content Type = ", select_content);
+        let contentVi = '';
+        let contentEn = '';
+        let typeCont = '';
+        if (select_content.startsWith('sms_content')) {
+
+            if (!confirm(`** Chú ý: Gửi SMS cần đề phòng gửi nhiều tin trùng lặp, tốn chi phí, và có thể coi là SPAM và bị chặn ...
+- Lệnh gửi trên web sẽ đưa các tin nhắn vào hàng đợi, và sẽ chờ được gửi từ App trên Android
+ `)) {
+                return;
+            }
+
+            typeCont = "SMS";
+//Kiem tra xem content Rong thi bao loi:
+            //let content = tinymce.get(this.id).getContent()
+            let idContVi = "edit_text_area_" + select_content;
+            let idConEn = "edit_text_area_" + select_content + "_en";
+            contentVi = document.getElementById(idContVi).value;
+            contentEn = document.getElementById(idConEn).value;
+
+        } else {
+            typeCont = "Mail";
+            //Kiem tra xem content Rong thi bao loi:
+            //let content = tinymce.get(this.id).getContent()
+            let idContVi = "edit_rich_text_" + select_content;
+            let idConEn = "edit_rich_text_" + select_content + "_en";
+            contentVi = tinymce.get(idContVi)?.getContent();
+            contentEn = tinymce.get(idConEn)?.getContent();
+        }
+
+        // Bỏ qua vì đã có chỉ định gửi cho user cụ thể, content cụ thể
+        if(0){
+            console.log(" contentVi = ", contentVi);
+            console.log(" contentEn = ", contentEn);
+
+            if (contentEn.length == 0 && contentVi.length == 0) {
+                alert(`Có lỗi:\nChưa có Nội dung ${typeCont} ${select_content} Tiếng Anh và Việt, Bạn hãy nhập nội dung trước khi gửi!`);
+                return;
+            }
+            if (contentEn.length == 0 && contentVi.length > 0) {
+                if (!confirm(`* Cảnh báo *\nNội dung ${typeCont} ${select_content} Tiếng Việt đã có và sẽ gửi đi
+    nhưng Chưa có Nội dung ${typeCont} ${select_content} Tiếng Anh dành cho các User Tiếng Anh
+    Việc gửi với nội dung chưa có này sẽ bị bỏ qua!
+    \nBấm OK để vẫn thực hiện gửi nội dung Tiếng Việt cho các user Tiếng Việt, và bỏ qua nội dung với các User Tiếng Anh?`)) {
+                    return;
+                }
+            }
+            if (contentVi.length == 0 && contentEn.length > 0) {
+                if (!confirm(`* Cảnh báo *\nNội dung ${typeCont} ${select_content} Tiếng Anh đã có và sẽ gửi đi
+    nhưng Chưa có Nội dung ${typeCont} ${select_content} Tiếng Việt dành cho các User Tiếng Việt,
+    Việc gửi với nội dung chưa có này sẽ bị bỏ qua!
+    \nBấm OK để vẫn thực hiện gửi nội dung Tiếng Anh cho các user Tiếng Anh, và bỏ qua nội dung với các User Tiếng Việt?`)) {
+                    return;
+                }
+            }
+        }
+
+        sendEventInfo(event_id, typeX, select_content, user_email_send_override, select_user_type);
+
+/*
+        let user_token = jctool.getCookie('_tglx863516839');
+
+        let url = "/api/event-info/sendTinAll";
+        let dataPost = {
+            event_id: event_id,
+            typeX: typeX,
+            select_content: select_content,
+            user_email_send_override: user_email_send_override,
+            select_user_type: select_user_type
+        };
+        console.log("Data send: ", dataPost);
+
+        // alert(" Bạn đợi ít phút và click lại!");
+        // return;
+
+        showWaittingIcon()
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: dataPost,
+            async: false,
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader('Authorization', 'Bearer ' + user_token);
+            },
+            success: function (data, status) {
+                hideWaittingIcon();
+                console.log("Data ret4: ", data, " \nStatus: ", status);
+                showWaittingIcon()
+                if (data.payload == -1) {
+                    if (confirm("Lệnh Gửi tin tương tự đã được thực hiện và đã đánh dấu hoàn thành trước đây, bạn muốn gửi lại không?\n\n" +
+                        "- Chú ý: Việc này có thể sẽ GỬI LẠI cho các user đã nhận tin rồi.")) {
+                        dataPost.force_send = 1;
+                        $.ajax({
+                            url: url,
+                            type: 'POST',
+                            data: dataPost,
+                            async: false, //Taij sao lai async nay
+                            beforeSend: function (xhr) {
+                                xhr.setRequestHeader('Authorization', 'Bearer ' + user_token);
+                            },
+                            success: function (data, status) {
+                                hideWaittingIcon();
+                                console.log("Data ret5: ", data, " \nStatus: ", status);
+
+                                if (data.message) {
+                                    showToastInfoTop(data.message, '', 10000);
+                                    if(data.payload == 2 ||  data.payload == 3){
+                                        sendSmsAll(wsGlobal);
+                                    }
+
+                                } else {
+                                    alert("Có lỗi: " + JSON.stringify(data))
+                                }
+                            },
+                            error: function (data) {
+                                hideWaittingIcon();
+                                console.log(" DATAx ", data);
+                                if (data.responseJSON && data.responseJSON.message)
+                                    alert("Error call api: " + data.responseJSON.message)
+                                else
+                                    alert("Error call api: " + url + "\n\n" + JSON.stringify(data).substr(0, 1000));
+                            }
+                        })
+                    }
+                } else if (data.message) {
+
+                    if(data.payload == 2 ||  data.payload == 3){
+                        sendSmsAll(wsGlobal);
+                    }
+
+                    alert(data.message);
+
+
+                } else {
+                    alert("Có lỗi: " + JSON.stringify(data))
+                }
+            },
+            error: function (data) {
+                hideWaittingIcon();
+                console.log(" DATAx ", data);
+                if (data.responseJSON && data.responseJSON.message)
+                    alert("Error call api: " + data.responseJSON.message)
+                else
+                    alert("Error call api: " + url + "\n\n" + JSON.stringify(data).substr(0, 1000));
+            }
+
+
+        });
+    */
+    }
+
+
+
+    $(".send_tin").on('click', function () {
+        console.log("Send tin ...");
+
+        clsTableMngJs.saveOneDataTable(true, false);
+
+        let event_id = $(this).parents('.action_event').data('id');
+
+        let typeX = '';
+        //only_list_user
+        let select_content = '';
+        if ($(this).hasClass("email")) {
+            typeX = 'email';
+            select_content = $('.select_mail_content[data-ev-id=' + event_id + ']').val();
+        }
+        if ($(this).hasClass("sms")) {
+            typeX = 'sms';
+            select_content = $('.select_sms_content[data-ev-id=' + event_id + ']').val();
+        }
+
+        let user_email_send_override = $("#user_email_send_override").val();
+
+        sendTinJs(event_id, typeX, select_content, user_email_send_override);
+
+    })
+
+    $(".stop_send_tin").on('click', function () {
+        console.log("stop Send tin ...");
+
+        let event_id = $(this).parents('.action_event').data('id');
+        let user_token = jctool.getCookie('_tglx863516839');
+
+        let url = "/api/event-info/stopSendTinAll";
+
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: {event_id: event_id},
+            async: false,
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader('Authorization', 'Bearer ' + user_token);
+            },
+            success: function (data, status) {
+                hideWaittingIcon();
+                console.log("Data ret6: ", data, " \nStatus: ", status);
+
+                if (data.payload) {
+                    showToastInfoTop(data.payload);
+                } else {
+                    alert("Có lỗi: " + JSON.stringify(data))
+                }
+            },
+            error: function (data) {
+                hideWaittingIcon();
+                console.log(" DATAx ", data);
+                if (data.responseJSON && data.responseJSON.message)
+                    alert("Error call api: " + data.responseJSON.message)
+                else
+                    alert("Error call api: " + url + "\n\n" + JSON.stringify(data).substr(0, 1000));
+            }
+        });
+
+    })
+    })
+
+</script>
+
+<script>
+    var  wsGlobal = null;
+    let countReconnect = 0;
+
+    function addLogGood(log) {
+        if(!document.getElementById('status_app'))
+            return;
+        document.getElementById('status_app').innerHTML = log;
+        document.getElementById('status_app').style.color = " Green ";
+
+    }
+
+    function addLogError(log) {
+        if(!document.getElementById('status_app'))
+            return;
+        document.getElementById('status_app').innerHTML = "" + log;
+        document.getElementById('status_app').style.color = " RED ";
+        // document.getElementById('status_app').style.fontWeight = " bold ";
+        // document.getElementById('status_app').style.fontSize = " 120% ";
+
+    }
+
+
+    //Khong dung socket
+    function sendSmsAll(socket){
+
+        return;
+        // let user_token = jctool.getCookie('_tglx863516839');
+        // const wsServerUrl = 'wss://events.dav.edu.vn:51111?tkx=' + user_token;
+        // Kết nối tới WebSocket server
+        // const socket = new WebSocket(wsServerUrl);
+        // Lắng nghe sự kiện mở kết nối
+        socket.onopen = () => {
+            console.log('Connected to WebSocket server');
+        };
+        // Lắng nghe khi nhận tin nhắn từ server
+        socket.onmessage = (event) => {
+            console.log(`Server: ${event.data}`);
+            // const messagesDiv = document.getElementById('messages');
+            // const message = document.createElement('div');
+            // message.textContent = `Server: ${event.data}`;
+            // messagesDiv.appendChild(message);
+        };
+
+        // Lắng nghe khi kết nối bị đóng
+        socket.onclose = () => {
+            console.log('Disconnected from WebSocket server');
+        };
+
+        // Lắng nghe lỗi
+        socket.onerror = (error) => {
+            console.error('WebSocket error:', error);
+        };
+
+        // Gửi tin nhắn
+        if (socket.readyState === WebSocket.OPEN) {
+            // socket.send("send_all_sms_events_in_back_ground");
+            // alert ('Lệnh đã gửi xuống App SMS');
+            console.log(`Message sent`);
+        } else {
+            alert ('Socket is not open ?');
+            console.log('Socket is not open?');
+        }
+
+    }
+
+    window.addEventListener('load', function (e) {
+        console.log("onload2");
+    });
+
+
+    // if(0) //Tam thoi disable websocket, de debug: 2.4.25
+    window.addEventListener('load', function (e) {
+
+        console.log("onload1 ...");
+        let token = jctool.getCookie('_tglx863516839');
+        const connectWebSocket = () => {
+            countReconnect++;
+
+            try {
+
+            wsGlobal = new WebSocket('wss://events.dav.edu.vn:51111?tkx=' + token);
+
+            }
+            catch (e) {
+                console.log(" *** Error: ", e);
+                return;
+            }
+
+            wsGlobal.onopen = function () {
+                console.log('Connected to WebSocket server');
+                addLogError('Đang kiểm tra kết nối App SMS Gateway... ');
+                // statusIcon.classList.remove('blinking-red');
+                // statusIcon.classList.add('blinking-green');
+            };
+
+            wsGlobal.onmessage = function (event) {
+                console.log('Message from server: ', event.data);
+
+
+                if (event.data.includes('ping_check_alive_mobile:not_alive')) {
+                    addLogError("Chưa gửi được SMS. Cần liên hệ Admin để bật APP gửi SMS!");
+                    return;
+                }
+
+                //nếu event.data có chứa chuỗi: 'ping_check_alive_mobile:' + '12107'
+                //thì là có kết nối
+                if (event.data.includes('ping_check_alive_mobile:ok_alive:')) {
+                    //ping_check_alive_mobile:ok_alive lấy
+                    let uidInstring = event.data.replace('ping_check_alive_mobile:ok_alive:', '');
+                    //addLogGood('App Gửi SMS đang kết nối với Tài khoản của bạn: <b> "dungla2011@gmail.com"');
+                    addLogGood(`App SMS sẵn sàng (Logged in: <b> ${uidInstring}</b>)`);
+                    return;
+                }
+
+            };
+
+            wsGlobal.onclose = function () {
+                setTimeout(connectWebSocket, 2000); // Attempt to reconnect after 2 seconds
+            };
+
+            wsGlobal.onerror = function (error) {
+                console.log('WebSocket error: ');
+                addLogError('Chưa gửi được SMS. Cần liên hệ Admin để bật APP gửi SMS (Status Server chưa sẵn sàng)')
+                wsGlobal.close();
+            };
+        };
+
+
+        connectWebSocket();
+
+        //Vòng lặp timeout 1 giây, ping đến server gửi 1 tin nhắn check một client khác có tồn tại không
+
+        setInterval(function () {
+            if (wsGlobal.readyState === WebSocket.OPEN) {
+                console.log(" CUID = " + '12107');
+                wsGlobal.send('ping_check_alive_mobile:' + '12107');
+            }
+        }, 3000);
+
+    });
+
+    window.addEventListener('load', function (e) {
+
+        console.log("onload0 ...");
+
+        // checkStatusWebSocketWithThisUserAccount()
+
+        // $("#status_app").html(" ...  ");
+
+        // $("textarea[name^='sms_content']").each(function () {
+        //     var text = this.value;
+        //     var byteCount = new Blob([text]).size;
+        //     console.log('Byte count:', byteCount);
+        //     let field = this.name;
+        //     $("div[data-namex2='" + field + "']").html("Number char: " + byteCount + " / " + text.length);
+        // })
+        //
+        // $("textarea[name^='sms_content']").on('click change keyup', function (e) {
+        //     var text = e.target.value;
+        //     var byteCount = new Blob([text]).size;
+        //     console.log('Byte count:', byteCount, text.size);
+        //     let field = e.target.name;
+        //     $("div[data-namex2='" + field + "']").html("Number char: " + byteCount + " / " + text.length);
+        // })
+    });
+
+
+    document.addEventListener('DOMContentLoaded', function () {
+        $("#send_mail_test").on("click", function () {
+
+            console.log(" send_mail_test ...");
+
+            let testId = '130';
+            let user_token = jctool.getCookie('_tglx863516839');
+
+            showWaittingIcon();
+            let url = "/api/event-info/sendMailTest";
+            url = "/api/event-info/sendMailTest";
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: {testId: testId},
+                async: false,
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('Authorization', 'Bearer ' + user_token);
+                },
+                success: function (data, status) {
+                    hideWaittingIcon();
+                    console.log("Data ret11: ", data, " \nStatus: ", status);
+
+                    if (data.payload) {
+                        showToastInfoTop(data.payload, '', 10000);
+                    } else {
+                        alert("Có lỗi: " + JSON.stringify(data))
+                    }
+                },
+                error: function (data) {
+                    hideWaittingIcon();
+                    console.log(" DATAx ", data);
+                    if (data.responseJSON && data.responseJSON.message)
+                        alert('Error call api: ' + data.responseJSON.message)
+                    else
+                        alert('Error call api: ' + url + "\n\n" + JSON.stringify(data).substr(0, 1000));
+                }
+            });
+
+
+        })
+    })
+
+// Handle sendTin2 button click to show preview modal
+    document.addEventListener('DOMContentLoaded', function () {
+    $('#sendTin2').on('click', function() {
+
+        //Kiem tra message_content_send đã bấm select chưa
+        //Nếu chưa thì yeeu cầu bấm select trước
+        let select_content = $('#message_field_send').val();
+
+        console.log(" message_field_send ...",select_content);
+        if (!select_content || select_content == '0') {
+            alert('Vui lòng chọn nội dung Tin nhắn trước khi gửi');
+            return;
+        }
+
+        //Gọi API lấy nội dung tin nhắn xuống
+        let user_token = jctool.getCookie('_tglx863516839');
+
+        //get id from current url, number after /edit/ ...: event-info/edit/<id>?....
+        let curl = window.location.pathname;
+        let id = curl.split('/').pop();
+        //If have ? then split again
+        if (id.includes('?')) {
+            id = id.split('?')[0];
+        }
+        console.log(" ID = ", id);
+//Lay text cua .select_lang1 dau tien, có nhiều .select_lang1
+        let lang1 = $('.user-row:visible:first .select_lang1').text();
+        console.log(" lang111 = ", lang1);
+
+        let url = "/api/event-info/get/"+id + "?cmd_ev=get_content_preview&lang1=" + lang1;
+        showWaittingIcon();
+        //fetch lấy nội dung
+        $.ajax({
+            url: url,
+            type: 'GET',
+            // data: {content_id: select_content},
+            async: false,
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader('Authorization', 'Bearer ' + user_token);
+            },
+            success: function (data, status) {
+                hideWaittingIcon();
+                console.log("Data ret12: ", data, " \nStatus: ", status);
+
+
+                if (data.payload) {
+                    //Hiển thị nội dung tin nhắn lên modal
+
+                    let contentx = data.payload[select_content];
+                    if(!contentx || contentx.length == 0){
+                        alert("Nội dung tiếng Việt chưa có? Bạn hãy tạo nội dung trước khi gửi tin: " + select_content)
+                        return;
+                    }
+
+                    let contentx2 = data.payload[select_content + '_en'];
+                    if(!contentx2 || contentx2.length == 0){
+                        alert("Nội dung tiếng Anh chưa có? Bạn hãy tạo nội dung trước khi gửi tin: " + select_content)
+                        return;
+                    }
+
+
+                    if(lang1 == 'en'){
+                        contentx = contentx2;
+                    }
+                    contentx = contentx.trim()
+                    if(!contentx || contentx.length == 0){
+                        alert("Nội dung chưa có? Bạn hãy tạo nội dung trước khi gửi tin: " + select_content)
+                        return;
+                    }
+
+
+                    //if select_content start with: sms_content
+                    if (select_content.startsWith('sms_content')){
+                        //Thay the xuong dong (\n) bang Br
+                        contentx = contentx.replace(/\n/g, "<br>");
+                    }
+
+                    let tmp = $('.user-row:visible:first .user_full_name').text();
+                    //Lay text cua .user_full_name dau tien, có nhiều .user_full_name
+                    contentx = contentx.replaceAll("[TENKHACH]", tmp);
+
+                    //Lâấy ra input có data-field=name
+                    let nameEvent = $('input[data-field=name]').val();
+                    console.log(" nameEvent = ", nameEvent);
+                    contentx = contentx.replaceAll("[EVENT_NAME]", nameEvent);
+
+                    contentx = contentx.replaceAll("[LINKTHAMDU]", "<a href='https://events.dav.edu.vn/' target='_blank'> https://events.dav.edu.vn/... </a>");
+
+
+                    $('.content_send_preview').html(contentx);
+
+                    //Hiển thị modal
+                    $('#previewMessage').modal('show');
+                } else {
+                    alert("Có lỗi: " + JSON.stringify(data))
+                }
+            },
+            error: function (data) {
+                hideWaittingIcon();
+                console.log(" DATAx ", data);
+                if (data.responseJSON && data.responseJSON.message)
+                    alert('Error call api: ' + data.responseJSON.message)
+                else
+                    alert('Error call api: ' + url + "\n\n" + JSON.stringify(data).substr(0, 1000));
+            }
+        });
+
+
+        // // Get selected content and users here
+        // let selectedContent = $('.modal-footer select').val();
+        // let userCount = $('#numberOfMemberToSend').text();
+        //
+        // // Populate preview content - you can customize this based on your needs
+        // $('.content_send_preview').html(`
+        //     <div class="">
+        //         <p><strong>Nội dung:</strong> ${selectedContent}</p>
+        //         <p><strong>Số người nhận:</strong> ${userCount}</p>
+        //         <p>Xác nhận gửi tin đến các đại biểu đã chọn?</p>
+        //     </div>
+        // `);
+
+        // Hide current modal and show preview modal
+        // $('#exampleModalCenter').modal('hide');
+        // $('#previewMessage').modal('show');
+    });
+
+    // Make sure preview modal shows on top when needed
+    $('#previewMessage').on('shown.bs.modal', function() {
+        $(this).css('z-index', 1060); // Higher z-index than the first modal
+    });
+});
+</script>
+
+    <!-- /.content-wrapper -->
+    <footer class="main-footer">
+    <strong>Copyright &copy; 2008- 2025 <a target="_blank" href="#">  </a>.</strong>
+    All rights reserved.
+    <div class="float-right d-none d-sm-inline-block">
+        <b>Version</b> 3.0.1
+    </div>
+</footer>
+    <!-- Control Sidebar -->
+    <aside class="control-sidebar control-sidebar-dark">
+        <!-- Control sidebar content goes here -->
+    </aside>
+</div>
+<!-- ./wrapper -->
+<!-- jQuery -->
+<script src="/adminlte/plugins/jquery/jquery.min.js"></script>
+<!-- jQuery UI 1.11.4 -->
+<script src="/adminlte/plugins/jquery-ui/jquery-ui.min.js"></script>
+<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+
+<script src="/assert/js/bootstrap.5.bundle.min.js"></script>
+
+<script>
+    $.widget.bridge('uibutton', $.ui.button)
+</script>
+
+<!-- ChartJS -->
+<script src="/adminlte/plugins/chart.js/Chart.min.js"></script>
+<!-- Sparkline -->
+
+
+
+
+
+
+
+
+
+<!-- Tempusdominus Bootstrap 4 -->
+
+
+
+
+<!-- Summernote -->
+
+<!-- overlayScrollbars -->
+
+<!-- AdminLTE App -->
+<script src="/adminlte/dist/js/adminlte.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+
+<!-- AdminLTE for demo purposes -->
+
+<!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+
+<script src="/admins/jctool.js?v=1685495857"></script>
+
+<script src="/vendor/toastr/toastr.min.js"></script>
+<script src="/admins/toast-show.js"></script>
+<script src="/admins/admin_lte_custom.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Gọi hàm getUserDataList với tham số 113
+            setTimeout(function(){
+                // location.reload();
+                getUserDataList(130);
+
+
+
+
+            }, 100);
+
+            $("#export_excel1").on("click", function() {
+                // Gọi hàm getUserDataList với tham số 113
+
+                console.log(" dataToExportExcel = " , dataToExportExcel);
+                window.exportJsonToExcel(dataToExportExcel, 'event_users_export.csv');
+
+            });
+
+        });
+
+
+        // FUNCTION: Export JSON data to Excel
+        window.exportJsonToExcel = function(jsonData, filename = null) {
+            console.log("🔍 Starting JSON to Excel export...");
+
+            if (!jsonData || !Array.isArray(jsonData) || jsonData.length === 0) {
+                alert("Dữ liệu JSON không hợp lệ hoặc rỗng");
+                return false;
+            }
+
+            console.log(`📊 Exporting ${jsonData.length} records from JSON`);
+
+            // ===== BƯỚC 1: TẠO HEADERS TỪ JSON KEYS =====
+            let headers = [
+                'STT',
+                'User ID',
+                'Họ tên',
+                'Danh xưng',
+                'Email',
+                'Điện thoại',
+                'Ngôn ngữ',
+                'Tổ chức',
+                'Nhóm/Phòng ban',
+                'Xác nhận tham gia',
+                'Từ chối tham dự',
+                'Có mặt lúc',
+                'Ghi chú (EAU)',
+                'Ghi chú (User)'
+            ];
+
+            console.log("📋 Headers:", headers);
+
+            // ===== BƯỚC 2: XỬ LÝ DỮ LIỆU ROWS =====
+            let exportData = [];
+
+            jsonData.forEach((item, index) => {
+                // Format dates
+                let confirmDate = item.confirm_join_at ? formatDateTime(item.confirm_join_at) : '';
+                let denyDate = item.deny_join_at ? formatDateTime(item.deny_join_at) : '';
+                let attendDate = item.attend_at ? formatDateTime(item.attend_at) : '';
+
+                // Create full name with title
+                let fullName = '';
+                if (item.title && item.name) {
+                    fullName = `${item.title} ${item.name}`;
+                } else if (item.name) {
+                    fullName = item.name;
+                }
+
+                let rowData = [
+                    index + 1,                          // STT
+                    item.user_id || '',                 // User ID
+                    fullName,                           // Họ tên
+                    item.title || '',                   // Danh xưng
+                    item.email || '',                   // Email
+                    item.phone || '',                   // Điện thoại
+                    item.language || 'vi',              // Ngôn ngữ
+                    item.organization || '',            // Tổ chức
+                    item.parent_name || '',             // Nhóm/Phòng ban
+                    confirmDate,                        // Xác nhận tham gia
+                    denyDate,                           // Từ chối tham dự
+                    attendDate,                         // Có mặt lúc
+                    item.note_eau || '',                // Ghi chú (EAU)
+                    item.note_u || ''                   // Ghi chú (User)
+                ];
+
+                exportData.push(rowData);
+            });
+
+            console.log(`✅ Processed ${exportData.length} rows`);
+
+            // ===== BƯỚC 3: TẠO EXCEL FILE =====
+            try {
+                // Kiểm tra XLSX library
+                if (typeof XLSX === 'undefined') {
+                    console.warn("XLSX library not found, using fallback CSV export");
+                    exportJsonToCSV([headers, ...exportData], filename);
+                    return false;
+                }
+
+                // Tạo Excel file
+                let ws = XLSX.utils.aoa_to_sheet([headers, ...exportData]);
+                let wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, "User Data");
+
+                // Auto-fit columns
+                let wscols = [];
+                headers.forEach(() => {
+                    wscols.push({wch: 15}); // Set width for each column
+                });
+                ws['!cols'] = wscols;
+
+                // Tạo tên file
+                let finalFilename = filename || generateTimestampFilename('user_data_export', 'xlsx');
+
+                // Download file
+                XLSX.writeFile(wb, finalFilename);
+
+                alert(`✅ Đã export ${exportData.length} dòng dữ liệu thành công!\nFile: ${finalFilename}\nCột: ${headers.length}`);
+
+                return true;
+
+            } catch (error) {
+                console.error("Error creating Excel file:", error);
+                console.warn("Fallback to CSV export");
+                exportJsonToCSV([headers, ...exportData], filename);
+                return false;
+            }
+        };
+
+        // HELPER FUNCTION: Format DateTime
+        function formatDateTime(dateString) {
+            if (!dateString) return '';
+            try {
+                let date = new Date(dateString);
+                return date.toLocaleString('vi-VN', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                });
+            } catch (error) {
+                return dateString; // Return original if can't parse
+            }
+        }
+
+        // HELPER FUNCTION: Generate timestamp filename
+        function generateTimestampFilename(prefix, extension) {
+            let now = new Date();
+            let timestamp = now.getFullYear() +
+                (now.getMonth() + 1).toString().padStart(2, '0') +
+                now.getDate().toString().padStart(2, '0') + '_' +
+                now.getHours().toString().padStart(2, '0') +
+                now.getMinutes().toString().padStart(2, '0');
+            return `${prefix}_${timestamp}.${extension}`;
+        }
+
+        // FALLBACK FUNCTION: Export to CSV
+        function exportJsonToCSV(data, filename = null) {
+            let csvContent = data.map(row =>
+                row.map(cell => `"${(cell || '').toString().replace(/"/g, '""')}"`).join(',')
+            ).join('\n');
+
+            let blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+            let link = document.createElement('a');
+
+            if (link.download !== undefined) {
+                let finalFilename = filename || generateTimestampFilename('user_data_export', 'csv');
+
+                let url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', finalFilename);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                showToastInfoBottom(`✅ Đã export ${data.length - 1} dòng dữ liệu thành công!\nFile: ${finalFilename}`);
+            }
+        }
+
+        // DEMO FUNCTION: Export sample data
+        window.exportSampleData = function() {
+            let sampleData = [
+                {
+                    "user_id": 174,
+                    "email": "anhdaomofa@dav.edu.vn",
+                    "phone": null,
+                    "language": "vi",
+                    "title": "Bà",
+                    "name": "Đào Thị Mai Anh",
+                    "note_eau": null,
+                    "confirm_join_at": null,
+                    "deny_join_at": null,
+                    "attend_at": null,
+                    "note_u": null,
+                    "organization": null,
+                    "parent_name": "Viện NCCL"
+                },
+                {
+                    "user_id": 177,
+                    "email": "pmtranganh-VCL@dav.edu.vn",
+                    "phone": null,
+                    "language": "vi",
+                    "title": "Bà",
+                    "name": "Phạm Mai Trang Anh",
+                    "note_eau": null,
+                    "confirm_join_at": "2025-07-02 14:49:57",
+                    "deny_join_at": null,
+                    "attend_at": "2025-07-03 08:34:22",
+                    "note_u": null,
+                    "organization": null,
+                    "parent_name": "Viện NCCL"
+                }
+            ];
+
+            exportJsonToExcel(sampleData, 'sample_export.xlsx');
+        };
+
+        // MAIN EXPORT FUNCTION for dataToExportExcel
+        window.exportDataToExportExcel = function() {
+            // Check if dataToExportExcel exists in global scope
+            if (typeof dataToExportExcel !== 'undefined' && dataToExportExcel) {
+                console.log("Found dataToExportExcel variable, exporting...");
+                exportJsonToExcel(dataToExportExcel, 'event_users_export.xlsx');
+            } else {
+                console.log("dataToExportExcel not found in global scope");
+                alert("Biến dataToExportExcel chưa được định nghĩa. Hãy đảm bảo dữ liệu JSON đã được load.");
+            }
+        };
+
+
+        $(function (){
+
+
+            $("body").addClass("sidebar-collapse")
+
+            $('select.set_color').each(function() {
+                // Kiểm tra giá trị của select
+                if (this.value !== '') {
+                    $(this).css('color', 'red'); // Thay đổi màu sắc nếu select có value
+                    $(this).css('border-color', 'red'); // Thay đổi màu sắc nếu select có value
+                    $(this).css('font-weight', 'bold'); // Thay đổi màu sắc nếu select có value
+                } else {
+                    $(this).css('color', 'black'); // Trở lại màu ban đầu nếu select không có value
+                }
+            });
+
+            // Lắng nghe sự kiện 'change' trên tất cả các phần tử select
+            $('select.set_color').on('change', function() {
+                if (this.value !== '') {
+                    $(this).css('color', 'red'); // Thay đổi màu sắc nếu select có value
+                    $(this).css('border-color', 'red'); // Thay đổi màu sắc nếu select có value
+                    $(this).css('font-weight', 'bold'); // Thay đổi màu sắc nếu select có value
+                } else {
+                }
+            });
+        })
+
+        //
+
+        function showHideRowWithValue(value){
+
+            console.log(" showHideRowWithValue ", value);
+
+            let numberShow = 0;
+            // Duyệt qua tất cả các phần tử 'tr' trong 'tbody'
+            $('tbody tr.user-row').each(function() {
+                var isMatch = false;
+
+                // Duyệt qua tất cả các phần tử 'td.for_search' trong 'tr'
+                $(this).find('td.for_search').each(function() {
+                    // Lấy text từ phần tử 'td'
+                    var tdText = $(this).text().toLowerCase();
+
+                    // Kiểm tra xem text của 'td' có chứa giá trị từ input không
+                    if (tdText.indexOf(value) > -1) {
+                        isMatch = true;
+                        $(this).addClass('highlight'); // Thêm class 'highlight' vào 'td' chứa text
+                        return false; // thoát khỏi vòng lặp .each() ngay lập tức khi tìm thấy kết quả phù hợp
+                    } else {
+                        // $(this).removeClass('highlight'); // Xóa class 'highlight' nếu 'td' không chứa text
+                    }
+                });
+
+                if (isMatch) {
+                    // Nếu có, hiển thị phần tử 'tr'
+                    numberShow++;
+                    $(this).show();
+                } else {
+                    // Nếu không, ẩn phần tử 'tr'
+                    $(this).hide();
+                }
+
+
+                // filterUserRows();
+
+            });
+
+            console.log(" numberShow = ", numberShow);
+        }
+
+        $(document).ready(function() {
+            // Lắng nghe sự kiện 'keyup' trên input có class 'for_search'
+            $('input.for_search').on('keyup', function() {
+                var value = $(this).val().toLowerCase();
+                console.log(" Enter key : " , value);
+
+                // Gọi hàm tổng hợp để xử lý tất cả filter cùng lúc
+                filterUserRows();
+            });
+        });
+
+        // $(document).ready(function() {
+        //     // Lắng nghe sự kiện 'keyup' trên input có class 'for_search'
+        //     $('input.for_search').on('keyup', function() {
+        //         // Lấy giá trị từ input
+        //
+        //         var value = $(this).val().toLowerCase();
+        //         // Xóa class 'highlight' từ tất cả các phần tử 'td'
+        //
+        //         console.log(" Enter key : " , value);
+        //
+        //         $('td.for_search').removeClass('highlight');
+        //
+        //         if(value.length == 0){
+        //             $('tbody tr').each(function() {
+        //                 $(this).show();
+        //             });
+        //             return;
+        //         }
+        //
+        //
+        //         showHideRowWithValue(value)
+        //
+        //     });
+        // });
+
+    </script>
+        <script>
+        $(function () {
+
+            $("#loginAsUser1").autocomplete({
+                source: "/api/get-user-id?start_with=1",
+                minLength: 0,
+                select: function (event, ui) {
+                    console.log("Selected: " + ui.item.value + " aka " + ui.item.id);
+                    let url = jctool.setCurrentUrlParamAndGo('_goto_us_', ui.item.id, 1);
+                    window.location.href = url;
+                }
+            }).focus(function () {
+                console.log(" click0....");
+                // The following works only once.
+                // $(this).trigger('keydown.autocomplete');
+                // As suggested by digitalPBK, works multiple times
+                // $(this).data("autocomplete").search($(this).val());
+                // As noted by Jonny in his answer, with newer versions use uiAutocomplete
+                $(this).autocomplete("search");
+            });
+            ;
+        });
+
+        function changeUser_() {
+
+            console.log(" changeUser_ ...");
+
+            // alert(document.getElementById("changeUserOther").value);
+            if (document.getElementById("changeUserOther2") && document.getElementById("changeUserOther2").value) {
+                let url = jctool.setCurrentUrlParamAndGo('_goto_us_', document.getElementById("changeUserOther2").value, 1);
+                window.location.href = url;
+                return;
+            }
+            if (document.getElementById("changeUserOther").value) {
+                let url = jctool.setCurrentUrlParamAndGo('_goto_us_', document.getElementById("changeUserOther").value, 1);
+                window.location.href = url;
+            }
+        }
+
+        // Nếu click vào #ul_top_bar, thì .hide_pos sẽ hiện ra
+        $("#ul_top_bar").click(function () {
+            console.log("click111...");
+            $("#ul_top_bar select.hide_pos").show();
+            $("#ul_top_bar li.hide_pos").show();
+        });
+
+        // Hàm changeLanguage - cập nhật ngôn ngữ cho user
+        function changeLanguage(code, name, flagCode) {
+            console.log("🔥 changeLanguage CALLED!", code, name, flagCode);
+
+            // Cập nhật UI ngay lập tức
+            $('.navbar-badge-flag').attr('class', 'fi fi-' + flagCode + ' navbar-badge-flag');
+            $('.current-lang-text').text(name);
+
+            // Gọi API để lưu vào database
+            $.ajax({
+                url: '/api/member-user/update-member',
+                method: 'POST',
+                data: {
+                    language: code,
+                    _token: $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    console.log('✅ Language saved to database:', response);
+
+                    // Reload trang để áp dụng ngôn ngữ mới cho toàn bộ interface
+                    setTimeout(function() {
+                        window.location.reload();
+                    }, 500);
+                },
+                error: function(xhr, status, error) {
+                    console.error('❌ Error changing language:', error);
+
+                    alert("Error update language!");
+
+                    setTimeout(function() {
+                        window.location.reload();
+                    }, 1000);
+                }
+            });
+        }
+
+    </script>
+        
+
+<p id="waitting_icon" style=" position:fixed;left: 50%;z-index: 1000000; display: none; top: 200px">
+    <i class="fa fa-spinner fa-spin fa-2x"
+       style="margin: 3px; background-color: snow; border-radius: 50%; color: darkslategray;">
+    </i>
+</p>
+</body>
+</html>

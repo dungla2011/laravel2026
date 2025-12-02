@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Model Viewer - Model Viewer</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: #f0f0f0;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: #333;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .viewer-container {
+            position: relative;
+            height: 600px;
+            background: #222;
+        }
+        
+        model-viewer {
+            width: 100%;
+            height: 100%;
+            background-color: #222;
+        }
+        
+        .info {
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 15px;
+        }
+        
+        .info-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .info-card h4 {
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+        
+        .controls {
+            padding: 20px;
+            background: #e9ecef;
+            text-align: center;
+        }
+        
+        .button-group {
+            display: inline-flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        button {
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+        
+        button:hover {
+            background: #0056b3;
+        }
+        
+        .status {
+            margin-top: 15px;
+            padding: 10px;
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 5px;
+            color: #155724;
+        }
+    </style>
+    
+    <!-- Model Viewer CDN -->
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎮 3D Model Viewer</h1>
+            <p>Converted từ file Maya OBJ sang GLB format</p>
+        </div>
+        
+        <div class="viewer-container">
+            <model-viewer 
+                id="modelViewer"
+                src="1_web.glb" 
+                alt="3D Model from Maya"
+                auto-rotate 
+                camera-controls 
+                shadow-intensity="1"
+                exposure="1"
+                shadow-softness="0.5"
+                environment-image="https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/industrial_workshop_foundry_1k.hdr"
+                loading="eager">
+                
+                <div class="progress-bar" style="position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.7); color: white; padding: 10px; border-radius: 5px;">
+                    <div>🔄 Đang tải model...</div>
+                </div>
+            </model-viewer>
+        </div>
+        
+        <div class="info">
+            <h3>📊 Thông tin Model</h3>
+            <div class="info-grid">
+                <div class="info-card">
+                    <h4>📁 File gốc</h4>
+                    <p><strong>1.obj</strong><br>
+                    Kích thước: 85.0 MB<br>
+                    Format: Wavefront OBJ</p>
+                </div>
+                
+                <div class="info-card">
+                    <h4>🌐 File web</h4>
+                    <p><strong>1_web.glb</strong><br>
+                    Kích thước: 15.9 MB<br>
+                    Format: Binary glTF 2.0</p>
+                </div>
+                
+                <div class="info-card">
+                    <h4>⚡ Tối ưu hóa</h4>
+                    <p>Giảm kích thước: <strong>81.3%</strong><br>
+                    Vertices: 417,388<br>
+                    Faces: 693,353</p>
+                </div>
+                
+                <div class="info-card">
+                    <h4>🔧 Tương thích</h4>
+                    <p>✅ Three.js<br>
+                    ✅ Babylon.js<br>
+                    ✅ A-Frame<br>
+                    ✅ Model Viewer</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <h3>🎛️ Điều khiển</h3>
+            <div class="button-group">
+                <button onclick="toggleAutoRotate()">🔄 Auto Rotate</button>
+                <button onclick="resetCamera()">📷 Reset Camera</button>
+                <button onclick="toggleEnvironment()">🌍 Environment</button>
+                <button onclick="downloadModel()">⬇️ Download GLB</button>
+                <button onclick="openInNewTab()">🔗 Open Fullscreen</button>
+            </div>
+            
+            <div class="status">
+                <strong>💡 Cách sử dụng:</strong><br>
+                • Kéo chuột để xoay model<br>
+                • Scroll để zoom in/out<br>
+                • Nhấn và giữ Alt + kéo để pan<br>
+                • Nhấn các nút trên để điều khiển
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const modelViewer = document.querySelector('#modelViewer');
+        let autoRotateEnabled = true;
+        let environmentEnabled = true;
+        
+        // Event listeners
+        modelViewer.addEventListener('load', () => {
+            console.log('Model loaded successfully!');
+            document.querySelector('.progress-bar').style.display = 'none';
+        });
+        
+        modelViewer.addEventListener('error', (event) => {
+            console.error('Error loading model:', event);
+            document.querySelector('.progress-bar').innerHTML = '<div>❌ Lỗi tải model!</div>';
+        });
+        
+        modelViewer.addEventListener('progress', (event) => {
+            const progress = event.detail.totalProgress;
+            const percent = (progress * 100).toFixed(1);
+            document.querySelector('.progress-bar').innerHTML = `<div>🔄 Đang tải: ${percent}%</div>`;
+        });
+        
+        // Control functions
+        function toggleAutoRotate() {
+            autoRotateEnabled = !autoRotateEnabled;
+            modelViewer.autoRotate = autoRotateEnabled;
+        }
+        
+        function resetCamera() {
+            modelViewer.resetTurntableRotation();
+            modelViewer.jumpCameraToGoal();
+        }
+        
+        function toggleEnvironment() {
+            environmentEnabled = !environmentEnabled;
+            if (environmentEnabled) {
+                modelViewer.environmentImage = "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/industrial_workshop_foundry_1k.hdr";
+            } else {
+                modelViewer.environmentImage = null;
+            }
+        }
+        
+        function downloadModel() {
+            const link = document.createElement('a');
+            link.href = '1_web.glb';
+            link.download = '1_web.glb';
+            link.click();
+        }
+        
+        function openInNewTab() {
+            window.open('1_web.glb', '_blank');
+        }
+    </script>
+</body>
+</html>

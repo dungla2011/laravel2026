@@ -1,0 +1,156 @@
+* {
+    box-sizing: border-box;
+    margin: 0px;
+    padding: 0px;
+    font-family: Arial, sans-serif;
+    font-size: 120%
+}
+
+#status_save_sign {
+    font-size: 80%;
+    color: green;
+    font-style: italic;
+}
+
+
+.opt_param {
+    margin-top: 20px;
+    /*text-align: center;*/
+    font-size: 90%;
+    padding-left: 20px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 20px;
+}
+
+.opt_param div {
+    margin-top: 10px;
+
+}
+
+.opt_param input {
+    border: 1px solid #ccc;
+    padding: 5px;
+}
+
+.opt_text {
+    font-size: 90%;
+    color: royalblue;
+    font-weight: bold;
+    width: 150px;
+}
+
+.sl1 {
+    width: 100%;
+    font-size: 100%;
+    border: 0px solid #ccc;
+    /*text-align:center;*/
+    border: 1px solid #ccc;
+    font-style: italic;
+    padding: 5px;
+    /*color: #aaa;*/
+}
+
+.sl2 {
+    width: 29%;
+}
+
+@keyframes blinker {
+    50% {
+        opacity: 0;
+    }
+}
+
+.blink_me {
+    animation: blinker 1s linear infinite;
+}
+
+body::-webkit-scrollbar {
+    display: none;
+}
+
+.drawing-board-controls {
+    display: none
+}
+
+     /*
+     * drawingboards styles: set the board dimensions you want with CSS
+     */
+ .board {
+     margin: 0 auto;
+     /*width: 400px;*/
+     /*height: 400px;*/
+ }
+
+#title-board {
+   width: 80%;
+   height: 400px;
+}
+
+#title-board .drawing-board-canvas-wrapper {
+    border: none;
+    margin: 0;
+}
+
+
+
+#signature_zone {
+   position: fixed;
+   top: 0px;
+   /*margin-top: 20px;*/
+   left: 50%;
+   transform: translateX(-50%);
+   /*display: none;*/
+   background-color: snow;
+   padding: 20px 35px;
+   border-radius: 20px;
+   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Add shadow for elevation */
+}
+
+#transparent-board {
+    margin-top: 20px;
+    width: 400px;
+    height: 260px;
+    background-color: white;
+    border: 3px dashed royalblue;
+
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5); /* Add shadow for elevation */
+
+}
+
+.buttonCtrl button {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Add shadow for elevation */
+    margin: 30px 20px 10px 20px;
+    padding: 10px 15px;
+    font-size: 18px;
+    border: 0px;
+    border-radius: 5px;
+    background-color: white;
+    color: royalblue;
+}
+
+#saveSign {
+    background-color: royalblue;
+    color: white;
+    padding: 11px 30px;
+}
+
+
+.enter_sign {
+    font-size: 70%;
+    color: royalblue;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Add text shadow */
+
+}
+
+.name_event {
+    color: dodgerblue;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Add text shadow */
+}
+
+#transparent-board .drawing-board-canvas-wrapper {
+    border: 0px solid #eee;
+}
+

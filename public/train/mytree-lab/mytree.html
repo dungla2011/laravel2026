@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+.node {
+  fill: #ccc;
+  stroke: #fff;
+  stroke-width: 2px;
+}
+.node-text {
+  font-size: 12px;
+  text-anchor: middle;
+}
+.link {
+  stroke: #000;
+  stroke-width: 1px;
+}
+</style>
+</head>
+<body>
+
+<svg id="familyTree" width="800" height="600"></svg>
+
+<script>
+const familyData = [
+  { id: 1, pid: null, name: 'Ông A', spouse: [2], children: [3, 4] },
+  { id: 2, pid: null, name: 'Bà B', spouse: [1], children: [3, 4] },
+  { id: 3, pid: 1, name: 'Anh C', spouse: [5], children: [6] },
+  { id: 4, pid: 1, name: 'Chị D', spouse: [], children: [] },
+  { id: 5, pid: null, name: 'Chị E', spouse: [3], children: [6] },
+  { id: 6, pid: 3, name: 'Cháu F', spouse: [], children: [] }
+];
+
+function buildTree(data) {
+  const nodes = {};
+  let root = null;
+
+  // Tạo map các node để truy cập nhanh bằng ID
+  data.forEach(item => {
+    nodes[item.id] = { ...item, children: [], spouses: [] };
+  });
+
+  // Xây dựng mối quan hệ cha con và vợ chồng
+  data.forEach(item => {
+    const node = nodes[item.id];
+    if (item.pid === null) {
+      root = node; // Node gốc
+    } else {
+      nodes[item.pid].children.push(node); 
+    }
+    if (item.spouse) {
+      item.spouse.forEach(spouseId => {
+        node.spouses.push(nodes[spouseId]);
+        nodes[spouseId].spouses.push(node); // Quan hệ 2 chiều
+      });
+    }
+  });
+
+  return { root };
+}
+
+function drawTree(tree) {
+  const svg = document.getElementById('familyTree');
+  const nodeWidth = 100;
+  const nodeHeight = 40;
+  const levelHeight = 100;
+  const spouseSpacing = 20;
+
+  function drawNode(node, x, y) {
+    const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    rect.setAttribute('x', x);
+    rect.setAttribute('y', y);
+    rect.setAttribute('width', nodeWidth);
+    rect.setAttribute('height', nodeHeight);
+    rect.setAttribute('class', 'node');
+    svg.appendChild(rect);
+
+    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    text.setAttribute('x', x + nodeWidth / 2);
+    text.setAttribute('y', y + nodeHeight / 2);
+    text.setAttribute('class', 'node-text');
+    text.textContent = node.name;
+    svg.appendChild(text);
+
+    return { x, y, width: nodeWidth, height: nodeHeight };
+  }
+
+  function drawLink(x1, y1, x2, y2) {
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.setAttribute('x1', x1);
+    line.setAttribute('y1', y1);
+    line.setAttribute('x2', x2);
+    line.setAttribute('y2', y2);
+    line.setAttribute('class', 'link');
+    svg.appendChild(line);
+  }
+
+  function drawNodes(node, x, y, level) {
+    const nodeCoords = drawNode(node, x, y);
+
+    // Vẽ vợ/chồng
+    let spouseX = x + nodeWidth + spouseSpacing;
+    node.spouses.forEach(spouse => {
+      const spouseCoords = drawNode(spouse, spouseX, y);
+      drawLink(nodeCoords.x + nodeCoords.width, nodeCoords.y + nodeCoords.height / 2, spouseCoords.x, spouseCoords.y + spouseCoords.height / 2);
+      spouseX += spouseCoords.width + spouseSpacing;
+    });
+
+    // Vẽ con
+    if (node.children.length > 0) {
+      const childrenX = x - (node.children.length - 1) * nodeWidth / 2;
+      const childrenY = y + levelHeight;
+      node.children.forEach((child, i) => {
+        const childX = childrenX + i * nodeWidth;
+        drawLink(nodeCoords.x + nodeCoords.width / 2, nodeCoords.y + nodeCoords.height, childX + nodeWidth / 2, childrenY);
+        drawNodes(child, childX, childrenY, level + 1);
+      });
+    }
+  }
+
+  drawNodes(tree.root, 400, 50, 1);
+}
+
+
+const tree = buildTree(familyData);
+drawTree(tree);
+</script>
+
+</body>
+</html>

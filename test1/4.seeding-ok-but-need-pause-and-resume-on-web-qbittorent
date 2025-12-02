@@ -1,0 +1,44 @@
+import libtorrent as lt
+from qbittorrent import Client
+import qbittorrentapi
+
+import time
+
+# Create a new torrent file
+fs = lt.file_storage()
+lt.add_files(fs, '/share/13.zip')
+
+# Create a torrent creator
+creator = lt.create_torrent(fs)
+
+with open('track.txt', 'r') as f: 
+    lines = f.read().splitlines()
+for line in lines:
+    creator.add_tracker(line)
+
+creator.set_creator('Lad01')
+
+# Generate the torrent
+lt.set_piece_hashes(creator, "/share/") #ith the path to your files
+torrent = creator.generate()
+
+# Write the torrent file
+with open("/share/13.zip.torrent", "wb") as f:  # Replace with the path where you want to save the torrent file
+    f.write(lt.bencode(torrent))
+
+print("Torrent file created successfully.")
+
+conn_info = dict(
+    host="12.0.0.54",
+    port=8089,
+    username="admin",
+    password="adminadmin",
+)
+
+
+with qbittorrentapi.Client(**conn_info) as qbt_client:
+        # if qbt_client.torrents_add(torrent_files ="/share/1234.zip.torrent") != "Ok.":
+        response = qbt_client.torrents_add(torrent_files="/share/13.zip.torrent", save_path="/share/")
+        if response != "Ok.":
+            raise Exception("Failed to add torrent.")
+

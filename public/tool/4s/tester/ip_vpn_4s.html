@@ -1,0 +1,20 @@
+<?php
+
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+$_SERVER['HTTP_HOST'] = $_SERVER['SERVER_NAME'] = "4share.vn";
+require_once "/var/www/html/public/index.php";
+check_unique_script();
+
+exec("ifconfig", $ret);
+
+echo "<pre> >>> " . __FILE__ . "(" . __LINE__ . ")<br/>";
+print_r($ret);
+echo "</pre>";
+
+foreach ($ret AS $one){
+    if(strstr($one, "12.0.0.54"))
+        die("VPNOK116");
+}
+

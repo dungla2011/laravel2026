@@ -1,0 +1,60 @@
+<?php
+
+namespace Tests\Browser;
+
+use App\Models\User;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Laravel\Dusk\Browser;
+use Tests\DuskTestCase;
+
+class LoginAdminTest extends DuskTestCaseBase
+{
+    protected function hasHeadlessDisabled(): bool{
+        return parent::hasHeadlessDisabled();
+    }
+
+    public function testLoginTrueAcc($email = null){
+        parent::testLoginTrueAcc();
+    }
+    /**
+     * A basic browser test example.
+     *
+     * @return void
+     */
+    public function testBasicExampleAccessHome()
+    {
+        dump("=== Check " . get_called_class() ."/" . __FUNCTION__);
+//        $this->browse(function (Browser $browser) {
+//            $browser->visit('/')
+//                    ->assertSee('ADMIN');
+//        });
+    }
+
+
+
+    function testAccessDbPermission(){
+        dump("=== Check " . get_called_class() ."/" . __FUNCTION__);
+//        $brs = $this->testLoginTrueAcc();
+
+//        $browser = $this->getBrowserLogined();
+        //$browser->assertSee("parent_id");
+//        $brs->assertSee("parent_id");
+        $this->browse(function ($browser) {
+            $browser->visit("/admin/db-permission");
+            $browser->assertSee("Chọn bảng");
+            $browser->assertSee("Short Name");
+        });
+
+    }
+
+    function testDemoGrid(){
+        dump("=== Check " . get_called_class() ."/" . __FUNCTION__);
+        $browser = $this->getBrowserLogined();
+        //$browser->assertSee("parent_id");
+//        $brs->assertSee("parent_id");
+        $browser->visit("/admin/demo-api");
+//        $browser->assertSee("Đà nẵng");
+//        $browser->assertSee("abc.com");
+
+    }
+}

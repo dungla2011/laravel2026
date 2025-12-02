@@ -1,0 +1,517 @@
+<!--
+060123:
+- Xong tải xuống đúng zoom user đang thấy
+- node ko có con thì đặt sát vào anh em
+- OK Các chế độ Chỉ hiển thị MAN, bỏ qua Kết hôn
+- OK đã dồn hết khoảng trống bên trái
+
+- OK 8.1.23, Đã hoàn thành thêm xóa sửa với cả API!!!
+- OK 9.1.23: đã có thứ tự, lớn hơn cho lên đầu,  kể cả vợ cả vợ 2...
+    + Duyệt riêng 1 nhánh
+- OK 10.1.23: tester ok, refactory ok
+- 12.1.23 ; Upload ảnh check ok, resize max 500px cho tiết kiệm disk
+
+-->
+
+<?php
+//
+//$t1 = microtime(1);
+//md5_file("e:/download/laravel_2022_lad-main_3.zip");
+//$t2 = microtime(1);
+//
+//echo "<br/>\n";
+//echo "\n DT = ". ($t2 - $t1);
+//
+//return;
+
+require_once __DIR__ . "/../../index.php";
+//error_reporting(E_ALL);
+//ini_set('display_errors', 1);
+//
+//define("DEF_TOOL_CMS", 1);
+////$_SERVER['SERVER_NAME'] = '';
+//require_once "/var/www/galaxycloud/application/library/base/tool_glx.php";
+//ClassNetwork::forwardToOtherDomain($_SERVER['SERVER_NAME']);
+//require_once "/var/www/galaxycloud/index.php";;
+//$db = MysqliDb::getInstance();
+
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="/assert/library_ex/jquery-ui/jquery-ui.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script src="/vendor/jquery/jquery-ui-1.13.2.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
+
+    <script src="/assert/library_ex/js/dom-to-image.js"></script>
+    <script src="/assert/library_ex/js/FileSaver.js"></script>
+    <script src="/assert/library_ex/js/svg-pan-zoom.js"></script>
+    <script src="/assert/library_ex/js/hammer.js"></script>
+
+<!--    //Vue make can not download img-->
+<!--    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>-->
+
+    <script src="https://afarkas.github.io/lazysizes/lazysizes.min.js"></script>
+    <script src="https://galaxycloud.vn/application/_js/lib_base.js"></script>
+
+    <link rel="stylesheet"
+          href="/assert/library_ex/js/jquery-context-menu2/jquery.contextMenu.css">
+    <script src="/assert/library_ex/js/jquery-context-menu2/jquery.contextMenu.js"></script>
+
+    <script src="/assert/library_ex/js/jquery-image-upload-resizer.js"></script>
+
+    <!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.7.1/jquery.ui.position.js"></script>-->
+    <script src="clsTreeTopDown.js"></script>
+
+
+    <style>
+        .root_svg {
+            background-color: ;
+            border: 1px dashed #bbb;
+        }
+        .img_bg_node_svg{
+            font-size: smaller;
+            width: 100px;
+            margin: 10px;
+            display: inline-block;
+        }
+        .img_bg_node_svg img{
+            width: 100%
+        }
+        .node_cont {
+            text-align: center;
+            border: 0px solid gray;
+            border-radius: 5px;
+            font-size: xx-small;
+            padding: 3px;
+            height: 90px;
+            font-family: Tahoma;
+            box-sizing: unset !important;
+        }
+
+        button {
+            margin-top: 10px
+        }
+
+        .svg-pan-zoom_viewport {
+            background-color: lavenderblush;
+        }
+
+        .node_cont img {
+            margin-top: 5px;
+            /*width: 30px;*/
+            width: 80%;
+            max-height: 50px;
+        }
+
+        #title_dialog_node {
+            font-size: inherit;
+        }
+
+        .node_edit_btn {
+            background-color: green;
+            padding: 2px 6px !important;
+            color: white;
+            font-size: 13px !important;
+            position: absolute;
+            bottom: 3px;
+            right: 1px;
+            border-radius: 14px !important;
+        }
+
+        /*.node_cont:hover + .node_edit_btn {*/
+        /*    display: block;*/
+        /*    color: red;*/
+        /*}*/
+
+        .node_cont .node_edit_btn {
+            display: block;
+            margin: 0 auto;
+            display: none;
+        }
+
+        .node_cont:hover .node_edit_btn {
+            text-align: center;
+            display: block;
+        }
+
+        .img_new_node_blink {
+            position: fixed;
+            top: 5px;
+            left: 5px;
+            display: none;
+            font-size: x-large;
+            background-color: red;
+            width: 10px;
+            height: 10px;
+            border-radius: 5px;
+        }
+
+        .blink_me {
+            animation: blinker 1s linear infinite;
+        }
+
+        #dialog-node-add .input_node {
+            margin-bottom: 10px;
+            margin-top: 10px;
+
+        }
+
+        #dialog-node-add .input_node col * {
+            margin: 0px;
+        }
+
+        .ui-dialog {
+            padding: 0px;
+        }
+
+        .ui-widget-header {
+            border: 0px
+        }
+
+        .lb_upload {
+            display: inline-block;
+            background-color: gray;
+            color: white;
+            padding: 5px 10px;
+            font-family: sans-serif;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+
+        #check_error_node {
+            font-size: small;
+            color: red;
+            font-weight: bold;
+        }
+
+        @keyframes blinker {
+            50% {
+                opacity: 0;
+            }
+        }
+    </style>
+
+
+    <script>
+
+        <?php
+        //$params = \Base\ClassRoute::getArrParams();
+        $params = $_GET;
+        ?>
+
+        <?php
+        if(isset($params['tester'])){
+        ?>
+        $(function () {
+            clsTreeTopDownCtrl.tester1()
+        })
+        <?php
+        }
+        else {
+        ?>
+        $(function () {
+
+            let tree1 = new clsTreeTopDownCtrl()
+
+            let url
+            //url = 'https://giapha.galaxycloud.vn/train/_learn_html_css_js/svg%20train/get-data-from-giapha.php'
+            //url = "https://a1.pm33.net/api/tree-mng/tree?pid=0&get_all=1&order_by=orders";
+            <?php
+
+            $setUrl = "http://localhost:9081/api/tree-mng/tree?pid=0&get_all=1&order_by=orders&order_type=DESC";
+
+            if (isset($params['url1'])) {
+            $setUrl = 'https://giapha.galaxycloud.vn/train/_learn_html_css_js/svg%20train/get-data-from-giapha.php';
+        }
+            else{
+            ?>
+
+            tree1.apiAdd = 'http://localhost:9081/api/tree-mng/add'
+            tree1.apiUpdate = 'http://localhost:9081/api/tree-mng/update'
+            tree1.apiDelete = 'http://localhost:9081/api/tree-mng/delete'
+            tree1.apiUploadImage = 'http://localhost:9081/api/member-file/upload'
+            tree1.apiBearToken = '123456'
+
+            <?php
+            }
+
+
+            if (isset($_GET['pid'])) {
+                $pid = $_GET['pid'];
+                $setUrl = \LadLib\Common\UrlHelper1::setUrlParam($setUrl, 'pid', $pid);
+                $setUrl = \LadLib\Common\UrlHelper1::setUrlParam($setUrl, 'include_brother', 1);
+            }
+
+            echo "url = '$setUrl'";
+            ?>
+
+            tree1.widthCell = 60
+            tree1.spaceBetweenCellX = 20
+            tree1.spaceBetweenCellY = 50
+            tree1.idSvgSelector = 'svg_grid'
+            tree1.optShowMarried = 1
+            tree1.optShowOnlyMan = 0
+            tree1.optDisableApiForTestLocalOnly = 0
+            tree1.apiIndex = url
+
+
+            console.log(" URLSET = ", tree1.apiIndex);
+
+            if (tree1.optDisableApiForTestLocalOnly) {
+                url = "data1.php"
+                if (jctool.getUrlParam('url1'))
+                    url = "data2.php"
+            }
+
+            // if(0)
+            $.ajax({
+                url: tree1.apiIndex,
+                type: 'GET',
+                beforeSend: function (xhr) {
+                    // xhr.setRequestHeader('Authorization', 'Bearer 123456');
+                },
+                data: {},
+                success: function (data, status) {
+
+                    console.log(" DataGet = ", data);
+
+                    let dataGet
+
+                    if (data.payload)
+                        dataGet = data.payload
+                    else {
+                        dataGet = JSON.parse(data)
+                        if (dataGet.payload)
+                            dataGet = dataGet.payload
+                    }
+
+                    console.log("dataGet: ", dataGet, " \nStatus: ", status);
+
+                    tree1.dataAll = [...dataGet]
+                    tree1.dataPart = dataGet
+
+                    <?php
+                    if(isset($_GET['debug1'])){
+                    ?>
+                    tree1.optShowDebugGrid = 1
+                    <?php
+                    }
+                    if(isset($_GET['pid']) && is_numeric($_GET['pid'])){
+                    ?>
+                    tree1.setPid = <?php echo $_GET['pid'] ?>;
+                    <?php
+                    }
+                    ?>
+
+
+                    tree1.drawTreeSvg()
+
+                    tree1.setZoomAble()
+
+                    // zoomNow()
+                },
+                error: function () {
+                    console.log(" Eror....");
+                },
+            });
+
+
+            //if(0)
+            //$.ajax({
+            //    url: url,
+            //    type: 'GET',
+            //    beforeSend: function (xhr) {
+            //        // xhr.setRequestHeader('Authorization', 'Bearer 123456');
+            //    },
+            //    data: {},
+            //    success: function (data, status) {
+            //        let dataGet
+            //        if (data.payload)
+            //            dataGet = data.payload
+            //        else
+            //            dataGet = JSON.parse(data)
+            //
+            //        console.log("dataGet: ", dataGet, " \nStatus: ", status);
+            //        let tree1 = new clsTreeTopDownCtrl()
+            //        tree1.dataAll = [...dataGet]
+            //
+            //        tree1.dataPart = dataGet
+            //        tree1.widthCell = 60
+            //        tree1.spaceBetweenCellX = 20
+            //        tree1.spaceBetweenCellY = 50
+            //        tree1.idSvgSelector = 'svg_grid'
+            //        tree1.optShowMarried = 1
+            //        tree1.optShowOnlyMan = 0
+            //
+            //        <?php
+            //        if(isset($_GET['debug1'])){
+            //        ?>
+            //        tree1.optShowDebugGrid = 1
+            //        <?php
+            //        }
+            //        ?>
+            //        tree1.drawTreeSvg()
+            //        tree1.setZoomAble()
+            //
+            //    },
+            //    error: function () {
+            //        console.log(" Eror....");
+            //    },
+            //});
+        })
+        <?php
+        }
+        ?>
+    </script>
+</head>
+<body>
+
+<div id="fixed_top_menu"
+     style="width: 100%; position: fixed; height: 50px; left: 1px; top: 1px; background-color: #ccc; padding: 5px">
+
+    <div>
+
+        <a href="<?php echo \LadLib\Common\UrlHelper1::getUrlWithDomainOnly() ?>/admin/tree-mng"> ADMIN</a> |
+        <a href="<?php echo \LadLib\Common\UrlHelper1::getUriWithoutParam() ?>"> Tree 1</a> |
+        <a href="<?php echo \LadLib\Common\UrlHelper1::getUriWithoutParam() ?>?url1=1"> Tree 2</a> |
+
+        <?php
+        $link0 = \LadLib\Common\UrlHelper1::getUriWithoutParam();
+        $linkDebug = \LadLib\Common\UrlHelper1::setUrlParamThisUrl('debug1', 1);
+        echo "\n <a href='$link0'> HOME</a> | <a href='$linkDebug'>DEBUG</a> | ";
+        $linkTester = \LadLib\Common\UrlHelper1::setUrlParamThisUrl('tester', 1);
+        echo "\n <a href='$linkTester'> Tester</a> | ";
+        ?>
+
+        Download AS:
+        <button onclick="clsTreeTopDownCtrl.downloadImagePng('svg_grid', 'img1.png')"> PNG</button>
+        <!--    <button onclick="clsTreeTopDownCtrl.downloadImageSvg('svg_grid', 'svg1.svg')"> SVG</button>-->
+        <!--    <button onclick="clsTreeTopDownCtrl.zoomIn('svg_grid')"> zoomIn</button>-->
+        <!--    <button onclick="clsTreeTopDownCtrl.center('svg_grid')"> center</button>-->
+        <!--    <button onclick="clsTreeTopDownCtrl.fit('svg_grid')"> fit</button>-->
+        <!--    <button onclick="clsTreeTopDownCtrl.resize('svg_grid')"> resize</button>-->
+        <!--    <button onclick="clsTreeTopDownCtrl.updateBBox('svg_grid')"> updateBBox</button>-->
+
+        Option:
+        <button onclick="clsTreeTopDownCtrl.resetDefault('svg_grid')"> Default</button>
+        <button onclick="clsTreeTopDownCtrl.setOnlyMan('svg_grid')"> OnlyMan</button>
+        <button onclick="clsTreeTopDownCtrl.setDisableMarried('svg_grid')"> IgnoreMarried</button>
+        <button onclick="clsTreeTopDownCtrl.setRemoveImage('svg_grid')"> IgnoreImage</button>
+        <button onclick="clsTreeTopDownCtrl.setDisableApiForTestLocal('svg_grid')"> DisableApi</button>
+        <button onclick="clsTreeTopDownCtrl.selectBackGround('svg_grid',1)"> BG-Man</button>
+        <button onclick="clsTreeTopDownCtrl.selectBackGround('svg_grid',2)"> BG-Woman</button>
+        <button onclick="clsTreeTopDownCtrl.showDebugIdOrders('svg_grid')"> ShowDebug ID</button>
+
+        <input type="text" id="first_member_name_of_tree" title="Enter first member name of tree" placeholder="Enter name" style="width: 100px">
+        <button onclick="clsTreeTopDownCtrl.createNewTree('svg_grid')"> CreateNew Tree </button>
+
+
+    </div>
+</div>
+
+<?php
+if (isset($_GET['debug1'])) {
+
+    ?>
+    <br><br><br><br>
+    <table class="debug_table" border="0" style="display: none1">
+        <?php
+        for ($row = 0; $row < 10; $row++) {
+            echo "\n<tr style=''>";
+            for ($j = 0; $j < 80; $j++)
+                echo "\n<td style='border-left: 1px solid gray; border-bottom: 1px solid gray'> <span style='font-size: x-small; color: red;font-weight: bold' id='span-debug-$row-$j'>.</span>
+ <br> <span style='font-size: smaller'> $row-$j </span></td>";
+            echo "\n</tr>";
+        }
+        ?>
+    </table>
+
+    <?php
+}
+?>
+
+<div id="app" style="margin: 20px ;margin-top : 60px; width: 90% height: 1000px; border: 0px solid black; ">
+    <div id="check_error_node" style="display: none"></div>
+    <div id="info_svg" style="display: none; float: right; color: red"></div>
+
+    <svg id="svg_grid" class="root_svg" xmlns="http://www.w3.org/2000/svg" style="">
+    </svg>
+
+    <div id="debug_svg" style="font-size: smaller; color: #eee"></div>
+</div>
+
+<div style="margin: 20px ; margin-top : 100px;  width: 90% height: 1000px; border: 0px solid black; ">
+    <svg id="svg_grid2" class="root_svg" xmlns="http://www.w3.org/2000/svg" style="">
+    </svg>
+</div>
+
+<div id="dialog-select-background" title="Chọn khung ảnh cho thành viên">
+
+    <?php
+    for($i = 101; $i <166; $i++){
+        echo "<div class='img_bg_node_svg' > <img class='lazyload' data-src='/images/border-frame-img/khung-anh-$i.png'><br> Chọn mẫu $i </div>";
+    }
+    ?>
+
+</div>
+
+<div id="dialog-node-add" title="Cập nhật">
+    <div id="title_dialog_node"></div>
+    <div class="row input_node" style="font-size: smaller">
+        <div class="col-sm-4">Họ Tên</div>
+        <div class="col-sm-8">
+            <input class="form-control" type="text" id="new_name">
+        </div>
+    </div>
+    <div class="row input_node" style="font-size: smaller">
+        <div class="col-sm-4">Giới tính</div>
+        <div class="col-sm-8">
+            <input type="radio" id="new_gender1" name="new_gender" data-val="1" value="1">
+            <label for="new_gender1">Nam</label>
+            <input type="radio" id="new_gender2" name="new_gender" data-val="2" value="2">
+            <label for="new_gender2">Nữ</label>
+        </div>
+    </div>
+    <div class="row input_node" style="font-size: smaller">
+        <div class="col-sm-4">Ngày sinh</div>
+        <div class="col-sm-8">
+            <input class="form-control" style="" type="text" id="new_birthday">
+        </div>
+    </div>
+    <div class="row input_node" style="font-size: smaller">
+        <div class="col-sm-4" title="Trong một cây ">Thứ tự <span
+                    style="border: 1px solid gray; ; padding: 0px 5px; border-radius: 10px"> &#x2139; </span></div>
+        <div class="col-sm-8">
+            <input class="form-control" style="" type="text" id="new_orders">
+        </div>
+    </div>
+    <div class="row input_node" style="font-size: smaller">
+        <div class="col-sm-4">Ảnh</div>
+        <div class="col-sm-8">
+            <input class="form-control" type="file" accept="image/*" capture="camera" id="file_id" hidden>
+            <label class="lb_upload" for="file_id">Chọn ảnh</label>
+        </div>
+    </div>
+</div>
+
+<script>
+
+</script>
+
+</body>
+</html>

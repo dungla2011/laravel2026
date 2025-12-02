@@ -1,0 +1,137 @@
+<?php
+
+/*
+ * Update 02.2025
+ * Review OK: 10.3.2015
+ */
+
+$_SERVER['SERVER_NAME'] = "4share.vn";
+
+require_once "/var/www/html/public/index.php";;
+
+if (!isCli()) {
+    echo "ERROR: NOT CLI!";
+    return;
+}
+
+//List all File:
+$fileSv96 = file("/var/glx/weblog/sv96.all_file_sizes.log.2025-02-07-08-27-50");
+$fileSv18 = file("/var/glx/weblog/sv18.all_file_sizes.log.2025-02-07-08-28-01");
+//Join 2 array
+$fileSv = array_merge($fileSv96, $fileSv18);
+
+$cc = 0;
+$listDbNotFoundFile = '';
+$listFileNotValidServerOrLocation = '';
+$listFileNotValidSize = '';
+
+$sizeFileNotValidSize = 0;
+$sizeFileNotValidServerOrLocation = 0;
+
+$nErrorLocation = 0;
+$nErrorSize = 0;
+$nDbNotFound = 0;
+
+foreach ($fileSv AS $line){
+    $cc++;
+    $line = trim($line);
+    echo "\n $cc . $line , nErrorLocation = $nErrorLocation, nErrorSize = $nErrorSize, nDbNotFound=$nDbNotFound\n";
+
+    if(!str_starts_with($line, "sv"))
+        continue;
+    if(!str_contains($line, "|"))
+        continue;
+    [$sv, $filePath, $size] = explode("|", $line);
+    $sv = "$sv.4share.vn";
+
+    $location = explode("/",$filePath)[2];
+    $fid = basename($filePath);
+    echo "\n location = $location, size = $size, sv = $sv, filePath = $filePath, fid = $fid\n";
+
+    if(!is_numeric($fid))
+        continue;
+
+    $f = \App\Models\FileCloud::find($fid);
+    if(!$f){
+        echo "\n -> NOT FOUND!\n";
+        $listDbNotFoundFile.= "$fid,";
+        $nDbNotFound++;
+//        continue;
+//    }
+//
+//    if($f->server1 != $sv || $f->location1 != $location){
+//        echo "\n -> NOT VALID SERVER OR LOCATION! $f->server1 != $sv || $f->location1 != $location \n";
+
+        //Tim fileupload co khong
+        if($fup = \App\Models\FileUpload::where("cloud_id", $fid)->first()){
+
+//            getch("luot tai = $fup->count_download,  Ngay xoa cuoi = " . ($fup->lastdate_down));
+
+            $timex = "$fup->lastdate_down";
+
+            if($fup->lastdate_down > '2024-06-01'){
+                //Can phuc hoi lai, hoac tao file moi
+                $fc2 = \App\Models\FileCloud::withTrashed()->find($fid);
+
+                if(!$fc2){
+
+//                    getch(" xxxxx .. $fup->lastdate_down , $location, $sv, $size");
+
+                    $fc2 = new \App\Models\FileCloud();
+                    $fc2->name = '';
+                    $fc2->id = $fid;
+                    $fc2->size = $size;
+                    $fc2->server1 = $sv;
+                    $fc2->location1 = $location;
+                    $fc2->save();
+                    continue;
+                }
+            }
+
+        }
+
+//        getch("... before del");
+        $retHTTP = SocketSendCMD("deletefile $filePath", "$sv", 16868);
+        echo("\n --- RETURN FROM STORAGE SERVER ($sv Socket): \n    $retHTTP\n");
+        getch("...");
+        //                        getch("...after del ");
+        if (strstr($retHTTP, "File found, DELETE OK:") != FALSE) {
+
+
+            echo ("\n ===> DELETE OK $location");
+            $listFileNotValidServerOrLocation.= "$fid,";
+            $sizeFileNotValidServerOrLocation+= intval($size);
+
+//            $f->delete_date_real = nowy();
+//            $f->addLog("Xoa file tu cli thong ke");
+//            $f->save();
+//
+
+
+            $nErrorLocation++;
+        } else {
+
+        }
+
+//        getch("...");
+        continue;
+
+    }
+
+    if($f->size != $size){
+        echo "\n -> NOT VALID SIZE!\n";
+        $listFileNotValidSize.= "$fid,";
+        $sizeFileNotValidSize+=  intval($size);;
+        $nErrorSize++;
+    }
+
+}
+
+
+$sizeFileNotValidServerOrLocation = ByteSize($sizeFileNotValidServerOrLocation);
+$sizeFileNotValidSize = ByteSize($sizeFileNotValidSize);
+
+echo "\n List file Error Location ($nErrorLocation $sizeFileNotValidServerOrLocation ): $listFileNotValidServerOrLocation";
+echo "\n List file Error Size ($nErrorSize $sizeFileNotValidSize): $listFileNotValidSize";
+echo "\n List file Not Found in DB ($nDbNotFound): $listDbNotFoundFile";
+

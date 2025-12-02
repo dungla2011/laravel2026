@@ -1,0 +1,15 @@
+<?php
+
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
+
+$_SERVER['HTTP_HOST'] = $_SERVER['SERVER_NAME'] = 'zcloud.io.vn';
+
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+require_once "/var/www/html/public/index.php";
+
+$payload = "123";
+
+return JWT::encode($payload, '1111', 'HS256');

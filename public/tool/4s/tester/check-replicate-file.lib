@@ -1,0 +1,44 @@
+<?php
+use Carbon\Carbon;
+use App\Models\FileCloud;
+
+define("DEF_TOOL_CMS", 1);
+
+defined('DEF_IGNORE_ANTIDOS') || define('DEF_IGNORE_ANTIDOS', 1);
+
+$_SERVER['SERVER_NAME'] = '4share.vn';
+
+require "/var/www/html/public/index.php";
+
+use Base\ModelCloudFile;
+use Base\ModelUserCms;
+$lastReplicateIDFile = "/var/glx/weblog/lastReplicateID";
+$lastIDOK = trim(file_get_contents($lastReplicateIDFile));
+
+//Tinh so file va tong size file chua replicate, la cac file uplen trong 3 ngay gan nhat,  va server1 is NULL
+
+$totalFile = FileCloud::whereNull('server1')
+    ->where('created_at', '>=', Carbon::now()->subDays(3))
+    ->count();
+
+$totalSize = FileCloud::whereNull('server1')
+    ->where('created_at', '>=', Carbon::now()->subDays(3))
+    ->sum('size');
+
+$totalSizeB = ByteSize($totalSize);
+
+echo "Total files: $totalFile, Total size: $totalSizeB";
+
+echo "<br/>\n";
+
+$free = disk_free_space('/var/ufile');
+
+$max = 100;
+
+if($totalFile > 100 || $free < 200 * _GB){
+    die("NOTOK, total file = $totalFile > $max , || " . ByteSize($free) . " < 200G");
+}
+
+die("GOOD_TTFILE : $totalFile , free = " . ByteSize($free));
+
+?>

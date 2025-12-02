@@ -1,0 +1,68 @@
+-- VPS Plans Seed Data
+-- Format: CPU x RAM(GB) x Disk(GB)
+
+INSERT INTO `vps_plans` (
+    `name`, 
+    `cpu`, 
+    `ram_gb`, 
+    `disk_gb`, 
+    `network_mbit`, 
+    `number_ip_address`, 
+    `price_per_minute`,
+    `status`,
+    `created_at`
+) VALUES 
+-- Plan 1: 1 Core, 1GB RAM, 20GB Disk
+(
+    'VPS Basic 1x1x20',
+    1,
+    1,
+    20,
+    100,
+    1,
+    0.00034722,  -- ~$500/month (730 hours), ~$0.68/day
+    1,
+    NOW()
+),
+
+-- Plan 2: 2 Cores, 2GB RAM, 50GB Disk
+(
+    'VPS Standard 2x2x50',
+    2,
+    2,
+    50,
+    200,
+    1,
+    0.00069444,  -- ~$1000/month
+    1,
+    NOW()
+),
+
+-- Plan 3: 8 Cores, 8GB RAM, 200GB Disk
+(
+    'VPS Professional 8x8x200',
+    8,
+    8,
+    200,
+    500,
+    2,
+    0.00277778,  -- ~$4000/month
+    1,
+    NOW()
+),
+
+-- Plan 4: 16 Cores, 16GB RAM, 500GB Disk
+(
+    'VPS Enterprise 16x16x500',
+    16,
+    16,
+    500,
+    1000,
+    4,
+    0.00555556,  -- ~$8000/month
+    1,
+    NOW()
+);
+
+-- Display created plans
+SELECT * FROM `vps_plans` WHERE `deleted_at` IS NULL ORDER BY `id` DESC LIMIT 4;

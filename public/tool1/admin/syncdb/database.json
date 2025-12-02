@@ -1,0 +1,16 @@
+{
+	"source" : {
+		"host" : "glx1254.abc",
+		"user" : "for_sync",
+		"password" : "111111",
+		"database" : "glx2023_for_testing",
+        "port" : "3306"
+	},
+	"dest" : {
+		"host" : "glx1254.abc",
+		"user" : "for_sync",
+		"password" : "11111",
+		"database" : "glx00_gp_tpl",
+        "port" : "3306"
+	}
+}

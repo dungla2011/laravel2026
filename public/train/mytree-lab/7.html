@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Cây gia phả</title>
+<style>
+.node circle {
+  fill: #fff;
+  stroke: steelblue;
+  stroke-width: 3px;
+}
+
+.node text {
+  font: 12px sans-serif;
+}
+
+.link {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 2px;
+}
+
+.spouse-link {
+  fill: none;
+  stroke: #f00; /* Màu đỏ cho liên kết vợ chồng */
+  stroke-width: 2px;
+  stroke-dasharray: 5, 5; /* Gạch nối cho liên kết vợ chồng */
+}
+</style>
+</head>
+<body>
+
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script>
+
+// Dữ liệu JSON cây gia phả (ví dụ)
+var data = [
+  {"id": 1, "parent_id": null, "name": "Ông Nội", "spouse_with": 2},
+  {"id": 2, "parent_id": null, "name": "Bà Nội", "spouse_with": 1},
+  {"id": 3, "parent_id": 1, "name": "Bố", "spouse_with": 4},
+  {"id": 4, "parent_id": 2, "name": "Mẹ", "spouse_with": 3},
+  {"id": 5, "parent_id": 3, "name": "Tôi", "spouse_with": 6},
+  {"id": 6, "parent_id": 4, "name": "Vợ Tôi", "spouse_with": 5}
+];
+
+// Chuyển đổi dữ liệu sang dạng hierarchical JSON
+var root = d3.stratify()
+    .id(function(d) { return d.id; })
+    .parentId(function(d) { return d.parent_id; })
+    (data);
+
+// Vẽ cây gia phả
+var width = 960;
+var height = 500;
+
+var treeLayout = d3.tree()
+    .size([width, height]);
+
+treeLayout(root);
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+// Vẽ liên kết
+var link = svg.selectAll(".link")
+    .data(root.links())
+    .enter()
+    .append("path")
+    .attr("class", "link")
+    .attr("d", d3.linkVertical()
+        .x(function(d) { return d.x; })
+        .y(function(d) { return d.y; }));
+
+// Vẽ nút
+var node = svg.selectAll(".node")
+    .data(root.descendants())
+    .enter()
+    .append("g")
+    .attr("class", function(d) { return "node" + (d.children ? " node--internal" : " node--leaf"); })
+    .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
+    .call(d3.drag()
+        .on("start", dragstarted)
+        .on("drag", dragged)
+        .on("end", dragended));
+
+node.append("circle")
+    .attr("r", 15);
+
+node.append("text")
+    .attr("dy", ".35em")
+    .attr("x", function(d) { return d.children ? -20 : 20; })
+    .style("text-anchor", function(d) { return d.children ? "end" : "start"; })
+    .text(function(d) { return d.data.name; });
+
+// Vẽ liên kết vợ chồng
+var spouseLink = svg.selectAll(".spouse-link")
+    .data(root.descendants().filter(function(d) { return d.data.spouse_with; }))
+    .enter()
+    .append("path")
+    .attr("class", "spouse-link")
+    .attr("d", function(d) {
+      var spouse = root.descendants().find(function(n) { return n.data.id === d.data.spouse_with; });
+      if (spouse) {
+        return "M" + d.x + "," + d.y + " " + spouse.x + "," + spouse.y;
+      }
+    });
+
+// Hàm xử lý khi bắt đầu kéo nút
+function dragstarted(event, d) {
+  d3.select(this).raise().classed("active", true);
+}
+
+// Hàm xử lý khi kéo nút
+function dragged(event, d) {
+  d.x = event.x;
+  d.y = event.y;
+  d3.select(this).attr("transform", "translate(" + d.x + "," + d.y + ")");
+
+  // Cập nhật liên kết
+  link.attr("d", d3.linkVertical()
+      .x(function(d) { return d.x; })
+      .y(function(d) { return d.y; }));
+
+  // Cập nhật liên kết vợ chồng
+  spouseLink.attr("d", function(d) {
+    var spouse = root.descendants().find(function(n) { return n.data.id === d.data.spouse_with; });
+    if (spouse) {
+      return "M" + d.x + "," + d.y + " " + spouse.x + "," + spouse.y;
+    }
+  });
+}
+
+// Hàm xử lý khi kết thúc kéo nút
+function dragended(event, d) {
+  d3.select(this).classed("active", false);
+}
+
+</script>
+
+</body>
+</html>

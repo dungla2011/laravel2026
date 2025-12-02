@@ -1,0 +1,58 @@
+<?php
+
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+define("DEF_TOOL_CMS", 1);
+$_SERVER['HTTP_HOST'] = $_SERVER['SERVER_NAME'] = "4share.vn";
+require_once "/var/www/html/public/index.php";
+check_unique_script();
+
+$link = "https://sv96a.4share.vn/81/?test_download_resume_func=1";
+
+function getFileSizeUrl($link) {
+    $headers = get_headers($link, 1);
+    if (isset($headers['Content-Length'])) {
+        return $headers['Content-Length'];
+    } else {
+        die("Size not found!");
+    }
+}
+
+$filesize = getFileSizeUrl($link);
+$partSize = $filesize / 8; // Kích thước mỗi phần
+
+$ranges = [];
+for ($i = 0; $i < 8; $i++) {
+    $start = $i * $partSize;
+    $end = ($i + 1) * $partSize - 1;
+    if ($i == 7) {
+        $end = $filesize - 1; // Đảm bảo phần cuối cùng tải xuống toàn bộ phần còn lại của tệp
+    }
+    $ranges[] = [$start, $end];
+}
+
+echo "\n FS = $filesize";
+
+//echo "<pre> >>> " . __FILE__ . "(" . __LINE__ . ")<br/>";
+//print_r($ranges);
+//echo "</pre>";
+
+$strCont = null;
+
+foreach ($ranges AS $one){
+    $start = $one[0];
+    $end = $one[1];
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $link);
+    curl_setopt($ch, CURLOPT_RANGE, $start . '-' . $end);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    $result = curl_exec($ch);
+    curl_close($ch);
+// Lưu phần tải xuống vào tệp
+
+    $strCont .= $result;
+}
+//file_put_contents('/share/part_of_file.zip', $strCont);
+echo "<br/>\nMD5=";
+echo md5($strCont);

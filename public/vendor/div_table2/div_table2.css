@@ -1,0 +1,237 @@
+/* divTable2.com */
+.divTable2{
+    display: table;
+    width: 100%;
+    border: 0px solid #ccc;
+}
+
+.divTable2Body .divTable2Row {
+    display: table-row;
+}
+.divTable2Row .divTable2Cell select {
+    background-color: transparent;
+}
+    /* Add this to your CSS file */
+.index_data .divTable2Cell.hovered {
+    background-color: #eee!important; /* Change to your desired hover color */
+}
+
+.divTable2Body .divTable2Heading {
+    background-color: #EEE;
+    display: table-header-group;
+}
+
+.divTable2Body .divTable2Cell, .divTable2Body .divTable2Head {
+    border-bottom: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    display: table-cell;
+    background-color: white;
+    /*padding: 3px 10px;*/
+}
+
+.divTable2Cell.txt {
+    padding: 5px 5px;
+}
+
+.divTable2Body .divTable2EditCell {
+    padding: 5px 5px 5px 14px;
+}
+
+.divTable2Body .divTable2EditCellText{
+    padding: 5px 10px;
+    font-size: small;
+    background-color: #eee;
+}
+
+
+.divTable2Body .divTable2Heading {
+    background-color: #EEE;
+    display: table-header-group;
+    font-weight: bold;
+}
+
+.divTable2Body .divTable2Foot {
+    background-color: #EEE;
+    display: table-footer-group;
+    font-weight: bold;
+}
+
+.divTable2Body {
+    display: table-row-group;
+}
+
+.divTable2Body .divTable2Row input[type=text],
+.divTable2Body .divTable2Row input[type=number],
+.divTable2Body .divTable2Row input[type=password] {
+    border: 0px;
+    width: 100%;
+    padding: 3px 10px;
+    font-size: small;
+    background-color: transparent;
+}
+
+.divTable2Body .divTable2Cell ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: #ddd;
+    opacity: 1; /* Firefox */
+}
+
+.divTable2Body .divTable2Row select {
+    border: 0px;
+    margin-left: 6px;
+    /*font-size: small;*/
+    /*width: 100%;*/
+}
+
+.divTable2Body .divTable2Row .change_status_item {
+
+}
+.divTable2Body .divTable2Row .not_editable_status {
+    color: gray;
+}
+
+
+.divTable2Body .divTable2EditCellBold:first-letter {
+    text-transform: uppercase;
+}
+
+.divTable2Body .divTable2EditCellBold {
+    font-weight: bold;
+
+    /*background-color: lavender;*/
+    min-width: 200px!important;
+}
+
+
+.divGrid2Body .divTable2Row {
+    width: 200px;
+    /* display: table-row; */
+     float: left;
+    height: 200px;
+    /* height: 200px; */
+    border: 1px solid #ccc;
+    /* margin: 0px 5px 5px 0px; */
+    background-color: white;
+    display: inline-block;
+    padding: 5px;
+    /* margin: 10px 10px 0px 0px; */
+    border-radius: 3px;
+}
+
+.divGrid2Body .divTable2Heading1 {
+    display: none;
+}
+
+
+.cellHeader{
+text-align: center;
+font-weight: bold;
+padding: 10px 5px;
+font-size: small;
+}
+
+.spanField{
+padding: 5px;
+font-size: small;
+}
+
+.span_api_text{
+font-size: small; font-style: italic
+}
+
+.select_table_permission{
+width: 200px; display: inline-block; margin: 2px 10px;
+}
+
+
+
+.divTable2CellEdit {
+    width: 100%;
+}
+
+.time_sheet .btn1 {
+    margin-bottom: 10px;
+    margin-right: 5px;
+    width: 150px;
+    overflow-x: hidden;
+    white-space: nowrap;
+    text-align: left;
+}
+
+
+.divTable2Cell div.value_cell {
+    display: block;
+    font-size: x-small;
+    border: 1px solid #ddd;
+    margin-bottom: 5px;
+    padding: 2px 2px;
+    cursor: pointer;
+    height: 25px;
+    background-color: white;
+    overflow: hidden;
+    /*white-space: nowrap;*/
+}
+.divTable2Cell div.value_cell input {
+    outline: none;
+}
+
+
+.divTable2Cell.uinfo{
+    min-width: 130px;
+}
+
+td.uinfo{
+    min-width: 130px;
+}
+
+.value_cell {
+
+}
+
+.divTable2Row > div.divTable2Cell:first-of-type {
+    border-left: 1px solid #ccc;
+}
+.divTable2Body > div.divTable2Row:first-of-type > div.divTable2Cell {
+    border-top: 1px solid #ccc;
+}
+.divTable2Row.for_seperatorHeader{
+    height: 46px; background-color: white;
+    position: relative;
+}
+
+.divTable2Row .seperatorHeader{
+    position: absolute;
+    width: 100%;
+    padding: 10px 8PX;
+    font-weight: bold;
+    /*background-color: #eee;*/
+    color: royalblue!important;
+
+    border-top: 0px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    cursor: pointer;
+}
+
+.resizable {
+    position: relative;
+}
+
+.resize-handle {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 10px;
+    height: 100%;
+    cursor: ew-resize;
+    z-index: 1;
+    background-color: transparent;
+}
+
+.resizable:hover .resize-handle {
+    background-color: rgba(0, 0, 0, 0.1); /* Hiển thị viền khi hover */
+}
+
+body.resizing {
+    cursor: ew-resize; /* Icon giữ nguyên trong quá trình kéo */
+}

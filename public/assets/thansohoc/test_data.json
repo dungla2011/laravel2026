@@ -1,0 +1,457 @@
+[
+  {
+    "id": 1762682797221,
+    "stt": 1,
+    "fullName": "Lương Sỹ Hải",
+    "birthDate": "1973-10-01",
+    "timestamp": "2025-11-09T10:06:37.221Z",
+    "calculated": {
+      "fullName": "Lương Sỹ Hải",
+      "birthDate": "1/10/1973",
+      "lifePath": 22,
+      "expression": 5,
+      "maturity": 9,
+      "personality": 6,
+      "attitude": 11,
+      "soulUrge": 8,
+      "innerSelf": 1,
+      "approach": 9,
+      "intelligence": 1,
+      "balance": 3,
+      "missingNumbers": [
+        2,
+        4
+      ],
+      "personalYear": 11,
+      "personalMonths": [
+        {
+          "month": 1,
+          "value": 3
+        },
+        {
+          "month": 2,
+          "value": 4
+        },
+        {
+          "month": 3,
+          "value": 5
+        },
+        {
+          "month": 4,
+          "value": 6
+        },
+        {
+          "month": 5,
+          "value": 7
+        },
+        {
+          "month": 6,
+          "value": 8
+        },
+        {
+          "month": 7,
+          "value": 9
+        },
+        {
+          "month": 8,
+          "value": 1
+        },
+        {
+          "month": 9,
+          "value": 2
+        },
+        {
+          "month": 10,
+          "value": 3
+        },
+        {
+          "month": 11,
+          "value": 22
+        },
+        {
+          "month": 12,
+          "value": 5
+        }
+      ]
+    }
+  },
+  {
+    "id": 1762650169332,
+    "stt": 2,
+    "fullName": "Nguyễn Thị Vân Anh",
+    "birthDate": "1988-09-18",
+    "timestamp": "2025-11-09T01:02:49.332Z",
+    "calculated": {
+      "fullName": "Nguyễn Thị Vân Anh",
+      "birthDate": "18/9/1988",
+      "lifePath": 8,
+      "expression": 3,
+      "maturity": 11,
+      "personality": 11,
+      "attitude": 9,
+      "soulUrge": 1,
+      "innerSelf": 5,
+      "approach": 5,
+      "intelligence": 1,
+      "balance": 3,
+      "missingNumbers": [
+        6
+      ],
+      "personalYear": 9,
+      "personalMonths": [
+        {
+          "month": 1,
+          "value": 1
+        },
+        {
+          "month": 2,
+          "value": 11
+        },
+        {
+          "month": 3,
+          "value": 3
+        },
+        {
+          "month": 4,
+          "value": 4
+        },
+        {
+          "month": 5,
+          "value": 5
+        },
+        {
+          "month": 6,
+          "value": 6
+        },
+        {
+          "month": 7,
+          "value": 7
+        },
+        {
+          "month": 8,
+          "value": 8
+        },
+        {
+          "month": 9,
+          "value": 9
+        },
+        {
+          "month": 10,
+          "value": 1
+        },
+        {
+          "month": 11,
+          "value": 2
+        },
+        {
+          "month": 12,
+          "value": 3
+        }
+      ]
+    }
+  },
+  {
+    "id": 1762650145890,
+    "stt": 3,
+    "fullName": "Lê Thị Quỳnh Anh",
+    "birthDate": "1977-03-03",
+    "timestamp": "2025-11-09T01:02:25.890Z",
+    "calculated": {
+      "fullName": "Lê Thị Quỳnh Anh",
+      "birthDate": "3/3/1977",
+      "lifePath": 3,
+      "expression": 9,
+      "maturity": 3,
+      "personality": 9,
+      "attitude": 6,
+      "soulUrge": 9,
+      "innerSelf": 8,
+      "approach": 5,
+      "intelligence": 1,
+      "balance": 5,
+      "missingNumbers": [
+        4,
+        6
+      ],
+      "personalYear": 6,
+      "personalMonths": [
+        {
+          "month": 1,
+          "value": 7
+        },
+        {
+          "month": 2,
+          "value": 8
+        },
+        {
+          "month": 3,
+          "value": 9
+        },
+        {
+          "month": 4,
+          "value": 1
+        },
+        {
+          "month": 5,
+          "value": 11
+        },
+        {
+          "month": 6,
+          "value": 3
+        },
+        {
+          "month": 7,
+          "value": 4
+        },
+        {
+          "month": 8,
+          "value": 5
+        },
+        {
+          "month": 9,
+          "value": 6
+        },
+        {
+          "month": 10,
+          "value": 7
+        },
+        {
+          "month": 11,
+          "value": 8
+        },
+        {
+          "month": 12,
+          "value": 9
+        }
+      ]
+    }
+  },
+  {
+    "id": 1762650126523,
+    "stt": 4,
+    "fullName": "Lê Thị Quỳnh Trang",
+    "birthDate": "1975-09-29",
+    "timestamp": "2025-11-09T01:02:06.523Z",
+    "calculated": {
+      "fullName": "Lê Thị Quỳnh Trang",
+      "birthDate": "29/9/1975",
+      "lifePath": 6,
+      "expression": 1,
+      "maturity": 7,
+      "personality": 1,
+      "attitude": 11,
+      "soulUrge": 9,
+      "innerSelf": 5,
+      "approach": 6,
+      "intelligence": 1,
+      "balance": 6,
+      "missingNumbers": [
+        4,
+        6
+      ],
+      "personalYear": 11,
+      "personalMonths": [
+        {
+          "month": 1,
+          "value": 3
+        },
+        {
+          "month": 2,
+          "value": 4
+        },
+        {
+          "month": 3,
+          "value": 5
+        },
+        {
+          "month": 4,
+          "value": 6
+        },
+        {
+          "month": 5,
+          "value": 7
+        },
+        {
+          "month": 6,
+          "value": 8
+        },
+        {
+          "month": 7,
+          "value": 9
+        },
+        {
+          "month": 8,
+          "value": 1
+        },
+        {
+          "month": 9,
+          "value": 2
+        },
+        {
+          "month": 10,
+          "value": 3
+        },
+        {
+          "month": 11,
+          "value": 22
+        },
+        {
+          "month": 12,
+          "value": 5
+        }
+      ]
+    }
+  },
+  {
+    "id": 1762650091145,
+    "stt": 5,
+    "fullName": "Lương Trường Sinh",
+    "birthDate": "2001-01-19",
+    "timestamp": "2025-11-09T01:01:31.145Z",
+    "calculated": {
+      "fullName": "Lương Trường Sinh",
+      "birthDate": "19/1/2001",
+      "lifePath": 5,
+      "expression": 7,
+      "maturity": 3,
+      "personality": 7,
+      "attitude": 2,
+      "soulUrge": 9,
+      "innerSelf": 3,
+      "approach": 5,
+      "intelligence": 9,
+      "balance": 6,
+      "missingNumbers": [
+        4
+      ],
+      "personalYear": 2,
+      "personalMonths": [
+        {
+          "month": 1,
+          "value": 3
+        },
+        {
+          "month": 2,
+          "value": 4
+        },
+        {
+          "month": 3,
+          "value": 5
+        },
+        {
+          "month": 4,
+          "value": 6
+        },
+        {
+          "month": 5,
+          "value": 7
+        },
+        {
+          "month": 6,
+          "value": 8
+        },
+        {
+          "month": 7,
+          "value": 9
+        },
+        {
+          "month": 8,
+          "value": 1
+        },
+        {
+          "month": 9,
+          "value": 11
+        },
+        {
+          "month": 10,
+          "value": 3
+        },
+        {
+          "month": 11,
+          "value": 4
+        },
+        {
+          "month": 12,
+          "value": 5
+        }
+      ]
+    }
+  },
+  {
+    "id": 1762618362189,
+    "stt": 6,
+    "fullName": "Lê Anh Dũng",
+    "birthDate": "1979-11-03",
+    "timestamp": "2025-11-08T16:12:42.189Z",
+    "calculated": {
+      "fullName": "Lê Anh Dũng",
+      "birthDate": "3/11/1979",
+      "lifePath": 4,
+      "expression": 5,
+      "maturity": 9,
+      "personality": 5,
+      "attitude": 5,
+      "soulUrge": 9,
+      "innerSelf": 5,
+      "approach": 1,
+      "intelligence": 3,
+      "balance": 8,
+      "missingNumbers": [
+        2,
+        6,
+        9
+      ],
+      "personalYear": 5,
+      "personalMonths": [
+        {
+          "month": 1,
+          "value": 6
+        },
+        {
+          "month": 2,
+          "value": 7
+        },
+        {
+          "month": 3,
+          "value": 8
+        },
+        {
+          "month": 4,
+          "value": 9
+        },
+        {
+          "month": 5,
+          "value": 1
+        },
+        {
+          "month": 6,
+          "value": 11
+        },
+        {
+          "month": 7,
+          "value": 3
+        },
+        {
+          "month": 8,
+          "value": 4
+        },
+        {
+          "month": 9,
+          "value": 5
+        },
+        {
+          "month": 10,
+          "value": 6
+        },
+        {
+          "month": 11,
+          "value": 7
+        },
+        {
+          "month": 12,
+          "value": 8
+        }
+      ]
+    }
+  }
+]

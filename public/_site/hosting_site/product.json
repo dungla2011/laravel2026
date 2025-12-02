@@ -1,0 +1,6 @@
+{
+    "price_1core_cpu" : 50,
+    "price_1gb_ram": 30,
+    "price_1gb_disk": 1,
+    "price_100mbit_network": 1000000
+}

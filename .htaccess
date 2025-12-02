@@ -1,0 +1,13 @@
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} -s [OR]
+RewriteCond %{REQUEST_FILENAME} -l [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+#RewriteRule ^s/.* /s/index.php?id=1
+
+RewriteRule ^.*$ - [NC,L]
+
+#Test ok1
+#RewriteRule ^111111334455$ /1.php [NC,L]
+#Test ok2
+RewriteRule ^112233 https://glx.com.vn [NC,L]
+

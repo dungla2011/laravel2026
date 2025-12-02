@@ -1,0 +1,77 @@
+<?php
+// filepath: app/Console/Commands/TestCommand.php
+
+namespace App\Console\Commands;
+
+use Illuminate\Console\Command;
+use Symfony\Component\Process\Process;
+
+class TestCommand extends Command
+{
+    protected $signature = 'test
+                            {--without-tty : Disable output to TTY}
+                            {--coverage : Generate code coverage report}
+                            {--min= : Indicate the minimum threshold enforcement for coverage}
+                            {--profile : List top 10 slowest tests}
+                            {--recreate-databases : Recreate the test databases}
+                            {--drop-databases : Drop the test databases}
+                            {--parallel : Run tests in parallel}
+                            {--processes=* : Number of parallel processes to use}
+                            {--testsuite= : Run tests from the specified suite}
+                            {--group=* : Run tests from the specified group(s)}
+                            {--exclude-group=* : Exclude tests from the specified group(s)}';
+
+    protected $description = 'Run the application tests';
+
+    public function handle()
+    {
+        // Build command arguments
+        $arguments = [
+            PHP_BINARY,
+            'vendor/bin/phpunit',
+        ];
+
+        // Add testsuite option
+        if ($this->option('testsuite')) {
+            $arguments[] = '--testsuite=' . $this->option('testsuite');
+        }
+
+        // Add group options
+        if ($groups = $this->option('group')) {
+            foreach ((array) $groups as $group) {
+                $arguments[] = '--group=' . $group;
+            }
+        }
+
+        // Add exclude-group options
+        if ($excludeGroups = $this->option('exclude-group')) {
+            foreach ((array) $excludeGroups as $group) {
+                $arguments[] = '--exclude-group=' . $group;
+            }
+        }
+
+        // Add coverage option
+        if ($this->option('coverage')) {
+            $arguments[] = '--coverage-html=storage/app/coverage';
+        }
+
+        // Add profile option
+        if ($this->option('profile')) {
+            $arguments[] = '--log-json=storage/logs/phpunit.json';
+        }
+
+        // Run the process
+        $process = new Process($arguments);
+        $process->setWorkingDirectory(base_path());
+        $process->setTimeout(null);
+
+        // Set TTY for colored output
+        if (!$this->option('without-tty')) {
+            $process->setTty(Process::isTtySupported());
+        }
+
+        return $process->run(function ($type, $buffer) {
+            $this->output->write($buffer);
+        });
+    }
+}

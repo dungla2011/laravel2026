@@ -1,0 +1,97 @@
+<?php
+
+namespace Tests\Feature;
+
+use App\Models\FileUpload;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
+
+class ApiBaseTest extends TestCase
+{
+    protected function setUp(): void {
+        parent::setUp();
+        // set your headers here
+        //$this->withToken("123456")->getJson(route("api.demo.list"));
+        if (!User::where('email', 'admin@abc.com')->first()) {
+            User::createUserAdminDefault();
+        }
+        if (!User::where('email', 'admin@abc.com')->first()) {
+            User::createUserAdminDefault();
+        }
+$tk = User::where("email", 'admin@abc.com')->first()->getUserToken();
+        dump("Token : $tk");
+        //$this->withToken("123456")->getJson(route("api.demo.list"));
+        $this->withHeader('Authorization' ,'Bearer ' . $tk);
+    }
+    /**
+     * A basic test example.
+     *
+     * @return void
+     */
+    public function testGetDemoIndex()
+    {
+//
+//        dump("=== Check " . get_called_class() ."/" . __FUNCTION__);
+//        $url = route("api.demo.list");
+//
+//        dump("URL = $url")        ;
+//
+//        $response = $this->getJson($url);
+//
+////        $response->dumpHeaders();
+//
+////        $this->assertEquals(403, $response->getStatusCode());
+////
+////        $response = $this->withToken("123456")->getJson(route("api.demo.list"));
+////        $response = $this->withHeader('Authorization','Bearer 123456')->getJson(route("api.demo.list"));
+//        $this->assertEquals(200, $response->getStatusCode());
+//
+////        echo "<pre> >>> " . __FILE__ . "(" . __LINE__ . ")<br/>";
+////        print_r($response->content());
+////        echo "</pre>";
+////
+//        $ret = $response->decodeResponseJson();
+
+//        echo "<pre> >>> " . __FILE__ . "(" . __LINE__ . ")<br/>";
+//        print_r($ret);
+//        echo "</pre>";
+
+//        echo "<pre> >>> " . __FILE__ . "(" . __LINE__ . ")<br/>";
+//        print_r($js);
+//        echo "</pre>";
+
+        //$this->assertTrue(true);
+    }
+
+    /**
+     * Chắc chắn User member có 1 số quyền cơ bản ở role, và index show
+     */
+    function testMemberHasSomeRole(){
+        $obj = User::findUserWithEmail("member@abc.com");
+        $mRoute = ["api.member-file.upload",
+            "member.file.edit",
+            'api.member-file.get'
+            ];
+
+        foreach ( $mRoute AS $route){
+//            $route = "api.member-file.upload";
+            //$obj->addAllowPermissionRouteNameOnUser($route);
+            $mm = $obj->getAllRouteNameAllowThisUser();
+            self::assertTrue(in_array($route, $mm));
+        }
+
+        //Member cần có quyền show Index file, name
+
+        $objMeta = FileUpload::getMetaObj();
+//        $objMeta->setAllowGidOnIndexField(['id', 'name'], 3, 1);
+
+        self::assertTrue($objMeta->isShowIndexField('id', 3) > 0);
+        self::assertTrue($objMeta->isShowIndexField('name', 3) > 0);
+
+    }
+
+    function testPasswordFieldMustEmptyApi(){
+        //Todo...
+    }
+}

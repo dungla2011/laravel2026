@@ -1,0 +1,15 @@
+{
+    "name": "Nguyễn Văn Test",
+    "email": "test@example.com",
+    "phone": "0123456789",
+    "address": "123 Test Street, Ho Chi Minh City",
+    "age": 30,
+    "status": true,
+    "description": "Test user for MongoDB CRUD package",
+    "metadata": {
+        "department": "IT",
+        "position": "Developer",
+        "salary": 15000000
+    },
+    "tags": ["developer", "php", "laravel", "mongodb"]
+} 
