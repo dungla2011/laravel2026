@@ -6,7 +6,7 @@ BLUE='\033[0;34m'
 RED='\033[0;31m'
 NC='\033[0m' # No Color
 
-REPO_NAME="laravel2026"
+REPO_NAME="laravel2026_1"
 USERNAME="dungla2011"
 
 echo -e "${BLUE}=== Push to GitHub ===${NC}"
