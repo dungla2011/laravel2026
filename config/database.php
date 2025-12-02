@@ -61,6 +61,8 @@ if ((isCli() && gethostname() == 'DESKTOP-VFQHFQS')
     ($domainName == 'localhost' && env('APP_URL') == 'http://localhost:8000')
     ||
     ($domainName == '127.0.0.1' && env('APP_URL') == 'http://localhost:8000')
+    ||
+    (env('APP_ENV') === 'testing')
 ) {
     // $hostname = '127.0.0.1';
     // $user = 'root';
