@@ -157,7 +157,7 @@ class BaseApiController extends BaseController
             return $this->data->update($id, $request->all(), $this->objParamEx);
             //\//ladDebug::addTime(" baseapi ", __LINE__);
         } catch (\Throwable $exception) { // For PHP 7
-            return rtJsonApiError("Update error1: " . $exception->getMessage());
+            return rtJsonApiError("Update error1: " . $exception->getMessage() ." \n ".  $exception->getTraceAsString());
         }
         //\//ladDebug::addTime(" baseapi ", __LINE__);
     }
