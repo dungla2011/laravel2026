@@ -91,10 +91,11 @@ $tk = User::where("email", 'admin@abc.com')->first()->getUserToken();
         $res = $this->postCurl1($url, ['textarea2' => $setVal]);
         //Khi không có quyền, thì trả lại sẽ > 200
 
+        dump("Status HTTP:" . $res->status());
+        dump("CONT ". substr($res->getContent(), 0 ,500);
+
         self::assertTrue($res->status() != 200, ' status = '.$res->status());
 
-        dump($res->status());
-        dump($res->getContent());
 
         //Cấp lại quyền edit field
         $objMeta->setAllowGidEditIndexField(['textarea2'], $gid, 1);
