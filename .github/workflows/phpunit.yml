@@ -36,7 +36,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
-          extensions: mysql, mbstring, json, curl, bcmath
+          extensions: mysql, mbstring, json, curl, bcmath, mongodb
           coverage: xdebug
 
       - name: Setup test database
