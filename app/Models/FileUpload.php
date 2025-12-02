@@ -211,8 +211,9 @@ class FileUpload extends ModelGlxBase
         }
 
         $fileRealPath = $this->getFilePathCloud();
-        $spath = "/var/glx/upload_file_glx/user_files/slink/$path";
-        $spathFile = "/var/glx/upload_file_glx/user_files/slink/$path/".$this->link1;
+        $uploadFolder = env("UPLOAD_FOLDER");
+        $spath = "$uploadFolder/user_files/slink/$path";
+        $spathFile = "$uploadFolder/user_files/slink/$path/".$this->link1;
         $pathFileId = $path.'/'.$this->link1;
         //if(isDebugIp())
 
@@ -234,9 +235,11 @@ class FileUpload extends ModelGlxBase
             }
         }
 
+        $uploadFolder = env('UPLOAD_FOLDER');
+
         //Mỗi mytree theo kiểu cũ glx2022db
         if ($siteId == 1) {
-            $file = "/var/glx/upload_file_glx/glx2022db/user_files/$path";
+            $file = "$uploadFolder/glx2022db/user_files/$path";
             if (file_exists($file)) {
                 //            if(is_link($file . '.png'))
                 //                return $urlBase."/image_static/".$path.'.png';

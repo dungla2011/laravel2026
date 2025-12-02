@@ -34,8 +34,8 @@ return [
                     // Hoặc list cụ thể từng file
                     '/var/spool/cron/crontabs',
                     '/etc',
-                    '/var/glx/upload_file_glx',
-                    // base_path(), // Uncomment nếu muốn backup toàn bộ project
+                    $uploadFolder = env('UPLOAD_FOLDER')
+,                    // base_path(), // Uncomment nếu muốn backup toàn bộ project
                 ]),
                 'exclude' => [
                     base_path('vendor'),
