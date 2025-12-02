@@ -14,6 +14,10 @@ npm-debug.log
 yarn-error.log
 /.idea
 /.vscode
+*.apk
+*.zip
+*.mp3
+*.mp4
 
 # Ignore submodule changes
 # public/tool/doing
