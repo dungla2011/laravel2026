@@ -1,7 +1,7 @@
 <?php
 
 if (!isWindow1()) {
-    define('DEF_BASE_FILE_UPLOAD_FOLDER', env('UPLOAD_FOLDER','/var/glx/upload_file_glx'));
+    define('DEF_BASE_FILE_UPLOAD_FOLDER', env('UPLOAD_FOLDER'));
 } else {
     define('DEF_BASE_FILE_UPLOAD_FOLDER', 'e:/upload_web');
 }
