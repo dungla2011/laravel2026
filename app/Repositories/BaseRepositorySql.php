@@ -121,7 +121,7 @@ class BaseRepositorySql implements BaseRepositoryInterface
         if($userObj = getCurrentUserId(1)){
             $lang = $userObj->language ?? '';
         }
- 
+
         if ($rl = $this->model->getValidateRuleUpdate($id)) {
             //$request->validate($this->model::::$createRules);
             $validator = \Illuminate\Support\Facades\Validator::make(
@@ -400,7 +400,10 @@ class BaseRepositorySql implements BaseRepositoryInterface
             if (! $param) {
                 return rtJsonApiError('Not valid param?');
             }
+//            if(0)
             if ($rl = $this->model->getValidateRuleInsert()) {
+
+
                 //$request->validate($this->model::::$createRules);
                 $validator = \Illuminate\Support\Facades\Validator::make(
                     $param,
@@ -1170,7 +1173,7 @@ class BaseRepositorySql implements BaseRepositoryInterface
             }
 
             $idOrListId0 = trim($idOrListId0, ',');
-            return rtJsonApiDone(" DELETE DONE! $tt Item");
+            return rtJsonApiDone($idOrListId0, " DELETE DONE! $tt Item");
         } else {
             return rtJsonApiError(" Can not delete: $tt item ! ");
         }
@@ -1557,13 +1560,12 @@ class BaseRepositorySql implements BaseRepositoryInterface
         //Todo: kiểm tra nếu thuộc UID
         try {
             //id=2&to_name=11111
-            $id = $param['id'];
-                $id = $param['id'] ?? '';
+            $id = $param['id'] ?? '';
 
             if(!$id)
                 return null;
 
-d()) {
+            if ($objMeta->isUseRandId()) {
                 if ($id && ! is_numeric($id)) {
                     $id = ClassRandId2::getIdFromRand($id);
                 }
@@ -1623,7 +1625,7 @@ d()) {
             //Or change gid, with menu tree:
             if (isset($param['gid']) && isset($param['enable'])) {
 
-                $gid = $param['gid']
+
                 $gid = $param['gid'];
                 //                if (!$gid)
                 //                    return rtJsonApiError("Not found gid!");
@@ -1650,7 +1652,7 @@ d()) {
                         if (strstr($obj->gid_allow, ",$gid,") === false) {
 
 
-d_allow .= $gid;
+                            $obj->gid_allow .= $gid;
                             $haveChange = 1;
                             $obj->gid_allow = trim($obj->gid_allow, ',');
                             //  die(" $obj->gid_allow - 1 ");
