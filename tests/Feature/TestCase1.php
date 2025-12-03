@@ -76,7 +76,7 @@ class TestCase1 extends TestCase
         return new \retCurl($httpCode, $response);
     }
 
-    public function testLoginTrueAccount3()
+    public function tesLoginTrueAccount3()
     {
 
         //Ham hàn vứt mẹ đi, chạy đéo gì mà khng ổn định, login xong rôồi, mà baáo khng có quyền vào  /
