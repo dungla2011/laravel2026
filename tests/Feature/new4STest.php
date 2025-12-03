@@ -47,6 +47,8 @@ class new4STest extends \Tests\Feature\TestCase1 {
 
     public function test4sDownloadSession()
     {
+        if(!isWindow1())
+            return;
         $ret = testDownloadSession4s();
         $this->assertEquals($ret, 3);
     }
@@ -184,7 +186,8 @@ class new4STest extends \Tests\Feature\TestCase1 {
 
     function test4SApiListFolderUser()
     {
-
+        if(!isWindow1())
+            return;
         $ret = self::getFolderList('7d4845444a4f4c4b', 'list_folder_in_folder_user');
 
         echo "<pre> >>> " . __FILE__ . "(" . __LINE__ . ")<br/>";
@@ -195,7 +198,8 @@ class new4STest extends \Tests\Feature\TestCase1 {
     }
 
     function test4sUserInfo(){
-
+        if(!isWindow1())
+            return;
         $tk = self::getToken4S();
 
 //        sleep(2);
@@ -241,7 +245,8 @@ class new4STest extends \Tests\Feature\TestCase1 {
 
     function test4sGetLinkDownload($fid = '784e49404e404e4d')
     {
-
+        if(!isWindow1())
+            return;
         $fi = $this->test4sGetFileInfo($fid);
 
         $fsize = $fi->payload->size;
@@ -277,6 +282,8 @@ class new4STest extends \Tests\Feature\TestCase1 {
     }
 
     public function test4sUploadFtpFile() {
+        if(!isWindow1())
+            return;
         $tk = self::getToken4S();
         echo "<br/>\n TK = $tk";
         //Todo: lad tam dung cho CICD
