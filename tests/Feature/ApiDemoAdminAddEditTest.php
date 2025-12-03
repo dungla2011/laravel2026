@@ -15,10 +15,10 @@ class ApiDemoAdminAddEditTest extends TestCase1
         if (!User::where('email', 'admin@abc.com')->first()) {
             User::createUserAdminDefault();
         }
-        if (!User::where('email', 'admin@abc.com')->first()) {
-            User::createUserAdminDefault();
+        if (!User::where('email', 'member@abc.com')->first()) {
+            User::createUserMemberForTest();
         }
-$tk = User::where("email", 'admin@abc.com')->first()->getUserToken();
+        $tk = User::where("email", 'admin@abc.com')->first()->getUserToken();
         dump("Token : $tk");
         //$this->withToken("123456")->getJson(route("api.demo.list"));
         $this->withHeader('Authorization', 'Bearer '.$tk);
@@ -41,7 +41,7 @@ $tk = User::where("email", 'admin@abc.com')->first()->getUserToken();
     /**
      * Thay đổi Disable/Enable của Editable Role của 1 Field, với 1 GID, và post vào đó để có kết quả không được phép, và thành công
      */
-    public function testAdminDemoFieldEditable($gid = 1)
+    public function testAdminDemoFieldEditable($gid = 3)
     {
 
         $demo = DemoTbl::latest()->first();
@@ -79,7 +79,10 @@ $tk = User::where("email", 'admin@abc.com')->first()->getUserToken();
         $setVal = microtime(1);
         //        $setVal = "1234";
 
-        @file_get_contents(env("APP_URL")."/tool/gw/delete_cache_meta.php?table=demo_tbls");
+        $ret = @file_get_contents(env("APP_URL")."/tool/gw/delete_cache_meta.php?table=demo_tbls");
+        
+        dump("Delete cache meta ret: $ret");
+
         //Bỏ quyền edit field
         $objMeta->setAllowGidEditIndexField(['textarea2'], $gid, 0);
         $objMeta->setAllowGidEditGetOneField(['textarea2'], $gid, 0);
@@ -93,11 +96,12 @@ $tk = User::where("email", 'admin@abc.com')->first()->getUserToken();
         //Khi không có quyền, thì trả lại sẽ > 200
 
         dump("Status HTTP:" . $res->status());
-        dump("CONT ". substr($res->getContent(), 0 ,500));
+        dump("GID = $gid , CONT ". substr($res->getContent(), 0 ,500));
 
         self::assertTrue($res->status() != 200, ' status = '.$res->status());
 
-        @file_get_contents(env("APP_URL")."/tool/gw/delete_cache_meta.php?table=demo_tbls");
+        $ret = @file_get_contents(env("APP_URL")."/tool/gw/delete_cache_meta.php?table=demo_tbls");
+        dump("Delete cache meta ret: $ret");
         //Cấp lại quyền edit field
         $objMeta->setAllowGidEditIndexField(['textarea2'], $gid, 1);
         $objMeta->setAllowGidEditGetOneField(['textarea2'], $gid, 1);
@@ -120,7 +124,7 @@ $tk = User::where("email", 'admin@abc.com')->first()->getUserToken();
 
     public function testEditAbleWithMember()
     {
-        $this->testAdminDemoFieldEditable($gid = 3);
+        $this->testAdminDemoFieldEditable(3);
     }
 
     /**
