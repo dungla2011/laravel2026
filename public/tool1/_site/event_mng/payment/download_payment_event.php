@@ -1375,8 +1375,9 @@ function generatePdfHtml($sheet, $evid) {
     $html .= '.signature-title { font-size: 8pt; color: gray }';
     $html .= '</style></head><body>';
 
-    $html .= '<h2>Danh sách thanh toán Sự kiện số ' . htmlspecialchars($evid) . '</h2>';
-    $html .= '<p>DAV - Học Viện Ngoại Giao</p>';
+    $time =  nowyh_vn(time(), "/");
+    $html .= "<h2>Danh sách thanh toán Sự kiện số " . htmlspecialchars($evid) . " </h2>";
+    $html .= "<div style='display: block'>DAV - Học Viện Ngoại Giao, <span style='float: right'> Ngày tạo: $time </span> </div>";
 
     // Signature section - 5 columns
     $html .= '<table class="signature-table" cellpadding="0" cellspacing="0">';

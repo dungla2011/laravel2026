@@ -397,12 +397,12 @@ function nowyh($time = '')
     }
 }
 
-function nowyh_vn($time = '')
+function nowyh_vn($time = '', $seperatorDate = "-")
 {
     if (empty($time)) {
-        return $datetime = date('H:i:s d-m-Y');
+        return $datetime = date("H:i:s d".$seperatorDate."m".$seperatorDate."Y");
     } else {
-        return $datetime = date('H:i:s d-m-Y', $time);
+        return $datetime =  date("H:i:s d".$seperatorDate."m".$seperatorDate."Y", $time);
     }
 }
 
@@ -7965,6 +7965,8 @@ function filterExistingPaths(array $paths): array
     $result = [];
 
     foreach ($paths as $path) {
+        if(!$path)
+            continue;
         // Nếu có ký tự wildcard, dùng glob
         if (strpos($path, '*') !== false || strpos($path, '?') !== false) {
             $matches = glob($path);

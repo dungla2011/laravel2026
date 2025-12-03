@@ -324,7 +324,7 @@ if ($_POST['action'] ?? null === 'sign_pdf') {
                 <span>📊 Event: <?php echo htmlspecialchars($evid); ?></span>
                 <span>🏷️ <?php echo htmlspecialchars($payment_type ?: 'Tất cả'); ?></span>
                 <span>⏰ <?php echo date('d/m/Y H:i', filemtime($pdfPath)); ?></span>
-                <span id="ws-status" style="font-size: 0.85rem; color: #999;">⚪ Khởi động...</span>
+                <span id="ws-status" style="font-size: 0.85rem; color: #999;"></span>
             </div>
 
             <div class="header-actions">
@@ -339,7 +339,7 @@ if ($_POST['action'] ?? null === 'sign_pdf') {
 
         <!-- Signing Status Alert -->
         <div id="signing-status" class="alert alert-info" style="margin-bottom: 10px; display: none;">
-            <i class="bi bi-info-circle"></i> Khởi động...
+            <i class="bi bi-info-circle"></i>
         </div>
 
         <!-- Signature Info (List) -->

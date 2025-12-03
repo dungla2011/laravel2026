@@ -766,7 +766,7 @@ reg_mail_02_en
                                             $banks = config('banks');
                                             asort($banks);
                                             foreach($banks as $code => $name){
-                                                 $name = $name['public_name'];
+                                                 $name = $name['public_name'] ?? '';
                                                 echo "<option value='$code'>" . $name . "</option>";
                                             }
                                         @endphp

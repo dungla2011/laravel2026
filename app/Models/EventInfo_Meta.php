@@ -972,6 +972,9 @@ $str
             return;;
         $obj = EventInfo::find(request('id'));
 
+        if(!$obj)
+            return;
+
         $domain = UrlHelper1::getDomainHostName();
         $module = Helper1::getModuleCurrentName();
 
