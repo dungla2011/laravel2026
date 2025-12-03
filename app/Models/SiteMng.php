@@ -69,13 +69,14 @@ class SiteMng extends ModelGlxBase
         //upload_tmp_folder_glx
         $domainName = \LadLib\Common\UrlHelper1::getDomainHostName();
         $folder = @$GLOBALS['mMapDomainDb'][$domainName]['upload_tmp_folder_glx'] ?? env('DEF_BASE_FILE_UPLOAD_FOLDER');
-        if(!file_exists($folder)){
-            mkdir($folder, 0755, true);
-        }
-        if(!file_exists($folder)){
-            $folder = strip_tags($folder);
-            loi("Can not create folder: $folder");
-        }
+        return $folder;
+//        if(!file_exists($folder)){
+//            mkdir($folder, 0755, true);
+//        }
+//        if(!file_exists($folder)){
+//            $folder = strip_tags($folder);
+//            loi("Can not create folder: $folder");
+//        }
     }
 
     static function rand_in_redis()

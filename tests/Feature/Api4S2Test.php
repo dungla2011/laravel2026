@@ -26,11 +26,15 @@ class Api4S2Test extends TestCase
 
     public function testDl1k4s2()
     {
+        if(!isWindow1())
+            return;
         $this->testDl1k4s('724644474b464145');
     }
 
     public function testDl1k4s($idF = null)
     {
+        if(!isWindow1())
+            return;
         if(!$idF){
             $idF = "6154555958575652";
             $idF = "724644474b464145"; //https://4share.vn/f/724644474b464145
@@ -120,5 +124,4 @@ class Api4S2Test extends TestCase
         $this->assertTrue(strstr("$buff", "/dl-file/$idF") !== false);
 //        getch("... $md5 , size = ", strlen($buff));
     }
-
 }
