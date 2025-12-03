@@ -79,6 +79,7 @@ $tk = User::where("email", 'admin@abc.com')->first()->getUserToken();
         $setVal = microtime(1);
         //        $setVal = "1234";
 
+        @file_get_contents(env("APP_URL")."/tool/gw/delete_cache_meta.php?table=demo_tbls");
         //Bỏ quyền edit field
         $objMeta->setAllowGidEditIndexField(['textarea2'], $gid, 0);
         $objMeta->setAllowGidEditGetOneField(['textarea2'], $gid, 0);
@@ -96,7 +97,7 @@ $tk = User::where("email", 'admin@abc.com')->first()->getUserToken();
 
         self::assertTrue($res->status() != 200, ' status = '.$res->status());
 
-
+        @file_get_contents(env("APP_URL")."/tool/gw/delete_cache_meta.php?table=demo_tbls");
         //Cấp lại quyền edit field
         $objMeta->setAllowGidEditIndexField(['textarea2'], $gid, 1);
         $objMeta->setAllowGidEditGetOneField(['textarea2'], $gid, 1);
@@ -146,7 +147,7 @@ $tk = User::where("email", 'admin@abc.com')->first()->getUserToken();
         $res = $this->postCurl1($url, ['name' => 'abc-' . $nameLong]);
         //Khi không có quyền, thì trả lại sẽ > 200
 
-        dump($ret = $res->getContent());
+        dump("CONTx : ", $ret = $res->getContent());
 
         //Chắc chắn là có báo lỗi quá 20 ký tự ở name
         $rt = json_decode($ret);
