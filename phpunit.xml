@@ -13,7 +13,7 @@
 <!--      <directory suffix="Test.php">./tests/Unit</directory>-->
 <!--    </testsuite>-->
     <testsuite name="Feature">
-      <directory suffix="Test.php">./tests/Feature</directory>
+      <directory suffix="FileTest.php">./tests/Feature</directory>
 <!--      <directory suffix="Test1.php">./tests/Feature2</directory>-->
     </testsuite>
     <!-- <testsuite name="Browser">
