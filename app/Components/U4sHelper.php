@@ -382,8 +382,10 @@ class U4sHelper
 
         $check = @file_get_contents($urlCheck, false, $ctx);
 
-        if (!$check)
-            loi("Không thể kết nối File Server: $server!");
+        if (!$check) {
+            echo("\nKhông thể kết nối File Server: $server!");
+            return false;
+        }
 
         if (strstr($check, "OKFILETHIS:$locationFull") === FALSE) {
             echo("Error: File đã bị xoá hoặc không hợp lệ! CHECK: $check");
