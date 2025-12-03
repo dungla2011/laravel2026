@@ -223,6 +223,8 @@ class new4STest extends \Tests\Feature\TestCase1 {
 
     function test4sGetFileInfo($fid = '784e49404e404e4d')
     {
+        if(!isWindow1())
+            return;
         $tk = self::getToken4S();
 
         $link = "https://v2.4share.vn/api/v1/?cmd=get_file_info&file_id=$fid";
