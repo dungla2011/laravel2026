@@ -68,7 +68,7 @@ class SiteMng extends ModelGlxBase
     {
         //upload_tmp_folder_glx
         $domainName = \LadLib\Common\UrlHelper1::getDomainHostName();
-        $folder = @$GLOBALS['mMapDomainDb'][$domainName]['upload_tmp_folder_glx'] ?? env('DEF_BASE_FILE_UPLOAD_FOLDER');
+        $folder = @$GLOBALS['mMapDomainDb'][$domainName]['upload_tmp_folder_glx'] ?? env('UPLOAD_FOLDER');
         return $folder;
 //        if(!file_exists($folder)){
 //            mkdir($folder, 0755, true);
