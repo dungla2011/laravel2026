@@ -131,7 +131,7 @@ $tk = User::where("email", 'admin@abc.com')->first()->getUserToken();
 
         $res = $this->postCurl1($url, ['id_list' => "$fileO->id", 'move_to_parent_id' => $folderInRoot->id]);
         dump($res->status().' / / Move to ID: '.$folderInRoot->id);
-        dump($res->getContent());
+        dump(substr($res->getContent(), 0,500));
 
         $folderInRoot->forceDelete();
         $fileO->forceDelete();
