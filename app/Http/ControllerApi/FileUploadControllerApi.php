@@ -79,7 +79,7 @@ class FileUploadControllerApi extends BaseApiController
             }
             @mkdir($locationStore, 0755, 1);
             if (! file_exists($locationStore)) {
-                loi("Can not create folder user1: '$locationStore'");
+                loi("Can not create folder user1: $locationStore");
             }
             if($request->file_path_local_upload_ ?? ''){
                 if(
