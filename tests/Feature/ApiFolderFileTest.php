@@ -2,10 +2,10 @@
 
 namespace Tests\Feature;
 
+use ApiUploadFileTest;
 use App\Models\FileUpload;
 use App\Models\FolderFile;
 use App\Models\User;
-use Faker\Core\File;
 use Illuminate\Testing\TestResponse;
 
 class ApiFolderFileTest extends TestCase1

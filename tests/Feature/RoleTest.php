@@ -155,7 +155,6 @@ class RoleTest extends TestCase
         foreach ($routeCollection as $route) {
             if ($route instanceof \Illuminate\Routing\Route);
             $rName = $route->getName();
-            dump($rName);
 
             if (! $rName) {
                 continue;
@@ -207,7 +206,7 @@ class RoleTest extends TestCase
                 }
 
                 $cc++;
-
+                dump($rName);
                 $url = $route->uri();
                 dump("$cc/$tt. URL1x = ".$url);
 

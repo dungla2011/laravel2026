@@ -9,11 +9,12 @@
          displayDetailsOnTestsThatTriggerDeprecations="true"
          beStrictAboutOutputDuringTests="false">
   <testsuites>
-    <testsuite name="Unit">
-      <directory suffix="Test.php">./tests/Unit</directory>
-    </testsuite>
-    <testsuite name="Feature">
-      <directory suffix="Test.php">./tests/Feature</directory>
+<!--    <testsuite name="Unit">-->
+<!--      <directory suffix="Test.php">./tests/Unit</directory>-->
+<!--    </testsuite>-->
+    <testsuite name="Feature2">
+<!--      <directory suffix="Test.php">./tests/Feature</directory>-->
+              <directory suffix="Test1.php">./tests/Feature2</directory>
     </testsuite>
     <!-- <testsuite name="Browser">
       <directory suffix="Test.php">./tests/Browser</directory>

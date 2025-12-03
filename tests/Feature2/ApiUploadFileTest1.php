@@ -1,19 +1,18 @@
 <?php
 
-namespace Tests\Feature;
 
 use App\Models\FileUpload;
 use App\Models\User;
 use Illuminate\Testing\TestResponse;
 
-class ApiUploadFileTest extends TestCase1
+class ApiUploadFileTest1 extends \Tests\Feature\TestCase1
 {
     /**
      * @var TestResponse
      */
     protected function setUp(): void
     {
-        parent::setUp();
+        \Tests\Feature\TestCase1::setUp();
         // set your headers here
         if (!User::where('email', 'admin@abc.com')->first()) {
             User::createUserAdminDefault();
@@ -60,7 +59,7 @@ class ApiUploadFileTest extends TestCase1
 
 //        die("URL = $url");
 
-        $fileName = sys_get_temp_dir().'/tester_glx_upload_auto.'.time();
+        $fileName = './tester_glx_upload_auto.'.time();
 
         $cont = microtime(1);
         file_put_contents($fileName, $cont);

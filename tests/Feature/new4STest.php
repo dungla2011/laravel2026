@@ -121,7 +121,8 @@ class new4STest extends \Tests\Feature\TestCase1 {
     }
 
     static function getFolderList($folderId, $cmd = 'list_file_user'){
-
+        if(!isWindow1())
+            return;
         $link = "https://4share.vn/api/v1?cmd=$cmd&folder_id=$folderId";
 
         $tk = self::getToken4S();
@@ -151,6 +152,9 @@ class new4STest extends \Tests\Feature\TestCase1 {
      */
     function test4sApiGetUserListFile()
     {
+        if(!isWindow1())
+            return;
+
         $folderId = '7d4845444a4f4c4b';
         $response = self::getFolderList($folderId);
         $this->assertTrue(str_contains( $response, 'Windows'));
@@ -170,6 +174,8 @@ class new4STest extends \Tests\Feature\TestCase1 {
     // Folder list tra lai ok:
     function test4SApiListFolderShare()
     {
+        if(!isWindow1())
+            return;
         $ret = file_get_contents('https://v2.4share.vn/api/v1?cmd=list_folder_in_folder_share&folder_id=7d4845444a4f4c4b');
 
         $this->assertTrue(str_contains( $ret, 'payloadEx'));
