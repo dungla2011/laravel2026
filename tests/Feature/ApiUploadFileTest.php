@@ -5,7 +5,7 @@ use App\Models\FileUpload;
 use App\Models\User;
 use Illuminate\Testing\TestResponse;
 
-class ApiUploadFileTest1 extends \Tests\Feature\TestCase1
+class ApiUploadFileTest extends \Tests\Feature\TestCase1
 {
     /**
      * @var TestResponse

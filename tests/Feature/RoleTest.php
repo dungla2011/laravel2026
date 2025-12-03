@@ -526,12 +526,12 @@ class RoleTest extends TestCase
             }
             $url = route($rName);
 
-            dump("\n Rname/URL :$rName / $url");
-
             //Todo: xxxxxx ko hieu sao admin block ui lại lấy keyname ở đâu
             if ($rName !== 'admin.block-ui.index') {
                 continue;
             }
+
+            dump("\n Rname/URL :$rName / $url");
 
             if (in_array('GET', $methods) !== false) {
                 $resp = $this->actingAs($member)->get($url);
