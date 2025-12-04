@@ -1,0 +1,9 @@
+[submodule "public/tool/doing"]
+	path = public/tool/doing
+	url = https://github.com/dungla2011/lad-lib-tool-doing.git
+[submodule "resources/views/index/000"]
+	path = resources/views/index/000
+	url = https://github.com/dungla2011/lad-lib-views-index-000.git
+[submodule "public/doing/english"]
+	path = public/doing/english
+	url = https://github.com/dungla2011/lad-lib-doing-english.git

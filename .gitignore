@@ -22,8 +22,13 @@ yarn-error.log
 .git/objects/pack/
 
 # Ignore submodule changes
-public/tool/doing
-resources/views/index/000
+# public/tool/doing
+# resources/views/index/000
 # vendor/lad-lib/laravel
 # vendor/yourcompany/cost-management/
 vendor/
+
+# Ignore .git directories in nested modules (keep locally, don't commit)
+public/tool/doing/.git/
+resources/views/index/000/.git/
+public/doing/.git/
