@@ -65,3 +65,8 @@
 [2025-12-03 13:02:05] testing.WARNING: reCAPTCHA response is empty  
 [2025-12-03 13:02:06] testing.DEBUG: View: index.glxv3.public  
 [2025-12-03 13:02:26] testing.DEBUG: View: index.glxv3.public  
+[2025-12-04 08:33:53] testing.DEBUG: View: public.event-register  
+[2025-12-04 08:33:58] testing.DEBUG: View: public.event-register  
+[2025-12-04 08:34:33] testing.WARNING: reCAPTCHA response is empty  
+[2025-12-04 08:34:33] testing.DEBUG: View: index.glxv3.public  
+[2025-12-04 08:34:52] testing.DEBUG: View: index.glxv3.public  

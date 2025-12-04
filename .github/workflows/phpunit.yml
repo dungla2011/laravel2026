@@ -9,7 +9,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    
+
     services:
       mysql:
         image: mysql:8.0
@@ -72,12 +72,16 @@ jobs:
 
       - name: Start Laravel development server
         run: php artisan serve --host 127.0.0.1 --port 8000 &
-        
+
       - name: Wait for server to start
         run: sleep 5 && curl -f http://127.0.0.1:8000/ || true
 
       - name: Run PHPUnit tests
         run: php artisan test
+
+      - name: Stop Laravel server
+        if: always()
+        run: pkill -f "php artisan serve" || true
 
       - name: Upload test results
         if: always()
