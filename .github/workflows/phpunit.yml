@@ -92,8 +92,8 @@ jobs:
 
       - name: Run PHPUnit tests
         id: phpunit
-        shell: bash
         run: |
+          set +e
           php artisan test
           TEST_EXIT=$?
           echo "exit_code=${TEST_EXIT}" >> $GITHUB_OUTPUT
