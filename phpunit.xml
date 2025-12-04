@@ -7,7 +7,8 @@
          executionOrder="defects" cacheDirectory=".phpunit.cache"
          displayDetailsOnIncompleteTests="true"
          displayDetailsOnTestsThatTriggerDeprecations="true"
-         beStrictAboutOutputDuringTests="false">
+         beStrictAboutOutputDuringTests="false"
+         beStrictAboutTestsThatDoNotTestAnything="false">
   <testsuites>
     <testsuite name="Unit">
       <directory suffix="Test.php">./tests/Unit</directory>
