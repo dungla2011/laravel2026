@@ -91,7 +91,10 @@ jobs:
           exit 1
 
       - name: Run PHPUnit tests
-        run: php artisan test
+        id: phpunit
+        run: |
+          php artisan test
+          echo "exit_code=$?" >> $GITHUB_OUTPUT
 
       - name: Stop Laravel server
         if: always()
@@ -104,12 +107,18 @@ jobs:
             rm -f /tmp/artisan-serve.pid 2>/dev/null || true
           fi
           pkill -f "php artisan serve" 2>/dev/null || true
+          
+          # Exit with the phpunit exit code
+          EXIT_CODE="${{ steps.phpunit.outputs.exit_code }}"
+          echo "PHPUnit exit code: $EXIT_CODE"
+          exit "${EXIT_CODE:-0}"
 
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: test-results
+          if-no-files-found: warn
           path: |
             .phpunit.result.cache
             storage/logs/
