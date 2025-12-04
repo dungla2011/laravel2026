@@ -97,9 +97,13 @@ jobs:
         if: always()
         run: |
           if [ -f /tmp/artisan-serve.pid ]; then
-            kill $(cat /tmp/artisan-serve.pid) 2>/dev/null || true
+            PID=$(cat /tmp/artisan-serve.pid 2>/dev/null || echo "")
+            if [ -n "$PID" ]; then
+              kill "$PID" 2>/dev/null || true
+            fi
+            rm -f /tmp/artisan-serve.pid 2>/dev/null || true
           fi
-          pkill -f "php artisan serve" || true
+          pkill -f "php artisan serve" 2>/dev/null || true
 
       - name: Upload test results
         if: always()
