@@ -1,10 +1,12 @@
 <?php
 
+$sid = \App\Models\SiteMng::getSiteId();
+if($sid == 43)
 if(!getCurrentUserId() && getCurrentActionMethod() != 'login'){
     echo "<br/>\n";
     echo "<br/>\n";
     echo "<br/>\n";
-    bl("Bạn hãy <a href='/login'> Đăng nhập</a> để tiếp tục!");
+    bl("<h2> Bạn hãy <a href='/login'> Đăng nhập</a> để tiếp tục! </h2>");
     return;
 }
 
