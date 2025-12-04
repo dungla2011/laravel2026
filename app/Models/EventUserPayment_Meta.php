@@ -80,9 +80,12 @@ class EventUserPayment_Meta extends MetaOfTableInDb
 
     public function _cccd($obj, $val, $field)
     {
-        if($obj =  EventUserInfo::where("id", $obj->user_event_id)->first()){
-            return $obj->id_number;
+        if($objU =  EventUserInfo::where("id", $obj->user_event_id)->first()){
+            if($objU->id_number)
+                return $objU->id_number;
         }
+        return "<span style='color:red'> <a href='/admin/event-user-info/edit/$objU->id?__focus__=id_number' style='color: red'> <i class='fa fa-edit'></i> Cần Cập nhật </a></span>";
+
 
 
 
@@ -497,7 +500,7 @@ class EventUserPayment_Meta extends MetaOfTableInDb
 
         $ret = "<div data-code-pos='ppp17121128641' style='font-size: small; padding: 5px; color: royalblue; position: relative'>";
         $ret .= " <span class='uinfo_print' id='user_info_$uid1'>
-  <a style='text-decoration: none' href='/$module/event-user-info/edit/$uid1' target='_blank'>
+  <a style='text-decoration: none' href='/$module/event-user-info/edit/$uid1'>
   <i class='fa fa-edit'></i>
   $objU->title $objU->last_name $objU->first_name
  </a>

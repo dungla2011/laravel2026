@@ -328,6 +328,9 @@ $tk = User::where("email", 'admin@abc.com')->first()->getUserToken();
 
         self::assertTrue($fileO->log != $logUpdate);
 
+        $ret = @file_get_contents(env("APP_URL")."/tool/gw/delete_cache_meta.php?table=demo_tbls");
+        dump("Delete cache meta ret: $ret");
+        
         //Đổi quyền edit, để update được
         $objMeta->setAllowGidEditGetOneField('log', $member->getRoleIdUser(), 1);
         sleep(1);

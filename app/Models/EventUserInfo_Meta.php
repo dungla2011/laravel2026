@@ -290,6 +290,9 @@ Cập nhật nhận dạng </button> <a href=''></a> ";
                         }
                     });
                 }
+
+
+
             });
         </script>
   <?php
@@ -519,6 +522,25 @@ Cập nhật nhận dạng </button> <a href=''></a> ";
         ?>
 
         <script>
+            // Scroll đến input theo __focus__ parameter
+            document.addEventListener('DOMContentLoaded', function() {
+                const params = new URLSearchParams(window.location.search);
+                const focusField = params.get('__focus__');
+                
+                if (focusField) {
+                    const input = document.querySelector(`input[name="${focusField}"]`);
+                    if (input) {
+                        // Scroll đến input
+                        input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        // Focus vào input sau khi scroll
+                        setTimeout(() => {
+                            input.focus();
+                            input.select ? input.select() : null;
+                        }, 500);
+                    }
+                }
+            });
+
             //Tìm div có data-namex2='email' và thêm Check Box Không có Mail, khi click vào đó thì điền
             // một email giả có dạng unixtime@localhost.com, với unixtime là thời gian hiện tại dạng giây
             window.addEventListener('load', function () {

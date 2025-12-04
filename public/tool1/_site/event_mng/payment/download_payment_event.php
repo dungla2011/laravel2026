@@ -209,8 +209,9 @@ try {
                 'khau_tru': 4,     // Khấu trừ TNCN
                 'thuc_nhan': 5,    // Thực nhận
                 'tax_number': 6,   // Mã số thuế
-                'bank_acc_number': 7,  // Số tài khoản
-                'bank_name_text': 8     // Ngân hàng
+                'id_number': 7,    // CCCD/Passport
+                'bank_acc_number': 8,  // Số tài khoản
+                'bank_name_text': 9     // Ngân hàng
             };
 
             logChanges.forEach(change => {
@@ -228,7 +229,7 @@ try {
                             const targetRow = rows[row - 1];
                             const cells = targetRow.querySelectorAll('td');
                             if (cells[colIndex]) {
-                                cells[colIndex].style.backgroundColor = '#ffcccc';
+                                cells[colIndex].style.backgroundColor = 'lavender';
                                 cells[colIndex].style.fontWeight = 'bold';
                                 cells[colIndex].title = `Thay đổi: ${change.old} → ${change.new}`;
                             }
@@ -457,6 +458,7 @@ try {
     <th>Khấu trừ TNCN</th>
     <th>Thực nhận</th>
     <th>Mã số thuế</th>
+    <th>CCCD/Passport</th>
     <th>Số tài khoản</th>
     <th>Ngân hàng</th>
     <th>Ghi chú</th>
@@ -506,6 +508,7 @@ try {
         echo "<td style='text-align: right;'>" . number_format($payedAfterTax, 0, ',', '.') . " " . $currencyUnit . "</td>";
 
         echo "<td>" . ($payment->tax_number ?? '') . "</td>";
+        echo "<td>" . ($payment->id_number ?? '<span style="color: red"> Cần cập nhật </span>') . "</td>";
         echo "<td>" . ($payment->bank_acc_number ?? '') . "</td>";
         echo "<td>" . \LadLib\Common\cstring2::convert_codau_khong_dau($bankName ?? '') . "</td>";
 //        echo "<td>" . ($payment->transaction_id ?? '') . "</td>";
@@ -772,14 +775,17 @@ function exportToExcel($evid, $payments = [], $payment_type = '') {
             $sheet->setCellValue('D' . $row, $payedAfterTax);
             $sheet->getStyle('D' . $row)->getNumberFormat()->setFormatCode('#,##0');
 
-            // Cột 5: Chi nhánh ngân hàng
-            $sheet->setCellValue('E' . $row, $bankName);
+            // Cột 5: CCCD/Passport
+            $sheet->setCellValue('E' . $row, $payment->id_number ?? '');
 
-            // Cột 6: Nội dung
-            $sheet->setCellValue('F' . $row, $description);
+            // Cột 6: Chi nhánh ngân hàng
+            $sheet->setCellValue('F' . $row, $bankName);
+
+            // Cột 7: Nội dung
+            $sheet->setCellValue('G' . $row, $description);
 
             // Áp dụng border và alignment cho các ô
-            for ($col = 'A'; $col <= 'F'; $col++) {
+            for ($col = 'A'; $col <= 'G'; $col++) {
                 $cell = $sheet->getCell($col . $row);
                 $cell->getStyle()
                     ->getBorders()
@@ -806,8 +812,9 @@ function exportToExcel($evid, $payments = [], $payment_type = '') {
         $sheet->getColumnDimension('B')->setWidth(30);
         $sheet->getColumnDimension('C')->setWidth(20);
         $sheet->getColumnDimension('D')->setWidth(20);
-        $sheet->getColumnDimension('E')->setWidth(80);
-        $sheet->getColumnDimension('F')->setWidth(80);
+        $sheet->getColumnDimension('E')->setWidth(20);
+        $sheet->getColumnDimension('F')->setWidth(30);
+        $sheet->getColumnDimension('G')->setWidth(80);
 
         // Tạo tên file
         $filename = "ThanhToan_Event_$evid.xlsx";
