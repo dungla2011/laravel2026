@@ -98,7 +98,7 @@ jobs:
         run: |
           set -o pipefail
           if [ -f /tmp/artisan-serve.pid ]; then
-            PID=$(cat /tmp/artisan-serve.pid) || true
+            PID=$(cat /tmp/artisan-serve.pid 2>/dev/null | tr -d '\n\r\t ' 2>/dev/null) || true
             if [ -n "$PID" ] && ps -p "$PID" > /dev/null 2>&1; then
               kill "$PID" || kill -9 "$PID" || true
               echo "Killed PID $PID from /tmp/artisan-serve.pid"
