@@ -66,8 +66,6 @@
         "thiagoalessio/tesseract_ocr": "^2.12",
         "tymon/jwt-auth": "^2.1",
         "workerman/workerman": "^4.2",
-        "yourcompany/mongo-crud": "dev-main",
-        "yourcompany/service-manager": "*",
         "zaloplatform/zalo-php-sdk": "^4.0"
     },
     "require-dev": {
