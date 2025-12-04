@@ -316,6 +316,9 @@ $tk = User::where("email", 'admin@abc.com')->first()->getUserToken();
 
         $logUpdate = 'test_update_log_'.microtime(1);
 
+        $ret = @file_get_contents(env("APP_URL")."/tool/gw/delete_cache_meta.php?table=file_uploads");
+        dump("Delete cache meta ret: " . substr($ret,0,500));
+
         $objMeta->setAllowGidEditGetOneField('log', $member->getRoleIdUser(), 0);
 
 
@@ -328,9 +331,9 @@ $tk = User::where("email", 'admin@abc.com')->first()->getUserToken();
 
         self::assertTrue($fileO->log != $logUpdate);
 
-        $ret = @file_get_contents(env("APP_URL")."/tool/gw/delete_cache_meta.php?table=demo_tbls");
-        dump("Delete cache meta ret: $ret");
-        
+        $ret = @file_get_contents(env("APP_URL")."/tool/gw/delete_cache_meta.php?table=file_uploads");
+        dump("Delete cache meta ret: " . substr($ret,0,500));
+
         //Đổi quyền edit, để update được
         $objMeta->setAllowGidEditGetOneField('log', $member->getRoleIdUser(), 1);
         sleep(1);
@@ -343,6 +346,8 @@ $tk = User::where("email", 'admin@abc.com')->first()->getUserToken();
         $fileO = FileUpload::find($idFile);
         self::assertTrue($fileO->log == $logUpdate);
 
+        $ret = @file_get_contents(env("APP_URL")."/tool/gw/delete_cache_meta.php?table=file_uploads");
+        dump("Delete cache meta ret: " . substr($ret,0,500));
         //Đổi quyền edit, lại ko update được
         $objMeta->setAllowGidEditGetOneField('log', $member->getRoleIdUser(), 0);
 
