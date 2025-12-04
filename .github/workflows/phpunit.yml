@@ -103,7 +103,7 @@ jobs:
               kill "$PID" || kill -9 "$PID" || true
               echo "Killed PID $PID from /tmp/artisan-serve.pid"
             else
-              echo "PID file exists but process $PID not running"
+              echo "PID file exists but process not running or PID unreadable"
             fi
             rm -f /tmp/artisan-serve.pid || true
           else
