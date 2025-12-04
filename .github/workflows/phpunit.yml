@@ -96,8 +96,9 @@ jobs:
           set +e
           php artisan test
           TEST_EXIT=$?
-          echo "exit_code=${TEST_EXIT}" >> $GITHUB_OUTPUT
-          exit ${TEST_EXIT}
+          echo "TEST_EXIT=$TEST_EXIT" >> $GITHUB_OUTPUT
+          set -e
+          exit $TEST_EXIT
 
       - name: Stop Laravel server
         if: always()
