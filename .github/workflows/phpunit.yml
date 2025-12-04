@@ -96,10 +96,21 @@ jobs:
       - name: Stop Laravel server
         if: always()
         run: |
+          set -o pipefail
           if [ -f /tmp/artisan-serve.pid ]; then
-            kill $(cat /tmp/artisan-serve.pid) 2>/dev/null || true
+            PID=$(cat /tmp/artisan-serve.pid) || true
+            if [ -n "$PID" ] && ps -p "$PID" > /dev/null 2>&1; then
+              kill "$PID" || kill -9 "$PID" || true
+              echo "Killed PID $PID from /tmp/artisan-serve.pid"
+            else
+              echo "PID file exists but process $PID not running"
+            fi
+            rm -f /tmp/artisan-serve.pid || true
+          else
+            # fallback to pkill if pid file doesn't exist
+            pkill -f "php artisan serve" || true
           fi
-          pkill -f "php artisan serve" || true
+          echo "Stop step completed"
 
       - name: Upload test results
         if: always()
@@ -109,3 +120,4 @@ jobs:
           path: |
             .phpunit.result.cache
             storage/logs/
+        continue-on-error: true
