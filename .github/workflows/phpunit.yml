@@ -88,10 +88,11 @@ jobs:
           done
           echo "Server did not start in time. Dumping last 200 lines of log:"
           tail -n 200 /tmp/artisan-serve.log || true
-          exit 0
+          exit 1
 
       - name: Run PHPUnit tests
         id: phpunit
+        shell: bash
         run: |
           php artisan test
           TEST_EXIT=$?
