@@ -142,9 +142,10 @@ class FileCloud extends ModelGlxBase implements TreeInterface
 //        $urlCheck = "http://$server:" . SERVER_INFO_WEB_PORT . "/tool/sysinfo_glx.php?checkfile=$strHex";
         $urlCheck = "https://$server/tool/sysinfo_glx.php?checkfile=$strHex";
         $check = @file_get_contents($urlCheck);
-        if (!$check)
-            loi("Can not call remote $server!");
-
+        if (!$check) {
+            echo ("Can not call remote $server!");
+            return;
+        }
         if (str_contains($check, "OKFILETHIS:$locationFull") == FALSE) {
             echo("Error " . __FUNCTION__ . ": File not good in DLSV or Deleted?");
             return 0;
