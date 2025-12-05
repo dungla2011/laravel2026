@@ -34,6 +34,19 @@ jobs:
           extensions: mysql, mbstring, json, curl, bcmath, xdebug
           coverage: xdebug
 
+      - name: Wait for MySQL
+        run: |
+          for i in {1..30}; do
+            if mysqladmin ping -h mysql -u root -proot >/dev/null 2>&1; then
+              echo "MySQL is ready"
+              exit 0
+            fi
+            echo "Waiting for MySQL... ($i)"
+            sleep 1
+          done
+          echo "MySQL did not start in time"
+          exit 1
+
       - name: Copy .env
         run: cp .env.testing .env
 
