@@ -95,7 +95,7 @@ class ApiDemoAdminAddEditTest extends TestCase1
         $res = $this->postCurl1($url, ['textarea2' => $setVal]);
         //Khi không có quyền, thì trả lại sẽ > 200
 
-        dump("Status HTTP:" . $res->status());
+        dump("Status HTTP:" . $res->status()); 
         dump("GID = $gid , CONT ". substr($res->getContent(), 0 ,500));
 
         self::assertTrue($res->status() != 200, ' status = '.$res->status());
