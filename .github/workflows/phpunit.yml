@@ -37,6 +37,9 @@ jobs:
       - name: Copy .env
         run: cp .env.testing .env
 
+      - name: Configure database host
+        run: sed -i 's/DB_HOST=.*/DB_HOST=mysql/' .env
+
       - name: Install dependencies
         run: composer install --no-interaction --prefer-dist --optimize-autoloader --ignore-platform-req=ext-mongodb
 
@@ -45,9 +48,9 @@ jobs:
 
       - name: Setup database
         run: |
-          mysql -h 127.0.0.1 -u root -proot -e "DROP DATABASE IF EXISTS glx2026test; CREATE DATABASE glx2026test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+          mysql -h mysql -u root -proot -e "DROP DATABASE IF EXISTS glx2026test; CREATE DATABASE glx2026test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
           if [ -f database/glx2026test.sql ]; then
-            mysql -h 127.0.0.1 -u root -proot glx2026test < database/glx2026test.sql
+            mysql -h mysql -u root -proot glx2026test < database/glx2026test.sql
           fi
 
       - name: Run tests
