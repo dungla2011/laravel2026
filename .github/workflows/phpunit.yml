@@ -1,10 +1,10 @@
-name: PHPUnit CI
+name: PHPUnit Tests
 
 on:
   push:
-    branches: [ main, develop, master ]
+    branches: [ main, development ]
   pull_request:
-    branches: [ main, develop, master ]
+    branches: [ main ]
 
 jobs:
   test:
@@ -14,105 +14,45 @@ jobs:
       mysql:
         image: mysql:8.0
         env:
-          MYSQL_ROOT_PASSWORD: ''
-          MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+          MYSQL_ROOT_PASSWORD: root
           MYSQL_DATABASE: glx2026test
         options: >-
-          --health-cmd="mysqladmin ping -u root"
+          --health-cmd="mysqladmin ping -u root -proot"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=3
         ports:
           - 3306:3306
 
-    strategy:
-      matrix:
-        php-version: ['8.2']
-
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup PHP
+      - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php-version }}
-          extensions: mysql, mbstring, json, curl, bcmath
+          php-version: '8.2'
+          extensions: mysql, mbstring, json, curl, bcmath, xdebug
           coverage: xdebug
 
-      - name: Wait for MySQL
+      - name: Setup environment
         run: |
-          until mysqladmin ping -h 127.0.0.1 -u root -p''; do
-            echo 'MySQL not ready, waiting...'
-            sleep 1
-          done
-
-      - name: Setup test database
-        run: |
-          mysql -h 127.0.0.1 -u root -e "DROP DATABASE IF EXISTS glx2026test; CREATE DATABASE glx2026test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
-          mysql -h 127.0.0.1 -u root glx2026test < database/glx2026test.sql
-
-      - name: Copy .env.testing
-        run: cp .env.testing .env
-
-      - name: Update database config for CI
-        run: |
-          sed -i "s|unix_socket=.*|unix_socket=|g" .env
-          sed -i "s|DB_HOST=.*|DB_HOST=127.0.0.1|g" .env
+          cp .env.testing .env
+          php artisan key:generate
 
       - name: Install dependencies
         run: composer install --no-interaction --prefer-dist --optimize-autoloader --ignore-platform-req=ext-mongodb
 
-      - name: Generate app key
-        run: php artisan key:generate
-
-      - name: Test database connection
+      - name: Setup database
         run: |
-          mysql -h 127.0.0.1 -u root -e "SELECT 1;"
-          php artisan tinker --execute="DB::connection()->select('select 1');" || true
-
-      - name: Start Laravel development server (nohup with redirect)
-        run: |
-          nohup php artisan serve --host 127.0.0.1 --port 8000 > /tmp/artisan-serve.log 2>&1 &
-          echo $! > /tmp/artisan-serve.pid
-          sleep 1
-
-      - name: Wait for server to start (retry)
-        run: |
-          for i in {1..15}; do
-            if curl -sSf http://127.0.0.1:8000/ >/dev/null 2>&1; then
-              echo "Server is up"
-              exit 0
-            fi
-            echo "Waiting for server... ($i)"
-            sleep 1
-          done
-          echo "Server did not start in time. Dumping last 200 lines of log:"
-          tail -n 200 /tmp/artisan-serve.log || true
-          exit 1
-
-      - name: Run PHPUnit tests
-        id: phpunit
-        run: |
-          set +e
-          php artisan test
-          TEST_EXIT=$?
-          echo "TEST_EXIT=$TEST_EXIT" >> $GITHUB_OUTPUT
-          set -e
-          exit $TEST_EXIT
-
-      - name: Stop Laravel server
-        if: always()
-        run: |
-          if [ -f /tmp/artisan-serve.pid ]; then
-            PID=$(cat /tmp/artisan-serve.pid 2>/dev/null || echo "")
-            if [ -n "$PID" ]; then
-              kill "$PID" 2>/dev/null || true
-            fi
-            rm -f /tmp/artisan-serve.pid 2>/dev/null || true
+          mysql -h 127.0.0.1 -u root -proot -e "DROP DATABASE IF EXISTS glx2026test; CREATE DATABASE glx2026test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+          if [ -f database/glx2026test.sql ]; then
+            mysql -h 127.0.0.1 -u root -proot glx2026test < database/glx2026test.sql
           fi
-          pkill -f "php artisan serve" 2>/dev/null || true
 
-      - name: Upload test results
+      - name: Run tests
+        run: php artisan test
+
+      - name: Upload artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
