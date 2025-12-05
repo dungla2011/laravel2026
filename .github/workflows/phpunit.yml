@@ -34,13 +34,14 @@ jobs:
           extensions: mysql, mbstring, json, curl, bcmath, xdebug
           coverage: xdebug
 
-      - name: Setup environment
-        run: |
-          cp .env.testing .env
-          php artisan key:generate
+      - name: Copy .env
+        run: cp .env.testing .env
 
       - name: Install dependencies
         run: composer install --no-interaction --prefer-dist --optimize-autoloader --ignore-platform-req=ext-mongodb
+
+      - name: Generate app key
+        run: php artisan key:generate
 
       - name: Setup database
         run: |
