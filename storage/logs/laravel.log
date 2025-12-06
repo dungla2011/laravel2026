@@ -81,3 +81,6 @@
 [2025-12-05 11:18:44] production.DEBUG: View: index.glxv3.public  
 [2025-12-05 11:19:06] production.DEBUG: View: index.glxv3.public  
 [2025-12-05 11:29:49] production.DEBUG: View: index.glxv3.public  
+[2025-12-06 10:14:09] testing.WARNING: reCAPTCHA response is empty  
+[2025-12-06 10:14:09] testing.DEBUG: View: index.glxv3.public  
+[2025-12-06 10:14:37] testing.DEBUG: View: index.glxv3.public  
