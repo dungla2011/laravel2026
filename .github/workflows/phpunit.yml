@@ -14,10 +14,11 @@ jobs:
       mysql:
         image: mysql:8.0
         env:
-          MYSQL_ROOT_PASSWORD: root
+          MYSQL_ROOT_PASSWORD: ""
+          MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
           MYSQL_DATABASE: glx2026test
         options: >-
-          --health-cmd="mysqladmin ping -u root -proot"
+          --health-cmd="mysqladmin ping"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=3
@@ -34,24 +35,21 @@ jobs:
           extensions: mysql, mbstring, json, curl, bcmath, xdebug
           coverage: xdebug
 
-      - name: Wait for MySQL
-        run: |
-          for i in {1..30}; do
-            if mysqladmin ping -h mysql -u root -proot >/dev/null 2>&1; then
-              echo "MySQL is ready"
-              exit 0
-            fi
-            echo "Waiting for MySQL... ($i)"
-            sleep 1
-          done
-          echo "MySQL did not start in time"
-          exit 1
-
       - name: Copy .env
         run: cp .env.testing .env
 
-      - name: Configure database host
-        run: sed -i 's/DB_HOST=.*/DB_HOST=mysql/' .env
+      - name: Wait for MySQL
+        run: |
+          for i in {1..30}; do
+            if mysqladmin ping -h 127.0.0.1 -u root 2>/dev/null; then
+              echo "MySQL is ready"
+              exit 0
+            fi
+            echo "Waiting for MySQL... ($i/30)"
+            sleep 1
+          done
+          echo "MySQL failed to start"
+          exit 1
 
       - name: Install dependencies
         run: composer install --no-interaction --prefer-dist --optimize-autoloader --ignore-platform-req=ext-mongodb
@@ -61,9 +59,9 @@ jobs:
 
       - name: Setup database
         run: |
-          mysql -h mysql -u root -proot -e "DROP DATABASE IF EXISTS glx2026test; CREATE DATABASE glx2026test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+          mysql -h 127.0.0.1 -u root -e "DROP DATABASE IF EXISTS glx2026test; CREATE DATABASE glx2026test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
           if [ -f database/glx2026test.sql ]; then
-            mysql -h mysql -u root -proot glx2026test < database/glx2026test.sql
+            mysql -h 127.0.0.1 -u root glx2026test < database/glx2026test.sql
           fi
 
       - name: Run tests
