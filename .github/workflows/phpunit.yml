@@ -48,7 +48,7 @@ jobs:
             echo "Waiting for MySQL... ($i/30)"
             sleep 1
           done
-          echo "MySQL failed to start"
+          echo "MySQL failed to start" 
           exit 1
 
       - name: Install dependencies
