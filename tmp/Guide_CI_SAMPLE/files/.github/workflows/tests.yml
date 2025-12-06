@@ -1,0 +1,79 @@
+name: Laravel Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: ""
+          MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+        ports:
+          - 3306:3306
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
+        extensions: mbstring, pdo, pdo_mysql
+
+    - name: Install Dependencies
+      run: composer install --prefer-dist --no-progress --no-interaction
+
+    - name: Setup .env file
+      run: cp .env.example .env
+
+    - name: Wait for MySQL
+      run: |
+        for i in {1..30}; do
+          if mysqladmin ping -h 127.0.0.1 -u root 2>/dev/null; then
+            echo "MySQL is ready"
+            exit 0
+          fi
+          echo "Waiting for MySQL... ($i/30)"
+          sleep 1
+        done
+        echo "MySQL failed to start"
+        exit 1
+
+    - name: Generate APP_KEY
+      run: php artisan key:generate
+
+    - name: Import Database
+      run: mysql -h 127.0.0.1 -u root < db.sql
+
+    - name: Start Server
+      run: |
+        nohup php artisan serve --host=0.0.0.0 --port=8001 > /tmp/server.log 2>&1 &
+        sleep 5
+      
+    - name: Verify Server
+      run: |
+        sleep 2
+        if curl -v http://127.0.0.1:8001 2>&1 | grep -q "HTTP"; then
+          echo "Server is running"
+        else
+          echo "Server check failed - showing logs:"
+          cat /tmp/server.log
+          ps aux | grep -E "php|artisan"
+          exit 1
+        fi
+
+    - name: Run Tests
+      run: php artisan test --no-coverage

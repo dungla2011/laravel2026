@@ -130,10 +130,21 @@
 
             <a target="_blank" href="//4share.download"> <i class="fa fa-download"> </i> Trang download Tổng hợp</a>
         </div>
-        <div class="marquee-text" style="display: none">
-            Xuân sang Phúc lộc khơi mạch mới – Tết đến An khang khắp muôn nơi -
-            Một năm mới Bình an Hạnh phúc tới tất cả thành viên 4Share. Xin trân trọng cảm ơn sự đồng hành của các Bạn!
+        <?php
+
+        if($ui = \App\Models\BlockUi::find(10) ?? '')
+        if($ui->status)
+        {
+
+        ?>
+        <div class="marquee-text1" style="color: red; text-align: right">
+            <?php
+            echo $ui->extra_info;
+            ?>
         </div>
+        <?php
+        }
+        ?>
     </div>
 
     <?php

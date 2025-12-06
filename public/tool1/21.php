@@ -17,4 +17,6 @@ $response = $kernel->handle(
 $dtime = microtime(1) - $time;
 echo "\n DTIME = $dtime";
 
-\LadLib\Common\cstring2::convert_codau_khong_dau();
+$user = \App\Models\User::find(1);
+
+dump($user);
