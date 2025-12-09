@@ -8,7 +8,7 @@ Sau khi migrate products sang vps_plans, hệ thống VPS sử dụng 4 bảng c
 |------|---------|--------|---------|
 | `vps_plans` | Kế hoạch/gói VPS | Cấu hình + giá | Tĩnh (admin định nghĩa) |
 | `vps_instances` | Instances khách hàng | Cấu hình + trạng thái | Khi khách đặt/nâng cấp |
-| `vps_instance_config_history` | Lịch sử thay đổi cấu hình | Snapshot cấu hình cũ | Mỗi lần nâng/hạ cấp |
+| `vps_instance_config_histories` | Lịch sử thay đổi cấu hình | Snapshot cấu hình cũ | Mỗi lần nâng/hạ cấp |
 | `vps_usage` | Sử dụng theo phút | Giá tính theo từng phút | Mỗi phút (định kỳ cron) |
 
 ---
@@ -90,7 +90,7 @@ VALUES
 
 ---
 
-## 3. vps_instance_config_history - Lịch Sử Cấu Hình
+## 3. vps_instance_config_histories - Lịch Sử Cấu Hình
 
 **Mục đích**: Ghi lại mỗi lần thay đổi cấu hình (upgrade/downgrade) để audit và tính tiền theo đúng thời điểm.
 
@@ -115,13 +115,13 @@ VALUES
 **Dữ liệu ví dụ**:
 ```sql
 -- Tạo instance lần đầu
-INSERT INTO vps_instance_config_history 
+INSERT INTO vps_instance_config_histories 
 (instance_id, cpu, ram_gb, disk_gb, network_mbit, number_ip_address, price_per_minute, change_type)
 VALUES
 (1, 2, 2, 20, 100, 1, 50.00, 'create');
 
 -- Upgrade từ 2 core 2GB RAM sang 4 core 8GB RAM
-INSERT INTO vps_instance_config_history 
+INSERT INTO vps_instance_config_histories 
 (instance_id, cpu, ram_gb, disk_gb, network_mbit, number_ip_address, price_per_minute, change_type)
 VALUES
 (1, 4, 8, 80, 500, 2, 250.00, 'upgrade');
@@ -204,7 +204,7 @@ Cron job mỗi phút:
 ### 4. Khách upgrade gói
 ```
 Update vps_instances: cpu=8, ram_gb=32, price_per_minute=900
-Insert vps_instance_config_history: change_type='upgrade'
+Insert vps_instance_config_histories: change_type='upgrade'
 
 Cron job phút sau sẽ dùng price_per_minute mới (900)
 ```
@@ -215,7 +215,7 @@ SELECT SUM(price_per_minute) FROM vps_usage
 WHERE instance_id=? AND timestamp_minute BETWEEN 'start' AND 'end'
 = Tổng tiền tháng
 
-Chi tiết từ vps_instance_config_history:
+Chi tiết từ vps_instance_config_histories:
   - Phút 1-1000: price=50 → 50,000đ
   - Phút 1001-2000: price=250 → 250,000đ
   - TOTAL: 300,000đ
@@ -241,7 +241,7 @@ Tính giá:
 **Ưu điểm**:
 - ✅ Dữ liệu VPS tập trung vào bảng riêng
 - ✅ Dễ quản lý cấu hình (không phải join ProductAttribute)
-- ✅ Dễ tracking usage (vps_usage + vps_instance_config_history)
+- ✅ Dễ tracking usage (vps_usage + vps_instance_config_histories)
 - ✅ Dễ billing tính tiền chính xác
 
 ---
@@ -278,7 +278,7 @@ SELECT * FROM vps_instances WHERE user_id=100 AND deleted_at IS NULL;
 
 ### Lịch sử upgrade của instance
 ```sql
-SELECT * FROM vps_instance_config_history 
+SELECT * FROM vps_instance_config_histories 
 WHERE instance_id=1 
 ORDER BY changed_at DESC;
 ```
@@ -299,11 +299,11 @@ SELECT
   h.price_per_minute,
   COUNT(u.id) as minutes_used,
   h.price_per_minute * COUNT(u.id) as total_price
-FROM vps_instance_config_history h
+FROM vps_instance_config_histories h
 LEFT JOIN vps_usage u ON u.instance_id = h.instance_id 
   AND u.timestamp_minute >= h.changed_at
   AND u.timestamp_minute < COALESCE(
-      (SELECT MIN(changed_at) FROM vps_instance_config_history 
+      (SELECT MIN(changed_at) FROM vps_instance_config_histories 
        WHERE instance_id=h.instance_id AND changed_at > h.changed_at),
       NOW()
     )
@@ -319,14 +319,14 @@ GROUP BY h.id, h.cpu, h.ram_gb, h.disk_gb, h.price_per_minute;
 |------|---------|------------|---------|
 | **vps_plans** | Admin define gói | Edit gói (ít) | Soft delete |
 | **vps_instances** | Khách đặt hàng | Upgrade/Downgrade | Khách cancel |
-| **vps_instance_config_history** | Mỗi thay đổi config | - | Không xóa (audit) |
+| **vps_instance_config_histories** | Mỗi thay đổi config | - | Không xóa (audit) |
 | **vps_usage** | Cron job mỗi phút | - | Không xóa (billing) |
 
 **Dòng tiền**:
 ```
 vps_plans.price_per_minute (gốc)
   → vps_instances.price_per_minute (hiện tại)
-    → vps_instance_config_history.price_per_minute (snapshot)
+    → vps_instance_config_histories.price_per_minute (snapshot)
       → vps_usage.price_per_minute (ghi lại mỗi phút)
         → Billing: SUM(vps_usage.price_per_minute) = tiền khách trả
 ```

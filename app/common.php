@@ -7199,40 +7199,61 @@ function removeCommentsWithDOM2($html) {
     // Clear any errors
     libxml_clear_errors();
 
-    // Collect all paragraphs first to avoid modification during iteration
-    $paragraphs = [];
-    foreach ($dom->getElementsByTagName('p') as $p) {
-        $paragraphs[] = $p;
-    }
-
-    // Process each paragraph
-    foreach ($paragraphs as $p) {
-        $hasCommentMark = false;
-
-        // Check if paragraph's text content directly starts with ###
-        if (strpos(trim($p->textContent), '###') === 0) {
-            $hasCommentMark = true;
-        } else {
-            // Check spans within the paragraph
-            foreach ($p->getElementsByTagName('span') as $span) {
-                $content = trim($span->textContent);
-                if (strpos($content, '###') === 0) {
-                    $hasCommentMark = true;
-                    break;
+    // Helper function to recursively find and process nodes containing ###
+    $processNode = function($node) use ($dom, &$processNode) {
+        if ($node->nodeType === XML_TEXT_NODE) {
+            // Check if text contains ###
+            $text = $node->nodeValue;
+            if (strpos($text, '###') !== false) {
+                // Split at ### and keep only the part before it
+                $parts = explode('###', $text, 2);
+                $node->nodeValue = $parts[0];
+                
+                // Remove all sibling nodes after this one
+                $nextNode = $node->nextSibling;
+                while ($nextNode) {
+                    $nodeToRemove = $nextNode;
+                    $nextNode = $nextNode->nextSibling;
+                    if ($nodeToRemove->parentNode) {
+                        $nodeToRemove->parentNode->removeChild($nodeToRemove);
+                    }
+                }
+            }
+        } else if ($node->nodeType === XML_ELEMENT_NODE) {
+            // Check if element's text content contains ###
+            if (strpos($node->textContent, '###') !== false) {
+                // Process child nodes
+                $children = [];
+                foreach ($node->childNodes as $child) {
+                    $children[] = $child;
+                }
+                
+                foreach ($children as $child) {
+                    $processNode($child);
+                    // Stop processing if we already found ###
+                    if (strpos($node->textContent, '###') === false) {
+                        break;
+                    }
                 }
             }
         }
+    };
 
-        // Remove the paragraph if it contains a comment marker
-        if ($hasCommentMark && $p->parentNode) {
-            $p->parentNode->removeChild($p);
+    // Get wrapper and process all its children
+    $wrapper = $dom->getElementById('wrapper');
+    if ($wrapper) {
+        $children = [];
+        foreach ($wrapper->childNodes as $child) {
+            $children[] = $child;
+        }
+        
+        foreach ($children as $child) {
+            $processNode($child);
         }
     }
 
     // Extract the processed HTML content from the wrapper
-    $wrapper = $dom->getElementById('wrapper');
     $processedHtml = '';
-
     if ($wrapper) {
         foreach ($wrapper->childNodes as $child) {
             $processedHtml .= $dom->saveHTML($child);

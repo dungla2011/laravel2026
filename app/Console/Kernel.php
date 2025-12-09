@@ -11,6 +11,8 @@ class Kernel extends ConsoleKernel
 //        \App\Console\Commands\PreTestCommand::class,
         \App\Console\Commands\BackupWithServerCommand::class,
         \App\Console\Commands\VerifyBalanceSyncCommand::class,
+        \App\Console\Commands\AggregateVpsUsageCommand::class,
+        \App\Console\Commands\SyncVmwareInstancesCommand::class,
     ];
     /**
      * Define the application's command schedule.
@@ -19,6 +21,30 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        // VPS Usage aggregation - Hourly (để giữ bảng raw data nhỏ)
+        $schedule->command('vps-usage:aggregate --type=hourly')
+            ->hourly()
+            ->name('vps-usage-aggregate-hourly')
+            ->onFailure(function () {
+                \Log::error('VPS usage hourly aggregation failed');
+            });
+
+        // VPS Usage aggregation - Daily summary
+        $schedule->command('vps-usage:aggregate --type=daily')
+            ->dailyAt('00:01')
+            ->name('vps-usage-aggregate-daily')
+            ->onFailure(function () {
+                \Log::error('VPS usage daily aggregation failed');
+            });
+
+        // Cleanup old raw data (giữ 7 ngày gần đây thôi)
+        $schedule->command('vps-usage:aggregate --type=cleanup')
+            ->dailyAt('01:00')
+            ->name('vps-usage-cleanup')
+            ->onFailure(function () {
+                \Log::error('VPS usage cleanup failed');
+            });
+
         // Verify balance sync nightly at 02:00 AM
         // Detect & fix any desync between user_balances and user_balance_transactions
         $schedule->command('balance:verify-sync --fix')

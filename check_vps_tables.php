@@ -7,14 +7,14 @@ $app->make(\Illuminate\Contracts\Console\Kernel::class)->bootstrap();
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-$tables = ['vps_plans', 'vps_instances', 'vps_instance_config_history', 'vps_usage'];
+$tables = ['vps_plans', 'vps_instances', 'vps_instance_config_histories', 'vps_usages'];
 
 foreach ($tables as $table) {
     echo "\n========== $table ==========\n";
-    
+
     if (Schema::hasTable($table)) {
         echo "[OK] Table EXISTS\n\n";
-        
+
         // Get columns
         $columns = DB::select("DESCRIBE $table");
         echo "Columns:\n";
@@ -24,11 +24,11 @@ foreach ($tables as $table) {
             $default = $col->Default ? "DEFAULT {$col->Default}" : '';
             echo "  - {$col->Field} ({$type}) {$null} {$default}\n";
         }
-        
+
         // Count rows
         $count = DB::table($table)->count();
         echo "\nRows: $count\n";
-        
+
     } else {
         echo "[ERROR] Table NOT FOUND\n";
     }

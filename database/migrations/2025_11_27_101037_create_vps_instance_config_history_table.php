@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('vps_instance_config_history', function (Blueprint $table) {
+        Schema::create('vps_instance_config_histories', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name', 64)->nullable();
             $table->smallInteger('status')->nullable()->default(1);
@@ -21,7 +21,7 @@ return new class extends Migration
             $table->integer('ram_gb');
             $table->integer('disk_gb');
             $table->integer('network_mbit')->nullable()->default(0);
-            $table->integer('number_ip_address')->nullable()->default(1);
+            $table->integer('number_ip_address')->nullable()->default(0);
             $table->decimal('price_per_minute', 18, 8);
             $table->string('change_type', 64)->nullable();
             $table->dateTime('changed_at')->nullable()->useCurrent();
@@ -37,6 +37,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('vps_instance_config_history');
+        Schema::dropIfExists('vps_instance_config_histories');
     }
 };

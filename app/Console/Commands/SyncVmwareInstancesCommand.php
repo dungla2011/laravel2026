@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use App\Services\Vmware\VmwareHelper;
 
 class SyncVmwareInstancesCommand extends Command
 {
@@ -24,9 +25,6 @@ class SyncVmwareInstancesCommand extends Command
         }
 
         $this->info("🔗 Connecting to vCenter: $domain");
-
-        // Include VMware helper from public/tool1/22.php
-        require_once base_path('public/tool1/22.php');
 
         // Login to vCenter
         if (!VmwareHelper::loginVC($domain, $uid, $pw)) {
@@ -75,16 +73,17 @@ class SyncVmwareInstancesCommand extends Command
                         'cpu' => $vmInfo->cpu->count,
                         'ram_gb' => intval($vmInfo->memory->size_MiB / 1024),
                         'disk_gb' => intval($this->getTotalDiskGB($vmInfo)),
-                        'number_ip_address' => count($vmInfo->nics),
+                        // 'number_ip_address' => count($vmInfo->nics),
                         'power_state' => $vmInfo->power_state,
                         'status' => ($vmInfo->power_state === 'POWERED_ON') ? 1 : 0,
+                        'price_per_minute' => 0, // Default price, can be updated later
                         'full_info' => json_encode($vmInfo),
                         'updated_at' => now(),
                     ];
 
-                    // Upsert to vps_instances (by bios_uuid or vmware_vm_id)
+                    // Upsert to vps_instances (by bios_uuid - unique identifier)
                     $instance = DB::table('vps_instances')
-                        ->where('vmware_vm_id', $vm->vm)
+                        ->where('bios_uuid', $vmInfo->identity->bios_uuid)
                         ->first();
 
                     if ($instance) {
@@ -102,26 +101,83 @@ class SyncVmwareInstancesCommand extends Command
 
                     // Get instance ID for vps_usages
                     $instance = DB::table('vps_instances')
-                        ->where('vmware_vm_id', $vm->vm)
+                        ->where('bios_uuid', $vmInfo->identity->bios_uuid)
                         ->first();
 
                     if ($instance) {
-                        // Insert into vps_usages (usage snapshot at this moment)
-                        DB::table('vps_usages')->insert([
-                            'name' => $vm->name,
-                            'instance_id' => $instance->id,
-                            'user_id' => $instance->user_id,
-                            'timestamp_minute' => now()->startOfMinute(),
-                            'number_ip_address' => count($vmInfo->nics),
+                        // Check if vps_usages was inserted in the last 5 minutes for this bios_uuid
+                        $lastUsage = DB::table('vps_usages')
+                            ->where('bios_uuid', $vmInfo->identity->bios_uuid)
+                            ->where('created_at', '>=', now()->subMinutes(5))
+                            ->orderBy('created_at', 'desc')
+                            ->first();
+
+                        if (!$lastUsage) {
+                            // Insert into vps_usages (usage snapshot at this moment)
+                            DB::table('vps_usages')->insert([
+                                'name' => $vm->name,
+                                'instance_id' => $instance->id,
+                                'vmware_vm_id' => $vm->vm,
+                                'cpu' => $vmInfo->cpu->count,
+                                'ram_gb' => intval($vmInfo->memory->size_MiB / 1024),
+                                'disk_gb' => intval($this->getTotalDiskGB($vmInfo)),
+                                'user_id' => $instance->user_id,
+                                'timestamp_minute' => now()->startOfMinute(),
+                                // 'number_ip_address' => count($vmInfo->nics),
+                                'power_state' => $vmInfo->power_state,
+                                'bios_uuid' => $vmInfo->identity->bios_uuid,
+                                'instance_uuid' => $vmInfo->identity->instance_uuid,
+                                'full_info' => json_encode($vmInfo),
+                                'price_per_minute' => $instance->price_per_minute ?? 0,
+                                'status' => 1,
+                                'created_at' => now(),
+                            ]);
+                            $this->line("  📊 Inserted vps_usages snapshot");
+                        } else {
+                            $this->line("  ⏱️  Skipped vps_usages (inserted " . $lastUsage->created_at->diffInMinutes(now()) . " min ago)");
+                        }
+
+                        // Check if config changed - only insert to history if it did
+                        $configHash = md5(json_encode([
+                            'cpu' => $vmInfo->cpu->count,
+                            'ram_gb' => intval($vmInfo->memory->size_MiB / 1024),
+                            'disk_gb' => intval($this->getTotalDiskGB($vmInfo)),
+                            // 'number_ip_address' => count($vmInfo->nics),
                             'power_state' => $vmInfo->power_state,
-                            'bios_uuid' => $vmInfo->identity->bios_uuid,
-                            'instance_uuid' => $vmInfo->identity->instance_uuid,
-                            'full_info' => json_encode($vmInfo),
-                            'price_per_minute' => $instance->price_per_minute ?? 0,
-                            'status' => 1,
-                            'created_at' => now(),
-                        ]);
-                        $this->line("  📊 Created vps_usages snapshot");
+                        ]));
+
+                        $lastHistory = DB::table('vps_instance_config_histories')
+                            ->where('instance_id', $instance->id)
+                            ->orderBy('created_at', 'desc')
+                            ->first();
+
+                        $lastConfigHash = $lastHistory ? md5(json_encode([
+                            'cpu' => $lastHistory->cpu,
+                            'ram_gb' => $lastHistory->ram_gb,
+                            'disk_gb' => $lastHistory->disk_gb,
+                            // 'number_ip_address' => $lastHistory->number_ip_address,
+                            'power_state' => $lastHistory->power_state,
+                        ])) : null;
+
+                        // Insert only if config changed or no history exists
+                        if (!$lastHistory || $configHash !== $lastConfigHash) {
+                            DB::table('vps_instance_config_histories')->insert([
+                                'instance_id' => $instance->id,
+                                'name' => $vm->name,
+                                'vmware_vm_id' => $vm->vm,
+                                'cpu' => $vmInfo->cpu->count,
+                                'ram_gb' => intval($vmInfo->memory->size_MiB / 1024),
+                                'disk_gb' => intval($this->getTotalDiskGB($vmInfo)),
+                                // 'number_ip_address' => count($vmInfo->nics),
+                                'power_state' => $vmInfo->power_state,
+                                'bios_uuid' => $vmInfo->identity->bios_uuid,
+                                'instance_uuid' => $vmInfo->identity->instance_uuid,
+                                'full_info' => json_encode($vmInfo),
+                                'price_per_minute' => $instance->price_per_minute ?? 0,
+                                'created_at' => now(),
+                            ]);
+                            $this->line("  📝 Config changed, saved to history");
+                        }
                     }
 
                 } catch (\Exception $e) {

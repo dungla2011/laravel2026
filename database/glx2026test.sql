@@ -4906,7 +4906,7 @@ INSERT INTO `migrations` (`id`, `old_id`, `migration`, `batch`, `site_id`) VALUE
 (136, NULL, '2025_11_27_101037_create_user_groups_table', 0, 0),
 (137, NULL, '2025_11_27_101037_create_user_recharges_table', 0, 0),
 (138, NULL, '2025_11_27_101037_create_users_table', 0, 0),
-(139, NULL, '2025_11_27_101037_create_vps_instance_config_history_table', 0, 0),
+(139, NULL, '2025_11_27_101037_create_vps_instance_config_histories_table', 0, 0),
 (140, NULL, '2025_11_27_101037_create_vps_instances_table', 0, 0),
 (141, NULL, '2025_11_27_101037_create_vps_plans_table', 0, 0),
 (142, NULL, '2025_11_27_101037_create_vps_usage_table', 0, 0),
@@ -23195,10 +23195,10 @@ CREATE TABLE `vps_instances` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `vps_instance_config_history`
+-- Table structure for table `vps_instance_config_histories`
 --
 
-CREATE TABLE `vps_instance_config_history` (
+CREATE TABLE `vps_instance_config_histories` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `name` varchar(64) DEFAULT NULL,
   `status` smallint(6) DEFAULT 1,
@@ -24807,9 +24807,9 @@ ALTER TABLE `vps_instances`
   ADD KEY `idx_plan_id` (`plan_id`);
 
 --
--- Indexes for table `vps_instance_config_history`
+-- Indexes for table `vps_instance_config_histories`
 --
-ALTER TABLE `vps_instance_config_history`
+ALTER TABLE `vps_instance_config_histories`
   ADD PRIMARY KEY (`id`),
   ADD KEY `idx_deleted_at` (`deleted_at`),
   ADD KEY `idx_user_id` (`user_id`),
@@ -25632,9 +25632,9 @@ ALTER TABLE `vps_instances`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `vps_instance_config_history`
+-- AUTO_INCREMENT for table `vps_instance_config_histories`
 --
-ALTER TABLE `vps_instance_config_history`
+ALTER TABLE `vps_instance_config_histories`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --

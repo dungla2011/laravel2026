@@ -2790,154 +2790,6 @@ CREATE TABLE `migrations` (
 -- Dumping data for table `migrations`
 --
 
-INSERT INTO `migrations` (`id`, `old_id`, `migration`, `batch`, `site_id`) VALUES
-(2, NULL, '2024_11_24_084000_create_user_balance_system', 1, 0),
-(3, NULL, '2025_11_27_101037_create_affiliate_logs_table', 0, 0),
-(4, NULL, '2025_11_27_101037_create_asset_categories_table', 0, 0),
-(5, NULL, '2025_11_27_101037_create_assets_table', 0, 0),
-(6, NULL, '2025_11_27_101037_create_balance_suspension_logs_table', 0, 0),
-(7, NULL, '2025_11_27_101037_create_block_uis_table', 0, 0),
-(8, NULL, '2025_11_27_101037_create_cache_key_value_table', 0, 0),
-(9, NULL, '2025_11_27_101037_create_cache_key_values_table', 0, 0),
-(10, NULL, '2025_11_27_101037_create_cart_items_table', 0, 0),
-(11, NULL, '2025_11_27_101037_create_carts_table', 0, 0),
-(12, NULL, '2025_11_27_101037_create_categories_table', 0, 0),
-(13, NULL, '2025_11_27_101037_create_change_logs_table', 0, 0),
-(14, NULL, '2025_11_27_101037_create_cloud_group_table', 0, 0),
-(15, NULL, '2025_11_27_101037_create_cloud_servers_table', 0, 0),
-(16, NULL, '2025_11_27_101037_create_cloud_transfer_table', 0, 0),
-(17, NULL, '2025_11_27_101037_create_conference_cats_table', 0, 0),
-(18, NULL, '2025_11_27_101037_create_conference_infos_table', 0, 0),
-(19, NULL, '2025_11_27_101037_create_cost_items_table', 0, 0),
-(20, NULL, '2025_11_27_101037_create_crm_app_infos_table', 0, 0),
-(21, NULL, '2025_11_27_101037_create_crm_message_groups_table', 0, 0),
-(22, NULL, '2025_11_27_101037_create_crm_messages_table', 0, 0),
-(23, NULL, '2025_11_27_101037_create_demo_and_tag_tbls_table', 0, 0),
-(24, NULL, '2025_11_27_101037_create_demo_folder_tbls_table', 0, 0),
-(25, NULL, '2025_11_27_101037_create_demo_sub1s_table', 0, 0),
-(26, NULL, '2025_11_27_101037_create_demo_tbls_table', 0, 0),
-(27, NULL, '2025_11_27_101037_create_department_events_table', 0, 0),
-(28, NULL, '2025_11_27_101037_create_department_users_table', 0, 0),
-(29, NULL, '2025_11_27_101037_create_departments_table', 0, 0),
-(30, NULL, '2025_11_27_101037_create_don_vi_hanh_chinhs_table', 0, 0),
-(31, NULL, '2025_11_27_101037_create_download_logs_table', 0, 0),
-(32, NULL, '2025_11_27_101037_create_event_and_users_table', 0, 0),
-(33, NULL, '2025_11_27_101037_create_event_face_infos_table', 0, 0),
-(34, NULL, '2025_11_27_101037_create_event_infos_table', 0, 0),
-(35, NULL, '2025_11_27_101037_create_event_registers_table', 0, 0),
-(36, NULL, '2025_11_27_101037_create_event_send_actions_table', 0, 0),
-(37, NULL, '2025_11_27_101037_create_event_send_email_logs_table', 0, 0),
-(38, NULL, '2025_11_27_101037_create_event_send_info_logs_table', 0, 0),
-(39, NULL, '2025_11_27_101037_create_event_send_sms_logs_table', 0, 0),
-(40, NULL, '2025_11_27_101037_create_event_settings_table', 0, 0),
-(41, NULL, '2025_11_27_101037_create_event_user_groups_table', 0, 0),
-(42, NULL, '2025_11_27_101037_create_event_user_infos_table', 0, 0),
-(43, NULL, '2025_11_27_101037_create_event_user_payments_table', 0, 0),
-(44, NULL, '2025_11_27_101037_create_face_data_table', 0, 0),
-(45, NULL, '2025_11_27_101037_create_file_clouds_table', 0, 0),
-(46, NULL, '2025_11_27_101037_create_file_refers_table', 0, 0),
-(47, NULL, '2025_11_27_101037_create_file_share_permissions_table', 0, 0),
-(48, NULL, '2025_11_27_101037_create_file_uploads_table', 0, 0),
-(49, NULL, '2025_11_27_101037_create_folder_files_table', 0, 0),
-(50, NULL, '2025_11_27_101037_create_gia_pha_users_table', 0, 0),
-(51, NULL, '2025_11_27_101037_create_gia_phas_table', 0, 0),
-(52, NULL, '2025_11_27_101037_create_log_users_table', 0, 0),
-(53, NULL, '2025_11_27_101037_create_media_actors_table', 0, 0),
-(54, NULL, '2025_11_27_101037_create_media_authors_table', 0, 0),
-(55, NULL, '2025_11_27_101037_create_media_cats_table', 0, 0),
-(56, NULL, '2025_11_27_101037_create_media_folders_table', 0, 0),
-(57, NULL, '2025_11_27_101037_create_media_items_table', 0, 0),
-(58, NULL, '2025_11_27_101037_create_media_links_table', 0, 0),
-(59, NULL, '2025_11_27_101037_create_media_vendors_table', 0, 0),
-(60, NULL, '2025_11_27_101037_create_members_members_table', 0, 0),
-(61, NULL, '2025_11_27_101037_create_menu_trees_table', 0, 0),
-(62, NULL, '2025_11_27_101037_create_menus_table', 0, 0),
-(63, NULL, '2025_11_27_101037_create_model_meta_infos_table', 0, 0),
-(64, NULL, '2025_11_27_101037_create_money_and_tags_table', 0, 0),
-(65, NULL, '2025_11_27_101037_create_money_logs_table', 0, 0),
-(66, NULL, '2025_11_27_101037_create_money_tags_table', 0, 0),
-(67, NULL, '2025_11_27_101037_create_monitor_and_configs_table', 0, 0),
-(68, NULL, '2025_11_27_101037_create_monitor_configs_table', 0, 0),
-(69, NULL, '2025_11_27_101037_create_monitor_items_del_table', 0, 0),
-(70, NULL, '2025_11_27_101037_create_monitor_settings_table', 0, 0),
-(71, NULL, '2025_11_27_101037_create_my_document_cats_table', 0, 0),
-(72, NULL, '2025_11_27_101037_create_my_documents_table', 0, 0),
-(73, NULL, '2025_11_27_101037_create_my_tree_infos_table', 0, 0),
-(74, NULL, '2025_11_27_101037_create_network_marketings_table', 0, 0),
-(75, NULL, '2025_11_27_101037_create_news_table', 0, 0),
-(76, NULL, '2025_11_27_101037_create_news_folders_table', 0, 0),
-(77, NULL, '2025_11_27_101037_create_notifications_table', 0, 0),
-(78, NULL, '2025_11_27_101037_create_ocr_images_table', 0, 0),
-(79, NULL, '2025_11_27_101037_create_order_infos_table', 0, 0),
-(80, NULL, '2025_11_27_101037_create_order_items_table', 0, 0),
-(81, NULL, '2025_11_27_101037_create_order_ships_table', 0, 0),
-(82, NULL, '2025_11_27_101037_create_partner_infos_table', 0, 0),
-(83, NULL, '2025_11_27_101037_create_pay_moneylogs_table', 0, 0),
-(84, NULL, '2025_11_27_101037_create_payments_table', 0, 0),
-(85, NULL, '2025_11_27_101037_create_permission_role_table', 0, 0),
-(86, NULL, '2025_11_27_101037_create_permissions_table', 0, 0),
-(87, NULL, '2025_11_27_101037_create_personal_access_tokens_table', 0, 0),
-(88, NULL, '2025_11_27_101037_create_plan_define_values_table', 0, 0),
-(89, NULL, '2025_11_27_101037_create_plan_defines_table', 0, 0),
-(90, NULL, '2025_11_27_101037_create_plan_names_table', 0, 0),
-(91, NULL, '2025_11_27_101037_create_product_attributes_table', 0, 0),
-(92, NULL, '2025_11_27_101037_create_product_folders_table', 0, 0),
-(93, NULL, '2025_11_27_101037_create_product_images_table', 0, 0),
-(94, NULL, '2025_11_27_101037_create_product_tags_table', 0, 0),
-(95, NULL, '2025_11_27_101037_create_product_usages_table', 0, 0),
-(96, NULL, '2025_11_27_101037_create_product_variant_options_table', 0, 0),
-(97, NULL, '2025_11_27_101037_create_product_variants_table', 0, 0),
-(98, NULL, '2025_11_27_101037_create_products_table', 0, 0),
-(99, NULL, '2025_11_27_101037_create_quiz_choices_table', 0, 0),
-(100, NULL, '2025_11_27_101037_create_quiz_classes_table', 0, 0),
-(101, NULL, '2025_11_27_101037_create_quiz_flash_cards_table', 0, 0),
-(102, NULL, '2025_11_27_101037_create_quiz_folders_table', 0, 0),
-(103, NULL, '2025_11_27_101037_create_quiz_questions_table', 0, 0),
-(104, NULL, '2025_11_27_101037_create_quiz_session_info_tests_table', 0, 0),
-(105, NULL, '2025_11_27_101037_create_quiz_test_questions_table', 0, 0),
-(106, NULL, '2025_11_27_101037_create_quiz_tests_table', 0, 0),
-(107, NULL, '2025_11_27_101037_create_quiz_user_and_tests_table', 0, 0),
-(108, NULL, '2025_11_27_101037_create_quiz_user_answers_table', 0, 0),
-(109, NULL, '2025_11_27_101037_create_quiz_user_classes_table', 0, 0),
-(110, NULL, '2025_11_27_101037_create_rand_table_table', 0, 0),
-(111, NULL, '2025_11_27_101037_create_role_user_table', 0, 0),
-(112, NULL, '2025_11_27_101037_create_roles_table', 0, 0),
-(113, NULL, '2025_11_27_101037_create_site_mngs_table', 0, 0),
-(114, NULL, '2025_11_27_101037_create_skus_table', 0, 0),
-(115, NULL, '2025_11_27_101037_create_skus_product_variant_options_table', 0, 0),
-(116, NULL, '2025_11_27_101037_create_spendings_table', 0, 0),
-(117, NULL, '2025_11_27_101037_create_tag_demos_table', 0, 0),
-(118, NULL, '2025_11_27_101037_create_tags_table', 0, 0),
-(119, NULL, '2025_11_27_101037_create_task_infos_table', 0, 0),
-(120, NULL, '2025_11_27_101037_create_telesales_table', 0, 0),
-(121, NULL, '2025_11_27_101037_create_telescope_entries_table', 0, 0),
-(122, NULL, '2025_11_27_101037_create_telescope_entries_tags_table', 0, 0),
-(123, NULL, '2025_11_27_101037_create_telescope_monitoring_table', 0, 0),
-(124, NULL, '2025_11_27_101037_create_test_mongo1s_table', 0, 0),
-(125, NULL, '2025_11_27_101037_create_tmp_download_sessions_table', 0, 0),
-(126, NULL, '2025_11_27_101037_create_todo2s_table', 0, 0),
-(127, NULL, '2025_11_27_101037_create_translations_table', 0, 0),
-(128, NULL, '2025_11_27_101037_create_transport_infos_table', 0, 0),
-(129, NULL, '2025_11_27_101037_create_tree_mng_col_fixes_table', 0, 0),
-(130, NULL, '2025_11_27_101037_create_typing_lessons_table', 0, 0),
-(131, NULL, '2025_11_27_101037_create_typing_test_results_table', 0, 0),
-(132, NULL, '2025_11_27_101037_create_uploader_infos_table', 0, 0),
-(133, NULL, '2025_11_27_101037_create_user_balance_transactions_table', 0, 0),
-(134, NULL, '2025_11_27_101037_create_user_balances_table', 0, 0),
-(135, NULL, '2025_11_27_101037_create_user_clouds_table', 0, 0),
-(136, NULL, '2025_11_27_101037_create_user_groups_table', 0, 0),
-(137, NULL, '2025_11_27_101037_create_user_recharges_table', 0, 0),
-(138, NULL, '2025_11_27_101037_create_users_table', 0, 0),
-(139, NULL, '2025_11_27_101037_create_vps_instance_config_history_table', 0, 0),
-(140, NULL, '2025_11_27_101037_create_vps_instances_table', 0, 0),
-(141, NULL, '2025_11_27_101037_create_vps_plans_table', 0, 0),
-(142, NULL, '2025_11_27_101037_create_vps_usage_table', 0, 0),
-(143, NULL, '2025_11_27_101037_create_zalo_messages_table', 0, 0),
-(144, NULL, '2025_11_27_101040_add_foreign_keys_to_demo_and_tag_tbls_table', 0, 0),
-(145, NULL, '2025_11_27_101040_add_foreign_keys_to_telescope_entries_tags_table', 0, 0);
-
--- --------------------------------------------------------
-
 --
 -- Table structure for table `model_meta_infos`
 --
@@ -21328,10 +21180,10 @@ CREATE TABLE `vps_instances` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `vps_instance_config_history`
+-- Table structure for table `vps_instance_config_histories`
 --
 
-CREATE TABLE `vps_instance_config_history` (
+CREATE TABLE `vps_instance_config_histories` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `name` varchar(64) DEFAULT NULL,
   `status` smallint(6) DEFAULT 1,
@@ -21386,26 +21238,6 @@ INSERT INTO `vps_plans` (`id`, `name`, `status`, `user_id`, `cpu`, `ram_gb`, `di
 (4, 'VPS Enterprise', 1, NULL, 16, 16, 500, NULL, 1, 0.00555556, '2025-11-27 09:39:23', '2025-11-27 09:42:16', NULL, NULL);
 
 -- --------------------------------------------------------
-
---
--- Table structure for table `vps_usage`
---
-
-CREATE TABLE `vps_usage` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(64) DEFAULT NULL,
-  `status` smallint(6) DEFAULT 1,
-  `user_id` bigint(20) DEFAULT NULL,
-  `instance_id` bigint(20) NOT NULL,
-  `timestamp_minute` datetime NOT NULL,
-  `number_ip_address` int(11) DEFAULT 1,
-  `price_per_minute` decimal(18,8) NOT NULL,
-  `power_state` varchar(32) DEFAULT 'running',
-  `created_at` datetime DEFAULT current_timestamp(),
-  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `deleted_at` datetime DEFAULT NULL,
-  `log` text DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -22940,9 +22772,9 @@ ALTER TABLE `vps_instances`
   ADD KEY `idx_plan_id` (`plan_id`);
 
 --
--- Indexes for table `vps_instance_config_history`
+-- Indexes for table `vps_instance_config_histories`
 --
-ALTER TABLE `vps_instance_config_history`
+ALTER TABLE `vps_instance_config_histories`
   ADD PRIMARY KEY (`id`),
   ADD KEY `idx_deleted_at` (`deleted_at`),
   ADD KEY `idx_user_id` (`user_id`),
@@ -22955,16 +22787,6 @@ ALTER TABLE `vps_plans`
   ADD PRIMARY KEY (`id`),
   ADD KEY `idx_deleted_at` (`deleted_at`),
   ADD KEY `idx_user_id` (`user_id`);
-
---
--- Indexes for table `vps_usage`
---
-ALTER TABLE `vps_usage`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `idx_deleted_at` (`deleted_at`),
-  ADD KEY `idx_user_id` (`user_id`),
-  ADD KEY `idx_instance_id` (`instance_id`),
-  ADD KEY `idx_timestamp_minute` (`timestamp_minute`);
 
 --
 -- Indexes for table `zalo_messages`
@@ -23765,9 +23587,9 @@ ALTER TABLE `vps_instances`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `vps_instance_config_history`
+-- AUTO_INCREMENT for table `vps_instance_config_histories`
 --
-ALTER TABLE `vps_instance_config_history`
+ALTER TABLE `vps_instance_config_histories`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
@@ -23775,12 +23597,6 @@ ALTER TABLE `vps_instance_config_history`
 --
 ALTER TABLE `vps_plans`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-
---
--- AUTO_INCREMENT for table `vps_usage`
---
-ALTER TABLE `vps_usage`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `zalo_messages`

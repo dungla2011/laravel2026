@@ -71,14 +71,24 @@ if ((isCli() && gethostname() == 'DESKTOP-VFQHFQS')
     // die("1111");
 
     $hostname = '127.0.0.1';  // Use TCP instead of Unix socket
-    $dbDriver = 'sqlite';
-    $dbConnection = 'sqlite';
     $dbDriver = 'mysql';
     $dbConnection = 'mysql';
     $dbName = 'glx2026test';
     $user = 'root';
     $pw = '';
     $_SERVER['SERVER_NAME'] = $_SERVER['HTTP_HOST'] = 'localhost';
+
+
+    //Nếu trên win, cli
+    if(0)
+    if(isWindow1()){
+        $dbName = env('DB_RM_NAME8');
+        $user = env('DB_RM_USER8');
+        $pw = env('DB_RM_PW8');
+        $hostname =  env('DB_RM_HOST8');
+        $dbDriver = "mysql";
+        $_SERVER['SERVER_NAME'] = $_SERVER['HTTP_HOST'] = 'glx.lad.vn';
+    }
 
 } else
 
@@ -173,12 +183,17 @@ if ((isCli() && gethostname() == 'DESKTOP-VFQHFQS')
         $dbDriver = 'sqlite';
         $_SERVER['SERVER_NAME'] = $_SERVER['HTTP_HOST'] = 'localhost';
 
-//        die("Localhost....");
+//        $dbName = env('DB_RM_NAME8');
+//        $user = env('DB_RM_USER8');
+//        $pw = env('DB_RM_PW8');
+//        $hostname =  env('DB_RM_HOST8');
+//        $dbDriver = "mysql";
+//        $_SERVER['SERVER_NAME'] = $_SERVER['HTTP_HOST'] = 'glx.lad.vn';
+//
+//        die("abc");
 
-//        die("xxx1 . " . env('DB_HOST_VPN'));
-
-        //        $_SERVER['SERVER_NAME'] = $_SERVER['HTTP_HOST'] = 'test2023.galaxycloud.vn';
     }
+
     if (gethostname() == 'events.ncbd') {
         $dbName = env('DB_RM_NAME2');
         $user = env('DB_RM_USER2');
