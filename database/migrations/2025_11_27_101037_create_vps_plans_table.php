@@ -21,7 +21,7 @@ return new class extends Migration
             $table->integer('disk_gb');
             $table->integer('network_mbit')->nullable()->default(0);
             $table->integer('number_ip_address')->nullable()->default(0);
-            $table->decimal('price_per_minute', 18, 8);
+            $table->decimal('price_per_minute', 18, 8)->default(0);
             $table->decimal('price_per_hour', 18, 8)->nullable()->storedAs('`price_per_minute` * 60');
             $table->dateTime('created_at')->nullable()->useCurrent();
             $table->dateTime('updated_at')->useCurrentOnUpdate()->nullable()->useCurrent();

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->bigInteger('instance_id')->index();
             $table->dateTime('timestamp_minute')->index();
             $table->integer('number_ip_address')->nullable()->default(0);
-            $table->decimal('price_per_minute', 18, 8);
+            $table->decimal('price_per_minute', 18, 8)->default(0);
             $table->string('power_state', 32)->nullable()->default('running');
             $table->dateTime('created_at')->nullable()->useCurrent();
             $table->dateTime('updated_at')->useCurrentOnUpdate()->nullable()->useCurrent();

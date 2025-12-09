@@ -105,15 +105,75 @@ class SyncVmwareInstancesCommand extends Command
                         ->first();
 
                     if ($instance) {
-                        // Check if vps_usages was inserted in the last 5 minutes for this bios_uuid
+                        // Get latest vps_usages record for this bios_uuid
                         $lastUsage = DB::table('vps_usages')
                             ->where('bios_uuid', $vmInfo->identity->bios_uuid)
-                            ->where('created_at', '>=', now()->subMinutes(5))
-                            ->orderBy('created_at', 'desc')
+                            ->orderBy('id', 'desc')
                             ->first();
 
-                        if (!$lastUsage) {
-                            // Insert into vps_usages (usage snapshot at this moment)
+                        // Get IP addresses (placeholder - to be populated by getIpFromMacAddress())
+                        $listIpAddress = ''; // Will be populated by getIpFromMacAddress() method when available
+                        
+                        // Calculate config hash for comparison (including IP addresses)
+                        $currentConfigHash = md5(json_encode([
+                            'cpu' => $vmInfo->cpu->count,
+                            'ram_gb' => intval($vmInfo->memory->size_MiB / 1024),
+                            'disk_gb' => intval($this->getTotalDiskGB($vmInfo)),
+                            'power_state' => $vmInfo->power_state,
+                            'list_ip_address' => $listIpAddress,
+                        ]));
+
+                        if ($lastUsage) {
+                            // Config hash from last record (including IP addresses)
+                            $lastConfigHash = md5(json_encode([
+                                'cpu' => $lastUsage->cpu,
+                                'ram_gb' => $lastUsage->ram_gb,
+                                'disk_gb' => $lastUsage->disk_gb,
+                                'power_state' => $lastUsage->power_state,
+                                'list_ip_address' => $lastUsage->list_ip_address ?? '',
+                            ]));
+
+                            $timeSinceSame = now()->diffInMinutes($lastUsage->lastest_time_the_same ?? $lastUsage->created_at);
+
+                            // If config is the same AND time since last same is <= 10 minutes
+                            if ($currentConfigHash === $lastConfigHash && $timeSinceSame <= 10) {
+                                // Just update the record
+                                DB::table('vps_usages')
+                                    ->where('id', $lastUsage->id)
+                                    ->update([
+                                        'count_update_status' => DB::raw('count_update_status + 1'),
+                                        'lastest_time_the_same' => now(),
+                                        'timestamp_minute' => now()->startOfMinute(),
+                                        'last_found_ip' => now(),
+                                    ]);
+                                $this->line("  ♻️  Updated vps_usages (count_update: " . ($lastUsage->count_update_status + 1) . ")");
+                            } else {
+                                // Config changed or 10+ minutes passed, insert new record
+                                DB::table('vps_usages')->insert([
+                                    'name' => $vm->name,
+                                    'instance_id' => $instance->id,
+                                    'vmware_vm_id' => $vm->vm,
+                                    'cpu' => $vmInfo->cpu->count,
+                                    'ram_gb' => intval($vmInfo->memory->size_MiB / 1024),
+                                    'disk_gb' => intval($this->getTotalDiskGB($vmInfo)),
+                                    'user_id' => $instance->user_id,
+                                    'timestamp_minute' => now()->startOfMinute(),
+                                    'power_state' => $vmInfo->power_state,
+                                    'bios_uuid' => $vmInfo->identity->bios_uuid,
+                                    'instance_uuid' => $vmInfo->identity->instance_uuid,
+                                    'full_info' => json_encode($vmInfo),
+                                    'price_per_minute' => $instance->price_per_minute ?? 0,
+                                    'status' => 1,
+                                    'count_update_status' => 0,
+                                    'lastest_time_the_same' => now(),
+                                    'list_ip_address' => $listIpAddress,
+                                    'last_found_ip' => now(),
+                                    'created_at' => now(),
+                                ]);
+                                $this->line("  📊 Inserted vps_usages snapshot (config changed or 10+ min passed)");
+                            }
+                        } else {
+                            // No previous record, insert new one
                             DB::table('vps_usages')->insert([
                                 'name' => $vm->name,
                                 'instance_id' => $instance->id,
@@ -123,18 +183,19 @@ class SyncVmwareInstancesCommand extends Command
                                 'disk_gb' => intval($this->getTotalDiskGB($vmInfo)),
                                 'user_id' => $instance->user_id,
                                 'timestamp_minute' => now()->startOfMinute(),
-                                // 'number_ip_address' => count($vmInfo->nics),
                                 'power_state' => $vmInfo->power_state,
                                 'bios_uuid' => $vmInfo->identity->bios_uuid,
                                 'instance_uuid' => $vmInfo->identity->instance_uuid,
                                 'full_info' => json_encode($vmInfo),
                                 'price_per_minute' => $instance->price_per_minute ?? 0,
                                 'status' => 1,
+                                'count_update_status' => 0,
+                                'lastest_time_the_same' => now(),
+                                'list_ip_address' => $listIpAddress,
+                                'last_found_ip' => now(),
                                 'created_at' => now(),
                             ]);
-                            $this->line("  📊 Inserted vps_usages snapshot");
-                        } else {
-                            $this->line("  ⏱️  Skipped vps_usages (inserted " . $lastUsage->created_at->diffInMinutes(now()) . " min ago)");
+                            $this->line("  📊 Inserted vps_usages snapshot (first record)");
                         }
 
                         // Check if config changed - only insert to history if it did

@@ -22,7 +22,7 @@ return new class extends Migration
             $table->integer('disk_gb');
             $table->integer('network_mbit')->nullable()->default(0);
             $table->integer('number_ip_address')->nullable()->default(0);
-            $table->decimal('price_per_minute', 18, 8);
+            $table->decimal('price_per_minute', 18, 8)->default(0);
             $table->string('change_type', 64)->nullable();
             $table->dateTime('changed_at')->nullable()->useCurrent();
             $table->dateTime('created_at')->nullable()->useCurrent();

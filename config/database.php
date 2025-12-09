@@ -80,7 +80,7 @@ if ((isCli() && gethostname() == 'DESKTOP-VFQHFQS')
 
 
     //Nếu trên win, cli
-    if(0)
+//    if(0)
     if(isWindow1()){
         $dbName = env('DB_RM_NAME8');
         $user = env('DB_RM_USER8');

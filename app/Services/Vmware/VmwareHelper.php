@@ -31,6 +31,8 @@ class VmwareHelper {
             return false;
         }
 
+        echo "🔐 Attempting login to https://$domain/rest/com/vmware/cis/session\n";
+        
         $ch = curl_init("https://$domain/rest/com/vmware/cis/session");
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
@@ -40,25 +42,50 @@ class VmwareHelper {
         curl_setopt($ch, CURLOPT_POSTFIELDS, "");
         curl_setopt($ch, CURLOPT_USERPWD, $uid . ':' . $pw);
         curl_setopt($ch, CURLOPT_USERAGENT, 'curl/7.29.0');
+        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
 
         $ret = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $curlError = curl_error($ch);
+        $info = curl_getinfo($ch);
         curl_close($ch);
+
+        echo "Response length: " . strlen($ret) . " bytes\n";
+        echo "HTTP Code: $httpCode\n";
+        
+        if ($curlError) {
+            echo "❌ cURL error: $curlError\n";
+            return false;
+        }
 
         if ($httpCode !== 200) {
             echo "❌ Login failed (HTTP $httpCode)\n";
+            echo "Response body: " . $ret . "\n";
             return false;
         }
 
-        $out = json_decode($ret);
-        if (!isset($out->value) || !is_string($out->value)) {
+        if (empty($ret)) {
+            echo "❌ Empty response from vCenter\n";
+            return false;
+        }
+
+        $out = json_decode($ret, true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            echo "❌ JSON decode error: " . json_last_error_msg() . "\n";
+            echo "Response: " . $ret . "\n";
+            return false;
+        }
+
+        if (!isset($out['value']) || !is_string($out['value'])) {
             echo "❌ Invalid session response\n";
+            echo "Response: " . print_r($out, true) . "\n";
             return false;
         }
 
-        self::$sid = $out->value;
+        self::$sid = $out['value'];
         self::$domain = $domain;
-        echo "✓ Login successful. SID: " . substr($out->value, 0, 20) . "...\n";
+        echo "✓ Login successful. SID: " . substr($out['value'], 0, 20) . "...\n";
         return true;
     }
 
