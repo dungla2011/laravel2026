@@ -30,6 +30,7 @@
         "claviska/simpleimage": "^4.0",
         "coldwinds/torrent-rw": "^1.1",
         "doctrine/dbal": "^3.10",
+        "dungla2011/baokim-v2": "^1.0",
         "elasticsearch/elasticsearch": "^8.15",
         "ezyang/htmlpurifier": "^4.16",
         "facebook/webdriver": "*",

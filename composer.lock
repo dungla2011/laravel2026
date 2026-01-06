@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "37406cb281d1b9457948b6d663af9f07",
+    "content-hash": "3004391dee235c5544e5d3642cc74be4",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -1397,6 +1397,60 @@
                 }
             ],
             "time": "2025-10-31T18:51:33+00:00"
+        },
+        {
+            "name": "dungla2011/baokim-v2",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/dungla2011/baokim-v2.git",
+                "reference": "8bfd7e5487b6ae113f5a1a64c2979b8f20e5447f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/dungla2011/baokim-v2/zipball/8bfd7e5487b6ae113f5a1a64c2979b8f20e5447f",
+                "reference": "8bfd7e5487b6ae113f5a1a64c2979b8f20e5447f",
+                "shasum": ""
+            },
+            "require": {
+                "firebase/php-jwt": "^6.0",
+                "guzzlehttp/guzzle": "^7.0",
+                "php": "^7.4|^8.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "BaoKimV2\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "LADVN",
+                    "email": "dungla2011@gmail.com"
+                }
+            ],
+            "description": "Bảo Kim Payment Gateway SDK - Compatible with Guzzle 7+ and firebase/php-jwt 6+",
+            "homepage": "https://github.com/dungla2011/baokim-v2",
+            "keywords": [
+                "baokim",
+                "baokim-api",
+                "gateway",
+                "payment",
+                "payment-gateway",
+                "vietnam"
+            ],
+            "support": {
+                "issues": "https://github.com/dungla2011/baokim-v2/issues",
+                "source": "https://github.com/dungla2011/baokim-v2/tree/v1.0.0"
+            },
+            "time": "2025-12-27T13:51:27+00:00"
         },
         {
             "name": "egulias/email-validator",

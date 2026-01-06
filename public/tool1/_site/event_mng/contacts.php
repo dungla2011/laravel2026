@@ -1,26 +1,45 @@
 <?php
-?>
-[
-{
-"name": "Nguyễn Văn Anh",
-"phone": "0912345678"
-},
-{
-"name": "Trần Thị Bình",
-"phone": "0987654321"
-},
-{
-"name": "Lê Minh Cường",
-"phone": "0965432187"
-},
-{
-"name": "Phạm Thị Dung",
-"phone": "0934567890"
-},
-{
-"name": "Hoàng Văn Em",
-"phone": "0923456789"
+//$time = microtime(1);
+//use App\Models\User_Meta;
+//
+//$GLOBALS['DISABLE_DEBUG_BAR'] = 0;
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+//
+//
+require __DIR__.'/../../../../vendor/autoload.php';
+$app = require_once __DIR__.'/../../../../bootstrap/app.php';
+$kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
+$response = $kernel->handle(
+    $request = Illuminate\Http\Request::capture()
+);
+
+$ret = [];
+$mm = \App\Models\EventUserInfo::select([ 'id', 'last_name', 'first_name', 'phone'])->limit(1000000)->get();
+foreach ($mm AS $obj){
+
+    if($obj instanceof \App\Models\EventUserInfo);
+    $fn = $obj->getFullname();
+
+    $phone = fixPhoneNumber($obj->phone);
+
+    if(!$phone)
+        continue;
+
+
+    if($obj->phone){
+
+    }
+    else
+        $phone='no_phone';
+
+    $ret[] = ['name' => "$obj->id.$fn.$phone.planed", 'phone'=>$phone];
+
+//    echo "<br/>\n $fn.$phone.$obj->id";
 }
-]
-<?php
-?>
+
+ob_clean();
+echo json_encode($ret, JSON_PRETTY_PRINT);
+//echo "<pre> >>> " . __FILE__ . "(" . __LINE__ . ")<br/>";
+//print_r($ret);
+//echo "</pre>";

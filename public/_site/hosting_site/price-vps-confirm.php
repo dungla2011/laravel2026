@@ -72,6 +72,24 @@ $nNetworkMbit = isset($postData['n_network_mbit']) ? intval($postData['n_network
 $nNetworkDedicatedMbit = isset($postData['n_network_dedicated_mbit']) ? intval($postData['n_network_dedicated_mbit']) : 0;
 $nIpAddress = isset($postData['n_ip_address']) ? intval($postData['n_ip_address']) : 1;
 $planId = isset($postData['plan_id']) ? intval($postData['plan_id']) : null;
+$initOs = isset($postData['init_os']) ? intval($postData['init_os']) : null;
+
+
+// die("OS = $initOs);
+
+//Kiểm tra initOs có trong  VpsOsVersion không:
+$validOs = \App\Models\VpsOsVersion::where('id', $initOs)->first();
+if (!$validOs) {
+    http_response_code(400);
+    die(json_encode([
+        'success' => false,
+        'error_code' => 'INVALID_OS',
+        'message' => '❌ Hệ điều hành khởi tạo không hợp lệ.'
+    ]));
+}
+
+//Lấy slug để đưa vào name
+$osSlug = $validOs->slug ?? 'unknown-os';
 
 // Calculate price
 $price = Product_Meta::calculateVpsPrice(
@@ -238,7 +256,12 @@ try {
     }
 
     // Generate instance name
-    $instanceName = 'vps-' . $uid . '-' . time();
+    // $instanceName = 'vps-' . $uid . '-' . time();
+
+    $instanceName = $osSlug .'_' . date('Y.m.d-H.i.s');
+
+    //Lấy tên trong 
+
 
     // Calculate price per minute from monthly price
     $pricePerMinute = $price / (30 * 24 * 60);
@@ -254,6 +277,7 @@ try {
         'network_mbit' => $nNetworkDedicatedMbit,
         'number_ip_address' => $nIpAddress,
         'price_per_minute' => $pricePerMinute,
+        'init_os' => $initOs,
         'power_state' => 'powered_off',
         'infos' => json_encode($infos)
     ]);

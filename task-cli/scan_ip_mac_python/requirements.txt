@@ -1,0 +1,7 @@
+# IP Scanner Requirements
+# Chương trình chỉ sử dụng thư viện standard library của Python
+# Không cần cài đặt packages bên ngoài
+
+# Tuy nhiên, nếu muốn thêm tính năng mở rộng:
+# click>=8.0.0  # Để cải thiện CLI
+# colorama>=0.4.4  # Để màu sắc trên Windows

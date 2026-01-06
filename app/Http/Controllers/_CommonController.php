@@ -77,7 +77,6 @@ class _CommonController extends BaseController
 
                     $indexViewName = $objMeta->getIndexViewName(\request()->getRequestUri());
 
-
                     if (!$indexViewName) {
                         return response("getIndexViewName() returned empty for {$fullModelClass}\nURI: " . \request()->getRequestUri(), 500);
                     }

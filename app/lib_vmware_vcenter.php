@@ -513,6 +513,7 @@ class ClassVMwareTool extends \Base\ClassBaseGlx {
 
     public static function updateVMHardWareDb()
     {
+
         ClassVMwareTool::loginVC();
         $mm = ClassVMwareTool::getVMList();
         $cc = 0;

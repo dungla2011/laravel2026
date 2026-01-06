@@ -27,11 +27,85 @@ class ChatController extends Controller
         }
 
         $channel_name = \request('channel_name');
+        $phoneParam = \request('user'); // Lấy parameter &user=phone từ URL
+
+        // Nếu có parameter phone, xử lý tìm/tạo user Zalo
+        $zaloUserData = null;
+        if ($phoneParam) {
+            $zaloUserData = $this->handleZaloUserByPhone($phoneParam, $channel_name);
+            echo "<pre> >>> " . __FILE__ . "(" . __LINE__ . ")<br/>";
+            print_r($zaloUserData);
+            echo "</pre>";
+            die("PHONE.. $phoneParam ");
+
+        }
 
         // Lấy danh sách conversations (threads) của user
         $conversations = $this->getUserConversations($user->id, $channel_name);
 
-        return view('chat.index', compact('conversations', 'user'));
+        return view('chat.index', compact('conversations', 'user', 'zaloUserData'));
+    }
+
+    /**
+     * Xử lý tìm/tạo user Zalo theo phone
+     */
+    private function handleZaloUserByPhone($phone, $channel = 'event1')
+    {
+        try {
+            // 1. Tìm trong bảng zalo_users
+            $zaloUser = \App\Models\ZaloUser::where('phone', $phone)->first();
+
+            // 2. Nếu chưa có, tạo record mới
+            if (!$zaloUser) {
+                $zaloUser = \App\Models\ZaloUser::create([
+                    'phone' => $phone,
+                    'name' => 'Zalo User ' . $phone,
+                    'status' => 0
+                ]);
+            }
+
+            // 3. Gọi API Zalo để lấy thông tin user
+            $helper = new \ZaloHelper(
+                'http://localhost:30000',
+                env('ZALO_API_USER', 'admin'),
+                env('ZALO_API_PASSWORD', '938475wufo87908u09')
+            );
+
+            $result = $helper->findUser($channel, $phone);
+
+            // 4. Nếu lấy được thông tin từ Zalo, update bảng
+            if ($result['success'] ?? false) {
+                $zaloInfo = $result['user'] ?? [];
+                $zaloUser->update([
+                    'name' => $zaloInfo['displayName'] ?? $zaloUser->name,
+                    'zalo_id' => $zaloInfo['uid'] ?? null,
+                    'status' => 1,
+                    'log' => json_encode($zaloInfo)
+                ]);
+
+                return [
+                    'success' => true,
+                    'zalo_user' => $zaloUser,
+                    'zalo_info' => $zaloInfo,
+                    'uid' => $zaloInfo['uid'] ?? null,
+                    'name' => $zaloInfo['displayName'] ?? $zaloUser->name,
+                    'phone' => $phone
+                ];
+            } else {
+                return [
+                    'success' => false,
+                    'zalo_user' => $zaloUser,
+                    'error' => $result['error'] ?? 'Không thể lấy thông tin Zalo',
+                    'phone' => $phone
+                ];
+            }
+        } catch (\Exception $e) {
+            return [
+                'success' => false,
+                'error' => $e->getMessage(),
+                'phone' => $phone
+            ];
+        }
     }
 
     /**
@@ -155,14 +229,18 @@ class ChatController extends Controller
     }
 
     /**
-     * Gửi tin nhắn mới
+     * Gửi tin nhắn mới + gửi tới Zalo nếu callback provided
      */
-    public function sendMessage(Request $request)
+    /**
+     * Gửi tin nhắn tới Zalo
+     * Callback $saveDbCallback quyết định có ghi DB hay không
+     */
+    public function sendMessage(Request $request, $saveDbCallback = null)
     {
         $request->validate([
-            'thread_id' => 'required|string',
-            'content' => 'required|string|max:5000',
-            'to_user_id' => 'required|integer'
+            'uid' => 'required|string',
+            'message' => 'required|string|max:5000',
+            'channel_name' => 'nullable|string'
         ]);
 
         $user = Auth::user();
@@ -170,26 +248,107 @@ class ChatController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        $message = new CrmMessage();
-        $message->thread_id = $request->thread_id;
-        $message->content = request('content');
-        $message->uid_from = $user->id;
-        $message->id_to = $request->to_user_id;
-        $message->msg_type = 'text';
-        $message->status = 'sent';
-        $message->ts = time();
-        $message->save();
+        $uid = $request->get('uid');
+        $messageContent = $request->get('message');
+        $channel = $request->get('channel_name', 'event1');
 
-        // Format response
-        $message->sender_name = $user->getNameTitle();
-        $message->sender_avatar = $user->avatar ?? '/tpl_modernize/assets/images/svgs/icon-user-male.svg';
-        $message->formatted_time = $message->created_at->format('H:i d/m');
-        $message->formatted_date = $message->created_at->format('d/m');
+        // Gửi tới Zalo luôn hoạt động
+        $zaloResult = $this->sendToZalo($uid, $messageContent, $channel);
 
-        return response()->json([
-            'success' => true,
-            'message' => $message
-        ]);
+        $response = [
+            'success' => $zaloResult['success'],
+            'zalo' => $zaloResult
+        ];
+
+//        echo "<pre> >>> " . __FILE__ . "(" . __LINE__ . ")<br/>";
+//        print_r($request->toArray());
+//        echo "</pre>";
+//        echo "<br/>\n $uid , $messageContent";
+//        die();
+
+        // Gọi callback để ghi DB nếu được cấp
+        if(0)
+        if (is_callable($saveDbCallback)) {
+            $dbResult = call_user_func($saveDbCallback, [
+                'thread_id' => $request->get('thread_id'),
+                'content' => $messageContent,
+                'to_user_id' => $request->get('to_user_id'),
+                // 'user_id' => $request->get('user_id'),
+            ]);
+            $response['database'] = $dbResult;
+        }
+
+        return response()->json($response);
+    }
+
+    /**
+     * Callback độc lập: gửi tin nhắn tới Zalo
+     * Luôn hoạt động, không phụ thuộc vào DB
+     */
+    private function sendToZalo($uid, $message, $channel = 'event1')
+    {
+        try {
+            $helper = new \ZaloHelper(
+                'http://localhost:30000',
+                env('ZALO_API_USER', 'admin'),
+                env('ZALO_API_PASSWORD', '938475wufo87908u09')
+            );
+
+            $result = $helper->sendMessage($channel, $uid, $message);
+
+            if ($result['success'] ?? false) {
+                return [
+                    'success' => true,
+                    'msgId' => $result['data']['msgId'] ?? null
+                ];
+            } else {
+                return [
+                    'success' => false,
+                    'error' => $result['error'] ?? 'Lỗi gửi tin Zalo'
+                ];
+            }
+        } catch (\Exception $e) {
+            return [
+                'success' => false,
+                'error' => $e->getMessage()
+            ];
+        }
+    }
+
+    /**
+     * Callback: ghi tin nhắn vào database
+     */
+    public function saveDbCallback($data)
+    {
+        try {
+            $message = new CrmMessage();
+            $message->thread_id = $data['thread_id'];
+            $message->thread_id = str_replace('zalo_', '', $message->thread_id);
+            $message->content = $data['content'];
+            $message->uid_from = $data['uid_from'] ?? '';
+            $message->id_to = $data['to_user_id']  ?? '';
+            $message->msg_type = 'text';
+            $message->user_id = getCurrentUserId();
+            $message->status = 1; // 1 = sent (số, không phải string)
+            $message->ts = time() * 1000; // milliseconds để match với Zalo format
+            $message->save();
+
+            // Format response
+            $message->sender_name = Auth::user()->getNameTitle();
+            $message->sender_avatar = Auth::user()->avatar ?? '/tpl_modernize/assets/images/svgs/icon-user-male.svg';
+            $message->formatted_time = $message->created_at->format('H:i d/m');
+            $message->formatted_date = $message->created_at->format('d/m');
+
+            return [
+                'success' => true,
+                'message' => $message
+            ];
+        } catch (\Exception $e) {
+            return [
+                'success' => false,
+                'error' => $e->getMessage()
+            ];
+        }
     }
 
     /**
@@ -373,3 +532,4 @@ class ChatController extends Controller
         ]);
     }
 }
+

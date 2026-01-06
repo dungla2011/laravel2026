@@ -32,3 +32,5 @@ vendor/
 public/tool/doing/.git/
 resources/views/index/000/.git/
 public/doing/.git/
+
+venv/

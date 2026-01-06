@@ -10,7 +10,7 @@ class EventAndUserControllerApi extends BaseApiController
     public function __construct(EventAndUserRepositoryInterface $data, clsParamRequestEx $objPrEx)
     {
         $this->data = $data;
-//        $objPrEx->need_set_uid = 0;
+        $objPrEx->need_set_uid = 0;
         $this->objParamEx = $objPrEx;
 
         parent::__construct();

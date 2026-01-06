@@ -157,7 +157,7 @@ if ($evCookie->require_sign_this_event ?? '') {
 </script>
 <body style="">
 
-<div style="text-align: center; position: fixed; top: 10px; font-size: 200%; right:10px; background-color: green; border-radius: 5px; padding: 2px 5px; color: #ccc" id="ms_user"></div>
+<div style="text-align: center; position: fixed; top: 10px; font-size: 200%; right:10px; background-color: white; color: green; border-radius: 5px; padding: 2px 5px; " id="ms_user"></div>
 
 <div style="
     background-color: <?php echo \App\Models\SiteMng::getInstance()->color1 ?>;

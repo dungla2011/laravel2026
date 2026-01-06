@@ -16,8 +16,8 @@ class DemoFolderControllerApi extends BaseApiController
     public function __construct(DemoFolderRepositoryInterface $data, clsParamRequestEx $objPrEx)
     {
         $this->data = $data;
+        $objPrEx->need_set_uid = 0;
         $this->objParamEx = $objPrEx;
-
         parent::__construct();
     }
 }

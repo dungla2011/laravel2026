@@ -228,7 +228,11 @@ return $GLOBALS['mMapDomainDb'] = [
         'dbadmin' => "/phpmyadmin6868",
 //        'enable_multi_language' =>1
     ],
-
+    'chungkhoan.lad.vn' => ['siteid' => 65, 'db_name' => 'DB_RM_HOST-8', 'layout_name' => 'chungkhoan_v1',
+        'use_own_meta_table'=>1,
+        'force_fallback_language'=>'vi',
+        'dbadmin' => "/phpmyadmin6868",
+        'enable_multi_language' =>1],
     ];
 
 

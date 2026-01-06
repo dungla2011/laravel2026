@@ -18,8 +18,20 @@ Route::middleware(['auth'])->group(function () {
         // Lấy tin nhắn của conversation
         Route::get('/messages', [ChatController::class, 'getMessages'])->name('api.chat.messages');
         
-        // Gửi tin nhắn mới
-        Route::post('/send', [ChatController::class, 'sendMessage'])->name('api.chat.send');
+        // Gửi tin nhắn Zalo với callback saveDbCallback
+        Route::post('/send', function(\Illuminate\Http\Request $request) {
+            // Convert từ chat parameters sang Zalo parameters
+            $request->merge([
+                'uid' => $request->get('to_user_id'),
+                'message' => $request->get('content'),
+                'channel_name' => $request->get('channel_name', 'event1')
+            ]);
+
+            $controller = new ChatController();
+            return $controller->sendMessage($request, function($data) {
+                return app(ChatController::class)->saveDbCallback($data);
+            });
+        })->name('api.chat.send');
         
         // Tìm kiếm users
         Route::get('/search-users', [ChatController::class, 'searchUsers'])->name('api.chat.search-users');

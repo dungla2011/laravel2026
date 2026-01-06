@@ -93,9 +93,9 @@ class _CommonControllerApi extends BaseApiController
     {
         $modelClass = $this->kebabToPascalCase($model_name);
         $fullModelClass = "App\\Models\\{$modelClass}";
-        $id = $request->get('id');
+        $ids = $request->get('id');
 
-        if (!$id) {
+        if (!$ids) {
             return response()->json(['error' => 'Missing id parameter'], 400);
         }
 
@@ -104,9 +104,15 @@ class _CommonControllerApi extends BaseApiController
         }
 
         try {
-            $item = $fullModelClass::findOrFail($id);
-            $item->delete();
-            return rtJsonApiDone($id, "Add OK $id");
+
+            $mid = explode(",", $ids);
+            foreach ($mid AS $id){
+                if(!$id)
+                    continue;
+                $item = $fullModelClass::findOrFail($id);
+                $item->delete();
+            }
+            return rtJsonApiDone($id, "delete OK $id");
         } catch (\Exception $e) {
             return rtJsonApiError($e->getMessage());
         }

@@ -97,6 +97,19 @@ $keyAndName = config('vps_config.specs');
                             </div>
                         </div>
 
+                        <!-- Select OS -->
+                        <div class="px-3 py-3 border-top">
+                            <label class="form-label small mb-2">
+                                <i class="fas fa-penguin"></i> Chọn hệ điều hành (tùy chọn):
+                            </label>
+                            <select class="form-select form-select-sm select-os" data-plan-id="{{ $plan->id }}">
+                                <option value="">-- Chọn OS --</option>
+                                @foreach(\App\Models\VpsOsVersion::where('is_active', 1)->get() as $os)
+                                    <option value="{{ $os->id }}">{{ $os->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
                         <!-- Card Footer -->
                         <div class="card-footer bg-light border-0">
                             <button class="btn btn-primary w-100 select-vps-btn" data-plan-id="{{ $plan->id }}">
@@ -339,6 +352,12 @@ $keyAndName = config('vps_config.specs');
             const planId = this.getAttribute('data-plan-id');
             if (planId) {
                 params.append('plan_id', planId);
+            }
+
+            // Add selected OS (init_os)
+            const osSelect = card.querySelector('.select-os');
+            if (osSelect && osSelect.value) {
+                params.append('init_os', osSelect.value);
             }
 
             // Redirect with GET parameters (shareable URL)

@@ -83,13 +83,10 @@ class EventUserPayment_Meta extends MetaOfTableInDb
         if($objU =  EventUserInfo::where("id", $obj->user_event_id)->first()){
             if($objU->id_number)
                 return $objU->id_number;
+            return "<span style='color:red'> <a href='/admin/event-user-info/edit/$objU->id?__focus__=id_number' style='color: red'> <i class='fa fa-edit'></i> Cần Cập nhật </a></span>";
         }
-        return "<span style='color:red'> <a href='/admin/event-user-info/edit/$objU->id?__focus__=id_number' style='color: red'> <i class='fa fa-edit'></i> Cần Cập nhật </a></span>";
-
-
-
-
     }
+
     public function _khau_tru($obj, $val, $field)
     {
         if($obj->payed)

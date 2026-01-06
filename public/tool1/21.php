@@ -14,19 +14,36 @@ $response = $kernel->handle(
     $request = Illuminate\Http\Request::capture()
 );
 
-$str = '<p>Dear <strong>Dr. Nguyen Hung Son</strong>,<br /><br />The Diplomatic Academy of Vietnam 
-cordially invites you to attend <strong>Hội thảo “Đánh giá tình hình thế giới và khu vực năm 2025,
- dự báo 2026 và một số vấn đề đặt ra với Việt Nam”</strong>.<br />
- Event details:<br /><br />• Time: <strong>08:00 11/12/2025</strong> to <strong>
- 12:00 11/12/2025</strong><br />
- • Venue: <strong>Phòng Geneva, tầng 3, Nhà D, Học viện Ngoại giao</strong><br />###• Topic:<br />###• Language:<br /><br />
- To confirm your participation, please register via the following link: 
- <a target="_blank" href="https://events.dav.edu.vn/user-confirm-event/id/gg447825/data_ev/ms3300060701" rel="noopener"> 
- Confirm attendance</a>.<br />###For further information, please contact [Name], at [Phone Number], 
- or via email: [Email].<br />
- The Diplomatic Academy of Vietnam sincerely appreciates your interest and looks forward to welcoming you at Hội thảo “Đánh giá tình hình thế giới và khu vực năm 2025, 
- dự báo 2026 và một số vấn đề đặt ra với Việt Nam”.<br /><br /><br /><br /><br /></p>';
 
-echo removeCommentsWithDOM2($str);
 
-// echo $str;
+
+$helper = new ZaloHelper('http://localhost:30000', 'admin', '938475wufo87908u09');
+
+
+// Tìm user
+$user = $helper->findUser('event1', '0902066768');
+echo "<pre> >>> " . __FILE__ . "(" . __LINE__ . ")<br/>";
+print_r($user);
+echo "</pre>";
+if ($user['success']) {
+    echo "UID: " . $user['user']['uid'];
+    echo "Name: " . $user['user']['displayName'];
+}
+else{
+    echo "❌ Lỗi: " . $user['error'];
+}
+
+return;
+
+$result = $helper->sendMessage('event1', '7714268566922297972', 'Hello!');
+
+
+// Kiểm tra kết quả
+if ($result['success'] ?? '') {
+    echo "✅ Gửi thành công! msgId: " . $result['data']['msgId'];
+} else {
+    echo "❌ Lỗi: " . $result['error'];
+}
+
+
+?>

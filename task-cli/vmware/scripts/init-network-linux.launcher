@@ -1,0 +1,70 @@
+#!/bin/bash
+################################################################################
+# init-network-linux.sh.launcher
+# 
+# Linux network initialization launcher script
+# - Wrapper to run init-network-linux.sh with proper elevation
+# - Can be run from GUI or terminal
+#
+# Usage: ./init-network-linux.sh.launcher
+#        OR double-click from file manager (if set as executable)
+################################################################################
+
+# Get script directory
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+MAIN_SCRIPT="$SCRIPT_DIR/init-network-linux.sh"
+
+echo "============================================================================"
+echo " Linux Network Initialization Launcher"
+echo "============================================================================"
+echo ""
+
+# Check if main script exists
+if [[ ! -f "$MAIN_SCRIPT" ]]; then
+    echo "[ERROR] Main script not found: $MAIN_SCRIPT"
+    echo ""
+    read -p "Press Enter to exit..."
+    exit 1
+fi
+
+echo "[INFO] Main script: $MAIN_SCRIPT"
+echo ""
+
+# Check if running as root
+if [[ $EUID -ne 0 ]]; then
+    echo "[WARNING] Not running as root, attempting to elevate privileges..."
+    echo ""
+    
+    # Try using sudo
+    if command -v sudo &> /dev/null; then
+        echo "[INFO] Using sudo to elevate privileges..."
+        echo ""
+        
+        # Check if sudo is available without password
+        sudo -n true 2>/dev/null
+        if [[ $? -eq 0 ]]; then
+            # sudo available without password
+            exec sudo bash "$MAIN_SCRIPT"
+        else
+            # sudo requires password
+            echo "[INFO] Enter your password when prompted (sudo may ask for password):"
+            echo ""
+            exec sudo bash "$MAIN_SCRIPT"
+        fi
+    else
+        echo "[ERROR] sudo not found and not running as root!"
+        echo "[ERROR] This script requires root privileges"
+        echo ""
+        echo "Please run with: sudo $MAIN_SCRIPT"
+        echo ""
+        read -p "Press Enter to exit..."
+        exit 1
+    fi
+else
+    echo "[OK] Running as root"
+    echo ""
+    # Run directly
+    bash "$MAIN_SCRIPT"
+fi
+
+exit $?

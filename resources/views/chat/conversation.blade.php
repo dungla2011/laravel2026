@@ -77,7 +77,7 @@
                 <h6>{{ $partner->getNameTitle() }}</h6>
                 <div class="chat-partner-status">
                     <i class="fas fa-circle text-success" style="font-size: 8px;"></i>
-                    Đang hoạt động
+                    Đang hoạt động.
                 </div>
             </div>
 

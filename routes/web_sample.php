@@ -55,7 +55,7 @@ Route2::prefix('_api')->group(function () {
         ->name('api.update');
 
     // Delete: _api/vps-plan/delete?id=4
-    Route2::delete('/{model_name}/delete', [_CommonControllerApi::class, 'handleDelete'])
+    Route2::get('/{model_name}/delete', [_CommonControllerApi::class, 'handleDelete'])
         ->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class])
         ->name('api.delete');
 });

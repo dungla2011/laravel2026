@@ -278,4 +278,197 @@ class VmwareHelper {
         echo "✓ DataStore count: " . count($result) . "\n";
         return $result;
     }
+
+    /**
+     * Get VM boot time (uptime) from event logs
+     * 
+     * @param string $vmId VM ID
+     * @return string|null Boot time (ISO 8601 format) or null if not found
+     */
+    public static function getVMBootTime($vmId) {
+        if (!self::$sid || !self::$domain) {
+            echo "❌ Not logged in\n";
+            return null;
+        }
+
+        // Query last VmPoweredOnEvent for this VM
+        $url = "https://" . self::$domain . "/rest/vcenter/event?filter.types=VmPoweredOnEvent&filter.entity.type=VirtualMachine&filter.entity.id=" . urlencode($vmId);
+
+        echo "🔍 Fetching boot time for VM: $vmId\n";
+
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+        curl_setopt($ch, CURLOPT_POST, 0);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ["vmware-api-session-id:" . self::$sid]);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+
+        $output = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $curlError = curl_error($ch);
+        curl_close($ch);
+
+        if ($curlError) {
+            echo "❌ cURL error: $curlError\n";
+            return null;
+        }
+
+        if ($httpCode !== 200) {
+            echo "❌ Failed to get boot time (HTTP $httpCode)\n";
+            return null;
+        }
+
+        $info = json_decode($output, true);
+        if (!$info || !isset($info['value']) || !is_array($info['value'])) {
+            echo "⚠️  No boot events found for VM: $vmId\n";
+            return null;
+        }
+
+        // Get the most recent VmPoweredOnEvent
+        if (empty($info['value'])) {
+            echo "⚠️  No VmPoweredOnEvent in response\n";
+            return null;
+        }
+
+        // Events should be ordered by timestamp, get the first one (most recent)
+        $bootEvent = $info['value'][0];
+        $bootTime = $bootEvent['created_time'] ?? null;
+
+        if (!$bootTime) {
+            echo "⚠️  Boot time not found in event\n";
+            return null;
+        }
+
+        echo "✓ VM boot time: $bootTime\n";
+        return $bootTime;
+    }
+
+    /**
+     * Get VM uptime in minutes
+     * 
+     * @param string $vmId VM ID
+     * @return int|null Uptime in minutes, or null if cannot determine
+     */
+    public static function getVMUptime($vmId) {
+        $bootTime = self::getVMBootTime($vmId);
+        
+        if (!$bootTime) {
+            return null;
+        }
+
+        try {
+            $bootDateTime = new \DateTime($bootTime, new \DateTimeZone('UTC'));
+            $now = new \DateTime('now', new \DateTimeZone('UTC'));
+            $diff = $now->diff($bootDateTime);
+            
+            // Calculate total minutes
+            $uptimeMinutes = ($diff->days * 24 * 60) + ($diff->h * 60) + $diff->i;
+            
+            echo "✓ VM uptime: $uptimeMinutes minutes (" . floor($uptimeMinutes / 60) . "h " . ($uptimeMinutes % 60) . "m)\n";
+            return $uptimeMinutes;
+        } catch (\Exception $e) {
+            echo "❌ Error calculating uptime: " . $e->getMessage() . "\n";
+            return null;
+        }
+    }
+
+    /**
+     * Get VM list using Python pyVmomi script
+     * 
+     * Executes Python script to fetch VMs directly from ESXi hosts
+     * More reliable than REST API for getting complete VM information
+     * 
+     * @param string $outputFile JSON file path for output (default: /var/glx/weblog/vps_glx.json)
+     * @return array Array of VMs from JSON file, empty array on failure
+     */
+    public static function getVMListV2($outputFile = '/var/glx/weblog/vps_glx2.json') {
+        $pythonScript = '/var/www/html/task-cli/vmware/get-vm-info-pyVmomi.py';
+        
+        // Verify Python script exists
+        if (!file_exists($pythonScript)) {
+            echo "❌ Python script not found: $pythonScript\n";
+            return [];
+        }
+        
+        // Delete old JSON file if it exists
+        if (file_exists($outputFile)) {
+            if (@unlink($outputFile)) {
+                echo "🗑️  Deleted old file: $outputFile\n";
+            } else {
+                echo "⚠️  Could not delete old file: $outputFile\n";
+            }
+        }
+        
+        // Execute Python script with realtime output
+        // Use -u flag to make Python unbuffered (flush output immediately)
+        $command = "/var/www/html/task-cli/vmware/vmware_env/bin/python3 -u {$pythonScript} output={$outputFile}";
+        echo "🔄 Executing: {$command}\n";
+        echo "📡 Streaming output:\n";
+        
+        // Use passthru for direct realtime output streaming
+        $returnCode = 0;
+        passthru($command, $returnCode);
+        
+        // Check if execution was successful
+        if ($returnCode !== 0) {
+            echo "❌ Python script failed with return code: {$returnCode}\n";
+            return [];
+        }
+        
+        // Check if JSON file was created
+        if (!file_exists($outputFile)) {
+            echo "❌ Output file not created: {$outputFile}\n";
+            return [];
+        }
+        
+        // Verify file was created recently (within 15 seconds)
+        $fileModTime = filemtime($outputFile);
+        $currentTime = time();
+        $fileAge = $currentTime - $fileModTime;
+        
+        if ($fileAge > 15) {
+            echo "❌ Output file is stale (created {$fileAge} seconds ago, max 15s allowed)\n";
+            echo "   File path: {$outputFile}\n";
+            echo "   File mtime: " . date('Y-m-d H:i:s', $fileModTime) . "\n";
+            echo "   Current time: " . date('Y-m-d H:i:s', $currentTime) . "\n";
+            return [];
+        }
+        
+        echo "✓ File created {$fileAge} seconds ago (fresh data)\n";
+        
+        // Read and parse JSON file
+        try {
+            $jsonContent = file_get_contents($outputFile);
+            $vmsData = json_decode($jsonContent, true);
+            
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                echo "❌ JSON parse error: " . json_last_error_msg() . "\n";
+                return [];
+            }
+            
+            if (!is_array($vmsData)) {
+                echo "❌ Invalid JSON format (not an array)\n";
+                return [];
+            }
+            
+            // Convert array data to objects compatible with getVMInfo output
+            $vmsObjects = [];
+            foreach ($vmsData as $vmData) {
+                // Create object with vm_id property for compatibility
+                $vmObj = (object)$vmData;
+                // Also set 'vm' property (required by SyncVmwareInstancesCommand)
+                $vmObj->vm = $vmData['vm_id'];
+                $vmsObjects[] = $vmObj;
+            }
+            
+            echo "✅ Loaded " . count($vmsObjects) . " VMs from {$outputFile}\n";
+            return $vmsObjects;
+        } catch (\Exception $e) {
+            echo "❌ Error reading/parsing JSON: " . $e->getMessage() . "\n";
+            return [];
+        }
+    }
 }
+

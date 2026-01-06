@@ -1461,7 +1461,7 @@ input[data-field='name']{
 }
 
 
-.full_html_field{
+.full_html_field, .div_td {
     padding: 5px;
     font-size: small;
 }

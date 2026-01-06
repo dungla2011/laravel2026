@@ -11,8 +11,12 @@ from threading import Lock, Thread
 from datetime import datetime
 import json
 import time
+from pathlib import Path
 
 app = Flask(__name__)
+
+# Cấu hình đường dẫn lưu ảnh
+FACE_IMG_DIR = "/var/glx/weblog/face_img"
 
 # Debug function
 def log_request_info(endpoint_name):
@@ -25,6 +29,69 @@ def log_request_info(endpoint_name):
     else:
         print(f"🔍 [{endpoint_name}] Form data: {request.form.to_dict()}")
         print(f"🔍 [{endpoint_name}] Request data: {request.data}")
+
+def save_face_image(pil_img, prefix="face"):
+    """
+    Lưu ảnh vào folder FACE_IMG_DIR với timestamp
+    Args:
+        pil_img: PIL Image object
+        prefix: tiền tố tên file (mặc định: "face")
+    Returns:
+        str: đường dẫn file lưu được, hoặc None nếu lỗi
+    """
+    try:
+        # Tạo folder nếu chưa có
+        Path(FACE_IMG_DIR).mkdir(parents=True, exist_ok=True)
+        
+        # Tạo tên file với timestamp
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S_%f')[:-3]  # Lấy milliseconds
+        filename = f"{FACE_IMG_DIR}/{prefix}_{timestamp}.jpg"
+        
+        # Lưu ảnh
+        pil_img.save(filename, 'JPEG', quality=90)
+        print(f"✅ Face image saved: {filename}")
+        return filename
+    except Exception as e:
+        print(f"❌ Error saving face image: {str(e)}")
+        return None
+
+def cleanup_old_face_images():
+    """
+    Polling mỗi 1 phút, đếm file ảnh trong FACE_IMG_DIR
+    Nếu > 1000 thì xoá cũ nhất để còn 900 cái mới nhất
+    """
+    while True:
+        try:
+            time.sleep(60)  # Polling mỗi 1 phút
+            
+            # Lấy danh sách file .jpg trong FACE_IMG_DIR
+            face_img_path = Path(FACE_IMG_DIR)
+            if not face_img_path.exists():
+                continue
+            
+            # Lấy tất cả file .jpg
+            jpg_files = sorted(face_img_path.glob('*.jpg'), key=lambda x: x.stat().st_mtime)
+            file_count = len(jpg_files)
+            
+            print(f"🔍 Face images count: {file_count}")
+            
+            # Nếu > 1000 thì xoá cũ nhất để còn 900
+            if file_count > 1000:
+                files_to_delete = file_count - 900
+                print(f"⚠️  Too many files ({file_count}), deleting {files_to_delete} oldest files...")
+                
+                for i in range(files_to_delete):
+                    try:
+                        old_file = jpg_files[i]
+                        old_file.unlink()
+                        print(f"🗑️  Deleted: {old_file.name}")
+                    except Exception as e:
+                        print(f"❌ Error deleting {jpg_files[i].name}: {str(e)}")
+                
+                print(f"✅ Cleanup completed. Remaining: {file_count - files_to_delete} files")
+        
+        except Exception as e:
+            print(f"❌ Error in cleanup_old_face_images: {str(e)}")
 
 # URL API để lấy danh sách face vector
 FACE_LIST_URL = "https://events.dav.edu.vn/tool1/_site/event_mng/galaxy_face_detection/get-face-vector.php"
@@ -314,6 +381,10 @@ def detect_face():
         file.save(filename)
         # Đọc lại file vừa lưu
         pil_img = Image.open(filename).convert('RGB')
+        
+        # Lưu ảnh vào face_img folder
+        save_face_image(pil_img, prefix="detected")
+        
         img_np = cv2.cvtColor(np.array(pil_img), cv2.COLOR_RGB2BGR)
         # Phát hiện khuôn mặt trong ảnh gốc
         faces = face_analyzer.get(img_np)
@@ -420,6 +491,11 @@ if __name__ == '__main__':
 
     # Khởi động background cache updater tự động
     start_background_cache_updater()
+
+    # Khởi động thread cleanup ảnh cũ
+    cleanup_thread = Thread(target=cleanup_old_face_images, daemon=True)
+    cleanup_thread.start()
+    print("🧹 Face image cleanup thread started")
 
     # Lấy port từ biến môi trường, mặc định là 8080
     port = int(os.getenv('FLASK_PORT', 50000))

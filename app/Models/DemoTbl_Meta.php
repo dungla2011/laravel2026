@@ -30,20 +30,34 @@ class DemoTbl_Meta extends MetaOfTableInDb
 
     ///////////////////////////////////////////////////////////////////
     //Sample JOIN Other table, and Full Search
+/*
+    //Mẫu ok 12.2025
+    function getMapJoinFieldAlias()
+    {
+        return [
+            '_email' => 'users.email',
+        ];
+    }
+    function getSqlOrJoinExtraIndex(\Illuminate\Database\Eloquent\Builder &$x = null, $getSelect = 0)
+    {
+        return $x->leftJoin('users', 'user_id', '=', 'users.id')
+            ->addSelect([
+                'users.email AS _email',
+            ]);
+    }
+    public function getFullSearchJoinField()
+    {
+        return [
+            'users.email'  => "like",
+        ];
+    }
 
-//    function getSqlOrJoinExtraIndex(\Illuminate\Database\Eloquent\Builder &$x = null, $getSelect = 0)
-//    {
-//        return $x->leftJoin('users', 'user_id', '=', 'users.id')
-//            ->addSelect([
-//                'users.email AS _email',
-//            ]);
-//    }
-//
-//    function _email($obj, $val, $field)
-//    {
-//        return $val;
-//    }
+    function _email($obj, $val, $field)
+    {
+        return $val;
+    }
 
+  */
     public function getSqlOrJoinExtraIndex(\Illuminate\Database\Eloquent\Builder &$x = null, $getSelect = 0)
     {
         //Join với bảng users và bảng roles,  để lấy thông tin user và role

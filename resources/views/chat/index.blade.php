@@ -27,10 +27,38 @@
 
     <!-- Conversations List -->
     <div class="conversations-list" id="conversationsList">
+        @if ($zaloUserData && $zaloUserData['success'])
+            <!-- Zalo user conversation item (active) -->
+            <?php
+                $zaloPhone = $zaloUserData['phone'];
+                $zaloName = $zaloUserData['name'];
+                $zaloUid = $zaloUserData['uid'];
+                $threadId = $zaloUid;
+            ?>
+            <div class="conversation-item active"
+                 data-thread-id="{{ $threadId }}"
+                 data-partner-name="{{ $zaloName }}"
+                 data-zalo-uid="{{ $zaloUid }}"
+                 onclick="openZaloConversation('{{ $threadId }}', '{{ $zaloName }}', '{{ $zaloUid }}')">
+                <div class="conversation-info">
+                    <div class="conversation-name" style="color: #0a88c7; font-weight: bold;">
+                        📱 {{ $zaloName }}
+                    </div>
+                    <div class="conversation-last-message">
+                        {{ $zaloPhone }} - Zalo User
+                    </div>
+                </div>
+                <div class="conversation-time">
+                    Now
+                </div>
+            </div>
+        @endif
+
         @forelse($conversations as $conversation)
 
             <?php
 //            dump($conversation);
+
             ?>
 
             <div class="conversation-item"
@@ -139,6 +167,11 @@
                     </button>
                 </div>
 
+                <?php
+                if(\App\Models\SiteMng::getSiteId() == 36)
+                {
+                ?>
+
                 <textarea class="chat-input"
                           placeholder="Nhập tin nhắn..."
                           rows="1"
@@ -147,6 +180,12 @@
                 <button class="chat-action-btn send-btn" id="sendBtn">
                     <i class="fas fa-paper-plane"></i>
                 </button>
+
+                <?php
+                }
+                ?>
+
+
             </div>
 
             <!-- Hidden file inputs -->
@@ -362,6 +401,34 @@ $(document).ready(function() {
         messageRefreshInterval = setInterval(function() {
             loadNewMessages(threadId);
         }, 5000);
+    };
+
+    // Open Zalo conversation
+    window.openZaloConversation = function(threadId, partnerName, zaloUid) {
+        // Update active conversation in sidebar
+        $('.conversation-item').removeClass('active');
+        $(`.conversation-item[data-thread-id="${threadId}"]`).addClass('active');
+
+        // Set current conversation data
+        ChatApp.currentThreadId = threadId;
+        ChatApp.currentPartnerId = zaloUid; // Zalo UID
+
+        // Show chat interface
+        $('#welcomeScreen').hide();
+        $('#chatInterface').show();
+
+        // Update chat header
+        $('#chatPartnerName').text(partnerName || 'Unknown');
+
+        // Load messages from thread (hoặc hiện "chưa có tin nhắn")
+        $('#chatMessages').html('<div class="text-center p-4 text-muted">Bắt đầu cuộc trò chuyện mới với Zalo user</div>');
+
+        // Clear previous interval
+        if (messageRefreshInterval) {
+            clearInterval(messageRefreshInterval);
+        }
+
+        console.log('✅ Opened Zalo conversation:', { threadId, partnerName, zaloUid });
     };
 
     function loadMessages(threadId, page = 1) {
@@ -664,16 +731,27 @@ $(document).ready(function() {
             to_user_id: this.currentPartnerId
         })
         .done(function(response) {
-            tempMessage.remove();
-            // Ensure the message is marked as self message
-            response.message.is_self = 1;
-            const messageHtml = createTextMessage(response.message, 'sent');
-            $('#chatMessages').append(messageHtml);
-            ChatApp.scrollToBottom();
+            // Response có thể từ database callback
+            const messageData = response.database?.message || response.message;
+
+            if (messageData) {
+                // Update tempMessage với dữ liệu thực từ server
+                messageData.is_self = 1;
+                const messageHtml = createTextMessage(messageData, 'sent');
+                tempMessage.replaceWith(messageHtml);
+                ChatApp.scrollToBottom();
+            }
+
+            // Log kết quả Zalo nếu có
+            if (response.zalo?.success) {
+                console.log('✅ Zalo sent:', response.zalo.msgId);
+            }
         })
-        .fail(function() {
+        .fail(function(xhr) {
+            // Giữ tempMessage nhưng đổi màu sang đỏ
             tempMessage.find('.message-content').css('background-color', '#dc3545');
             tempMessage.find('.message-content').append('<br><small>Gửi thất bại</small>');
+            console.error('Error:', xhr.responseJSON);
         });
     };
 
