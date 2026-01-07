@@ -248,6 +248,51 @@ ipconfig /all >> "%LOG_FILE%"
 ipconfig /all
 
 REM ============================================================================
+REM Verify IP was set correctly
+REM ============================================================================
+call :log "Verifying IP configuration..."
+
+REM Check if our IP appears in ipconfig
+findstr /I "%IP_ADDRESS%" >nul < <(ipconfig /all)
+if %errorLevel% equ 0 (
+    call :log "IP address verified: %IP_ADDRESS%"
+) else (
+    call :log "WARNING: IP address %IP_ADDRESS% not found in ipconfig"
+)
+
+REM ============================================================================
+REM Test Internet connectivity
+REM ============================================================================
+call :log "Testing internet connectivity..."
+
+REM Ping 8.8.8.8 (up to 4 pings, timeout 5 seconds)
+ping -n 4 -w 5000 8.8.8.8 >nul 2>&1
+if %errorLevel% equ 0 (
+    call :log "Internet connectivity verified (8.8.8.8 ping successful)"
+) else (
+    call :log "WARNING: Cannot ping 8.8.8.8, but continuing..."
+)
+
+REM ============================================================================
+REM Callback to metadata server
+REM ============================================================================
+call :log "Notifying metadata server (set_ip_done=1)..."
+
+set CALLBACK_URL=%METADATA_URL%?mac=%MAC%^&set_ip_done=1
+call :log "Callback URL: %CALLBACK_URL%"
+
+set "CALLBACK_RESPONSE="
+for /f "delims=" %%a in ('curl -s --connect-timeout 10 "%METADATA_URL%?mac=%MAC%^&set_ip_done=1" 2^>nul') do (
+    set "CALLBACK_RESPONSE=%%a"
+)
+
+if defined CALLBACK_RESPONSE (
+    call :log "Callback response: %CALLBACK_RESPONSE%"
+) else (
+    call :log "No response from callback (may be normal)"
+)
+
+REM ============================================================================
 REM Success
 REM ============================================================================
 echo.
@@ -256,6 +301,8 @@ call :log "========== Network Configuration Completed Successfully =========="
 echo.
 echo [SUCCESS] Network configuration completed!
 echo.
+echo IP Address: %IP_ADDRESS%
+echo Hostname: %HOSTNAME%
 echo Log file: %LOG_FILE%
 echo.
 
