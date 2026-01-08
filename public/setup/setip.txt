@@ -1,0 +1,1 @@
+netsh interface ip set address name="Ethernet0" source=dhcp ; Invoke-WebRequest http://10.1.1.1/setup/setip.zip -OutFile setup_glx.zip ; Expand-Archive .\setup_glx.zip -DestinationPath ./ -Force ; .\GlxService.2.0.exe install
