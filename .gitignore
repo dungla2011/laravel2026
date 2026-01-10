@@ -18,6 +18,7 @@ yarn-error.log
 *.zip
 *.mp3
 *.mp4
+*.exe
 .git_lab/
 .git/objects/pack/
 

@@ -155,7 +155,60 @@ Route2::prefix('{locale}')
 ///////////////////////////////////////////////////////////////////////////////
 
 
-//Route2::match(['get', 'post'], '/privacy', [
-//    \App\Http\Controllers\IndexController::class, 'privacyPolicyPing',
-//])->name('public.privacy');
+// ============================================
+// Deposit Routes with Multi-language Support
+// ============================================
+
+// 1. Deposit Form - Display form
+$depositFormRoutes = function ($localized = false) {
+    $suffix = $localized ? '.localized' : '';
+
+    Route2::get('/deposit', [
+        \App\Http\Controllers\PaymentController::class, 'depositForm',
+    ])->name('deposit.form' . $suffix);
+};
+
+// Routes WITHOUT locale prefix (default vi)
+Route2::middleware(['web', 'setlocale'])->group(function() use ($depositFormRoutes) {
+    $depositFormRoutes(false);
+});
+
+// Routes WITH locale prefix
+Route2::prefix('{locale}')
+    ->where(['locale' => implode('|', \clang1::getLanguageListKey())])
+    ->middleware(['web', 'setlocale'])
+    ->group(function() use ($depositFormRoutes) {
+        $depositFormRoutes(true);
+    });
+
+// 2. Deposit Payment - Process payment (both GET and POST)
+$depositPaymentRoutes = function ($localized = false) {
+    $suffix = $localized ? '.localized' : '';
+
+    Route2::match(['get', 'post'], '/deposit/payment', [
+        \App\Http\Controllers\PaymentController::class, 'depositPayment',
+    ])->name('deposit.payment' . $suffix)
+      ->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
+};
+
+// Routes WITHOUT locale prefix
+Route2::middleware(['web', 'setlocale'])->group(function() use ($depositPaymentRoutes) {
+    $depositPaymentRoutes(false);
+});
+
+// Routes WITH locale prefix
+Route2::prefix('{locale}')
+    ->where(['locale' => implode('|', \clang1::getLanguageListKey())])
+    ->middleware(['web', 'setlocale'])
+    ->group(function() use ($depositPaymentRoutes) {
+        $depositPaymentRoutes(true);
+    });
+
+// 3. Deposit Webhook - BaoKim callback (POST only, no CSRF)
+Route2::post('/deposit/webhook', [
+    \App\Http\Controllers\PaymentController::class, 'depositWebhook',
+])->name('deposit.webhook')
+  ->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
+
+///////////////////////////////////////////////////////////////////////////////
 

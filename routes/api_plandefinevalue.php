@@ -8,6 +8,30 @@ Route2::prefix('/plan-define-value')->group(function () {
     $nameModule = 'plan-define-value';
     $modelUsing_ = \App\Models\PlanDefineValue::class;
 
+
+    ///////////////////////////////
+    $routeName = 'api.'.$nameModule.'.update_val';
+    $r = Route2::get('/update_val', [
+        \App\Http\ControllerApi\PlanNameControllerApi::class, 'update_val',
+    ])->name($routeName);
+    if ($r instanceof Route2);
+    $r->middleware('can:'.$routeName);
+    $r->route_group_desc_ = $route_group_desc;
+    $r->route_desc_ = 'Lấy thông tin plan-define-value';
+    $r->modelUsing_ = $modelUsing_;
+
+    $routeName = 'api.'.$nameModule.'.get_plan_info';
+    $r = Route2::get('/get_plan_info', [
+        \App\Http\ControllerApi\PlanNameControllerApi::class, 'get_plan_info',
+    ])->name($routeName);
+    if ($r instanceof Route2);
+    $r->middleware('can:'.$routeName);
+    $r->route_group_desc_ = $route_group_desc;
+    $r->route_desc_ = 'Lấy thông tin plan-define-value';
+    $r->modelUsing_ = $modelUsing_;
+
+    ///////////////////////////////
+
     $cls = \App\Http\ControllerApi\PlanDefineValueControllerApi::class;
 
     $routeName = 'api.'.$nameModule.'.list';
@@ -23,30 +47,6 @@ Route2::prefix('/plan-define-value')->group(function () {
     $routeName = 'api.'.$nameModule.'.get';
     $r = Route2::get('/get/{id}', [
         $cls, 'get',
-    ])->name($routeName);
-    if ($r instanceof Route2);
-    $r->middleware('can:'.$routeName);
-    $r->route_group_desc_ = $route_group_desc;
-    $r->route_desc_ = 'Lấy thông tin plan-define-value';
-    $r->modelUsing_ = $modelUsing_;
-
-
-
-    $routeName = 'api.'.$nameModule.'.update_val';
-    $r = Route2::get('/update_val', [
-        $cls, 'update_val',
-    ])->name($routeName);
-    if ($r instanceof Route2);
-    $r->middleware('can:'.$routeName);
-    $r->route_group_desc_ = $route_group_desc;
-    $r->route_desc_ = 'Lấy thông tin plan-define-value';
-    $r->modelUsing_ = $modelUsing_;
-
-
-
-    $routeName = 'api.'.$nameModule.'.get_plan_info';
-    $r = Route2::get('/get_plan_info', [
-        $cls, 'get_plan_info',
     ])->name($routeName);
     if ($r instanceof Route2);
     $r->middleware('can:'.$routeName);

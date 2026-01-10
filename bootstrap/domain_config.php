@@ -214,6 +214,12 @@ return $GLOBALS['mMapDomainDb'] = [
         'use_own_meta_table'=>1,
         'force_fallback_language'=>'vi',
         'dbadmin' => "/phpmyadmin6868",
+        'enable_multi_language' =>1
+    ],
+    '10.1.1.1' => ['siteid' => 63, 'db_name' => 'DB_RM_HOST-8', 'layout_name' => 'glxv3',
+        'use_own_meta_table'=>1,
+        'force_fallback_language'=>'vi',
+        'dbadmin' => "/phpmyadmin6868",
         'enable_multi_language' =>1],
 
     'localhost' => ['siteid' => 64, 'db_name' => 'glx2026', 'layout_name' => 'glxv3',

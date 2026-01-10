@@ -1,0 +1,36 @@
+-- Table: vps_usages
+-- Generated: 2026-01-09 12:52:34
+
++-----------------------+---------------------+------+-----+---------------------+-------------------------------+
+| Field                 | Type                | Null | Key | Default             | Extra                         |
++-----------------------+---------------------+------+-----+---------------------+-------------------------------+
+| id                    | bigint(20) unsigned | NO   | PRI |                     | auto_increment                |
+| name                  | varchar(64)         | YES  |     |                     |                               |
+| status                | smallint(6)         | YES  |     | 1                   |                               |
+| user_id               | bigint(20)          | YES  | MUL |                     |                               |
+| instance_id           | bigint(20)          | NO   | MUL |                     |                               |
+| vmware_vm_id          | varchar(255)        | YES  | MUL |                     |                               |
+| cpu                   | int(11)             | NO   |     | 0                   |                               |
+| ram_gb                | int(11)             | NO   |     | 0                   |                               |
+| disk_gb               | int(11)             | NO   |     | 0                   |                               |
+| bios_uuid             | varchar(64)         | YES  | MUL |                     |                               |
+| instance_uuid         | varchar(64)         | YES  | MUL |                     |                               |
+| timestamp_minute      | datetime            | NO   | MUL |                     |                               |
+| number_ip_address     | int(11)             | YES  |     | 0                   |                               |
+| price_config          | longtext            | YES  |     |                     |                               |
+| calculated_fee        | decimal(15,4)       | NO   |     | 0.0000              |                               |
+| power_state           | varchar(32)         | YES  |     | running             |                               |
+| full_info             | longtext            | YES  |     |                     |                               |
+| created_at            | datetime            | YES  | MUL | current_timestamp() |                               |
+| updated_at            | datetime            | YES  |     | current_timestamp() | on update current_timestamp() |
+| deleted_at            | datetime            | YES  | MUL |                     |                               |
+| log                   | text                | YES  |     |                     |                               |
+| count_update_status   | bigint(20)          | NO   |     | 0                   |                               |
+| lastest_time_the_same | datetime            | YES  |     |                     |                               |
+| list_ip_address       | text                | YES  |     |                     |                               |
+| last_found_ip         | datetime            | YES  |     |                     |                               |
+| mac_address           | text                | YES  |     |                     |                               |
+| uptime_minutes        | bigint(20)          | NO   |     | 0                   |                               |
++-----------------------+---------------------+------+-----+---------------------+-------------------------------+
+
+27 columns

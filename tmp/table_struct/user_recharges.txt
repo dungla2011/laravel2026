@@ -1,0 +1,22 @@
+-- Table: user_recharges
+-- Generated: 2026-01-10 15:41:23
+
++------------------+---------------------+------+-----+---------------+----------------+
+| Field            | Type                | Null | Key | Default       | Extra          |
++------------------+---------------------+------+-----+---------------+----------------+
+| id               | bigint(20) unsigned | NO   | PRI |               | auto_increment |
+| user_id          | bigint(20)          | NO   | MUL |               |                |
+| amount           | decimal(15,2)       | NO   |     |               |                |
+| payment_method   | varchar(255)        | NO   |     | bank_transfer |                |
+| transaction_code | varchar(255)        | YES  | UNI |               |                |
+| status           | varchar(255)        | NO   | MUL | pending       |                |
+| paid_at          | timestamp           | YES  | MUL |               |                |
+| completed_at     | timestamp           | YES  |     |               |                |
+| expired_at       | timestamp           | YES  |     |               |                |
+| gateway_response | longtext            | YES  |     |               |                |
+| ip_address       | varchar(255)        | YES  |     |               |                |
+| created_at       | timestamp           | YES  | MUL |               |                |
+| updated_at       | timestamp           | YES  |     |               |                |
++------------------+---------------------+------+-----+---------------+----------------+
+
+13 columns

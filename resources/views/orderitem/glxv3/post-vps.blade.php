@@ -196,7 +196,7 @@ $formatPriceK = function($priceK) {
         const params = new URLSearchParams(window.location.search);
 
         // POST to price-vps-confirm.php with AJAX header
-        fetch('/_site/hosting_site/price-vps-confirm.php', {
+        fetch('/_site/hosting_site/create-vps-confirm.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',

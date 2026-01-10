@@ -473,6 +473,7 @@ def create_vps_thread(vps_id, init_os_id, vps_name):
                     conn.close()
         
         # Connect to vCenter for hardware resize and power on
+        mac_addresses = []
         try:
             context = ssl._create_unverified_context()
             si = SmartConnect(
@@ -487,6 +488,14 @@ def create_vps_thread(vps_id, init_os_id, vps_name):
                 vm = get_obj(content, [vim.VirtualMachine], name=dest_vm_name)
                 
                 if vm:
+                    # Get MAC addresses from VM
+                    print(f"\n📝 Getting MAC addresses...")
+                    for device in vm.config.hardware.device:
+                        if isinstance(device, vim.vm.device.VirtualEthernetCard):
+                            if hasattr(device, 'macAddress') and device.macAddress:
+                                mac_addresses.append(device.macAddress.lower())
+                                print(f"  ✅ Found MAC: {device.macAddress.lower()}")
+                    
                     # Resize hardware if needed
                     if vps_hw and (vps_hw.get('cpu') or vps_hw.get('ram_gb') or vps_hw.get('disk_gb')):
                         print(f"\n⚙️  Configuring hardware resources...")
@@ -562,11 +571,16 @@ def create_vps_thread(vps_id, init_os_id, vps_name):
             if conn:
                 try:
                     with conn.cursor() as cursor:
+                        mac_address_str = ','.join(mac_addresses) if mac_addresses else None
+                        if mac_address_str:
+                            print(f"  💾 Saving MAC addresses to DB: {mac_address_str}")
+                        
                         sql = """
                         UPDATE vps_instances 
                         SET create_status = %s, 
                             vmware_vm_id = %s,
                             bios_uuid = %s,
+                            init_mac_address = %s,
                             create_vps_progress = %s
                         WHERE id = %s
                         """
@@ -574,6 +588,7 @@ def create_vps_thread(vps_id, init_os_id, vps_name):
                             'vps_create_done',
                             clone_result['new_vm_id'],
                             clone_result['new_vm_id'],
+                            mac_address_str,
                             json.dumps(final_progress),
                             vps_id
                         ))
