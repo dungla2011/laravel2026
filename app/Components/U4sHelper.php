@@ -383,7 +383,7 @@ class U4sHelper
         $check = @file_get_contents($urlCheck, false, $ctx);
 
         if (!$check) {
-            echo("\nKhông thể kết nối File Server: $server!");
+            echo("\nKhông thể kết nối File Server: $server! $urlCheck");
             return false;
         }
 

@@ -255,6 +255,9 @@ class FileUpload_Meta extends MetaOfTableInDb
 
         }
 
+        if(getDomainHostName() == '4share.vn')
+            $linkDl = "/f/$obj->link1";
+
         if (! $mime || strstr($mime, 'image') !== false) {
             $img = "$ok <img data-code-pos='ppp1668517832984' data-src='$linkThumb' class='file_link_cloud'
  style='margin-top:5px; max-height: 120px;max-width: 120px;' src='$linkThumb'/> ";
@@ -270,6 +273,8 @@ class FileUpload_Meta extends MetaOfTableInDb
 
         return " <div style='text-align: center'> <a href='$linkDl' target='_blank'>$img </a> </div>";
     }
+
+
 
     public function requireViewPos1()
     {

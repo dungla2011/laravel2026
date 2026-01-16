@@ -68,7 +68,7 @@
                         </div>
                         <div class="card-body">
                             <p class="text-muted small">{{ Str::limit($plan->description, 100) }}</p>
-                            
+
                             <!-- Resources -->
                             @if($plan->resources)
                                 <div class="mb-3">
@@ -133,7 +133,7 @@
                 </div>
                 @endforeach
             </div>
-            
+
             <!-- Pagination -->
             <div class="d-flex justify-content-center mt-4">
                 {{ $plans->links() }}
@@ -165,17 +165,17 @@
                     <div class="row">
                         <div class="col-md-6">
                             <h6 class="text-primary mb-3">Basic Information</h6>
-                            
+
                             <div class="mb-3">
                                 <label class="form-label">Plan Name *</label>
                                 <input type="text" class="form-control" name="name" required placeholder="e.g., VPS Basic">
                             </div>
-                            
+
                             <div class="mb-3">
                                 <label class="form-label">Description *</label>
                                 <textarea class="form-control" name="description" rows="3" required placeholder="Describe your service plan"></textarea>
                             </div>
-                            
+
                             <div class="mb-3">
                                 <label class="form-label">Category *</label>
                                 <select class="form-select" name="category" required>
@@ -188,10 +188,10 @@
                                 </select>
                             </div>
                         </div>
-                        
+
                         <div class="col-md-6">
                             <h6 class="text-primary mb-3">Default Resources</h6>
-                            
+
                             <div class="row">
                                 <div class="col-6 mb-3">
                                     <label class="form-label">CPU (cores)</label>
@@ -220,12 +220,12 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <hr>
-                    
+
                     <h6 class="text-primary mb-3">Pricing Configuration</h6>
                     <p class="text-muted small">Set prices for each resource type per billing period (VND)</p>
-                    
+
                     <div class="table-responsive">
                         <table class="table table-bordered">
                             <thead class="table-light">
@@ -283,7 +283,7 @@
                             </tbody>
                         </table>
                     </div>
-                    
+
                     <div class="alert alert-info">
                         <i class="fas fa-info-circle me-2"></i>
                         <strong>Pricing Tips:</strong>
@@ -338,17 +338,17 @@
                     <div class="row">
                         <div class="col-md-6">
                             <h6 class="text-primary mb-3">Basic Information</h6>
-                            
+
                             <div class="mb-3">
                                 <label class="form-label">Plan Name *</label>
                                 <input type="text" class="form-control" id="editPlanName" name="name" required>
                             </div>
-                            
+
                             <div class="mb-3">
                                 <label class="form-label">Description *</label>
                                 <textarea class="form-control" id="editPlanDescription" name="description" rows="3" required></textarea>
                             </div>
-                            
+
                             <div class="mb-3">
                                 <label class="form-label">Category *</label>
                                 <select class="form-select" id="editPlanCategory" name="category" required>
@@ -360,7 +360,7 @@
                                     <option value="storage">Storage</option>
                                 </select>
                             </div>
-                            
+
                             <div class="mb-3">
                                 <label class="form-label">Status</label>
                                 <select class="form-select" id="editPlanStatus" name="status">
@@ -369,10 +369,10 @@
                                 </select>
                             </div>
                         </div>
-                        
+
                         <div class="col-md-6">
                             <h6 class="text-primary mb-3">Default Resources</h6>
-                            
+
                             <div class="row">
                                 <div class="col-6 mb-3">
                                     <label class="form-label">CPU (cores)</label>
@@ -401,12 +401,12 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <hr>
-                    
+
                     <h6 class="text-primary mb-3">Pricing Configuration</h6>
                     <p class="text-muted small">Update prices for each resource type per billing period (VND)</p>
-                    
+
                     <div class="table-responsive">
                         <table class="table table-bordered">
                             <thead class="table-light">
@@ -464,7 +464,7 @@
                             </tbody>
                         </table>
                     </div>
-                    
+
                     <div class="alert alert-warning">
                         <i class="fas fa-exclamation-triangle me-2"></i>
                         <strong>Warning:</strong> Changing pricing will affect new services only. Existing services will keep their current pricing until next billing cycle.
@@ -488,24 +488,24 @@
 // Handle create plan form submission
 document.getElementById('createPlanForm').addEventListener('submit', function(e) {
     e.preventDefault();
-    
+
     const formData = new FormData(this);
     const data = {};
-    
+
     // Convert FormData to nested object
     for (let [key, value] of formData.entries()) {
         if (key.includes('[') && key.includes(']')) {
             // Handle nested keys like pricing[cpu][minute]
             const keys = key.split(/[\[\]]+/).filter(k => k);
             let current = data;
-            
+
             for (let i = 0; i < keys.length - 1; i++) {
                 if (!current[keys[i]]) {
                     current[keys[i]] = {};
                 }
                 current = current[keys[i]];
             }
-            
+
             // Only add if value is not empty
             if (value && value.trim() !== '') {
                 current[keys[keys.length - 1]] = isNaN(value) ? value : parseFloat(value);
@@ -514,19 +514,19 @@ document.getElementById('createPlanForm').addEventListener('submit', function(e)
             data[key] = value;
         }
     }
-    
+
     // Validate required fields
     if (!data.name || !data.description || !data.category) {
         alert('Please fill in all required fields (Name, Description, Category)');
         return;
     }
-    
+
     // Show loading state
     const submitBtn = this.querySelector('button[type="submit"]');
     const originalText = submitBtn.innerHTML;
     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Creating...';
     submitBtn.disabled = true;
-    
+
     // Submit to API
     fetch('/api/service-manager/plans', {
         method: 'POST',
@@ -559,34 +559,34 @@ document.getElementById('createPlanForm').addEventListener('submit', function(e)
 // Handle edit plan form submission
 document.getElementById('editPlanForm').addEventListener('submit', function(e) {
     e.preventDefault();
-    
+
     const formData = new FormData(this);
     const data = {};
     const planId = document.getElementById('editPlanId').value;
-    
+
     console.log('Form submission - Plan ID:', planId); // Debug log
-    
+
     if (!planId || planId === '') {
         alert('Error: Plan ID is missing. Please try again.');
         return;
     }
-    
+
     // Convert FormData to nested object
     for (let [key, value] of formData.entries()) {
         if (key === 'plan_id') continue; // Skip plan_id
-        
+
         if (key.includes('[') && key.includes(']')) {
             // Handle nested keys like pricing[cpu][minute]
             const keys = key.split(/[\[\]]+/).filter(k => k);
             let current = data;
-            
+
             for (let i = 0; i < keys.length - 1; i++) {
                 if (!current[keys[i]]) {
                     current[keys[i]] = {};
                 }
                 current = current[keys[i]];
             }
-            
+
             // Only add if value is not empty
             if (value && value.trim() !== '') {
                 current[keys[keys.length - 1]] = isNaN(value) ? value : parseFloat(value);
@@ -599,24 +599,24 @@ document.getElementById('editPlanForm').addEventListener('submit', function(e) {
             }
         }
     }
-    
+
     console.log('Data to be sent:', data); // Debug log
-    
+
     // Validate required fields
     if (!data.name || !data.description || !data.category) {
         alert('Please fill in all required fields (Name, Description, Category)');
         return;
     }
-    
+
     // Show loading state
     const submitBtn = this.querySelector('button[type="submit"]');
     const originalText = submitBtn.innerHTML;
     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Updating...';
     submitBtn.disabled = true;
-    
+
     const apiUrl = `/api/service-manager/plans/${planId}`;
     console.log('API URL:', apiUrl); // Debug log
-    
+
     // Submit to API
     fetch(apiUrl, {
         method: 'PUT',
@@ -671,7 +671,7 @@ function viewPlan(id) {
                         <div class="col-md-6">
                             <h6>Resources</h6>
                             <table class="table table-sm">
-                                ${Object.entries(plan.resources || {}).map(([key, value]) => 
+                                ${Object.entries(plan.resources || {}).map(([key, value]) =>
                                     `<tr><td><strong>${key}:</strong></td><td>${value}</td></tr>`
                                 ).join('')}
                             </table>
@@ -730,14 +730,14 @@ function editPlan(id) {
             id = clickedButton.getAttribute('data-plan-id');
         }
     }
-    
+
     console.log('Edit plan called with ID:', id); // Debug log
-    
+
     if (!id || id === 'undefined' || id === '') {
         alert('Error: Unable to determine plan ID. Please try again.');
         return;
     }
-    
+
     // Load plan data and populate edit form
     fetch(`/api/service-manager/plans/${id}`)
         .then(response => response.json())
@@ -745,14 +745,14 @@ function editPlan(id) {
             if (data.success) {
                 const plan = data.data;
                 console.log('Plan data loaded:', plan); // Debug log
-                
+
                 // Populate basic information - IMPORTANT: Set the ID first
                 document.getElementById('editPlanId').value = id; // Use the passed ID parameter
                 document.getElementById('editPlanName').value = plan.name || '';
                 document.getElementById('editPlanDescription').value = plan.description || '';
                 document.getElementById('editPlanCategory').value = plan.category || '';
                 document.getElementById('editPlanStatus').value = plan.status ? '1' : '0';
-                
+
                 // Populate resources
                 const resources = plan.resources || {};
                 document.getElementById('editResourceCpu').value = resources.cpu || '';
@@ -761,55 +761,55 @@ function editPlan(id) {
                 document.getElementById('editResourceNetwork').value = resources.network || '';
                 document.getElementById('editResourceIp').value = resources.ip || '';
                 document.getElementById('editResourceDatabases').value = resources.databases || '';
-                
+
                 // Populate pricing
                 const pricing = plan.pricing || {};
-                
+
                 // CPU pricing
                 const cpuPricing = pricing.cpu || {};
                 document.getElementById('editPricingCpuMinute').value = cpuPricing.minute || '';
                 document.getElementById('editPricingCpuHour').value = cpuPricing.hour || '';
                 document.getElementById('editPricingCpuDay').value = cpuPricing.day || '';
                 document.getElementById('editPricingCpuMonth').value = cpuPricing.month || '';
-                
+
                 // RAM pricing
                 const ramPricing = pricing.ram || {};
                 document.getElementById('editPricingRamMinute').value = ramPricing.minute || '';
                 document.getElementById('editPricingRamHour').value = ramPricing.hour || '';
                 document.getElementById('editPricingRamDay').value = ramPricing.day || '';
                 document.getElementById('editPricingRamMonth').value = ramPricing.month || '';
-                
+
                 // Disk pricing
                 const diskPricing = pricing.disk || {};
                 document.getElementById('editPricingDiskMinute').value = diskPricing.minute || '';
                 document.getElementById('editPricingDiskHour').value = diskPricing.hour || '';
                 document.getElementById('editPricingDiskDay').value = diskPricing.day || '';
                 document.getElementById('editPricingDiskMonth').value = diskPricing.month || '';
-                
+
                 // Network pricing
                 const networkPricing = pricing.network || {};
                 document.getElementById('editPricingNetworkMinute').value = networkPricing.minute || '';
                 document.getElementById('editPricingNetworkHour').value = networkPricing.hour || '';
                 document.getElementById('editPricingNetworkDay').value = networkPricing.day || '';
                 document.getElementById('editPricingNetworkMonth').value = networkPricing.month || '';
-                
+
                 // IP pricing
                 const ipPricing = pricing.ip || {};
                 document.getElementById('editPricingIpMinute').value = ipPricing.minute || '';
                 document.getElementById('editPricingIpHour').value = ipPricing.hour || '';
                 document.getElementById('editPricingIpDay').value = ipPricing.day || '';
                 document.getElementById('editPricingIpMonth').value = ipPricing.month || '';
-                
+
                 // Database pricing
                 const databasesPricing = pricing.databases || {};
                 document.getElementById('editPricingDatabasesMinute').value = databasesPricing.minute || '';
                 document.getElementById('editPricingDatabasesHour').value = databasesPricing.hour || '';
                 document.getElementById('editPricingDatabasesDay').value = databasesPricing.day || '';
                 document.getElementById('editPricingDatabasesMonth').value = databasesPricing.month || '';
-                
+
                 // Verify the ID is set correctly
                 console.log('Plan ID set to:', document.getElementById('editPlanId').value);
-                
+
                 // Show the edit modal
                 new bootstrap.Modal(document.getElementById('editPlanModal')).show();
             } else {
@@ -851,18 +851,18 @@ function deletePlan(id) {
 // Auto-calculate pricing based on minute rate
 function setupPricingCalculator() {
     const minuteInputs = document.querySelectorAll('input[name*="[minute]"]');
-    
+
     minuteInputs.forEach(input => {
         input.addEventListener('input', function() {
             const resourceType = this.name.match(/pricing\[(\w+)\]\[minute\]/)[1];
             const minuteRate = parseFloat(this.value) || 0;
-            
+
             if (minuteRate > 0) {
                 // Auto-fill other periods based on minute rate
                 const hourInput = document.querySelector(`input[name="pricing[${resourceType}][hour]"]`);
                 const dayInput = document.querySelector(`input[name="pricing[${resourceType}][day]"]`);
                 const monthInput = document.querySelector(`input[name="pricing[${resourceType}][month]"]`);
-                
+
                 if (hourInput && !hourInput.value) {
                     hourInput.value = (minuteRate * 60).toFixed(2);
                 }
@@ -882,4 +882,4 @@ document.getElementById('createPlanModal').addEventListener('shown.bs.modal', fu
     setupPricingCalculator();
 });
 </script>
-@endpush 
+@endpush

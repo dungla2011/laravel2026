@@ -18,7 +18,7 @@ $keyAndName = config('vps_config.specs');
 </style>
 
 <div style="font-size: 100%">
-    <div class="container pt-3">
+    <div class="container p-3">
         <div class="row g-4">
             @php
                 // Lấy tất cả VPS plans từ bảng vps_plans
@@ -40,9 +40,9 @@ $keyAndName = config('vps_config.specs');
 
                     // Tính giá lần đầu dựa vào giá trị specs từ plan
                     $initialPriceVND = \App\Models\Product_Meta::calculateVpsPrice(
-                        $plan->cpu, 
-                        $plan->ram_gb, 
-                        $plan->disk_gb, 
+                        $plan->cpu,
+                        $plan->ram_gb,
+                        $plan->disk_gb,
                         200,  // network share default
                         $plan->network_mbit,
                         $plan->number_ip_address
@@ -51,7 +51,7 @@ $keyAndName = config('vps_config.specs');
                     $initialPriceFormatted = number_format($initialPriceVND, 0, ',', '.');
                 @endphp
 
-                <div class="col-md-6 col-lg-3">
+                <div class="col-md-6 col-lg-3 mb-8">
                     <div class="card h-100 shadow-sm border-0 hover-shadow transition-all card-item-price" style="cursor: pointer; transform: translateY(-5px);
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;">
                         <!-- Card Header -->
@@ -67,6 +67,11 @@ $keyAndName = config('vps_config.specs');
                                     @php
                                         $defaultValue = $specValues[$attrName] ?? $attrConfig['min'];
                                         $isDisabled = $attrConfig['disable_change'] ?? false;
+
+                                        $isHide  = $attrConfig['is_hide'] ?? false;
+                                        if($isHide)
+                                            continue;
+
                                     @endphp
                                     <div class="spec-item d-flex justify-content-between align-items-center py-2 border-bottom" data-spec-name="{{ $attrName }}">
                                         <span class="spec-label font-weight-500">{!!  $attrConfig['desc'] !!}</span>

@@ -33,19 +33,19 @@ class VpsUsageFeeService
 
         // Split IPs by comma
         $ips = array_filter(array_map('trim', explode(',', $ipListString)));
-        
+
         $internetIpCount = 0;
-        
+
         foreach ($ips as $ip) {
             // Check if IP is local/private
             if (self::isLocalIP($ip)) {
                 continue; // Skip local IPs - they are free
             }
-            
+
             // Count internet IPs
             $internetIpCount++;
         }
-        
+
         // First internet IP is free, charge for the rest
         return max(0, $internetIpCount - 1);
     }
@@ -62,27 +62,27 @@ class VpsUsageFeeService
         if (preg_match('/^192\.168\./', $ip)) {
             return true;
         }
-        
+
         // 10.0.0.0/8
         if (preg_match('/^10\./', $ip)) {
             return true;
         }
-        
+
         // 172.16.0.0/12
         if (preg_match('/^172\.(1[6-9]|2[0-9]|3[01])\./', $ip)) {
             return true;
         }
-        
+
         // 127.0.0.0/8 (localhost)
         if (preg_match('/^127\./', $ip)) {
             return true;
         }
-        
+
         // 169.254.0.0/16 (link-local)
         if (preg_match('/^169\.254\./', $ip)) {
             return true;
         }
-        
+
         return false;
     }
 
@@ -164,7 +164,7 @@ class VpsUsageFeeService
         // ]);
 
 
-        echo ("\nVPS fee cal: CPU = $cpu cores, RAM = $ramGb GB, Disk = $diskGb GB, Duration = $durationMinutes minutes => Fee = " . round($fee, 4) . " K VND");
+        echo ("\nVPS1 fee cal: CPU = $cpu cores, RAM = $ramGb GB, Disk = $diskGb GB, Duration = $durationMinutes minutes => Fee = " . round($fee, 4) . " K VND");
 
         return round($fee, 4);
     }

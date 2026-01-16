@@ -9,6 +9,8 @@ return [
             'free' => 0,
             'step' => 1,
             'price' => 50,  // K (thousands)
+            //'is_hide' => false,
+            //'disable_change' => true,
         ],
         'n_ram_gb' => [
             'desc' => "Memory <br><span style='font-size: 80%'>(GB)</span>",
@@ -34,23 +36,27 @@ return [
             'free' => 1,
             'step' => 1,
             'price' => 50,  // K (thousands)
+            'disable_change' => true,
+            'is_hide' => true,
         ],
         'n_network_mbit' => [
-            'desc' => "Network <br><span style='font-size: 80%'>(Mbit share)</span>",
+            'desc' => "Network <br><span style='font-size: 80%'>(Mbs)</span>",
             'max' => 10000,
             'min' => 200,
             'free' => 0,
             'step' => 100,
-            'disable_change' => true
+            'disable_change' => true,
+//            'is_hide' => false,
         ],
         'n_network_dedicated_mbit' => [
-            'desc' => "Network <br><span style='font-size: 80%'>(dedicated)</span>",
+            'desc' => "Network <br><span style='font-size: 80%'>(Mbs dedicated)</span>",
             'max' => 10000,
             'min' => 0,
             'free' => 0,
             'step' => 100,
             'rounding' => 100,  // Làm tròn theo 100 Mbps
             'price' => 1000,  // K (thousands) per 100 Mbps
+            'is_hide' => true,
         ]
     ],
 

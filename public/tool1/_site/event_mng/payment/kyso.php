@@ -16,7 +16,11 @@ $response = $kernel->handle(
     $request = Illuminate\Http\Request::capture()
 );
 
-
+$ouser = getCurrentUserId(1);
+if($ouser->hasRole(8) || $ouser->hasRole(1)){
+}else{
+    die("Bạn không có quyền duyệt thanh toán ($ouser->email)");
+}
 
 $evid = $_GET['evid'] ?? null;
 $payment_type = $_GET['payment_type'] ?? '';
@@ -344,7 +348,7 @@ if ($_POST['action'] ?? null === 'sign_pdf') {
 
         <!-- Signature Info (List) -->
         <div class="signature-section">
-            <i class="bi bi-check2-circle"></i>  <span> Danh sách chữ ký: </span>
+            <i class="bi bi-check2-circle"></i>  <span> Đã ký: </span>
             <?php if ($signatureInfo && !empty($signatureInfo['signatures'])): $cc = 1; ?>
                 <?php foreach ($signatureInfo['signatures'] as $sig): ?>
                     <div class="signature-item">

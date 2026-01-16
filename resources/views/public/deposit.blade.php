@@ -104,7 +104,7 @@
 
 
         <div class="row justify-content-center my-10">
-            <div class="col-md-6">
+            <div class="col-md-8">
                 <div class="deposit-card">
                     <div class="text-center">
                         <h3 class="deposit-name">Nạp Tiền Vào Tài Khoản</h3>
@@ -113,32 +113,41 @@
                     <form id="depositForm">
                         <div class="mb-4">
                             <label for="amountMoney" class="form-label">
-                                <i class="fas fa-coins"></i> Số Tiền Nạp <span class="text-danger">*</span>
+                                <i class="fas fa-coins"></i> Nhập số tiền nạp <span class="text-danger">*</span>
                             </label>
-                            <input type="number" class="form-control form-control-lg" id="amountMoney"
-                                   name="total_amount" required min="5000" step="1000"
+                            <input type="number" class="form-control form-control-lg text-danger" id="amountMoney"
+                                   name="total_amount" required min="50000" step="50000"
                                    placeholder="Nhập số tiền (VNĐ)">
-                            <small class="text-muted">Số tiền tối thiểu: 5,000 VNĐ</small>
+                            <div class="text-danger" id="amountInWords">Số tiền tối thiểu: 5,000 VNĐ</div>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Chọn nhanh:</label>
-                            <div class="d-grid gap-2">
-                                <button type="button" class="btn btn-outline-primary" onclick="setAmount(10000)">
-                                    10,000 VNĐ
-                                </button>
-                                <button type="button" class="btn btn-outline-primary" onclick="setAmount(50000)">
-                                    50,000 VNĐ
-                                </button>
-                                <button type="button" class="btn btn-outline-primary" onclick="setAmount(100000)">
-                                    100,000 VNĐ
-                                </button>
-                                <button type="button" class="btn btn-outline-primary" onclick="setAmount(200000)">
-                                    200,000 VNĐ
-                                </button>
-                                <button type="button" class="btn btn-outline-primary" onclick="setAmount(500000)">
-                                    500,000 VNĐ
-                                </button>
+                            <div class="d-flex gap-2 flex-wrap">
+                                @php
+                                    $quickAmounts = [
+                                        10000 => '10K',
+                                        50000 => '50K',
+                                        100000 => '100K',
+                                        200000 => '200K',
+                                        500000 => '500K',
+                                        1000000 => '1M',
+                                        2000000 => '2M',
+                                        5000000 => '5M',
+                                        10000000 => '10M',
+                                    ];
+
+                                    // Nếu không phải admin, bỏ 10K
+                                    if (!isAdminCookie()) {
+                                        unset($quickAmounts[10000]);
+                                    }
+                                @endphp
+
+                                @foreach($quickAmounts as $amount => $label)
+                                    <button type="button" class="btn btn-sm btn-outline-primary" onclick="setAmount({{ $amount }})">
+                                        {{ $label }}
+                                    </button>
+                                @endforeach
                             </div>
                         </div>
 
@@ -172,7 +181,7 @@
 
                     <div class="mb-3">
                         <label for="displayAmount" class="form-label">
-                            <i class="fas fa-money-bill-wave"></i> Số Tiền Nạp
+                            <i class="fas fa-money-bill-wave"></i> Nhập số tiền nạp
                         </label>
                         <input type="text" class="form-control" id="displayAmount" readonly>
                     </div>
@@ -209,8 +218,89 @@
 
 @section('js')
 <script>
+    // Chuyển số thành chữ tiếng Việt
+    function numberToVietnamese(num) {
+        if (!num || num < 0) return '';
+
+        const units = ['', 'một', 'hai', 'ba', 'bốn', 'năm', 'sáu', 'bảy', 'tám', 'chín'];
+        const scales = ['', 'nghìn', 'triệu', 'tỷ'];
+
+        if (num === 0) return 'Không đồng';
+
+        let result = '';
+        let scaleIndex = 0;
+
+        while (num > 0) {
+            let group = num % 1000;
+            if (group > 0) {
+                let groupText = convertGroupToWords(group);
+                result = groupText + ' ' + scales[scaleIndex] + ' ' + result;
+            }
+            num = Math.floor(num / 1000);
+            scaleIndex++;
+        }
+
+        return result.trim().charAt(0).toUpperCase() + result.trim().slice(1) + ' đồng';
+    }
+
+    function convertGroupToWords(num) {
+        const units = ['', 'một', 'hai', 'ba', 'bốn', 'năm', 'sáu', 'bảy', 'tám', 'chín'];
+
+        let hundred = Math.floor(num / 100);
+        let ten = Math.floor((num % 100) / 10);
+        let unit = num % 10;
+
+        let result = '';
+
+        if (hundred > 0) {
+            result += units[hundred] + ' trăm ';
+        }
+
+        if (ten > 1) {
+            result += units[ten] + ' mươi ';
+            if (unit === 1) {
+                result += 'mốt ';
+            } else if (unit === 5 && ten > 0) {
+                result += 'lăm ';
+            } else if (unit > 0) {
+                result += units[unit] + ' ';
+            }
+        } else if (ten === 1) {
+            result += 'mười ';
+            if (unit === 5) {
+                result += 'lăm ';
+            } else if (unit > 0) {
+                result += units[unit] + ' ';
+            }
+        } else if (ten === 0 && hundred > 0 && unit > 0) {
+            result += 'lẻ ' + units[unit] + ' ';
+        } else if (unit > 0) {
+            result += units[unit] + ' ';
+        }
+
+        return result.trim();
+    }
+
+    // Update text when amount changes
+    document.getElementById('amountMoney').addEventListener('input', function() {
+        const amount = parseInt(this.value);
+        const amountInWordsElement = document.getElementById('amountInWords');
+
+        if (amount && amount >= 5000) {
+            const words = numberToVietnamese(amount);
+            amountInWordsElement.textContent = words;
+        } else if (amount > 0 && amount < 5000) {
+            amountInWordsElement.textContent = 'Số tiền tối thiểu: 5,000 VNĐ';
+        } else {
+            amountInWordsElement.textContent = 'Số tiền tối thiểu: 5,000 VNĐ';
+        }
+    });
+
     function setAmount(amount) {
-        document.getElementById('amountMoney').value = amount;
+        const input = document.getElementById('amountMoney');
+        input.value = amount;
+        // Trigger input event to update words
+        input.dispatchEvent(new Event('input'));
     }
 
     function showDepositModal() {

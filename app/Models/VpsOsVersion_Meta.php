@@ -22,7 +22,7 @@ class VpsOsVersion_Meta extends MetaOfTableInDb
         if($field == 'content' ) {
             $objMeta->dataType = DEF_DATA_TYPE_RICH_TEXT;
         }
-        if($field == 'status'){
+        if($field == 'status' || $field == 'is_active' ){
             $objMeta->dataType = DEF_DATA_TYPE_STATUS;
         }
         if($field == 'type'){

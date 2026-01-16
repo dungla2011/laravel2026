@@ -14,10 +14,12 @@ $kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
 $response = $kernel->handle(
     $request = Illuminate\Http\Request::capture()
 );
-
-if(!isSupperAdmin_()){
-    die("Can not access this area!");
+$ouser = getCurrentUserId(1);
+if($ouser->hasRole(8) || $ouser->hasRole(1)){
+}else{
+    die("Bạn không có quyền duyệt thanh toán ($ouser->email)");
 }
+
 
 $evid = request('evid');
 if(!$evid) {

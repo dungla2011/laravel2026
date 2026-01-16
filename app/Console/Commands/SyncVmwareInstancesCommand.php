@@ -43,7 +43,7 @@ class SyncVmwareInstancesCommand extends Command
             $this->info("\n📋 Fetching VM list from vCenter...");
             $vms = VmwareHelper::getVMListV2();
 
-            
+
 
             if (empty($vms)) {
                 $this->warn('⚠️  No VMs found');
@@ -65,7 +65,7 @@ class SyncVmwareInstancesCommand extends Command
                     $cc++;
 
                     // Normalize power_state to uppercase
-                    $powerState = strtoupper($vm->power_state ?? 'poweredOff');
+                    $powerState = strtoupper($vm->power_state);
                     $powerState = str_replace('POWEREDON', 'POWERED_ON', $powerState);
                     $powerState = str_replace('POWEREDOFF', 'POWERED_OFF', $powerState);
 
@@ -130,6 +130,29 @@ class SyncVmwareInstancesCommand extends Command
                         $ipData = $this->getIpFromMacAddress($vm);
                         $listIpAddress = $ipData['list_ip_address'];
                         $lastFoundIpTime = $ipData['last_found_ip'];
+
+                        // Fix incorrect disk_gb = 0 and power state detection
+                        if ($vm->disk_gb == 0 && $powerState === 'POWERED_OFF' && $listIpAddress && $lastFoundIpTime) {
+
+                            
+                            // Check if IP was found recently (< 10 minutes)
+                            $ipFoundMinutesAgo = \Carbon\Carbon::parse($lastFoundIpTime)->diffInMinutes(now());
+                            
+                            if ($ipFoundMinutesAgo < 10 && $lastUsage && $lastUsage->disk_gb > 0) {
+                                // VM has recent IP address = still running, not actually OFF
+                                $this->warn("  🔧 Detected incorrect state: disk_gb=0 & POWERED_OFF but has recent IP");
+                                $this->line("     IP found {$ipFoundMinutesAgo} min ago: {$listIpAddress}");
+                                
+                                // Fix power state
+                                $powerState = 'POWERED_ON';
+                                $vm->power_state = 'poweredOn';
+                                
+                                // Fix disk_gb from last known good value
+                                $vm->disk_gb = $lastUsage->disk_gb;
+                                
+                                $this->line("     ✓ Corrected: POWERED_ON, disk_gb={$vm->disk_gb}GB (from last usage)");
+                            }
+                        }
 
                         // Calculate config hash for comparison (including IP addresses)
                         $currentConfigHash = md5(json_encode([
@@ -205,10 +228,10 @@ class SyncVmwareInstancesCommand extends Command
 
                             $lastestTime = \Carbon\Carbon::parse($lastUsage->lastest_time_the_same ?? $lastUsage->created_at);
                             $createdTime = \Carbon\Carbon::parse($lastUsage->created_at);
-                            
+
                             // Time since last update (for deciding to UPDATE or INSERT)
                             $timeSinceSame = $lastestTime->diffInMinutes(now());
-                            
+
                             // Duration for fee calculation (from created_at to lastest_time_the_same)
                             $durationMinutes = $createdTime->diffInMinutes($lastestTime);
 
@@ -219,17 +242,17 @@ class SyncVmwareInstancesCommand extends Command
 
 
 
-                                
+
 
 
                                 // Calculate fee based on duration from created_at to lastest_time_the_same
                                 // If power is OFF, CPU and RAM = 0 for fee calculation
                                 $feeCpu = ($lastUsage->power_state === 'POWERED_OFF') ? 0 : $lastUsage->cpu;
                                 $feeRam = ($lastUsage->power_state === 'POWERED_OFF') ? 0 : $lastUsage->ram_gb;
-                                
+
                                 // Count chargeable IPs (free local IPs + 1 free internet IP)
                                 $chargeableIpCount = VpsUsageFeeService::countChargeableIPs($lastUsage->list_ip_address);
-                                
+
                                 $calculatedFee = VpsUsageFeeService::calculateFee(
                                     $lastPricingConfig,
                                     $feeCpu,
@@ -259,7 +282,7 @@ class SyncVmwareInstancesCommand extends Command
                                     ->where('id', $lastUsage->id)
                                     ->update($mUpdate);
 
-                                $this->line("  ♻️  Updated vps_usages (count_update: " . ($lastUsage->count_update_status + 1) . ", Fee: " . number_format($calculatedFee, 0) . "K)");
+                                $this->line("  ♻️  Updated vps_usages1 (count_update: " . ($lastUsage->count_update_status + 1) . ", Fee: " . number_format($calculatedFee, 0) . "K)");
                             } else {
 
                                 // Config changed or 10+ minutes passed, insert new record (fee = 0 on first insert)
@@ -353,7 +376,7 @@ class SyncVmwareInstancesCommand extends Command
                                 VpsUsageFeeService::countChargeableIPs($listIpAddress)
                             );
                             $pricePerMinute = $dailyFee / 1440; // 1440 minutes per day
-                            
+
                             DB::table('vps_instance_config_histories')->insert([
                                 'instance_id' => $instance->id,
                                 'name' => $vm->name,
