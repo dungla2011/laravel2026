@@ -39,6 +39,12 @@ class VpsInstance_Meta extends MetaOfTableInDb
         return $objMeta;
     }
 
+    function _name($obj, $val, $field)
+    {
+        $md5 = substr(md5($obj->bios_uuid), -8);
+        return "<span style='color: transparent'> P$md5</span>";
+    }
+
     function _init_os($obj, $val, $field)
     {
         $mm = VpsOsVersion::where("is_active", 1)->get();

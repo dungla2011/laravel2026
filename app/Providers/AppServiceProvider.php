@@ -20,6 +20,10 @@ use App\Repositories\DemoFolderRepositorySql;
 use App\Repositories\DemoMgRepositoryInterface;
 use App\Repositories\DemoMgRepositoryMg;
 use App\Repositories\DemoRepositoryInterface;
+use App\Repositories\UserRechargeRepositoryInterface;
+
+use App\Repositories\VpsInstanceRepositoryInterface;
+
 use App\Repositories\EventPaymentRepositoryInterface;
 
 use App\Repositories\MonitorSettingRepositoryInterface;
@@ -111,6 +115,10 @@ use App\Repositories\PayMoneylogRepositoryInterface;
 use App\Repositories\DownloadLogRepositoryInterface;
 
 use App\Repositories\DemoRepositorySql;
+use App\Repositories\UserRechargeRepositorySql;
+
+use App\Repositories\VpsInstanceRepositorySql;
+
 use App\Repositories\EventPaymentRepositorySql;
 
 use App\Repositories\MonitorSettingRepositorySql;
@@ -413,6 +421,10 @@ class AppServiceProvider extends ServiceProvider
         //        $this->app->bind('model_with_controller_'.UserControllerApi::class, User::class);
 
         $this->app->bind(DemoRepositoryInterface::class, DemoRepositorySql::class);
+$this->app->bind(UserRechargeRepositoryInterface::class, UserRechargeRepositorySql::class);
+
+$this->app->bind(VpsInstanceRepositoryInterface::class, VpsInstanceRepositorySql::class);
+
 $this->app->bind(EventPaymentRepositoryInterface::class, EventPaymentRepositorySql::class);
 
 $this->app->bind(MonitorSettingRepositoryInterface::class, MonitorSettingRepositorySql::class);

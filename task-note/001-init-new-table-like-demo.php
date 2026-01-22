@@ -23,7 +23,7 @@ $dbInfo = (\App\Components\Helper1::getDBInfo());
 $bpath = base_path();
 echo "\n bPath = $bpath";
 
-getch(' nếu thêm /member, thì chỉ cần copy 2 file webdamin, và api , rồi đổi route group... là xong');
+//getch(' nếu thêm /member, thì chỉ cần copy 2 file webdamin, và api , rồi đổi route group... là xong');
 
 $newModel = 'MyTreeInfo';
 $newModel = 'OrderItem';
@@ -164,7 +164,21 @@ $newModel = 'MonitorConfig';
 $newModel = 'MonitorSetting';
 $newModel = 'EventPayment';
 
-getch(" Model: $newModel ");
+$newModel = 'VpsInstance';
+$newModel = 'UserRecharge';
+
+getch(" Model: $newModel, press any key to con... ");
+
+// Ask if creating member module
+$createMember = false;
+echo "\n\nCó tạo module member không? (y/n): ";
+$handle = fopen("php://stdin", "r");
+$line = fgets($handle);
+fclose($handle);
+if (trim(strtolower($line)) == 'y') {
+    $createMember = true;
+    echo "✓ Sẽ tạo thêm module member\n";
+}
 
 $tblNew = \LadLib\Laravel\Database\DbHelperLaravel::getTableNameFromModelName($newModel);
 
@@ -192,10 +206,16 @@ $mm = [
 
     '/app/Repositories/DemoRepositorySql.php' => '/app/Repositories/'.$newModel.'RepositorySql.php',
 
-    '/routes/api_demo.php' => '/routes/api_'.strtolower($newModel).'.php',
+    '/routes/api_demo.php' => '/routes/api_'.strtolower($newModel).'_admin.php',
 
-    '/routes/web_admin_demo.php' => '/routes/web_admin_'.strtolower($newModel).'.php',
+    '/routes/web_admin_demo.php' => '/routes/web_'.strtolower($newModel).'_admin.php',
 ];
+
+// Add member routes if requested
+if ($createMember) {
+    $mm['/routes/web_admin_demo.php (member)'] = '/routes/web_'.strtolower($newModel).'_member.php';
+    $mm['/routes/api_demo.php (member)'] = '/routes/api_'.strtolower($newModel).'_member.php';
+}
 
 $cc = 0;
 
@@ -287,6 +307,44 @@ foreach ($mm as $filepath => $newFile) {
     if (file_exists($filepath)) {
         echo "\n Copy file $filepath -> $newFile";
         $cont = file_get_contents($filepath);
+        // Additional replacements for member files
+        if ($createMember && (strpos($newFile, '_member.php') !== false)) {
+            echo "\n   → Processing member file, replacing 'admin' with 'member'";
+            $cont = str_replace('admin', 'member', $cont);
+            // $cont = str_replace('Admin', 'Member', $cont);
+
+            // Fix Route2::prefix to add 'member-' prefix if not already present
+            if (strpos($newFile, 'api_') !== false && strpos($newFile, '_member.php') !== false) {
+                // Match Route2::prefix('/something') pattern
+                if (preg_match("/Route2::prefix\('\/([^']+)'\)/", $cont, $matches)) {
+                    $currentPrefix = $matches[1];
+                    if (strpos($currentPrefix, 'member-') !== 0) {
+                        $newPrefix = 'member-' . $currentPrefix;
+                        $cont = str_replace(
+                            "Route2::prefix('/{$currentPrefix}')",
+                            "Route2::prefix('/{$newPrefix}')",
+                            $cont
+                        );
+                        echo "\n   → Updated Route2::prefix: '/{$currentPrefix}' -> '/{$newPrefix}'";
+                    }
+                }
+                
+                // Fix $nameModule to add 'member-' prefix if not already present
+                if (preg_match("/\\\$nameModule\s*=\s*'([^']+)'/", $cont, $matches)) {
+                    $currentModule = $matches[1];
+                    if (strpos($currentModule, 'member-') !== 0) {
+                        $newModule = 'member-' . $currentModule;
+                        $cont = str_replace(
+                            "\$nameModule = '{$currentModule}'",
+                            "\$nameModule = '{$newModule}'",
+                            $cont
+                        );
+                        echo "\n   → Updated \$nameModule: '{$currentModule}' -> '{$newModule}'";
+                    }
+                }
+            }
+        }
+
         foreach ($mrep as $str0 => $str1) {
             $cont = str_replace($str0, $str1, $cont);
         }

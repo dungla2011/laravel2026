@@ -17,8 +17,13 @@ $response = $kernel->handle(
 );
 
 $ouser = getCurrentUserId(1);
+if(!$ouser){
+    die("Please <a href='/login'> LOGIN</a> first!");
+}
+
 if($ouser->hasRole(8) || $ouser->hasRole(1)){
 }else{
+
     die("Bạn không có quyền duyệt thanh toán ($ouser->email)");
 }
 

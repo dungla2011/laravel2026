@@ -41,7 +41,23 @@ $dns1 = "8.8.8.8";
 $dns2 = "8.8.4.4";
 $hostname = $vps->name;
 
-// Return format: ip,subnet,gateway,dns1,dns2,hostname
-$return = "{$ip},{$subnet},{$gateway},{$dns1},{$dns2},{$hostname}";
+
+// Get username from vps_os_versions based on init_os
+$username = 'root'; // Default username linux
+// Check if OS is Windows
+if (stripos($hostname, 'win') !== false)
+    $username = 'administrator'; // Default username win
+
+if ($vps->init_os) {
+    $osVersion = \App\Models\VpsOsVersion::find($vps->init_os);
+    if ($osVersion) {
+        if ($osVersion->username) {
+            $username = $osVersion->username;
+        }
+    }
+}
+
+// Return format: ip,subnet,gateway,dns1,dns2,hostname,username,password
+$return = "{$ip},{$subnet},{$gateway},{$dns1},{$dns2},{$hostname},user={$username},uuid={$vps->bios_uuid}";
 
 die($return);

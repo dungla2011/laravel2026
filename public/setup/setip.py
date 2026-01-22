@@ -7,6 +7,7 @@ import platform
 import socket
 import re
 import ssl
+import hashlib
 from urllib.request import urlopen, Request
 from urllib.error import URLError
 
@@ -49,6 +50,7 @@ else:
 
 LOG_FILE = os.path.join(LOG_DIR, 'glx.log')
 MAC_TEMPLATE_FILE = os.path.join(LOG_DIR, 'mac_address_this_template')
+PASSWORD_SET_FLAG = os.path.join(LOG_DIR, 'glx_set_pw_done')
 
 def setup_logging():
     """Cấu hình logging"""
@@ -294,7 +296,7 @@ def query_metadata_server(mac_address):
 
 def parse_metadata(metadata_str):
     """Parse comma-separated metadata response
-    Format: ip,subnet_mask,gateway,dns1,dns2,hostname
+    Format: ip,subnet_mask,gateway,dns1,dns2,hostname,user=username,uuid=uuid_value
     """
     try:
         parts = [p.strip() for p in metadata_str.split(',')]
@@ -309,8 +311,18 @@ def parse_metadata(metadata_str):
             'gateway': parts[2],
             'dns1': parts[3],
             'dns2': parts[4],
-            'hostname': parts[5] if parts[5] != 'null' else None
+            'hostname': parts[5].split('=')[0] if '=' not in parts[5] or parts[5].startswith('user=') else parts[5] if parts[5] != 'null' else None,
+            'user': None,
+            'uuid': None
         }
+
+        # Parse optional user and uuid parameters
+        for i in range(6, len(parts)):
+            part = parts[i]
+            if part.startswith('user='):
+                config['user'] = part.split('=', 1)[1]
+            elif part.startswith('uuid='):
+                config['uuid'] = part.split('=', 1)[1]
 
         logging.info("Configuration:")
         logging.info(f"   IP: {config['ip_address']}")
@@ -319,6 +331,10 @@ def parse_metadata(metadata_str):
         logging.info(f"   DNS1: {config['dns1']}")
         logging.info(f"   DNS2: {config['dns2']}")
         logging.info(f"   Hostname: {config['hostname']}")
+        if config['user']:
+            logging.info(f"   User: {config['user']}")
+        if config['uuid']:
+            logging.info(f"   UUID: {config['uuid']}")
 
         return config
 
@@ -335,6 +351,35 @@ def mask_to_cidr(mask):
         return str(binary.count('1'))
     except:
         return "24"
+
+
+def generate_password_from_uuid(uuid_str):
+    """Generate password from UUID using last 8 characters of MD5 hash"""
+    try:
+        md5_hash = hashlib.md5(uuid_str.encode()).hexdigest()
+        password = "P" + md5_hash[-8:] + "@12"
+        logging.info(f"Generated password from UUID (last 8 chars of MD5)")
+        return password
+    except Exception as e:
+        logging.error(f"Error generating password from UUID: {e}")
+        return None
+
+
+def is_password_already_set():
+    """Check if password was already set by checking flag file"""
+    return os.path.exists(PASSWORD_SET_FLAG)
+
+
+def mark_password_set():
+    """Create flag file to indicate password was set successfully"""
+    try:
+        with open(PASSWORD_SET_FLAG, 'w') as f:
+            f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')}\n")
+        logging.info(f"Created password flag file: {PASSWORD_SET_FLAG}")
+        return True
+    except Exception as e:
+        logging.error(f"Error creating password flag file: {e}")
+        return False
 
 
 def check_is_non_local_ip(ip):
@@ -408,6 +453,28 @@ def get_non_local_ip():
     except Exception as e:
         logging.warning(f"Error checking for non-local IP: {e}")
         return None
+
+
+def set_user_password_windows(username, password):
+    """Set password for user on Windows"""
+    logging.info(f"Setting password for user: {username}")
+
+    try:
+        # Use net user command to set password
+        cmd = ["net", "user", username, password]
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
+
+        if result.returncode == 0:
+            logging.info(f"Password set successfully for user: {username}")
+            mark_password_set()
+            return True
+        else:
+            logging.error(f"Failed to set password: {result.stderr}")
+            return False
+
+    except Exception as e:
+        logging.error(f"Error setting user password on Windows: {e}")
+        return False
 
 
 def apply_network_config_windows(config):
@@ -520,6 +587,35 @@ def apply_network_config_windows(config):
 
     except Exception as e:
         logging.error(f"Error applying network config on Windows: {e}")
+        return False
+
+
+def set_user_password_linux(username, password):
+    """Set password for user on Linux"""
+    logging.info(f"Setting password for user: {username}")
+
+    try:
+        # Use chpasswd command
+        process = subprocess.Popen(
+            ['chpasswd'],
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True
+        )
+
+        stdout, stderr = process.communicate(input=f"{username}:{password}\n", timeout=10)
+
+        if process.returncode == 0:
+            logging.info(f"Password set successfully for user: {username}")
+            mark_password_set()
+            return True
+        else:
+            logging.error(f"Failed to set password: {stderr}")
+            return False
+
+    except Exception as e:
+        logging.error(f"Error setting user password on Linux: {e}")
         return False
 
 
@@ -878,18 +974,39 @@ def perform_network_config():
 
     if not success:
         logging.warning("Network configuration may have failed")
+        logging.error("Skipping password setup due to network configuration failure")
+        return False
 
     # Step 6: Verify IP configuration
     logging.info("Step 6: Verifying IP configuration...")
     time.sleep(3)
-    verify_ip_config(config['ip_address'])
+    ip_verified = verify_ip_config(config['ip_address'])
 
     # Step 7: Test internet connectivity
     logging.info("Step 7: Testing internet connectivity...")
     test_internet_connectivity()
 
-    # Step 8: Callback to metadata server
-    logging.info("Step 8: Notifying metadata server...")
+    # Step 8: Set user password if provided (only if network config was successful)
+    if ip_verified and config.get('user') and config.get('uuid'):
+        if is_password_already_set():
+            logging.info("Step 8: Password already set previously, skipping...")
+        else:
+            logging.info("Step 8: Setting user password...")
+            password = generate_password_from_uuid(config['uuid'])
+            if password:
+                if SYSTEM == "Windows":
+                    set_user_password_windows(config['user'], password)
+                else:
+                    set_user_password_linux(config['user'], password)
+            else:
+                logging.warning("Could not generate password from UUID")
+    elif not ip_verified:
+        logging.warning("Step 8: Skipping password setup - IP verification failed")
+    else:
+        logging.info("Step 8: No user/uuid provided, skipping password setup")
+
+    # Step 9: Callback to metadata server
+    logging.info("Step 9: Notifying metadata server...")
     callback_metadata_server(mac_address)
 
     logging.info("=" * 70)
@@ -1133,10 +1250,10 @@ if __name__ == '__main__':
                 run_linux_daemon()
 
             else:
-                print("Usage: python3 glx_service.py [install|remove|start|stop|status|mac]")
+                print("Usage: python3 setip.py [install|remove|start|stop|status|mac]")
                 sys.exit(1)
         else:
             # Run directly (foreground mode for testing)
             print("Running in foreground mode (Ctrl+C to stop)")
-            print("For production, use: sudo python3 glx_service.py install")
+            print("For production, use: sudo python3 setip.py install")
             run_linux_daemon()

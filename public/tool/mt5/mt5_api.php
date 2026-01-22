@@ -111,6 +111,7 @@ try {
     // Calculate summary for Real accounts
     $realAccountsCount = 0;
     $totalRealProfit = 0;
+    $totalOpenProfit = 0;
 
     foreach ($accounts as $account) {
         $status = $account['status'] ?? [];
@@ -119,7 +120,9 @@ try {
             $realAccountsCount++;
             $profit = $status['profit'] ?? [];
             $todayProfit = $profit['todayProfit'] ?? 0;
+            $openProfit = $profit['open'] ?? 0;
             $totalRealProfit += $todayProfit;
+            $totalOpenProfit += $openProfit;
         }
     }
 
@@ -131,6 +134,7 @@ try {
         'accountCount' => count($accounts),
         'realAccountsCount' => $realAccountsCount,
         'totalRealProfit' => round($totalRealProfit, 2),
+        'totalOpenProfit' => round($totalOpenProfit, 2),
         'accounts' => $accounts
     ], JSON_PRETTY_PRINT);
 

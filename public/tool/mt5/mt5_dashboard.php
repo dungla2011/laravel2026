@@ -338,6 +338,10 @@
                 <div class="summary-label">Today Real P/L</div>
                 <div class="summary-value" id="totalProfit">$0.00</div>
             </div>
+            <div class="summary-item">
+                <div class="summary-label">Open P/L</div>
+                <div class="summary-value" id="totalOpenProfit">$0.00</div>
+            </div>
         </div>
     </div>
 
@@ -379,10 +383,16 @@
         // Update summary bar
         document.getElementById('realCount').textContent = data.realAccountsCount || 0;
         document.getElementById('totalCount').textContent = data.accountCount || 0;
+        
         const totalProfit = data.totalRealProfit || 0;
         const profitElement = document.getElementById('totalProfit');
         profitElement.textContent = (totalProfit >= 0 ? '+' : '') + '$' + formatNumber(totalProfit);
         profitElement.className = 'summary-value ' + (totalProfit >= 0 ? 'positive' : 'negative');
+        
+        const totalOpenProfit = data.totalOpenProfit || 0;
+        const openProfitElement = document.getElementById('totalOpenProfit');
+        openProfitElement.textContent = (totalOpenProfit >= 0 ? '+' : '') + '$' + formatNumber(totalOpenProfit);
+        openProfitElement.className = 'summary-value ' + (totalOpenProfit >= 0 ? 'positive' : 'negative');
 
         let html = '<div class="accounts-grid">';
         data.accounts.forEach(account => { html += createAccountCard(account); });
@@ -407,8 +417,11 @@
         const statusClass = isRunning ? 'running' : 'paused';
         const statusText = isRunning ? '⏹ Stop' : '⏸ PAUSED';
         const todayProfit = profit.todayProfit || 0;
+        const openProfit = profit.open || 0;
         const profitClass = todayProfit >= 0 ? 'profit-positive' : 'profit-negative';
+        const openProfitClass = openProfit >= 0 ? 'profit-positive' : 'profit-negative';
         const profitSign = todayProfit >= 0 ? '+' : '';
+        const openProfitSign = openProfit >= 0 ? '+' : '';
 
         // Check if offline and stale (>3600s)
         const secondsSinceUpdate = account.secondsSinceUpdate || 0;
@@ -426,9 +439,9 @@
                     <div class="account-status ${statusClass}">${statusText}</div>
                 </div>
                 <div class="info-grid">
-                    <div class="info-item"><div class="info-label">Balance</div><div class="info-value">$${formatNumber(status.balance || 0)}</div></div>
-                    <div class="info-item"><div class="info-label">Equity</div><div class="info-value">$${formatNumber(status.equity || 0)}</div></div>
                     <div class="info-item"><div class="info-label">Today P/L</div><div class="info-value ${profitClass}">${profitSign}$${formatNumber(todayProfit)}</div></div>
+                    <div class="info-item"><div class="info-label">Balance</div><div class="info-value">$${formatNumber(status.balance || 0)}</div></div>
+                    <div class="info-item"><div class="info-label">Equity (Open P/L)</div><div class="info-value">$${formatNumber(status.equity || 0)} <span class="${openProfitClass}">(${openProfitSign}$${formatNumber(openProfit)})</span></div></div>
                     <div class="info-item"><div class="info-label">Open Orders</div><div class="info-value">${account.openOrders ? account.openOrders.count : 0} / ${settings.MaxB || 0}</div></div>
                 </div>
                 <div class="settings-row"><span class="settings-label">Settings:</span><span class="settings-value">${status.config_input || 'N/A'} | Price: ${formatNumber(price.bid || 0, 2)}/${formatNumber(price.ask || 0, 2)}</span></div>`;
