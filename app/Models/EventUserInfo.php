@@ -29,6 +29,7 @@ class EventUserInfo extends ModelGlxBase
         return [
 //            'email' => 'required|email|unique:event_user_infos,email',
             'email' => 'required|email|unique:event_user_infos,email,NULL,id,deleted_at,NULL',
+            'phone' => 'nullable|string|min:10|max:15|regex:/^[0-9+\-\s()]+$/',
         ];
 
     }
@@ -37,6 +38,7 @@ class EventUserInfo extends ModelGlxBase
     {
         return [
             'email' => 'email|unique:event_user_infos,email,' . $id . ',id,deleted_at,NULL',
+            'phone' => 'nullable|string|min:10|max:15|regex:/^[0-9+\-\s()]+$/',
         ];
 
     }

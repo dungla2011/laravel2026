@@ -102,10 +102,17 @@ class EventUserPayment_Meta extends MetaOfTableInDb
         if($evId){
 
             //Tìm các user của sự kiện này
-            $listUserEventId = EventAndUser::where('event_id', $evId)->pluck('user_event_id')->toArray();
+//            $listUserEventId
+            $mEvU = EventAndUser::where('event_id', $evId)->get();
 
-            foreach ($listUserEventId as $ueid){
+            foreach ($mEvU as $oneEvu){
+                $ueid = $oneEvu->user_event_id;
                 $uev = EventUserInfo::find($ueid);
+                //Chỉ insert các user đã check in:
+                if(!$oneEvu->attend_at){
+                    continue;
+                }
+
                 //Xem trong EventUserPayment có user_event_id, event_id nào trong danh sách này ko
                 if($obj = EventUserPayment::where('user_event_id', $ueid)
                     ->where('event_id', $evId)
@@ -152,13 +159,12 @@ class EventUserPayment_Meta extends MetaOfTableInDb
                     }
                 else{
                     //Chưa có bản ghi nào, Tạo mới các bản ghi trong EventUserPayment
+
+
                     $new = new EventUserPayment();
                     $new->event_id = $evId;
                     $new->user_event_id  = $ueid;
-
-
                     if($uev){
-
 //                        die(" $uev->bank_name_text ");
                         $new->bank_name = $uev->bank_name_text;
                         $new->bank_account = $uev->bank_acc_number;
@@ -166,10 +172,8 @@ class EventUserPayment_Meta extends MetaOfTableInDb
                     }
                     $new->save();
                 }
-
             }
         }
-
     }
 
 
@@ -477,8 +481,6 @@ class EventUserPayment_Meta extends MetaOfTableInDb
         $img = "/images/code_gen/ncbd-event-$obj->event_id-".$objU->id.".png";
 
         if(!file_exists(public_path($img))){
-
-
 //            echo "\n Not found IMG";
         }
 
@@ -540,15 +542,19 @@ class EventUserPayment_Meta extends MetaOfTableInDb
         $sname = $this->getSNameFromField('event_id');
         $key = "seby_$sname";
 
+
         EventInfo::getHtmlSelectEvent($linkOpt, $mmEv, $key);
 
+        if(request($key)){
         ?>
 
+        <div class="p-2 px-3 mb-2" style="background-color: white; font-size: 90%; border: 1px solid #ccc">
+            Danh sách thanh toán chỉ gồm các thành viên Có mặt (Checked-In) tại Sự kiện này <a href="/admin/event-and-user?seby_s5=<?php echo request($key); ?>"> Xem tại Bảng CheckIn </a>.
+            Nếu cần xoá một hàng đây thì cũng cần đặt Rỗng ở cột <b>Có mặt lúc</b> trong <a href="/admin/event-and-user?seby_s5=<?php echo request($key); ?>"> Bảng CheckIn </a>
+        </div>
         <!--        <button title="Chọn các thành viên dưới đây để in mã QR" class="btn btn-sm btn-primary mb-3" id="print_qr_list"> In mã QR</button>-->
-
-
-
         <?php
+        }
     }
 
     public function _payed($obj, $valIntOrStringInt, $field) {

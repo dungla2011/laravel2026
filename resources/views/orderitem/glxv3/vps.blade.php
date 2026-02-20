@@ -1,5 +1,6 @@
 <?php
 $keyAndName = config('vps_config.specs');
+
 ?>
 
 <div class="pricing-header mb-3 text-orange" data-code-pos='ppp17600530813801'>

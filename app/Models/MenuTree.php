@@ -25,7 +25,10 @@ class MenuTree extends ModelGlxBase
     public function getTranslatedName($locale = null)
     {
 //        $locale = $locale ?? app()->getLocale();
-        return $this->translations[$locale] ?? $this->name;
+        $ret = trim($this->translations[$locale] ?? $this->name);
+        if(!$ret)
+            return $this->name;
+        return $ret;
     }
 
     public function getName($lang = '')

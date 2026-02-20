@@ -166,6 +166,7 @@ $newModel = 'EventPayment';
 
 $newModel = 'VpsInstance';
 $newModel = 'UserRecharge';
+$newModel = 'VpsUsage';
 
 getch(" Model: $newModel, press any key to con... ");
 
@@ -328,7 +329,7 @@ foreach ($mm as $filepath => $newFile) {
                         echo "\n   → Updated Route2::prefix: '/{$currentPrefix}' -> '/{$newPrefix}'";
                     }
                 }
-                
+
                 // Fix $nameModule to add 'member-' prefix if not already present
                 if (preg_match("/\\\$nameModule\s*=\s*'([^']+)'/", $cont, $matches)) {
                     $currentModule = $matches[1];

@@ -20,24 +20,65 @@ $response = $kernel->handle(
     $request = Illuminate\Http\Request::capture()
 );
 
-if(!isAdminCookie()){
-    die("Not admin site");
-}
-
 // Handle preflight requests
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit;
 }
 
-// Get parameters
-$vmName = $_REQUEST['vm'] ?? '';
-$esxiHost = $_REQUEST['host'] ?? '';
-
-if (empty($vmName) || empty($esxiHost)) {
+$uid = getCurrentUserId();
+if(!$uid){
     echo json_encode([
         'success' => false,
-        'error' => 'Missing required parameters: vm and host'
+        'error' => 'You need login!'
+    ]);
+    exit;
+}
+
+// Get only instance_id parameter
+$instanceId = $_REQUEST['instance_id'] ?? '';
+$cmd = $_REQUEST['cmd'] ?? '';  // poweron, poweroff, reset
+
+if (empty($instanceId)) {
+    echo json_encode([
+        'success' => false,
+        'error' => 'Missing required parameter: instance_id'
+    ]);
+    exit;
+}
+
+
+// Validate instance and get VM details
+$vmi = \App\Models\VpsInstance::find($instanceId);
+if(!$vmi || $vmi->user_id != $uid){
+
+    if(!isAdminLrv_()){
+        echo json_encode([
+            'success' => false,
+            'error' => 'Not valid access to this resource!'
+        ]);
+        exit;
+    }
+}
+
+// Get VM value (bios_uuid) from instance
+$vmValue = $vmi->bios_uuid;
+
+// Get ESXi host from vps_usage
+$vmUsage = \App\Models\VpsUsage::where("bios_uuid", $vmValue)->orderBy('id', 'DESC')->first();
+if(!$vmUsage){
+    echo json_encode([
+        'success' => false,
+        'error' => 'VPS usage record not found!'
+    ]);
+    exit;
+}
+
+$esxiHost = $vmUsage->last_host_ip;
+if (empty($esxiHost)) {
+    echo json_encode([
+        'success' => false,
+        'error' => 'Not found host of vm!'
     ]);
     exit;
 }
@@ -51,12 +92,13 @@ $path = __DIR__.'/venv/bin/python';
 
 // die("PATH = $path");
 
-// Build command
+// Build command - use bios_uuid as vm identifier
 $command = sprintf(
-    $path.' %s vm=%s host=%s 2>&1',
+    $path.' %s vm=%s host=%s vm_type=id cmd=%s 2>&1',
     escapeshellarg($scriptPath),
-    escapeshellarg($vmName),
-    escapeshellarg($esxiHost)
+    escapeshellarg($vmValue),
+    escapeshellarg($esxiHost),
+    escapeshellarg($cmd)
 );
 
 // Execute Python script

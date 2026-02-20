@@ -1,0 +1,357 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.container {
+    background: white;
+    border-radius: 24px;
+    padding: 40px;
+    max-width: 600px;
+    width: 100%;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+header h1 {
+    font-size: 3em;
+    color: #667eea;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    color: #666;
+    font-size: 1.2em;
+}
+
+.score-board {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 12px;
+}
+
+.score-item {
+    text-align: center;
+}
+
+.score-label {
+    display: block;
+    font-size: 0.9em;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.score-value {
+    display: block;
+    font-size: 2em;
+    font-weight: bold;
+}
+
+.score-value.correct {
+    color: #28a745;
+}
+
+.score-value.wrong {
+    color: #dc3545;
+}
+
+.level-selector, .operation-selector, .count-selector {
+    margin-bottom: 30px;
+}
+
+.level-selector h3, .operation-selector h3 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 15px;
+    font-size: 1.1em;
+}
+
+.level-buttons, .operation-buttons, .count-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.level-btn, .op-btn, .count-btn {
+    padding: 12px 24px;
+    border: 2px solid #667eea;
+    background: white;
+    color: #667eea;
+    border-radius: 25px;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.level-btn:hover, .op-btn:hover, .count-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.level-btn.active, .op-btn.active, .count-btn.active {
+    background: #667eea;
+    color: white;
+}
+
+.problems-list {
+    margin-bottom: 20px;
+}
+
+.problem-item {
+    background: white;
+    border: 3px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    transition: all 0.3s ease;
+}
+
+.problem-item:hover {
+    border-color: #667eea;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+}
+
+.problem-item.correct {
+    border-color: #28a745;
+    background: #f0fff4;
+}
+
+.problem-item.wrong {
+    border-color: #dc3545;
+    background: #fff5f5;
+}
+
+.problem-number {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #667eea;
+    min-width: 40px;
+    text-align: center;
+}
+
+.problem-question {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.8em;
+    font-weight: bold;
+    color: #333;
+    flex: 1;
+}
+
+.problem-question .num {
+    min-width: 50px;
+    text-align: right;
+}
+
+.problem-question .op {
+    color: #667eea;
+    font-size: 1.2em;
+}
+
+.problem-input {
+    width: 100px;
+    padding: 10px;
+    font-size: 1.5em;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.problem-input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.problem-result {
+    font-size: 1.5em;
+    font-weight: bold;
+    min-width: 50px;
+    text-align: center;
+}
+
+.problem-result.correct {
+    color: #28a745;
+}
+
+.problem-result.wrong {
+    color: #dc3545;
+}
+
+.correct-answer {
+    font-size: 0.9em;
+    color: #666;
+    margin-left: 10px;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.action-buttons {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.new-problem-btn, .submit-all-btn {
+    flex: 1;
+    padding: 18px;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.3em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.new-problem-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.submit-all-btn {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+}
+
+.new-problem-btn:hover, .submit-all-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+}
+
+.result-summary {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    border-radius: 20px;
+    padding: 30px;
+    margin-bottom: 20px;
+    color: white;
+    text-align: center;
+}
+
+.result-summary h2 {
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+
+.result-stats {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-top: 20px;
+}
+
+.result-stat {
+    text-align: center;
+}
+
+.result-stat-value {
+    font-size: 3em;
+    font-weight: bold;
+    display: block;
+}
+
+.result-stat-label {
+    font-size: 1.2em;
+    opacity: 0.9;
+}
+
+.footer {
+    text-align: center;
+    color: #666;
+    font-size: 0.9em;
+    margin-top: 20px;
+}
+
+/* Animation cho câu trả lời đúng/sai */
+.shake {
+    animation: shake 0.5s;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    75% { transform: translateX(10px); }
+}
+
+.bounce {
+    animation: bounce 0.6s;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .container {
+        padding: 20px;
+    }
+
+    header h1 {
+        font-size: 2em;
+    }
+
+    .level-buttons, .operation-buttons, .count-buttons {
+        flex-direction: column;
+    }
+
+    .level-btn, .op-btn, .count-btn {
+        width: 100%;
+    }
+
+    .problem-item {
+        flex-wrap: wrap;
+    }
+
+    .problem-question {
+        font-size: 1.3em;
+    }
+
+    .problem-input {
+        width: 80px;
+        font-size: 1.2em;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+
+    .result-stats {
+        flex-direction: column;
+        gap: 20px;
+    }
+}

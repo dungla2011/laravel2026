@@ -26,7 +26,7 @@ if(!$evid) {
     die("Event ID (evid) is required.");
 }
 
-$description = "DAV - Học Viện Ngoại Giao - Thanh toán chi phí sự kiện số: $evid";
+$description = "HVNG TT chi phí sự kiện số $evid";
 $payment_type = request('payment_type');
 
 $payments = getPaymentsData($evid, $payment_type);
@@ -435,7 +435,7 @@ try {
 
         <?php
     if ($payments->isEmpty()) {
-        echo '<p style="text-align: center; color: #999; padding: 20px;">Không có dữ liệu thanh toán nào. Chỉ các thành viên đã điền Số tiền mới hiện lên danh sách này</p>';
+        echo '<p style="text-align: center; color: red; padding: 20px;">Không có dữ liệu thanh toán nào. Chỉ các thành viên đã điền Số tiền mới hiện lên danh sách này</p>';
         exit;
     }
 
@@ -494,7 +494,12 @@ try {
         }
 
         $bankName = config("banks")[$payment->bank_name_text]['bidv_name'] ?? '';
+//        $bankName = str_replace(["&", '-' ], " ", $bankName);
+//        $bankName = str_replace(["  "], " ", $bankName);
 
+
+        $userEvent = \App\Models\EventUserInfo::find($payment->user_event_id) ?? '';
+        $cccd = $userEvent->id_number ?? null;
 
         $cc++;
         echo "<tr>";
@@ -510,7 +515,9 @@ try {
         echo "<td style='text-align: right;'>" . number_format($payedAfterTax, 0, ',', '.') . " " . $currencyUnit . "</td>";
 
         echo "<td>" . ($payment->tax_number ?? '') . "</td>";
-        echo "<td>" . ($payment->id_number ?? '<span style="color: red"> Cần cập nhật </span>') . "</td>";
+
+        echo "<td>" . ($cccd ?? '<span style="color: red"> Cần cập nhật </span>') . "</td>";
+
         echo "<td>" . ($payment->bank_acc_number ?? '') . "</td>";
         echo "<td>" . \LadLib\Common\cstring2::convert_codau_khong_dau($bankName ?? '') . "</td>";
 //        echo "<td>" . ($payment->transaction_id ?? '') . "</td>";
@@ -759,7 +766,10 @@ function exportToExcel($evid, $payments = [], $payment_type = '') {
             // $payment->bank_name_text lấy ra tên ngân hàng từ config.banks.php
             $bankName = config("banks")[$payment->bank_name_text]['bidv_name'] ?? '';
             $bankName = \LadLib\Common\cstring2::convert_codau_khong_dau($bankName);
-            $description = "DAV - Học Viện Ngoại Giao - Thanh toán chi phí sự kiện số: $evid";
+//            $bankName = str_replace(["&", '-' ], " ", $bankName);
+//            $bankName = str_replace(["  "], " ", $bankName);
+
+            $description = "HVNG TT Chi phí Sự kiện số $evid";
             $description = \LadLib\Common\cstring2::convert_codau_khong_dau($description);
 
             // Cột 1: STT
@@ -778,16 +788,16 @@ function exportToExcel($evid, $payments = [], $payment_type = '') {
             $sheet->getStyle('D' . $row)->getNumberFormat()->setFormatCode('#,##0');
 
             // Cột 5: CCCD/Passport
-            $sheet->setCellValue('E' . $row, $payment->id_number ?? '');
+//            $sheet->setCellValue('E' . $row, $payment->id_number ?? '');
 
             // Cột 6: Chi nhánh ngân hàng
-            $sheet->setCellValue('F' . $row, $bankName);
+            $sheet->setCellValue('E' . $row, $bankName);
 
             // Cột 7: Nội dung
-            $sheet->setCellValue('G' . $row, $description);
+            $sheet->setCellValue('F' . $row, $description);
 
             // Áp dụng border và alignment cho các ô
-            for ($col = 'A'; $col <= 'G'; $col++) {
+            for ($col = 'A'; $col <= 'F'; $col++) {
                 $cell = $sheet->getCell($col . $row);
                 $cell->getStyle()
                     ->getBorders()
@@ -814,12 +824,12 @@ function exportToExcel($evid, $payments = [], $payment_type = '') {
         $sheet->getColumnDimension('B')->setWidth(30);
         $sheet->getColumnDimension('C')->setWidth(20);
         $sheet->getColumnDimension('D')->setWidth(20);
-        $sheet->getColumnDimension('E')->setWidth(20);
-        $sheet->getColumnDimension('F')->setWidth(30);
-        $sheet->getColumnDimension('G')->setWidth(80);
+        $sheet->getColumnDimension('E')->setWidth(30);
+        $sheet->getColumnDimension('F')->setWidth(80);
+//        $sheet->getColumnDimension('G')->setWidth(80);
 
         // Tạo tên file
-        $filename = "ThanhToan_Event_$evid.xlsx";
+        $filename = "ThanhToanEvent_$evid.xlsx";
 
         // Lưu file Excel vào folder tạm
         $tempExcelPath = sys_get_temp_dir() . '/' . $filename;

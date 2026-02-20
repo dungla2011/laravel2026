@@ -154,7 +154,7 @@ class OrderItem_Meta extends MetaOfTableInDb
                                   FROM order_items
                                   GROUP BY year, month
                                   ORDER BY year DESC, month DESC
-                                  LIMIT 5) as sub"))
+                                  LIMIT 13) as sub"))
                         ->orderBy('year', 'desc')
                         ->orderBy('month', 'desc')
                         ->get();

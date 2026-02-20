@@ -383,7 +383,7 @@ class VmwareHelper {
      * @param string $outputFile JSON file path for output (default: /var/glx/weblog/vps_glx.json)
      * @return array Array of VMs from JSON file, empty array on failure
      */
-    public static function getVMListV2($outputFile = '/var/glx/weblog/vps_glx2.json') {
+    public static function getVMListV2($outputFile = '/var/glx/weblog/vps_glx_list_v3.json') {
         $pythonScript = '/var/www/html/task-cli/vmware/get-vm-info-pyVmomi.py';
         
         // Verify Python script exists
@@ -392,12 +392,51 @@ class VmwareHelper {
             return [];
         }
         
-        // Delete old JSON file if it exists
+        // Handle old JSON file - archive to zip if zip is old enough
         if (file_exists($outputFile)) {
-            if (@unlink($outputFile)) {
-                echo "🗑️  Deleted old file: $outputFile\n";
-            } else {
-                echo "⚠️  Could not delete old file: $outputFile\n";
+            $zipFile = $outputFile . '.zip';
+            $shouldArchive = true;
+            
+            // Check if zip file exists and is recent (within 180 minutes)
+            if (file_exists($zipFile)) {
+                $zipModTime = filemtime($zipFile);
+                $zipAge = (time() - $zipModTime) / 60; // in minutes
+                
+                if ($zipAge < 180) {
+                    // $shouldArchive = false;
+                    echo "⏭️  Zip file is recent ({$zipAge} min old), skipping archive\n";
+                }
+            }
+            
+            if ($shouldArchive) {
+                // Rename old file with timestamp
+                $timestamp = date('Y-m-d_H-i-s');
+                $archivedFile = $outputFile . '.' . $timestamp;
+                
+                if (@rename($outputFile, $archivedFile)) {
+                    echo "📝 Renamed to: {$archivedFile}\n";
+                    
+                    // Add to zip archive (CREATE only - don't OVERWRITE to keep all old files)
+                    $zip = new \ZipArchive();
+                    if ($zip->open($zipFile, \ZipArchive::CREATE) === true) {
+                        if ($zip->addFile($archivedFile, basename($archivedFile))) {
+                            $zip->close();
+                            echo "📦 Archived to: {$zipFile}\n";
+                            
+                            // Delete the renamed file
+                            if (@unlink($archivedFile)) {
+                                echo "🗑️  Deleted archived file: {$archivedFile}\n";
+                            }
+                        } else {
+                            echo "⚠️  Failed to add file to zip\n";
+                            $zip->close();
+                        }
+                    } else {
+                        echo "⚠️  Could not create/open zip file: {$zipFile}\n";
+                    }
+                } else {
+                    echo "⚠️  Could not rename old file: {$outputFile}\n";
+                }
             }
         }
         

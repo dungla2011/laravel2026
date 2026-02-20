@@ -1,0 +1,23 @@
+-- Table: partner_infos
+-- Generated: 2026-02-11 19:32:11
+
++--------------+---------------------+------+-----+---------------------+-------------------------------+
+| Field        | Type                | Null | Key | Default             | Extra                         |
++--------------+---------------------+------+-----+---------------------+-------------------------------+
+| id           | bigint(20)          | NO   | PRI |                     | auto_increment                |
+| old_id       | bigint(20)          | YES  | MUL |                     |                               |
+| created_at   | timestamp           | YES  |     | current_timestamp() |                               |
+| updated_at   | timestamp           | YES  |     |                     | on update current_timestamp() |
+| name         | varchar(128)        | YES  |     |                     |                               |
+| deleted_at   | timestamp           | YES  |     |                     |                               |
+| partner_name | varchar(64)         | YES  |     | 0                   |                               |
+| token_api    | varchar(255)        | YES  |     |                     |                               |
+| note         | text                | YES  |     |                     |                               |
+| tax_code     | varchar(64)         | YES  |     |                     |                               |
+| address      | text                | YES  |     |                     |                               |
+| phone        | varchar(20)         | YES  |     |                     |                               |
+| email        | varchar(255)        | YES  | UNI |                     |                               |
+| user_id      | bigint(20) unsigned | YES  | MUL |                     |                               |
++--------------+---------------------+------+-----+---------------------+-------------------------------+
+
+14 columns

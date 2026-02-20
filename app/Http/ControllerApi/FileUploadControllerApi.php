@@ -241,11 +241,16 @@ class FileUploadControllerApi extends BaseApiController
                 }
 
                 if (! $retOldLink) {
-                    //            die("\n\nUIDx1 = $userCloud->user_id / $locationStore / ");
+
 
                     //Tạo fileUser mới, vì không có file trong cloud, hoặc có file nhưng quá 24h
                     $objFile = FileUpload::create($pr);
-                    if(SiteMng::use_snowflake_models("FileUpload"))
+
+                    if(isAdminCookie()){
+//                        die("\n\nFID = $objFile->id  ");
+                    }
+
+                    if(SiteMng::use_snowflake_models("FileUpload") ||SiteMng::use_unixtime_id_models("FileUpload") )
                         $objFile->link1 = ($objFile->id);
                     else
                         $objFile->link1 = eth1b($objFile->id);
@@ -282,7 +287,7 @@ class FileUploadControllerApi extends BaseApiController
                         }
                     }
                     else{
-                        dumpdebug("move_uploaded_file: $filePath -> $newPath");
+                        dumpdebug("move_uploaded_file 1: $filePath -> $newPath");
 
                         if (! move_uploaded_file($filePath, $newPath)) {
                             //Hủy lệnh tạo FileUpload
@@ -401,7 +406,8 @@ class FileUploadControllerApi extends BaseApiController
             DB::rollBack();
 //            if ($returnObjOnly)
             {
-                loi($e->getMessage().' / LINE: '.__LINE__.' / Func : '.__FUNCTION__);
+                $file = basename(__FILE__);
+                loi($e->getMessage()." FILE : $file " . ' / LINE: '.__LINE__.' / Func : '.__FUNCTION__);
             }
 //            return rtJsonApiError('Upload error1: '.$e->getMessage().' | LINE: '.$e->getLine());
         }

@@ -5,6 +5,7 @@ use Godruoyi\Snowflake\Snowflake;
 
 trait SnowflakeId
 {
+    use CustomIdTrait;
     /**
      * Boot the trait
      */
@@ -51,11 +52,4 @@ trait SnowflakeId
     //     // return SiteMng::use_snowflake_models(class_basename(static::class)) ? 'string' : 'int';
     //     return SiteMng::isUsePosgresDb() ? 'string' : 'int';
     // }
-
-    public function getIncrementing()
-    {
-        return !SiteMng::use_snowflake_models(class_basename(static::class));
-//        return !SiteMng::isUsePosgresDb(); // true cho MySQL, false cho PostgreSQL
-    }
-
 }

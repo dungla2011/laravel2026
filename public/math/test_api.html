@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .test-section {
+            background: #f5f5f5;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #5568d3;
+        }
+        pre {
+            background: #333;
+            color: #0f0;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        .error {
+            color: red;
+        }
+        .success {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test Math API</h1>
+    
+    <div class="test-section">
+        <h2>1. Test Login</h2>
+        <button onclick="testLogin()">Test Login</button>
+        <pre id="loginResult">Waiting...</pre>
+    </div>
+
+    <div class="test-section">
+        <h2>2. Test Register</h2>
+        <button onclick="testRegister()">Test Register</button>
+        <pre id="registerResult">Waiting...</pre>
+    </div>
+
+    <div class="test-section">
+        <h2>3. Test Get Exercises (Requires Auth)</h2>
+        <button onclick="testExercises()">Test Exercises</button>
+        <pre id="exercisesResult">Waiting...</pre>
+    </div>
+
+    <div class="test-section">
+        <h2>Current Token</h2>
+        <pre id="currentToken">Not logged in</pre>
+        <button onclick="clearToken()">Clear Token</button>
+    </div>
+
+    <script>
+        function updateToken() {
+            const token = localStorage.getItem('token');
+            document.getElementById('currentToken').textContent = token || 'Not logged in';
+        }
+
+        function clearToken() {
+            localStorage.clear();
+            updateToken();
+            alert('Token cleared!');
+        }
+
+        async function testLogin() {
+            const result = document.getElementById('loginResult');
+            result.textContent = 'Testing...';
+            
+            try {
+                const response = await fetch('/math/api/login.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        username: 'test',
+                        password: 'test123'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    localStorage.setItem('token', data.token);
+                    updateToken();
+                    result.innerHTML = `<span class="success">✅ SUCCESS</span>\n${JSON.stringify(data, null, 2)}`;
+                } else {
+                    result.innerHTML = `<span class="error">❌ ERROR</span>\n${JSON.stringify(data, null, 2)}`;
+                }
+            } catch (error) {
+                result.innerHTML = `<span class="error">❌ EXCEPTION</span>\n${error.message}`;
+            }
+        }
+
+        async function testRegister() {
+            const result = document.getElementById('registerResult');
+            result.textContent = 'Testing...';
+            
+            const randomUser = 'user' + Math.floor(Math.random() * 10000);
+            
+            try {
+                const response = await fetch('/math/api/register.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        username: randomUser,
+                        password: 'test123'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    result.innerHTML = `<span class="success">✅ SUCCESS</span>\nUsername: ${randomUser}\n${JSON.stringify(data, null, 2)}`;
+                } else {
+                    result.innerHTML = `<span class="error">❌ ERROR</span>\n${JSON.stringify(data, null, 2)}`;
+                }
+            } catch (error) {
+                result.innerHTML = `<span class="error">❌ EXCEPTION</span>\n${error.message}`;
+            }
+        }
+
+        async function testExercises() {
+            const result = document.getElementById('exercisesResult');
+            result.textContent = 'Testing...';
+            
+            const token = localStorage.getItem('token');
+            if (!token) {
+                result.innerHTML = '<span class="error">❌ No token. Please login first!</span>';
+                return;
+            }
+            
+            try {
+                const response = await fetch('/math/api/exercises.php', {
+                    headers: { 
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    result.innerHTML = `<span class="success">✅ SUCCESS</span>\n${JSON.stringify(data, null, 2)}`;
+                } else {
+                    result.innerHTML = `<span class="error">❌ ERROR</span>\n${JSON.stringify(data, null, 2)}`;
+                }
+            } catch (error) {
+                result.innerHTML = `<span class="error">❌ EXCEPTION</span>\n${error.message}`;
+            }
+        }
+
+        // Update token display on load
+        updateToken();
+    </script>
+</body>
+</html>

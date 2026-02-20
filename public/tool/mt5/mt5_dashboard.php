@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Monitoring Dashboard</title>
+    <title> DCA-Sum </title>
     <style>
         * {
             margin: 0;
@@ -319,29 +319,28 @@
 <div class="container">
     <div class="header">
         <div class="header-top">
-            <h1>🤖 Monitoring Dashboard</h1>
             <div class="status-indicator">
                 <div class="status-dot" id="statusDot"></div>
                 <span id="statusText">Connecting...</span>
             </div>
         </div>
         <div class="summary-bar" id="summaryBar">
-            <div class="summary-item">
-                <div class="summary-label">Real Accounts</div>
-                <div class="summary-value" id="realCount">0</div>
-            </div>
-            <div class="summary-item">
+            <div class="summary-item" style="display: none">
                 <div class="summary-label">Total Accounts</div>
                 <div class="summary-value" id="totalCount">0</div>
             </div>
             <div class="summary-item">
-                <div class="summary-label">Today Real P/L</div>
-                <div class="summary-value" id="totalProfit">$0.00</div>
+                <span class="summary-value" id="totalProfit">0.00 </span>
+                <span class="summary-value" id="totalOpenProfit">0.00</span>
             </div>
-            <div class="summary-item">
-                <div class="summary-label">Open P/L</div>
-                <div class="summary-value" id="totalOpenProfit">$0.00</div>
+            <div class="summary-item" style="display: none">
+                <div class="summary-label">Real Accounts</div>
+                <div class="summary-value" id="realCount">0</div>
             </div>
+            <div class="summary-item list_open_orders" style="flex: 1; font-size: 11px; line-height: 1.4;">
+                
+            </div>
+
         </div>
     </div>
 
@@ -383,16 +382,36 @@
         // Update summary bar
         document.getElementById('realCount').textContent = data.realAccountsCount || 0;
         document.getElementById('totalCount').textContent = data.accountCount || 0;
-        
+
         const totalProfit = data.totalRealProfit || 0;
         const profitElement = document.getElementById('totalProfit');
-        profitElement.textContent = (totalProfit >= 0 ? '+' : '') + '$' + formatNumber(totalProfit);
+        profitElement.textContent = (totalProfit >= 0 ? '+' : '') + formatNumber(totalProfit);
         profitElement.className = 'summary-value ' + (totalProfit >= 0 ? 'positive' : 'negative');
-        
+
         const totalOpenProfit = data.totalOpenProfit || 0;
         const openProfitElement = document.getElementById('totalOpenProfit');
-        openProfitElement.textContent = (totalOpenProfit >= 0 ? '+' : '') + '$' + formatNumber(totalOpenProfit);
+        openProfitElement.textContent = (totalOpenProfit >= 0 ? '+' : '') + formatNumber(totalOpenProfit);
         openProfitElement.className = 'summary-value ' + (totalOpenProfit >= 0 ? 'positive' : 'negative');
+
+        // Display order count for Real accounts only
+        let ordersHtml = '';
+        const realAccountsWithOrders = data.accounts.filter(acc => {
+            const accountType = acc.status?.accountType || 'Unknown';
+            return accountType === 'Real' && acc.openOrders && acc.openOrders.count > 0;
+        });
+        
+        if (realAccountsWithOrders.length > 0) {
+            ordersHtml = '<div style="display: flex; flex-wrap: wrap; gap: 8px;">';
+            realAccountsWithOrders.forEach(account => {
+                const orderCount = account.openOrders.count || 0;
+                ordersHtml += `<span style="background: rgba(255,255,255,0.2); padding: 3px 10px; border-radius: 4px; white-space: nowrap; font-weight: bold;">
+                    ${orderCount}
+                </span>`;
+            });
+            ordersHtml += '</div>';
+        }
+        
+        document.querySelector('.list_open_orders').innerHTML = ordersHtml || '<span style="opacity: 0.7;">No open orders</span>';
 
         let html = '<div class="accounts-grid">';
         data.accounts.forEach(account => { html += createAccountCard(account); });
@@ -435,13 +454,13 @@
 
         let html = `<div class="account-card" style="${cardStyle}">
                 <div class="account-header" style="${headerStyle}">
-                    <div class="account-number">Account #${account.account}${typeBadge}</div>
+                    <div class="account-number">No# ${account.account}${typeBadge}</div>
                     <div class="account-status ${statusClass}">${statusText}</div>
                 </div>
                 <div class="info-grid">
-                    <div class="info-item"><div class="info-label">Today P/L</div><div class="info-value ${profitClass}">${profitSign}$${formatNumber(todayProfit)}</div></div>
-                    <div class="info-item"><div class="info-label">Balance</div><div class="info-value">$${formatNumber(status.balance || 0)}</div></div>
-                    <div class="info-item"><div class="info-label">Equity (Open P/L)</div><div class="info-value">$${formatNumber(status.equity || 0)} <span class="${openProfitClass}">(${openProfitSign}$${formatNumber(openProfit)})</span></div></div>
+                    <div class="info-item"><div class="info-label">Today P/L</div><div class="info-value ${profitClass}">${profitSign}${formatNumber(todayProfit)}</div></div>
+                    <div class="info-item"><div class="info-label">Balance</div><div class="info-value">${formatNumber(status.balance || 0)}</div></div>
+                    <div class="info-item"><div class="info-label">Equity (Open P/L)</div><div class="info-value">${formatNumber(status.equity || 0)} <span class="${openProfitClass}">(${openProfitSign}${formatNumber(openProfit)})</span></div></div>
                     <div class="info-item"><div class="info-label">Open Orders</div><div class="info-value">${account.openOrders ? account.openOrders.count : 0} / ${settings.MaxB || 0}</div></div>
                 </div>
                 <div class="settings-row"><span class="settings-label">Settings:</span><span class="settings-value">${status.config_input || 'N/A'} | Price: ${formatNumber(price.bid || 0, 2)}/${formatNumber(price.ask || 0, 2)}</span></div>`;
@@ -463,7 +482,7 @@
             sortedOrders.forEach(o => {
                 const tc = o.type === 'BUY' ? 'order-type-buy' : 'order-type-sell';
                 const pc = (o.currentProfit || 0) >= 0 ? 'profit-positive' : 'profit-negative';
-                html += `<tr><td class="${tc}">${o.type}</td><td>${formatNumber(o.price || 0, 2)}</td><td>${formatNumber(o.volume || 0, 2)}</td><td class="${pc}">$${formatNumber(o.currentProfit || 0)}</td><td style="font-size: 11px; color: #888;">${o.openTime || 'N/A'}</td></tr>`;
+                html += `<tr><td class="${tc}">${o.type}</td><td>${formatNumber(o.price || 0, 2)}</td><td>${formatNumber(o.volume || 0, 2)}</td><td class="${pc}">${formatNumber(o.currentProfit || 0)}</td><td style="font-size: 11px; color: #888;">${o.openTime || 'N/A'}</td></tr>`;
             });
             html += `</tbody></table></div>`;
         }
@@ -473,7 +492,7 @@
             account.recentClosedOrders.orders.forEach(o => {
                 const tc = o.type === 'BUY' ? 'order-type-buy' : 'order-type-sell';
                 const pc = (o.profit || 0) >= 0 ? 'profit-positive' : 'profit-negative';
-                html += `<tr><td class="${tc}">${o.type}</td><td>${formatNumber(o.price || 0, 2)}</td><td>${formatNumber(o.volume || 0, 2)}</td><td class="${pc}">$${formatNumber(o.profit || 0)}</td><td style="font-size: 11px; color: #888;">${o.closeTime || 'N/A'}</td></tr>`;
+                html += `<tr><td class="${tc}">${o.type}</td><td>${formatNumber(o.price || 0, 2)}</td><td>${formatNumber(o.volume || 0, 2)}</td><td class="${pc}">${formatNumber(o.profit || 0)}</td><td style="font-size: 11px; color: #888;">${o.closeTime || 'N/A'}</td></tr>`;
             });
             html += `</tbody></table></div>`;
         }

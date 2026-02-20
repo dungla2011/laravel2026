@@ -60,6 +60,11 @@ class ClassMail1
 
     public static function sendMail($from, $fromName, $to, $subject, $content, $debug = 0, $cc1 = '', $cc2 = '', $cc3 = '', $cc4 = '', $cc5 = '')
     {
+
+        if(getDomainHostName() == 'events.dav.edu.vn'){
+            return sendMailNcbd($to,$subject, $content);
+        }
+
         $logFile = '/var/glx/weblog/mail/_sendMail.log';
         //require_once "/var/www/galaxycloud/application/library/phpmailer/class.phpmailer.php";
         $mail = new PHPMailer(); // create a new object

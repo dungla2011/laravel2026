@@ -596,7 +596,7 @@ function getUserIdCurrentInCookie($getUser = 0) {
             return $user;
         }
 
-        return $user->id;
+        return $user->id ?? 0;
     }
 
     $tk = $_COOKIE['_tglx863516839'] ?? '';

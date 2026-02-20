@@ -546,15 +546,17 @@ $(function () {
                 let currentVal = $(inputSelect).attr('value');
                 // let allVal = currentVal + "," + ui.item.value;
 
-                let allVal = jctool.addNumberInStringComma(currentVal, ui.item.value);
+                // Convert to string to handle bigint values correctly
+                let valueToAdd = String(ui.item.value);
+                let allVal = jctool.addNumberInStringComma(currentVal, valueToAdd);
 
                 console.log("currentVal = " + currentVal + " / All Val2 = " + allVal);
                 if (allVal != currentVal) {
 
                     //Nếu là top filter, thì chỉ search 1 giá trị
                     if($(this).attr('data-is-top-filter') == 1){
-                        $(inputSelect).attr('value', ui.item.value);
-                        $(inputSelect).prop('value', ui.item.value);
+                        $(inputSelect).attr('value', valueToAdd);
+                        $(inputSelect).prop('value', valueToAdd);
                     }
                     else{
                         $(inputSelect).attr('value', allVal);
@@ -568,8 +570,11 @@ $(function () {
             } else {
                 console.log(" Set value for input post: " +  ui.item.value);
                 console.log(" inputSelect: " +  inputSelect);
-                $(inputSelect).attr('value', ui.item.value);
-                $(inputSelect).val(ui.item.value);
+                // Convert to string to handle bigint values correctly
+                let valueToSet = String(ui.item.value);
+                $(inputSelect).attr('value', valueToSet);
+                $(inputSelect).val(valueToSet);
+                $(inputSelect).prop('value', valueToSet);
                 $(this).siblings("div.search-auto-complete-tbl").html(spanItem)
             }
             event.preventDefault();

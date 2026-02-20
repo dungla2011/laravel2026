@@ -8,7 +8,7 @@ use LadLib\Laravel\Database\TraitModelExtra;
 
 class OrderItem extends ModelGlxBase
 {
-    use HasFactory, SoftDeletes, TraitModelExtra, SnowflakeId;
+    use HasFactory, SoftDeletes, TraitModelExtra, SnowflakeId, UnixTimeId;
 
     protected $guarded = [];
 

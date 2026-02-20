@@ -321,12 +321,17 @@ $urlBase<br>
         return ClassMail1::sendMail('admin@glx.com.vn', "$host", $email, "$host - " . __('login.email_reset_password_subject'), "$cont");
     }
 
-    public function sendMailActive($email, $strActive)
+    public function sendMailActive($email, $strActive, $action = '')
     {
 
         $host = ucfirst(UrlHelper1::getDomainHostName());
         $urlBase = UrlHelper1::getUrlOrigin();
-        $link = "$urlBase/register?active=$strActive";
+        $link = "$urlBase/register?active=$strActive".$action;
+
+        if(isAdminCookie()){
+//            die(" CCC = $link / $action");
+        }
+
         $cont = __('login.email_greeting') . "<br>" . __('login.email_activation_instruction') . " <a href='$link'> " . __('login.email_click_link') . " </a> <br>  " . __('login.email_or_copy') . ": $link <br>
 " . __('login.email_activation_expires_60min') . "<br>
 " . __('login.email_thank_you') . "<br>
@@ -344,10 +349,23 @@ $urlBase<br>
 
 
         if (isset($pr['active'])) {
+
+            $act = request('action') ?? '';
+            $act = preg_replace('/[^a-zA-Z0-9_]/', '', $act);
+            if($act) {
+                $act = "?action=$act";
+            }
+
+            if(isAdminCookie()){
+//                die("ACT = $act");
+            }
+
             $str = $pr['active'];
             if (strlen($str) > 256 || ! preg_match('#^[a-zA-Z0-9]+$#', $str)) {
 
+
                 LogUser::FInsertLog('Chuỗi kích hoạt không hợp lệ 1!');
+                echo "<div data-code-pos='ppp17698554104701'></div>";
                 bl3(__('login.invalid_activation_string'), "<a href='/'> " . __('login.back_home') . "</a>");
 
                 return;
@@ -367,10 +385,16 @@ $urlBase<br>
                 return;
             }
 
+            $pad = "?";
+            if($act)
+                $pad = "&";
+
+            //Da active roi:
             if ($us->email_active_at) {
                 $us->_roles()->sync([DEF_GID_ROLE_MEMBER]);
+                $act .= $pad."email=$us->email";
                 LogUser::FInsertLog(null, null, 'Tài khoản đã kích hoạt thành công (1)', $us->id);
-                tb3(__('login.account_activated_success'), "<a href='/login'> " . __('login.continue') . "</a>");
+                tb3(__('login.account_activated_success'), "<a href='/login$act'> " . __('login.continue') . "</a>");
 
                 return;
             }
@@ -389,10 +413,10 @@ $urlBase<br>
             $us->email_active_at = nowyh();
             $us->log .= 'Active at: '.nowyh();
             if ($us->update()) {
-
+                $act .= $pad."email=$us->email";
                 LogUser::FInsertLog(null, null, 'Kích hoạt thành công!', $us->id);
 
-                tb3(__('login.account_activated_success'), "<a href='/login'> " . __('login.continue') . "</a>");
+                tb3(__('login.account_activated_success'), "<a href='/login$act'> " . __('login.continue') . "</a>");
                 //Cho quyền member:
                 $us->_roles()->sync([DEF_GID_ROLE_MEMBER]);
             } else {
@@ -413,7 +437,10 @@ $urlBase<br>
 
             unset($pr['_token']);
 
-            $pr['username'] = trim(strtolower($pr['username']));
+            $pr['username'] = trim(strtolower($pr['username'] ?? ''));
+            if(!$pr['username'])
+                $pr['username'] = str_replace(['@', '.'],'_', $pr['email']);
+
             $pr['email'] = trim(strtolower($pr['email']));
 
             if (! preg_match('/[a-zA-Z]/', $pr['username'][0])) {
@@ -483,7 +510,17 @@ $urlBase<br>
             $user->reg_str = $strActive;
             $user->save();
 
-            if ($pr['email'] == 'test002@gmail.com' || $this->sendMailActive($pr['email'], $strActive)) {
+            $act = request('action') ?? '';
+            $act = preg_replace('/[^a-zA-Z0-9_]/', '', $act);
+            if($act) {
+                $act = "&action=$act";
+            }
+
+            if(isAdminCookie()){
+//                die("ACT = $act");
+            }
+
+            if ($pr['email'] == 'test002@gmail.com' || $this->sendMailActive($pr['email'], $strActive, $act)) {
                 LogUser::FInsertLog(null, null, "Send mail kích hoạt $strActive / ".$pr['email']);
 
                 echo "<br/>\n";echo "<br/>\n";echo "<br/>\n";
@@ -696,8 +733,15 @@ $urlBase<br>
 
         //nếu đã login rồi thì chuyển về member
         if (Auth::check()) {
+            $act = request('action') ?? '';
+            $act = preg_replace('/[^a-zA-Z0-9_]/', '', $act);
+            if($act) {
+//                $act = "?action=$act";
+            }
+
+//            header("Location: /member?action=$act");
 //            return redirect()->intended();
-            return redirect()->route('member.index');
+            return redirect()->route('member.index', ['action' => $act]);
         }
 
         //        $layout_name = getLayoutName();
@@ -781,8 +825,12 @@ $urlBase<br>
                             setcookie('_tglx__863516839', $us->getJWTUserToken(), time() + 3600 * 24 * 180, '/');
                         }
                         usleep(10000);
-
-                        return redirect()->route('member.index');
+                        $act = request('action') ?? '';
+                        $act = preg_replace('/[^a-zA-Z0-9_]/', '', $act);
+                        if($act) {
+//                            $act = "?action=$act";
+                        }
+                        return redirect()->route('member.index', ['action', $act]);
                     }
                 }
             }

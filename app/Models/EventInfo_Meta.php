@@ -63,6 +63,7 @@ class EventInfo_Meta extends MetaOfTableInDb
             'content1',
             'content2',
             'content3',
+            'content4',
             'content1_en',
             'content2_en',
             'content3_en',
@@ -73,6 +74,7 @@ class EventInfo_Meta extends MetaOfTableInDb
             'mail_title2_en',
             'mail_title3',
             'mail_title3_en',
+            'mail_title4',
 
             'reg_mail_title_vi1',
             'reg_mail_title_vi2',
@@ -116,6 +118,9 @@ class EventInfo_Meta extends MetaOfTableInDb
 
         if ($field == 'content3' || $field == 'content1' || $field == 'content2' ||
             $field == 'content3_en' || $field == 'content1_en' || $field == 'content2_en'
+            || $field == 'content4' || $field == 'content4_en'
+            || $field == 'content5' || $field == 'content5_en'
+
         ) {
             $objMeta->dataType = DEF_DATA_TYPE_RICH_TEXT;
         }
@@ -903,6 +908,9 @@ $str
                             <option value="content1"> Email Content 1 </option>
                             <option value="content2"> Email Content 2  </option>
                             <option value="content3"> Email Content 3  </option>
+                            <option value="content4"> Email Content 4  </option>
+                            <option value="content5"> Email Content 5  </option>
+
                             <option value="sms_content1"> Sms Content 1 </option>
                             <option value="sms_content2"> Sms Content 2  </option>
                             <option value="sms_content3"> Sms Content 3  </option>
@@ -1453,6 +1461,10 @@ $slUser
 
         if($field == 'mail_title1'){
             return $ret = "<i class='nav-icon fa fa-plus-circle mr-1'></i> NỘI DUNG EMAIL";
+        }
+
+        if($field == 'mail_title4'){
+            return $ret = "<i class='nav-icon fa fa-plus-circle mr-1'></i> EMAIL THANH TOÁN";
         }
 
 //        if($field == 'reg_mail_title_vi1')

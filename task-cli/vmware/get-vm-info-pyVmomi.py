@@ -69,7 +69,7 @@ def get_vm_uptime(vm):
                     }
     except Exception as e:
         print(f"Error getting uptime: {e}")
-    
+
     return {
         'boot_time': None,
         'uptime_minutes': None,
@@ -95,24 +95,24 @@ def get_vm_info(vm, host_ip=None):
                             })
         except:
             pass
-        
+
         # Refresh VM state to avoid stale data
         try:
             vm.Reload()  # Reload entire VM object including config
         except:
             pass
-        
+
         try:
             vm.RefreshRuntime()
         except:
             pass  # Some ESXi versions don't support this
-        
+
         uptime_info = get_vm_uptime(vm)
-        
+
         # Get hardware info
         cpu_count = vm.config.hardware.numCPU if vm.config else 0
         memory_mb = vm.config.hardware.memoryMB if vm.config else 0
-        
+
         # Get disk size - with retry and better error handling
         disk_size_gb = 0
         disk_count = 0
@@ -123,7 +123,7 @@ def get_vm_info(vm, host_ip=None):
                     disk_count += 1
                     disk_size = 0
                     disk_label = device.deviceInfo.label if device.deviceInfo else f"Disk {disk_count}"
-                    
+
                     # Try multiple methods to get disk size
                     if hasattr(device, 'capacityInKB') and device.capacityInKB:
                         disk_size = device.capacityInKB / (1024 * 1024)
@@ -139,27 +139,27 @@ def get_vm_info(vm, host_ip=None):
                                     disk_size = device.backing.capacityInBytes / (1024 * 1024 * 1024)
                         except:
                             pass
-                    
+
                     disk_size_gb += disk_size
                     disk_details.append({
                         'label': disk_label,
                         'size_gb': round(disk_size, 2),
                         'capacity_kb': device.capacityInKB if hasattr(device, 'capacityInKB') else None
                     })
-        
+
         # If disk is 0 but VM has config, log warning with details
         if disk_size_gb == 0 and vm.config and disk_count > 0:
             print(f"    ⚠️  Warning: {vm.name} - disk_size=0 (found {disk_count} disk devices)")
             for idx, disk in enumerate(disk_details, 1):
                 print(f"        Disk {idx}: {disk['label']}, capacityInKB={disk['capacity_kb']}")
-            
+
             # Check for running tasks
             if vm_tasks:
                 print(f"    🔧 VM has {len(vm_tasks)} running task(s):")
                 for task in vm_tasks:
                     progress_str = f" ({task['progress']}%)" if task['progress'] is not None else ""
                     print(f"        - {task['name']}: {task['state']}{progress_str}")
-            
+
             # Try alternative method - storage info
             try:
                 if hasattr(vm, 'storage') and vm.storage and hasattr(vm.storage, 'perDatastoreUsage'):
@@ -182,7 +182,7 @@ def get_vm_info(vm, host_ip=None):
                         print(f"    ✓ Retrieved disk size from storage usage: {disk_size_gb:.2f}GB")
             except Exception as e:
                 print(f"    ⚠️  Could not get storage usage: {e}")
-        
+
         # Get network info
         nics = []
         if vm.config and vm.config.hardware.device:
@@ -193,11 +193,11 @@ def get_vm_info(vm, host_ip=None):
                         'mac_address': device.macAddress,
                         'network_name': device.backing.deviceName if hasattr(device.backing, 'deviceName') else 'Unknown'
                     })
-        
+
         return {
             'honnection_state': vm.runtime.connectionState if hasattr(vm.runtime, 'connectionState') else 'Unknown',
             'guest_state': vm.guest.guestState if vm.guest and hasattr(vm.guest, 'guestState') else 'Unknown',
-            'cost_ip': host_ip,
+            'host_ip': host_ip,
             'name': vm.name,
             'vm_id': vm.config.uuid if vm.config else 'Unknown',
             'bios_uuid': vm.config.uuid if vm.config else 'Unknown',
@@ -223,7 +223,7 @@ def get_vm_info(vm, host_ip=None):
 def main():
     # Start timing
     start_time = time.time()
-    
+
     # ESXi hosts configuration - list all hosts
     esxi_hosts = [
         {
@@ -245,43 +245,43 @@ def main():
             'host': "10.0.1.19",
             'user': os.getenv('ES_USER'),
             'password': os.getenv('ES_PW2') + '098#'
-        }        
+        }
     ]
-    
+
     # Optional: get specific VM name from command line or env
     vm_name = None
     output_file = None
-    
+
     # Parse command line arguments
     for arg in sys.argv[1:]:
         if arg.startswith('vm='):
             vm_name = arg.split('=', 1)[1]
         elif arg.startswith('output='):
             output_file = arg.split('=', 1)[1]
-    
+
     # Fallback to env variables
     if not vm_name:
         vm_name = os.getenv('VM_NAME')
-    
+
     # Collect all VMs from all hosts
     all_vms_info = []
-    
+
     try:
         for host_config in esxi_hosts:
             esxi_host = host_config['host']
             esxi_user = host_config['user']
             esxi_password = host_config['password']
-            
+
             if not all([esxi_host, esxi_user, esxi_password]):
                 print(f"[{get_timestamp()}] ⚠️  Skipping {esxi_host}: Missing credentials")
                 continue
-            
+
             try:
                 # Disable SSL warning
                 context = ssl._create_unverified_context()
-                
+
                 print(f"[{get_timestamp()}] 🔗 Connecting to ESXi host: {esxi_host}")
-                
+
                 # Connect to ESXi host with timeout
                 si = SmartConnect(
                     host=esxi_host,
@@ -290,24 +290,24 @@ def main():
                     sslContext=context,
                     connectionPoolTimeout=60  # Add explicit timeout
                 )
-                
+
                 if not si:
                     print(f"[{get_timestamp()}] ❌ Failed to connect to {esxi_host}")
                     continue
-                
+
                 print(f"[{get_timestamp()}] ✅ Connected to {esxi_host}")
-                
+
                 # Ensure we disconnect when done
                 atexit.register(Disconnect, si)
-                
+
                 content = si.RetrieveContent()
-                
+
                 # Force refresh to avoid stale data
                 try:
                     content.propertyCollector.RefreshProperties()
                 except:
                     pass  # Ignore if not supported
-                
+
                 # Get VMs from this host
                 if vm_name:
                     print(f"[{get_timestamp()}] 📋 Fetching VM: {vm_name} from {esxi_host}")
@@ -316,11 +316,11 @@ def main():
                         if v.name == vm_name:
                             vm = v
                             break
-                    
+
                     if not vm:
                         print(f"[{get_timestamp()}] ⚠️  VM '{vm_name}' not found on {esxi_host}")
                         continue
-                    
+
                     vm_info = get_vm_info(vm, host_ip=esxi_host)
                     if vm_info:
                         all_vms_info.append(vm_info)
@@ -328,53 +328,53 @@ def main():
                     print(f"[{get_timestamp()}] 📋 Fetching all VMs from {esxi_host}")
                     vms = get_all_vms(content)
                     print(f"[{get_timestamp()}] ✅ Found {len(vms)} VMs on {esxi_host}\n")
-                    
+
                     for vm in vms:
                         vm_info = get_vm_info(vm, host_ip=esxi_host)
-                        
+
                         # Retry logic if disk_gb = 0 but cpu and ram are not 0
-                        if vm_info and vm_info['cpu'] > 0 and vm_info['memory_gb'] > 0 and vm_info['disk_gb'] == 0:
-                            print(f"[{get_timestamp()}]     🔄 Disk = 0 but CPU/RAM detected. Retrying up to 3 times...")
-                            max_retries = 3
-                            for retry in range(1, max_retries + 1):
-                                print(f"[{get_timestamp()}]     ⏳ Retry {retry}/{max_retries} - waiting 5 seconds...")
-                                time.sleep(5)
-                                vm_info_retry = get_vm_info(vm, host_ip=esxi_host)
-                                if vm_info_retry and vm_info_retry['disk_gb'] > 0:
-                                    print(f"[{get_timestamp()}]     ✅ Retry {retry} success! Disk: {vm_info_retry['disk_gb']}GB")
-                                    vm_info = vm_info_retry
-                                    break
-                                else:
-                                    retry_disk = vm_info_retry['disk_gb'] if vm_info_retry else 0
-                                    print(f"[{get_timestamp()}]     ⚠️  Retry {retry} failed. Disk still: {retry_disk}GB")
-                            
-                            if vm_info['disk_gb'] == 0:
-                                print(f"[{get_timestamp()}]     ❌ All {max_retries} retries failed. Accepting disk_gb = 0")
-                        
+#                         if  vm_info and vm_info['cpu'] > 0 and vm_info['memory_gb'] > 0 and vm_info['disk_gb'] == 0:
+#                             print(f"[{get_timestamp()}]     🔄 Disk = 0 but CPU/RAM detected. Retrying up to 3 times...")
+#                             max_retries = 3
+#                             for retry in range(1, max_retries + 1):
+#                                 print(f"[{get_timestamp()}]     ⏳ Retry {retry}/{max_retries} - waiting 5 seconds...")
+#                                 time.sleep(5)
+#                                 vm_info_retry = get_vm_info(vm, host_ip=esxi_host)
+#                                 if vm_info_retry and vm_info_retry['disk_gb'] > 0:
+#                                     print(f"[{get_timestamp()}]     ✅ Retry {retry} success! Disk: {vm_info_retry['disk_gb']}GB")
+#                                     vm_info = vm_info_retry
+#                                     break
+#                                 else:
+#                                     retry_disk = vm_info_retry['disk_gb'] if vm_info_retry else 0
+#                                     print(f"[{get_timestamp()}]     ⚠️  Retry {retry} failed. Disk still: {retry_disk}GB")
+#
+#                             if vm_info['disk_gb'] == 0:
+#                                 print(f"[{get_timestamp()}]     ❌ All {max_retries} retries failed. Accepting disk_gb = 0")
+
                         if vm_info:
                             all_vms_info.append(vm_info)
-                            disk_info = f"Disk: {vm_info['disk_gb']}GB ({vm_info['disk_count']} disks db1)" if vm_info.get('disk_count') else f"Disk: {vm_info['disk_gb']}GB"
+                            disk_info = f"Disk: {vm_info['disk_gb']}GB ({vm_info['disk_count']} disks db1 , host= {vm_info['host_ip']})" if vm_info.get('disk_count') else f"Disk: {vm_info['disk_gb']}GB"
                             print(f"[{get_timestamp()}]   ✓ {vm_info['name']} - {vm_info['power_state']} - CPU: {vm_info['cpu']} - RAM: {vm_info['memory_gb']:.1f}GB - {disk_info}")
                             if vm_info['uptime_minutes'] is not None:
                                 print(f"[{get_timestamp()}]     ⏱️  Uptime: {vm_info['uptime_days']}d {vm_info['uptime_hours']}h")
-                
+
                 Disconnect(si)
-                
+
             except vmodl.MethodFault as e:
                 print(f"[{get_timestamp()}] ❌ vSphere API error on {esxi_host}: {e.msg}")
                 continue
             except Exception as e:
                 print(f"[{get_timestamp()}] ❌ Error connecting to {esxi_host}: {e}")
                 continue
-        
+
         # Output results
         if all_vms_info:
             print(f"[{get_timestamp()}] " + "=" * 60)
             print(f"[{get_timestamp()}] 📊 Total VMs collected: {len(all_vms_info)}")
             print(f"[{get_timestamp()}] " + "=" * 60)
-            
+
             json_output = json.dumps(all_vms_info, indent=2, default=str)
-            
+
             # Save to file if output parameter provided
             if output_file:
                 try:
@@ -389,14 +389,14 @@ def main():
                 print(json_output)
         else:
             print(f"[{get_timestamp()}] ⚠️  No VMs found or unable to connect to any host")
-        
+
         # Calculate execution time
         end_time = time.time()
         elapsed_time = end_time - start_time
         print(f"[{get_timestamp()}] " + "=" * 60)
         print(f"[{get_timestamp()}] ⏱️  Execution time: {elapsed_time:.2f} seconds")
         print(f"[{get_timestamp()}] " + "=" * 60)
-    
+
     except Exception as e:
         print(f"❌ Error: {e}")
         sys.exit(1)

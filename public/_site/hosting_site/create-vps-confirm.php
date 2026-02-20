@@ -5,6 +5,7 @@ use App\Models\VpsPlan;
 use App\Models\Product_Meta;
 use Illuminate\Support\Facades\DB;
 
+
 // Define IP ranges for VPS allocation
 $IP_RANGES = [
     [
@@ -190,6 +191,13 @@ $kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
 $response = $kernel->handle(
     $request = Illuminate\Http\Request::capture()
 );
+
+
+
+if(!isAdminACP_()){
+    die("NOT ADMIN!");
+}
+
 
 
 // Get user ID

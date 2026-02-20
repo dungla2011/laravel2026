@@ -10,11 +10,13 @@ use App\Models\Data;
 use App\Models\EventAndUser;
 use App\Models\EventInfo;
 use App\Models\EventInfo_Meta;
+use App\Models\EventPayment;
 use App\Models\EventRegister;
 use App\Models\EventSendAction;
 use App\Models\EventSendInfoLog;
 use App\Models\EventUserInfo;
 use App\Models\EventUserInfo_Meta;
+use App\Models\EventUserPayment;
 use App\Models\FileCloud;
 use App\Models\FileUpload;
 use App\Models\ModelGlxBase;
@@ -1641,6 +1643,17 @@ class EventInfoControllerApi extends BaseApiController
 
                     ol1($eventSendAction, "Select content  x: $select_content", $ignoreEcho);
 
+
+
+
+                    if($evP = EventUserPayment::where('user_event_id', $evUser->id)->where('event_id', $ev->id)->first()){
+                        if(!$evP->payed)
+                        if($select_content == 'content5'){
+                            ol1($eventSendAction, "Ignore because thuc nhan <=0 ($evP->payed)", $ignoreEcho);
+                            continue;
+                        }
+                    }
+
                     $ct = trim($ev->$select_content);
                     if (!$ct) {
                         ol1($eventSendAction, "*** Error: empty content $select_content, ev = $eventId", $ignoreEcho);
@@ -1659,6 +1672,9 @@ class EventInfoControllerApi extends BaseApiController
                     }
                     $urlXacNhan = "<a target='_blank' href='$linkXacNhan'> $txt</a>";
 
+                    $ct = str_replace("%5B", '[', $ct);
+                    $ct = str_replace("%5D", ']', $ct);
+
                     $ct = str_replace(EventInfo::$DEF_EXT1[0], $eventAndUser->extra_info1, $ct);
                     $ct = str_replace(EventInfo::$DEF_EXT2[0], $eventAndUser->extra_info2, $ct);
                     $ct = str_replace(EventInfo::$DEF_EXT3[0], $eventAndUser->extra_info3, $ct);
@@ -1671,6 +1687,28 @@ class EventInfoControllerApi extends BaseApiController
                     $ct = str_replace(EventInfo::$DEF_ADDRESS_LOCATION[0], $ev->getLocation($evUser->language), $ct);
                     $ct = str_replace(EventInfo::$DEF_TENKHACH[0], $nameFull, $ct);
                     $ct = str_replace(EventInfo::$DEF_LINKTHAMDU[0], $urlXacNhan, $ct);
+                    $ct = str_replace(EventInfo::$DEF_USER_EMAIL[0], $evUser->email, $ct);
+
+                    if($evP = EventUserPayment::where('user_event_id', $evUser->id)->where('event_id', $ev->id)->first()){
+//                        $evP->bank_name;
+//                        $evP->bank_account;
+//                        $evP->thuc_nhan;
+
+                        if($evP->payed){
+                            $fullname = cstring2::convert_codau_khong_dau($evUser->getFullname());
+                            $tmpMoney = number_format($evP->payed - $evP->khau_tru, 0, '.') . " VNĐ ";
+                            $tmpMoneyStr = cstring2::toTienVietNamString3($evP->payed - $evP->khau_tru);
+                            $ct = str_replace(EventInfo::$DEF_CHI_PHI_THANH_TOAN[0], "$tmpMoney  ($tmpMoneyStr) ", $ct);
+                            $ct = str_replace(EventInfo::$DEF_TAI_KHOAN_THANH_TOAN[0], " $fullname, STK: $evP->bank_account ($evP->bank_name) ", $ct);
+                        }
+                    }
+
+                    if($select_content == 'content4'){
+                        //Bo qua user da co Email
+                        if(User::where("email", $evUser->email)->first()) {
+                            $ct = str_replace("/register?", "/login?", $ct);
+                        }
+                    }
 
 //                    $ct = removeHtmlComments($ct);
 

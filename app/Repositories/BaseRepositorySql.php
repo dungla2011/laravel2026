@@ -103,7 +103,7 @@ class BaseRepositorySql implements BaseRepositoryInterface
         //dd(DB::getQueryLog());
 
         //return response()->json(['errorCode' => 0, 'dataRet' => $mret], 200);
-        return rtJsonApiDone($mret , 'Search done');
+        return rtJsonApiDone($mret , 'Search done . ' . htmlspecialchars($str));
 
         //return \response()->json(['errorCode' => 1, 'dataRet' => "Not found input value"], 400);
         return rtJsonApiError('Not found input value');
@@ -120,6 +120,13 @@ class BaseRepositorySql implements BaseRepositoryInterface
         $lang = null;
         if($userObj = getCurrentUserId(1)){
             $lang = $userObj->language ?? '';
+        }
+
+        if(isAdminCookie()){
+//            echo "<pre> >>> " . __FILE__ . "(" . __LINE__ . ")<br/>";
+//            print_r($param);
+//            echo "</pre>";
+//            die();
         }
 
         if ($rl = $this->model->getValidateRuleUpdate($id)) {
@@ -430,10 +437,10 @@ class BaseRepositorySql implements BaseRepositoryInterface
                     $param['user_id'] = $objParam->userIdLogined;
             }
 
-            //            echo "<pre> >>> " . __FILE__ . "(" . __LINE__ . ")<br/>";
-            //            print_r($objParam);
-            //            echo "</pre>";
-            //            die();
+//                        echo "<pre> >>> " . __FILE__ . "(" . __LINE__ . ")<br/>";
+//                        print_r($objParam);
+//                        echo "</pre>";
+//                        die();
 
             if ($objMeta->isUseRandId()) {
                 $mRandField = $objMeta->getRandIdListField();

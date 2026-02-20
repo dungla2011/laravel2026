@@ -97,6 +97,19 @@ class SiteMng extends ModelGlxBase
         return @$GLOBALS['mMapDomainDb'][$domainName]['upload_domain'] ?? null;
     }
 
+    static function use_unixtime_id_models($modelName)
+    {
+        $domainName = \LadLib\Common\UrlHelper1::getDomainHostName();
+        $models0 = $GLOBALS['mMapDomainDb'][$domainName]['use_unixtime_id_models'] ?? '';
+        if ($models0) {
+            $models = explode(',', $models0);
+            if (in_array($modelName, $models)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     static function use_snowflake_models($modelName)
     {
         $domainName = \LadLib\Common\UrlHelper1::getDomainHostName();

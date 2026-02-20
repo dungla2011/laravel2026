@@ -1,0 +1,12 @@
+RewriteEngine On
+
+# Block access to sensitive files
+<FilesMatch "^(database\.php|composer\.json|composer\.lock|\.env)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Redirect all requests to index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.php [L]

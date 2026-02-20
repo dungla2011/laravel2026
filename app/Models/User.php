@@ -30,7 +30,7 @@ class User2 extends UserGlx
 //Sử dụng UserGlx để có thể ghi ChangeLog:
 class User extends UserGlx
 {
-    use HasFactory, SoftDeletes, TraitModelExtra, SnowflakeId;
+    use HasFactory, SoftDeletes, TraitModelExtra, SnowflakeId, UnixTimeId;
 //    protected $fillable = ['password'];
 
     //Token phan quyen ko dung cai nay van chay: use HasApiTokens;

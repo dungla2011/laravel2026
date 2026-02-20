@@ -40,7 +40,19 @@ class PartnerInfo_Meta extends MetaOfTableInDb
             $objMeta->dataType = DEF_DATA_TYPE_ARRAY_NUMBER;
         }
 
+        if ($field == 'user_id') {
+            $objMeta->join_api_field = 'email';
+            //            $objMeta->join_func = 'joinUserEmailUserId';
+            $objMeta->join_api = '/api/user/search';
+        }
+
+
         return $objMeta;
+    }
+
+    public function _user_id($objData, $value = null, $field = null)
+    {
+        return  User_Meta::search_user_email($objData, $value, $field);
     }
 
     //...

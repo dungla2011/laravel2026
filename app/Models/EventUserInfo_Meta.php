@@ -77,8 +77,17 @@ class EventUserInfo_Meta extends MetaOfTableInDb
         if ($field == 'gender' || $field == 'payment_type') {
             $objMeta->dataType = DEF_DATA_TYPE_HTML_SELECT_OPTION;
         }
-
+        if ($field == 'user_id') {
+            $objMeta->join_api_field = 'email';
+            //            $objMeta->join_func = 'joinUserEmailUserId';
+            $objMeta->join_api = '/api/user/search';
+        }
         return $objMeta;
+    }
+
+    public function _user_id($objData, $value = null, $field = null)
+    {
+        return  User_Meta::search_user_email($objData, $value, $field);
     }
 
     function _email($obj, $val, $field){
@@ -526,7 +535,7 @@ Cập nhật nhận dạng </button> <a href=''></a> ";
             document.addEventListener('DOMContentLoaded', function() {
                 const params = new URLSearchParams(window.location.search);
                 const focusField = params.get('__focus__');
-                
+
                 if (focusField) {
                     const input = document.querySelector(`input[name="${focusField}"]`);
                     if (input) {

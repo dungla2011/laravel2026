@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class UserRecharge extends ModelGlxBase
 {
-    use HasFactory;
+    use HasFactory, UnixTimeId;
     protected $guarded = [];
     protected $casts = [
         'amount' => 'decimal:2',

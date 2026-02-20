@@ -4,6 +4,8 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use App\Models\VpsInstance;
+use App\Models\VpsUsage;
 use App\Services\Vmware\VmwareHelper;
 use App\Services\VpsPricingService;
 use App\Services\VpsUsageFeeService;
@@ -69,7 +71,7 @@ class SyncVmwareInstancesCommand extends Command
                     $powerState = str_replace('POWEREDON', 'POWERED_ON', $powerState);
                     $powerState = str_replace('POWEREDOFF', 'POWERED_OFF', $powerState);
 
-                    $this->line("Processing: {$vm->name} ({$vm->vm_id} {$powerState})");
+                    $this->line("Processing: {$vm->name} ({$vm->vm_id} {$powerState}) {$vm->host_ip}");
                     echo "\n $cc/$tt . Processing: $vm->name ($vm->vm_id $powerState)";
 
                     // Validate required fields
@@ -95,35 +97,30 @@ class SyncVmwareInstancesCommand extends Command
                     ];
 
                     // Upsert to vps_instances (by bios_uuid - unique identifier)
-                    $instance = DB::table('vps_instances')
-                        ->where('bios_uuid', $vm->bios_uuid)
-                        ->first();
+                    $instance = VpsInstance::where('bios_uuid', $vm->bios_uuid)->first();
 
                     if ($instance) {
-                        DB::table('vps_instances')
-                            ->where('id', $instance->id)
-                            ->update($instanceData);
+                        $instance->update($instanceData);
                         $this->line("  ✏️  Updated vps_instances (ID: {$instance->id})");
                         $updated++;
                     } else {
-                        $instanceData['created_at'] = now();
-                        $instanceId = DB::table('vps_instances')->insertGetId($instanceData);
-                        $this->line("  ✨ Created vps_instances (ID: $instanceId)");
+                        usleep(10000); // 0.01 second delay to avoid ID collisions
+                        $instance = VpsInstance::create($instanceData);
+                        $this->line("  ✨ Created vps_instances (ID: {$instance->id})");
                         $synced++;
                     }
 
-                    // Get instance ID for vps_usages
-                    $instance = DB::table('vps_instances')
-                        ->where('bios_uuid', $vm->bios_uuid)
-                        ->first();
-
                     if ($instance) {
                         // Get latest vps_usages record for this bios_uuid
-                        $lastUsage = DB::table('vps_usages')
-                            ->where('bios_uuid', $vm->bios_uuid)
-                            ->orderBy('id', 'desc')
+                        $lastUsage = VpsUsage::where('bios_uuid', $vm->bios_uuid)
+                            ->latest('id')
                             ->first();
 
+
+                        if($lastUsage->user_id != $instance->user_id){
+                            $this->warn("  ⚠️  User ID mismatch between vps_instances and vps_usages for BIOS UUID {$vm->bios_uuid}. Updating usage record to match instance user_id.");
+                            $lastUsage->update(['user_id' => $instance->user_id]);
+                        }
 
 
                         // Get IP addresses from MAC address mapping
@@ -131,25 +128,36 @@ class SyncVmwareInstancesCommand extends Command
                         $listIpAddress = $ipData['list_ip_address'];
                         $lastFoundIpTime = $ipData['last_found_ip'];
 
+                        echo "\n FOUNDIP2 = $listIpAddress";
+                        echo "\n lastFoundIpTime2 = $lastFoundIpTime";
+
                         // Fix incorrect disk_gb = 0 and power state detection
+
+                        // Thỉnh thoảng gặp lỗi này, là vô lý, thì bỏ qua
+                        if ($vm->disk_gb == 0 && $vm->disk_count > 0) {
+                            outputT("/var/glx/weblog/debug_log_error_disk_zero_size.log", " Vmx = {$vm->name} ({$vm->vm_id} {$powerState}, DISK Size/Count: $vm->disk_gb/$vm->disk_count");
+                            continue;
+                        }
+
+                        if(0)
                         if ($vm->disk_gb == 0 && $powerState === 'POWERED_OFF' && $listIpAddress && $lastFoundIpTime) {
 
-                            
+
                             // Check if IP was found recently (< 10 minutes)
                             $ipFoundMinutesAgo = \Carbon\Carbon::parse($lastFoundIpTime)->diffInMinutes(now());
-                            
+
                             if ($ipFoundMinutesAgo < 10 && $lastUsage && $lastUsage->disk_gb > 0) {
                                 // VM has recent IP address = still running, not actually OFF
                                 $this->warn("  🔧 Detected incorrect state: disk_gb=0 & POWERED_OFF but has recent IP");
                                 $this->line("     IP found {$ipFoundMinutesAgo} min ago: {$listIpAddress}");
-                                
+
                                 // Fix power state
                                 $powerState = 'POWERED_ON';
                                 $vm->power_state = 'poweredOn';
-                                
+
                                 // Fix disk_gb from last known good value
                                 $vm->disk_gb = $lastUsage->disk_gb;
-                                
+
                                 $this->line("     ✓ Corrected: POWERED_ON, disk_gb={$vm->disk_gb}GB (from last usage)");
                             }
                         }
@@ -162,51 +170,48 @@ class SyncVmwareInstancesCommand extends Command
                             'power_state' => $powerState,
                         ]));
 
+                        // Get current pricing config (needed for both update and insert)
+                        $currentPricingConfig = VpsPricingService::getPricingConfig();
+
                         if ($lastUsage) {
+
+                            // Check if end_time_used has expired - if yes, insert new record
+                            if ($lastUsage->end_time_used && now()->gt(\Carbon\Carbon::parse($lastUsage->end_time_used))) {
+                                // Update old record: set end_time_used = now() to close the session
+                                // VpsUsage::where('id', $lastUsage->id)->update(['end_time_used' => now()]);
+                                
+                                // Create new record for new billing session
+                                $this->createNewVpsUsageRecord($vm, $instance, $powerState, $listIpAddress, $lastFoundIpTime, $currentPricingConfig, $lastUsage->end_time_used);
+                                $this->line("  ⏰ end_time_used expired! Updated old record end_time_used = now(), inserted new vps_usages record");
+                                continue; // Skip to next VM
+                            }
 
                             //Kiểm tra nếu MacAddress thay đổi thì update:
                             $currentMacAddresses = implode(',', $vm->mac_addresses ?? []);
                             if ($currentMacAddresses != ($lastUsage->mac_address ?? '')) {
                                 // Update record with new MAC addresses
-                                DB::table('vps_usages')
-                                    ->where('id', $lastUsage->id)
-                                    ->update([
-                                        'mac_address' => $currentMacAddresses,
-                                    ]);
+                                VpsUsage::where('id', $lastUsage->id)
+                                    ->update(['mac_address' => $currentMacAddresses]);
                                 $this->line("  🔄 MAC address changed, updated vps_usages record");
                             }
 
                             //Nếu tên khác thì cũng update tên:
                             if ($vm->name != ($lastUsage->name ?? '')) {
                                 // Update record with new name
-                                DB::table('vps_usages')
-                                    ->where('id', $lastUsage->id)
-                                    ->update([
-                                        'name' => $vm->name,
-                                    ]);
+                                VpsUsage::where('id', $lastUsage->id)
+                                    ->update(['name' => $vm->name]);
                                 $this->line("  🔄 Name changed, updated vps_usages record");
 
                                 //Update luôn trong vps_instances
-                                DB::table('vps_instances')
-                                    ->where('id', $instance->id)
-                                    ->update([
-                                        'name' => $vm->name,
-                                    ]);
-
+                                $instance->update(['name' => $vm->name]);
                             }
-
-
-                            // Get current pricing config
-                            $currentPricingConfig = VpsPricingService::getPricingConfig();
-
-                            $currentPricingHash = md5(json_encode($currentPricingConfig));
 
                             // Check if pricing has changed from last record
                             $lastPricingConfig = $lastUsage->price_config
                                 ? json_decode($lastUsage->price_config, true) : null;
-//                                : VpsPricingService::getPricingConfig();
-                            $lastPricingHash = md5(json_encode($lastPricingConfig));
-                            $pricingHasChanged = $currentPricingHash !== $lastPricingHash;
+
+                            $pricingHasChanged = $this->isPricingChanged($currentPricingConfig, $lastPricingConfig);
+                            $pricingHasChanged = false; // Disable pricing change detection for now
 
 //                            echo "<pre> >>> " . __FILE__ . "(" . __LINE__ . ")<br/>";
 //                            print_r($lastPricingConfig);
@@ -236,9 +241,14 @@ class SyncVmwareInstancesCommand extends Command
                             $durationMinutes = $createdTime->diffInMinutes($lastestTime);
 
                             // If config is the same AND time since last same is <= 60 minutes AND pricing hasn't changed
-                            if (($currentConfigHash === $lastConfigHash && $timeSinceSame <= 60 && !$pricingHasChanged)
+//                            if (($currentConfigHash === $lastConfigHash && $timeSinceSame <= 60 && !$pricingHasChanged)
+//                                || $instance->type == 'backup_glx' || $instance->type == 'ignore_compare_config'
+//                            )
+                            //Bỏ qua Time, vì có nhiều time script ko chạy, hoặc ko kết nối được HostVM
+                            if (($currentConfigHash === $lastConfigHash && !$pricingHasChanged)
                                 || $instance->type == 'backup_glx' || $instance->type == 'ignore_compare_config'
-                            ) {
+                            )
+                            {
 
 
 
@@ -269,6 +279,7 @@ class SyncVmwareInstancesCommand extends Command
                                     'list_ip_address' => $listIpAddress,
                                     'last_found_ip' => $lastFoundIpTime,
                                     'calculated_fee' => $calculatedFee,
+                                    'last_host_ip' => $vm->host_ip,
                                 ];
 
                                 //Nếu ko thấy IP, thì ko update IP rỗng:
@@ -278,37 +289,13 @@ class SyncVmwareInstancesCommand extends Command
                                 }
 
                                 // Just update the record
-                                DB::table('vps_usages')
-                                    ->where('id', $lastUsage->id)
+                                VpsUsage::where('id', $lastUsage->id)
                                     ->update($mUpdate);
 
                                 $this->line("  ♻️  Updated vps_usages1 (count_update: " . ($lastUsage->count_update_status + 1) . ", Fee: " . number_format($calculatedFee, 0) . "K)");
                             } else {
-
                                 // Config changed or 10+ minutes passed, insert new record (fee = 0 on first insert)
-                                DB::table('vps_usages')->insert([
-                                    'name' => $vm->name,
-                                    'instance_id' => $instance->id,
-                                    'vmware_vm_id' => $vm->vm,
-                                    'cpu' => $vm->cpu,
-                                    'ram_gb' => intval($vm->memory_gb),
-                                    'disk_gb' => intval($vm->disk_gb),
-                                    'user_id' => $instance->user_id,
-                                    'timestamp_minute' => now()->startOfMinute(),
-                                    'power_state' => $powerState,
-                                    'bios_uuid' => $vm->bios_uuid,
-                                    'instance_uuid' => $vm->instance_uuid,
-                                    'full_info' => json_encode($vm),
-                                    'price_config' => json_encode($currentPricingConfig),
-                                    'calculated_fee' => 0,
-                                    'status' => 1,
-                                    'count_update_status' => 0,
-                                    'lastest_time_the_same' => now(),
-                                    'list_ip_address' => $listIpAddress,
-                                    'mac_address' => implode(',', $vm->mac_addresses ?? []),
-                                    'last_found_ip' => $lastFoundIpTime,
-                                    'created_at' => now(),
-                                ]);
+                                $this->createNewVpsUsageRecord($vm, $instance, $powerState, $listIpAddress, $lastFoundIpTime, $currentPricingConfig);
 
                                 if ($pricingHasChanged) {
                                     $this->line("  💰 Pricing config changed! Inserted new vps_usages snapshot");
@@ -318,29 +305,7 @@ class SyncVmwareInstancesCommand extends Command
                             }
                         } else {
                             // No previous record, insert new one - calculated_fee is 0 on first insert
-                            DB::table('vps_usages')->insert([
-                                'name' => $vm->name,
-                                'instance_id' => $instance->id,
-                                'vmware_vm_id' => $vm->vm,
-                                'cpu' => $vm->cpu,
-                                'ram_gb' => intval($vm->memory_gb),
-                                'disk_gb' => intval($vm->disk_gb),
-                                'user_id' => $instance->user_id,
-                                'timestamp_minute' => now()->startOfMinute(),
-                                'power_state' => $powerState,
-                                'bios_uuid' => $vm->bios_uuid,
-                                'instance_uuid' => $vm->instance_uuid,
-                                'full_info' => json_encode($vm),
-                                'price_config' => json_encode($currentPricingConfig),
-                                'calculated_fee' => 0,
-                                'status' => 1,
-                                'count_update_status' => 0,
-                                'lastest_time_the_same' => now(),
-                                'list_ip_address' => $listIpAddress,
-                                'mac_address' => implode(',', $vm->mac_addresses ?? []),
-                                'last_found_ip' => $lastFoundIpTime,
-                                'created_at' => now(),
-                            ]);
+                            $this->createNewVpsUsageRecord($vm, $instance, $powerState, $listIpAddress, $lastFoundIpTime, $currentPricingConfig);
                             $this->line("  📊 Inserted vps_usages snapshot (first record)");
                         }
 
@@ -380,6 +345,7 @@ class SyncVmwareInstancesCommand extends Command
                             DB::table('vps_instance_config_histories')->insert([
                                 'instance_id' => $instance->id,
                                 'name' => $vm->name,
+                                'last_host_ip' => $vm->host_ip,
                                 'vmware_vm_id' => $vm->vm,
                                 'cpu' => $vm->cpu,
                                 'ram_gb' => intval($vm->memory_gb),
@@ -453,7 +419,7 @@ class SyncVmwareInstancesCommand extends Command
         ];
 
         // Path to IP/MAC mapping file
-        $ipMacFile = base_path('task-cli/scan_ip_mac_python/ip_mac.json');
+        $ipMacFile = ('/var/glx/weblog/_glx_ip_mac.json');
 
         // Check if file exists
         if (!file_exists($ipMacFile)) {
@@ -475,6 +441,7 @@ class SyncVmwareInstancesCommand extends Command
         if ($fileModTime) {
             $result['last_found_ip'] = \Carbon\Carbon::createFromTimestamp($fileModTime)->setTimezone('Asia/Ho_Chi_Minh');
         }
+
 
         // Extract MAC addresses from VM object
         // getVMListV2() returns mac_addresses as direct array
@@ -501,8 +468,12 @@ class SyncVmwareInstancesCommand extends Command
             $normalizedFileMac = strtolower(str_replace('-', ':', $mac));
             if (in_array($normalizedFileMac, $vmMacAddresses)) {
                 $foundIps[] = $ip;
+                echo "\n IP FOUND = $ip";
             }
         }
+
+        echo "\n FOUNDIP = " . $result['last_found_ip'];
+        outputT("/var/glx/weblog/_debug_last_ip_found.log", " $fileModTime " . date("Y-m-d H:i:s", $fileModTime) . " IPX =  ". serialize($foundIps));
 
         if (!empty($foundIps)) {
             // Sort IPs for consistency
@@ -512,6 +483,9 @@ class SyncVmwareInstancesCommand extends Command
         } else {
             $this->line("    ℹ️  No matching IPs found for VM MACs");
         }
+
+        echo "\n-DEBUG IP: ";
+//        print_r($result);
 
         return $result;
     }
@@ -535,5 +509,92 @@ class SyncVmwareInstancesCommand extends Command
         }
 
         return implode(',', $macAddresses);
+    }
+
+    /**
+     * Create a new VpsUsage record with common data
+     *
+     * @param object $vm VM hardware info
+     * @param VpsInstance $instance VPS instance
+     * @param string $powerState Power state (POWERED_ON/POWERED_OFF)
+     * @param string $listIpAddress Comma-separated IP addresses
+     * @param string $lastFoundIpTime Timestamp when IPs were found
+     * @param array $pricingConfig Current pricing configuration
+     * @param string|null $createdAt Optional created_at timestamp (for session continuation)
+     * @return VpsUsage Created record
+     */
+    private function createNewVpsUsageRecord($vm, $instance, $powerState, $listIpAddress, $lastFoundIpTime, $pricingConfig, $createdAt = null)
+    {
+        usleep(10000); // 0.01 second delay to avoid ID collisions
+        
+        $data = [
+            'name' => $vm->name,
+            'instance_id' => $instance->id,
+            'vmware_vm_id' => $vm->vm,
+            'cpu' => $vm->cpu,
+            'last_host_ip' => $vm->host_ip,
+            'ram_gb' => intval($vm->memory_gb),
+            'disk_gb' => intval($vm->disk_gb),
+            'user_id' => $instance->user_id,
+            'timestamp_minute' => now()->startOfMinute(),
+            'power_state' => $powerState,
+            'bios_uuid' => $vm->bios_uuid,
+            'instance_uuid' => $vm->instance_uuid,
+            'full_info' => json_encode($vm),
+            'price_config' => json_encode($pricingConfig),
+            'calculated_fee' => 0,
+            'status' => 1,
+            'count_update_status' => 0,
+            'lastest_time_the_same' => now(),
+            'list_ip_address' => $listIpAddress,
+            'mac_address' => implode(',', $vm->mac_addresses ?? []),
+            'last_found_ip' => $lastFoundIpTime,
+        ];
+        
+        // Set custom created_at if provided (for session continuation)
+        if ($createdAt) {
+            $data['created_at'] = $createdAt;
+        }
+        
+        return VpsUsage::create($data);
+    }
+
+    /**
+     * Compare two pricing configs to detect if pricing parameters have changed
+     * Only compares actual pricing fields, ignoring other metadata fields
+     *
+     * @param array|null $config1 First pricing config
+     * @param array|null $config2 Second pricing config
+     * @return bool true if pricing has changed, false if same
+     */
+    private function isPricingChanged($config1, $config2): bool
+    {
+        // If either is null, consider as changed
+        if ($config1 === null || $config2 === null) {
+            return true;
+        }
+
+        // Define pricing fields to compare
+        $pricingFields = [
+            'n_cpu_core_price',
+            'n_ram_gb_price',
+            'n_gb_disk_price',
+            'n_ip_address_price',
+            'n_network_dedicated_mbit_price',
+        ];
+
+        // Compare each pricing field
+        foreach ($pricingFields as $field) {
+            $value1 = $config1[$field] ?? null;
+            $value2 = $config2[$field] ?? null;
+
+            // If values are different, pricing has changed
+            if ($value1 != $value2) {
+                return true;
+            }
+        }
+
+        // All pricing fields are the same
+        return false;
     }
 }

@@ -4,6 +4,7 @@ namespace App\Components;
 
 use App\Models\FileUpload;
 use App\Models\News;
+use App\Support\HTMLPurifierSupport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use LadLib\Common\Database\MetaOfTableInDb;
@@ -408,10 +409,11 @@ class Helper1
         $tt = count($mIdFile);
         foreach ($mIdFile as $idF) {
 
+            if(!str_starts_with($idF, "https://"))
             if(!is_numeric($idF))
                 $idF = qqgetIdFromRand_($idF);
-            if(!is_numeric($idF))
-                continue;
+//            if(!is_numeric($idF))
+//                continue;
 
             if ($objFile = FileUpload::find($idF)) {
                 $cc++;
@@ -432,15 +434,19 @@ class Helper1
 
                 //                $ext = pathinfo($objFile->name, PATHINFO_EXTENSION);
                 if (
-                    $objFile->isImageFileName() ||
-                    strstr($objFile->mime, 'image') !== false ||
-                strstr($objFile->mime, 'video') !== false||
-                strstr($objFile->mime, 'pdf') !== false
+                    $objFile->isImageFileName()
+//                    ||
+//                    strstr($objFile->mime, 'image') !== false
+//                    ||
+//                strstr($objFile->mime, 'video') !== false||
+//                strstr($objFile->mime, 'pdf') !== false
                 ) {
                     $thumb = $objFile->getCloudLinkImage();
                     $fileImg = "<img style='min-width: 60px; min-height: 40px; border: 1px solid green' src='$thumb' alt='' title='$objFile->name |$objFile->cloud_id , $objFile->created_at'>";
                 } else {
-                    $fileImg = "<span title='$objFile->name , $objFile->created_at'> [$objFile->name] </span>";
+                    $ext = strtolower(pathinfo($objFile->name, PATHINFO_EXTENSION));
+                    $ext = HTMLPurifierSupport::clean($ext);
+                    $fileImg = "<span title='$objFile->name , $objFile->created_at'> [$ext] </span>";
                 }
 
                 $link = $objFile->getCloudLink();
@@ -450,6 +456,12 @@ class Helper1
                 <a href='$link' target='_blank'>$fileImg</a>
 <span class='one_node_name fa fa-times' title='remove this: $objFile->id'
 data-id='$objFile->id' data-field='$field'>  </span> </span>";
+            }
+            else{
+                if(str_starts_with($idF, "https://")){
+                    $ret = "<a class='mx-2' href='$idF' target='_blank'> LINK </a> ";
+                }
+
             }
         }
 

@@ -28,17 +28,22 @@ $json = json_decode($ct);
 //echo "<pre> >>> " . __FILE__ . "(" . __LINE__ . ")<br/>";
 //print_r($json);
 //echo "</pre>";
+$cc = 0;
 foreach ($json AS $one){
 //    echo "<pre> >>> " . __FILE__ . "(" . __LINE__ . ")<br/>";
 //    print_r($one);
 //    echo "</pre>";
+
     $vmName = $one->vmName;
     $vmId = $one->vmId;
     $uidOld = $one->userid;
 
     $bios_uuid = $one->bios_uuid;
 
-    echo "<br/>\n $vmName, $vmId, $one->userid";
+    echo "<br/>\n $cc . $vmName, $vmId, $one->userid";
+    echo "<br><br> UUID = $bios_uuid, uid_old = $uidOld, vmId = $vmId";
+
+
 
 
     if($uidOld)
@@ -54,7 +59,21 @@ foreach ($json AS $one){
                echo "<br/>\n Update UID";
            }
         }
+        $cc++;
+        if($found->created_at != $one->createdAt){
+            echo "<br/>\n Update Insstance  $found->created_at != $one->createdAt ";
+            $found->created_at = $one->createdAt;
+            $found->update();
+        }
 
+        if($vpsU = \App\Models\VpsUsage::where("bios_uuid", $bios_uuid)->first()){
+            echo "<br/>\nFound BIOS UUID , $vpsU->created_at | $one->createdAt";
+            if($vpsU->created_at != $one->createdAt){
+                echo "<br/>\n Update Ussage:  $found->created_at != $one->createdAt ";
+                $vpsU->created_at = $one->createdAt;
+                $vpsU->update();
+            }
+        }
     }
 
 

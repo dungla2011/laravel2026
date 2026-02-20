@@ -206,6 +206,7 @@ if($id ?? ''){
                 $lang0 = $lang = App::getLocale();
 
 
+
                 if ($regCode = request('reg_code')) {
 
                     $regCode = trim($regCode);
@@ -753,7 +754,7 @@ reg_mail_02_en
                             <div class="row mt-0 mb-0">
 
 
-                            <div class="form-group col-md-9">
+                            <div class="form-group col-md-8">
 
                                     <label for="bankSelect">{{ __('reg_event_ncbd.bank_text_select') }}</label>
                                     <select id="bankSelect">
@@ -787,7 +788,7 @@ reg_mail_02_en
                             </div>
 
 
-                            <div class="form-group col-md-3">
+                            <div class="form-group col-md-4">
                                 <label for="bank_acc_number">{{ __('reg_event_ncbd.bank_acc_number') }}</label>
                                 <input type="number" class="form-control" id="bank_acc_number" value="{{$bank_acc_number}}"
                                        name="bank_acc_number" >

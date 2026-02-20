@@ -8,7 +8,7 @@ use LadLib\Laravel\Database\TraitModelExtra;
 
 class PartnerInfo extends ModelGlxBase
 {
-    use HasFactory, SoftDeletes, TraitModelExtra;
+    use HasFactory, SoftDeletes, TraitModelExtra, UnixTimeId;
 
     protected $guarded = [];
 }

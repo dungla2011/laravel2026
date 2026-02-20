@@ -1,0 +1,628 @@
+ 
+
+Mô hình kết nối Bkav Webservice 
+Dành cho eHoadon
+
+1	Tổng quan
+1.1	Mô tả
+Là cổng thông tin tiếp nhận yêu cầu của đối tác (Partner) để trao đồi các thông tin liên quan đến Hóa đơn trên trang ehoadon.vn (Tạo, cập nhật, lấy trạng thái, thông tin chi tiết, lịch sử xử lý…) sử dụng giao thức SOAP (Simple Object Accesss Protocol).
+1.2	Khái niệm
+•	Bkav eHoadon (https://van.ehoadon.vn): Hệ thống quản lý Hoá đơn Điện tử của Bkav.
+•	Bkav eHoadon demo (https://demo.ehoadon.vn): Hệ thống Hoá đơn Điện tử demo phục vụ cho việc demo và test các tính năng. Hoá đơn trên hệ thống demo không có giá trị pháp lý.
+•	Webservice URL: Địa chỉ Website cho phép Client kết nối tới Bkav eHoadon để gọi dịch vụ Web Service.
+o	Bkav eHoadon Demo: https://wsdemo.ehoadon.vn/WSPublicEhoadon.asmx
+o	Bkav eHoadon Production: https://ws.ehoadon.vn/WSPublicEhoadon.asmx
+•	PartnerGUID: GUID định danh riêng. Bkav cung cấp mỗi Partner một PartnerGUID riêng.
+•	PartnerToken: Để mã hóa dữ liệu (trên đường truyền). Bkav cung cấp mỗi Partner một Token riêng.
+•	Tài khoản eHoadon: Là tài khoản của khách hàng sử dụng dịch vụ eHoadon của Bkav trên hệ thống van.ehoadon.vn. Để có thể kết nối thành công đến ws.ehoadon.vn Partner phải có tài khoản trên hệ thống van.ehoadon.vn, đã được thiết lập Mẫu hóa đơn, Dải số thông báo phát hành hóa đơn.
+•	Tài khoản eHoadon demo: Là tài khoản của khách hàng sử dụng dịch vụ eHoadon demo của Bkav trên hệ thống demo.ehoadon.vn. Để có thể kết nối thành công đến wsdemo.ehoadon.vn, Partner phải có tài khoản trên hệ thống demo.ehoadon.vn, đã được thiết lập Mẫu hóa đơn, Dải số thông báo phát hành hóa đơn.
+•	PartnerInvoiceID/PartnerInvoiceStringID: Mã định danh duy nhất cho 1 Hoá đơn tại Client - phục vụ cho việc check trùng khi gửi dữ liệu lên Bkav. Client chỉ gán thông tin vào 1 trong 2 trường khi gửi dữ liệu Hoá đơn lên Bkav.
+•	InvoiceGUID: Là GUID định danh Hoá đơn trên hệ thống Bkav eHoadon, được ghi trong kết quả trả về client khi tạo Hoá đơn thành công.
+•	MTC: Mã tra cứu để tìm kiếm Hoá đơn tại địa chỉ: http://tracuu.ehoadon.vn/ (đối với hệ thống eHoadon), http://demo.ehoadon.vn/mtc (đối với hệ thống demo eHoadon).
+1.3	Mô hình
+ 
+•	Client khởi tạo object CommandData, truyền Mã lệnh và object chứa tham số đầu vào (ứng với từng Mã lệnh) lên Webservice. Object CommandData được 
+- Convert sang string (json/xml). 
+- Zip lại sang mảng byte. 
+- Mã hóa AES - 256 base64 sử dụng thuật toán AES (có key và Token) .
+- Endcode ToBase64 string trước khi được gửi lên Webservice thông qua hàm ExecCommand.
+•	Webservice trả về 1 string encryptedResult. String này là object Result đã được thực hiện
+- Decode Base64 to bytes.
+- Giải mã thuật toán AES (theo key và Token).
+- UnZip
+- Convert To Object Result chứa 2 property: Status (là trạng thái xử lý command) và Object (là đối tượng chứa dữ liệu của kết quả trả về).
+2	Chi tiết
+2.1	ExecCommand Method
+Là phương thức để Client gửi dữ liệu lên webservice yêu cầu xử lý: string ExecCommand(string PartnerGUID, string EncryptedCommandData)
+2.1.1	Đầu vào
+Parameter	Description
+PartnerGUID	GUID định danh riêng. Bkav cung cấp mỗi Partner một PartnerGUID riêng.
+EncryptedCommandData	Là object CommandData (json, xml)  được convert sang string, sau đó Zip lại rồi mã hóa bằng PartnerGUID  và Token
+
+•	Object CommandData
+Parameter	Description
+CmdType	Là Mã lệnh. Mỗi 1 loại yêu cầu sẽ có 1 Mã lệnh khác nhau. 
+CommandObject	Là object chứa Tham số đầu vào, ứng với từng CmdType
+
+•	Bảng Mã lệnh CmdType hợp lệ 
+CmdType	Description
+100	Tạo HĐ, eHD tự cấp InvoiceForm, InvoiceSerial; InvoiceNo = 0 (tạo HĐ mới)
+101	Tạo HĐ, eHD tự cấp InvoiceForm, InvoiceSerial và cấp InvoiceNo (tạo HĐ Trống)
+110	Tạo HĐ, Client tự cấp InvoiceForm, InvoiceSerial; InvoiceNo = 0 (tạo HĐ mới)
+111	Tạo HĐ, Client tự cấp InvoiceForm, InvoiceSerial, InvoiceNo (tạo HĐ mới, có sẵn Số HĐ)
+112	Tạo HĐ, Client tự cấp InvoiceForm, InvoiceSerial. eHD cấp InvoiceNo (tạo HĐ Trống)
+120	Tạo Hóa đơn thay thế, Client tự cấp InvoiceForm, InvoiceSerial; InvoiceNo = 0
+121	Tạo Hóa đơn điều chỉnh, Client tự cấp InvoiceForm, InvoiceSerial;InvoiceNo = 0
+122	Tạo Hoá đơn điều chỉnh chiết khấu, Client tự cấp InvoiceForm, InvoiceSerial; InvoiceNo = 0
+123	Tạo Hóa đơn thay thế, Client tự cấp InvoiceForm, InvoiceSerial; eHD cấp InvoiceNo (tạo HĐ Trống)
+124	Tạo Hóa đơn điều chỉnh, Client tự cấp InvoiceForm, InvoiceSerial; eHD cấp InvoiceNo (tạo HĐ Trống)
+126	Tạo Hoá đơn điều chỉnh chiết khấu, Client tự cấp InvoiceForm, InvoiceSerial; eHD cấp InvoiceNo (tạo HĐ Trống)
+200	Cập nhật thông tin Hóa đơn khi chưa được phát hành
+202	Huỷ Hoá đơn đã phát hành
+301	Xoá Hoá đơn chưa phát hành
+800	Lấy thông tin chi tiết Hóa đơn
+801	Lấy trạng thái Hóa đơn
+802	Lấy lịch sử xử lý Hóa đơn
+804	Lấy link tải hoá đơn chuyển đổi
+808	Lấy bản thể hiện Hóa đơn dạng PDF Base 64 bằng PartnerInvoiceID/PartnerInvoiceStringID
+809	Lấy file Xml Base 64 bằng PartnerInvoiceID/PartnerInvoiceStringID
+810	Lấy thông tin Hoá đơn theo mẫu số, ký hiệu và dải số Hoá đơn
+811	Lấy bản thể hiện Hóa đơn dạng PDF Base 64 bằng mã tra cứu
+812	Lấy bản chuyển đổi Hóa đơn dạng PDF Base 64 bằng mã tra cứu
+813	Lấy file XML Base 64 bằng mã tra cứu
+904	Lấy thông tin doanh nghiệp theo MST
+2.1.2	Đầu ra: 
+•	Object Result
+Parameter	Description
+Status	+ Status=0: Thành công
++ Status<>0: Có lỗi
+Object	+ Status=0: Tùy vào CmdType thì kiểu đối tượng trả về là khác nhau (Chi tiết theo phần mô tả Mã lệnh bên dưới)
++ Status<>0: nội dung lỗi (kiểu String)
+2.2	Mã lệnh
+2.2.1	Mã lệnh 100, 101, 110, 111, 112, 120, 121, 122, 123, 124, 126: Tạo HĐ 
+•	Đầu vào: Object CommandData (xem chi tiết trong Mục 3.1.1)
+Parameter	Description
+CmdType	100
+CommandObject 	Là List object InvoiceDataWS (List<InvoiceDataWS>)
+
+•	Đầu ra: Object Result (xem chi tiết trong Mục 3.1.2)
+Parameter	Description
+Status	+ Status=0: Thành công
++ Status<>0: Có lỗi
+Object	+ Status=0: Là List object InvoiceResult (List<InvoiceResult>)
++ Status<>0: nội dung lỗi (kiểu String)
+
+2.2.2	Mã lệnh 200: Cập nhật thông tin Hóa đơn khi chưa được phát hành
+•	Đầu vào: Object CommandData (xem chi tiết trong Mục 3.1.1)
+Parameter	Description
+CmdType	200
+CommandObject 	Là List object InvoiceDataWS (List<InvoiceDataWS>)
+
+•	Đầu ra: Object Result (xem chi tiết trong Mục 3.1.2)
+Parameter	Description
+Status	+ Status=0: Thành công
++ Status<>0: Có lỗi
+Object	+ Status=0: Là List object InvoiceResult (List<InvoiceResult>)
++ Status<>0: nội dung lỗi (kiểu String)
+
+2.2.3	Mã lệnh 202, 301: Huỷ Hoá đơn đã phát hành, Xoá bỏ Hoá đơn chưa phát hành
+•	Đầu vào: Object CommandData (xem chi tiết trong Mục 3.2.1)
+Parameter	Description
+CmdType	202
+CommandObject 	Là List object InvoiceDataWS (List<InvoiceDataWS>)
+
+•	Đầu ra: Object Result (xem chi tiết trong Mục 3.2.2)
+Parameter	Description
+Status	+ Status=0: Thành công
++ Status<>0: Có lỗi
+Object	+ Status=0: Là List object InvoiceResult (List<InvoiceResult>)
++ Status<>0: nội dung lỗi (kiểu String)
+2.2.4	Mã lệnh 800: Lấy thông tin chi tiết Hóa đơn
+•	Đầu vào: Object CommandData (xem chi tiết trong Mục 3.3.1)
+Parameter	Description
+CmdType	800
+CommandObject 	Là PartnerInvoiceID/ PartnerInvoiceStringID hoặc InvoiceGUID
+
+•	Đầu ra: Object Result (xem chi tiết trong Mục 3.3.2)
+Parameter	Description
+Status	+ Status=0: Thành công
++ Status<>0: Có lỗi
+Object	+ Status=0: Là object InvoiceDataWS (xem chi tiết trong SampleCode)
++ Status<>0: nội dung lỗi (kiểu String)
+
+2.2.5	Mã lệnh 801: Lấy trạng thái Hóa đơn
+•	Đầu vào: Object CommandData (xem chi tiết trong Mục 3.4.1)
+Parameter	Description
+CmdType	801
+CommandObject 	Là InvoiceGUID
+
+•	Đầu ra: Object Result (xem chi tiết trong Mục 3.4.2)
+Parameter	Description
+Status	+ Status=0: Thành công
++ Status<>0: Có lỗi
+Object	+ Status=0: ID trạng thái hóa đơn (tham khảo Mục 4.4)
++ Status<>0: nội dung lỗi (kiểu String)
+
+2.2.6	Mã lệnh 802: Lấy lịch sử xử lý Hóa đơn
+•	Đầu vào: Object CommandData (xem chi tiết trong Mục 3.5.1)
+Parameter	Description
+CmdType	802
+CommandObject 	Là InvoiceGUID 
+
+•	Đầu ra: Object Result (xem chi tiết trong Mục 3.5.2)
+Parameter	Description
+Status	+ Status=0: Thành công
++ Status<>0: Có lỗi
+Object	+ Status=0: Là List object History (List<History>)
++ Status<>0: nội dung lỗi (kiểu String)
+2.2.7	Mã lệnh 804: Lấy link tải Hoá đơn chuyển đổi
+•	Đầu vào: Object CommandData (xem chi tiết trong Mục 3.6.1)
+Parameter	Description
+CmdType	804
+CommandObject 	Là List object InvoiceDataWS (List<InvoiceDataWS>)
+
+•	Đầu ra: Object Result (xem chi tiết trong Mục 3.6.2)
+Parameter	Description
+Status	+ Status=0: Thành công
++ Status<>0: Có lỗi
+Object	+ Status=0: Là Link tải Hoá đơn chuyển đổi
++ Status<>0: nội dung lỗi (kiểu String)
+
+2.2.8	Mã lệnh 808, 809: Lấy Hoá đơn bản thể hiện/ File XML bằng PartnerInvoiceID/PartnerInvoiceStringID
+•	Đầu vào: Object CommandData (xem chi tiết trong Mục 3.7.1)
+Parameter	Description
+CmdType	808
+CommandObject 	Là PartnerInvoiceID/PartnerInvoiceStringID của Hoá đơn cần lấy thông tin
+
+•	Đầu ra: Object Result (xem chi tiết trong Mục 3.7.2)
+Parameter	Description
+Status	+ Status=0: Thành công
++ Status<>0: Có lỗi
+Object	+ Status=0: Là object FileInfo
++ Status<>0: nội dung lỗi (kiểu String)
+
+2.2.9	Mã lệnh 810: Lấy thông tin Hoá đơn bằng Mẫu số, Ký hiệu, Số Hóa đơn 
+•	Đầu vào: Object CommandData (xem chi tiết trong Mục 3.8.1)
+Parameter	Description
+CmdType	810
+CommandObject 	Là Object InvoiceInput
+
+•	Đầu ra: Object Result (xem chi tiết trong Mục 3.8.2)
+Parameter	Description
+Status	+ Status=0: Thành công
++ Status<>0: Có lỗi
+Object	+ Status=0: Là List object InvoiceDataWS (List<InvoiceDataWS>)
++ Status<>0: nội dung lỗi (kiểu String)
+
+2.2.10	Mã lệnh 811, 812, 813: Lấy Hoá đơn bản thể hiện/Hoá đơn bản chuyển đổi/File XML Base 64 bằng mã tra cứu
+•	Đầu vào: Object CommandData (xem chi tiết trong Mục 3.9.1)
+Parameter	Description
+CmdType	811
+CommandObject 	Là MTC của Hoá đơn cần lấy thông tin
+
+•	Đầu ra: Object Result (xem chi tiết trong Mục 3.9.2)
+Parameter	Description
+Status	+ Status=0: Thành công
++ Status<>0: Có lỗi
+Object	+ Status=0: Là object FileInfo
++ Status<>0: nội dung lỗi (kiểu String)
+
+2.2.11	Mã lệnh 904: Lấy thông tin doanh nghiệp theo MST
+•	Đầu vào: Object CommandData (xem chi tiết trong Mục 3.10.1)
+Parameter	Description
+CmdType	904
+CommandObject 	Là mã số thuế cần lấy thông tin
+
+•	Đầu ra: Object Result (xem chi tiết trong Mục 3.10.2)
+Parameter	Description
+Status	+ Status=0: Thành công
++ Status<>0: Có lỗi
+Object	+ Status=0: Là object BusinessInfo
++ Status<>0: nội dung lỗi (kiểu String)
+3	Các đối tượng ứng với từng Mã lệnh
+3.1	Mã lệnh 100,101,110,111,112,122,126,200: Tạo và Cập nhật Hoá đơn
+3.1.1	Đối tượng CommandData:
+{
+  "CmdType":100, /// Mã lệnh, xem chi tiết trong Danh mục  2.1.1
+  "CommandObject":[
+   {
+     "Invoice":{
+      "InvoiceTypeID":1, /// Loại Hoá đơn (Xem chi tiết mục 4.1)
+      "InvoiceDate":"2017-09-20T09:43:06.7105319+07:00", /// Ngày trên Hoá đơn
+      "BuyerName":"Nguyễn Văn A",/// Tên người mua hàng
+      "BuyerTaxCode":"0104746603", /// Mã số thuế Người mua hàng
+      "BuyerUnitName":"Công Ty Luật TNHH ABC", /// Tên đơn vị mua hàng
+      "BuyerAddress":"Nhà N2D Khu ĐT Trung Hoà-Nhân Chính, Phường Nhân Chính, Quận Thanh Xuân, Hà Nội",/// Địa chỉ đơn vị mua hàng
+      "BuyerBankAccount":"",/// Thông tin tài khoản ngân hàng người mua ví dụ: 11111111111 - BIDV chi nhánh Tây Hồ
+      "PayMethodID":1, /// Hình thức thanh toán (Xem chi tiết mục 4.3) 
+      "ReceiveTypeID":3, /// Hình thức nhận Hoá đơn: 1	Email , 2	Tin nhắn, 3	Email và tin nhắn, 4	Chuyển phát nhanh
+      "ReceiverEmail":"testABC@gmail.com",/// eMail nhận Hoá đơn
+      "ReceiverMobile":"01789143399",/// Số điện thoại nhận Hoá đơn
+      "ReceiverAddress":"Nhà N2D Khu ĐT Trung Hoà-Nhân Chính, Phường Nhân Chính, Quận Thanh Xuân, Hà Nội",/// Địa chỉ nhận Hoá đơn (Hoá đơn in chuyển đổi)
+      "ReceiverName":"Nguyễn Văn A",/// Tên người nhận Hoá đơn (Hoá đơn in chuyển đổi)
+      "Note":"Test eHoaDon",/// Ghi chú trên Hoá đơn
+      "BillCode":"",/// Mã ID chứng từ kế toán hoặc số Bill code của Hoá đơn Bán hàng
+      "CurrencyID":"VND",/// ID tiền tệ: VND - Việt Nam đồng (mặc định), USD - Đô la Mỹ, EUR - Đồng Euro, GBP - Bảng Anh, CNY - Nhân dân tệ,CHF - Phơ răng Thuỵ Sĩ ...
+      "ExchangeRate":1.0, /// Tỷ giá ngoại tệ so với VND: mặc định là 1
+      "InvoiceForm":"",/// Mẫu số Hóa đơn, Phải truyền khi dùng mã lệnh 110, 111 và 112
+      "InvoiceSerial":"",/// Ký hiệu Hóa đơn, Phải truyền khi dùng mã lệnh 110, 111 và 112
+      "InvoiceNo":0, /// Số hóa đơn, Phải truyền khi dùng mã lệnh 111
+      "OriginalInvoiceIdentify":"[01GTKT0/001]_[AA/17E]_[0000001]"/// Thông tin Hoá đơn gốc dùng trong trường hợp thay thế, điều chỉnh. Định dạng như sau: [Mẫu Số]_[Ký hiệu]_[Số Hoá đơn], ví dụ: [01GTKT0/001]_[AA/17E]_[0000001]
+     },
+     "ListInvoiceDetailsWS":[
+      {
+        "ItemName":"Chữ ký số Bkav CA ENT BN (bao gồm Thiết bị USB Token) update",/// Tên hàng hóa, dịch vụ hoặc nội dung giảm giá chiết khấu (IsDiscount = 1)
+        "UnitName":"Gói",/// Đơn vị tính hàng hóa, dịch vụ
+        "Qty":1.0, /// Số lượng hàng hóa dịch vụ
+        "Price":600000.0, /// Giá của hàng hóa
+        "Amount":600000.0, /// Thành tiền hàng hóa dịch vụ hoặc số tiền chiết khấu
+        "TaxRateID":3, /// ID thuế suất:    1 - 0%  | 2- 5% |  3 - 10% |  4 - Không chịu thuế|  5 - Không kê khai thuế | 6 - Thuế suất khác
+	  "TaxRate": 10,     /// Chi tiết thuế suất:    0 – 0% | 5 -  5% | 10 -10% | -1 – Không chịu thuế | -2 – Không kê khai thuế | -4 -  xxx
+        "TaxAmount":60000.0, /// Thành tiền thuế
+        "IsDiscount":false,/// Là chiết khấu ghi trên Hoá đơn: 1 - là chiết khấu, mặc định là 0 (Để số dương, hệ thống Bkav sẽ tự trừ khi hiển thị trên Web ehoadon)
+	  "IsIncrease": null, ///Hóa đơn bình thường hoặc Hoá đơn điều chỉnh thông tin: có giá trị là Null, Hóa đơn điều chỉnh: False - dòng hàng hóa dịch vụ bị điều chỉnh giảm, True - dòng hàng hóa dịch vụ bị điều chỉnh tăng
+  "ItemTypeID": 0  ///Loại hàng hoá (Xem chi tiết tại mục 4.2)
+      }
+     ],
+      "ListInvoiceAttachFileWS":[ ///List file dùng cho trường hợp điều chỉnh thay thế một hóa đơn khác
+         { 
+            "FileName":"Test",/// Tên file
+            "FileExtension":"docx",///Phần mở rộng (docx,pdf...)
+            "FileContent":""///Nội dung file dạng Base64
+         },
+         { 
+            "FileName":"Test",
+            "FileExtension":"docx",
+            "FileContent":""/// Nội dung file dạng Base64
+         }
+      ],
+     "PartnerInvoiceID":0, /// Kiểu Long
+     "PartnerInvoiceStringID":"aaaaaa", /// Kiểu String
+   }
+  ]
+}
+3.1.2	Đối tượng Result khi Webservice trả về
+3.1.2.1	Nếu chưa tồn tại giao dịch
+Hệ thống sẽ trả về kết quả thành công và thông tin Hóa đơn được tạo
+{
+  "Status":0,
+  "Object":[
+   {
+     "PartnerInvoiceID":0, /// ID Hóa đơn của đối tác dạng số
+     "PartnerInvoiceStringID":" aaaaaa",/// ID Hóa đơn của đối tác dạng chuỗi
+     "InvoiceGUID":"9ea9db57-b8c4-4149-9dce-2fd8b73712fd", /// Mã InvoiceGUID Bkav trả về khi tạo mới thành công
+     "InvoiceForm":"01GTKT0/001",/// Mẫu số Hóa đơn
+     "InvoiceSerial":"AA/17E",/// Ký hiệu Hóa đơn
+     "InvoiceNo":0, /// Mã lệnh 100 trả về 0, Mã lệnh 101 trả về số hóa đơn được cấp
+     "MTC":" KTORBDZIF",
+     "Status":0, /// Trạng thái của từng Bill, 0: thành công, 1: lỗi
+     "MessLog":null /// Nếu Status = 1 thì trả về chi tiết lỗi
+   }
+  ],
+  "isOk":true,
+  "isError":false
+}
+3.1.2.2	Nếu đã tồn tại giao dịch
+Hệ thống sẽ trả về lỗi và thông tin Hóa đơn đã tồn tại
+{
+  "Status":0,
+  "Object":[
+   {
+     "PartnerInvoiceID":0, /// ID Hóa đơn của đối tác dạng số
+     "PartnerInvoiceStringID":" aaaaaa",/// ID Hóa đơn của đối tác dạng chuỗi
+     "InvoiceGUID":"9ea9db57-b8c4-4149-9dce-2fd8b73712fd", /// Mã InvoiceGUID Bkav trả về khi tạo mới thành công
+     "InvoiceForm":"01GTKT0/001",/// Mẫu số Hóa đơn
+     "InvoiceSerial":"AA/17E",/// Ký hiệu Hóa đơn
+     "InvoiceNo":0, /// Mã lệnh 100 trả về 0, Mã lệnh 101 trả về số hóa đơn được cấp
+     "Status":0, /// Trạng thái của từng Bill, 0: thành công, 1: lỗi
+     "MessLog":”Đã tồn tại Hóa đơn có PartnerInvoiceStringID: aaaaaa” /// Nếu Status = 1 thì trả về chi tiết lỗi
+   }
+  ],
+  "isOk":true,
+  "isError":false
+}
+
+3.2	Mã lệnh 202, 301: Huỷ Hoá đơn đã phát hành/Xoá bỏ Hoá đơn chưa phát hành
+3.2.1	Đối tượng CommandData
+{
+	"CmdType": 202,
+	"CommandObject": [{
+		"PartnerInvoiceID": 0,			
+		"PartnerInvoiceStringID": "aaaaaa"		// PartnerInvoiceID/ PartnerInvoiceStringID của Hoá đơn cần huỷ/xoá bỏ
+	}]
+}
+3.2.2	Đối tượng Result khi Webservice trả về
+{
+	"Status": 0,
+	"Object": [
+	{
+		"PartnerInvoiceID": 0,
+		"PartnerInvoiceStringID": "aaaaaa",
+		"InvoiceGUID": "00000000-0000-0000-0000-000000000000",
+		"InvoiceForm": "",
+		"InvoiceSerial": "",
+		"InvoiceNo": 0,
+		"MTC": " KTORBDZIF",
+		"Status": 0,
+		"MessLog": ""
+	}
+],
+	"isOk": true,
+	"isError": false
+}
+
+3.3	Mã lệnh 800: Lấy thông tin chi tiết Hóa đơn
+3.3.1	Đối tượng CommandData
+{
+  "CmdType":800,
+  "CommandObject":"7206dd3d-1302-457f-911d-0ab749a65cec" /// PartnerInvoiceID/ PartnerInvoiceStringID  hoặc InvoiceGUID
+}
+3.3.2	Đối tượng Result khi Webservice trả về
+{
+  "Status":0,
+  "Object":"{
+     "Invoice":{
+      "InvoiceTypeID":1,
+      "InvoiceDate":"2017-09-20T09:43:06.7105319+07:00", 
+      "BuyerName":"Nguyễn Văn A Update",
+      "BuyerTaxCode":"0104746603",
+      "BuyerUnitName":"Công Ty Luật TNHH ABC", 
+      "BuyerAddress":"Nhà N2D Khu ĐT Trung Hoà-Nhân Chính, Phường Nhân Chính, Quận Thanh Xuân, Hà Nội",
+      "BuyerBankAccount":"",
+      "PayMethodID":1,
+      "ReceiveTypeID":3,
+      "ReceiverEmail":"testABC@gmail.com",
+      "ReceiverMobile":"01789143399",
+      "ReceiverAddress":"Nhà N2D Khu ĐT Trung Hoà-Nhân Chính, Phường Nhân Chính, Quận Thanh Xuân, Hà Nội",
+      "ReceiverName":"Nguyễn Văn A",
+      "Note":"Test eHoaDon",
+      "BillCode":"",
+      "CurrencyID":"VND",
+      "ExchangeRate":1.0, 
+      "InvoiceGUID":"00000000-0000-0000-0000-000000000000",/// InvoiceGUID
+      "InvoiceStatusID":1, /// Trạng thái của hóa đơn (Chi tiết xem mục 4.4)
+      "InvoiceForm":"",
+      "InvoiceSerial":"",
+      "InvoiceNo":0, 
+      "InvoiceCode":null, /// Mã tra cứu
+      "SignedDate":"2017-09-20T09:43:06.7135334+07:00"	/// Ngày ký Hoá đơn
+     },
+     "ListInvoiceDetailsWS":[
+      {
+        "ItemName":"Chữ ký số Bkav CA ENT BN (bao gồm Thiết bị USB Token) update",/// Tên hàng hóa, dịch vụ hoặc nội dung giảm giá chiết khấu (IsDiscount = 1)
+        "UnitName":"Gói",
+        "Qty":1.0, 
+        "Price":600000.0, 
+        "Amount":600000.0, 
+        "TaxRateID":3, 
+        "TaxAmount":60000.0, 
+        "IsDiscount":false,
+        "IsIncrease": null 
+      }
+     ],
+     "PartnerInvoiceID":0, 
+     "PartnerInvoiceStringID":"aaaaaa", 
+   }",
+  "isOk":true,
+  "isError":false
+        }
+3.4	Mã lệnh 801: Lấy trạng thái Hóa đơn
+3.4.1	Đối tượng CommandData
+{
+  "CmdType":801,
+  "CommandObject":"E4EBAB10-265A-4F18-8513-9F58B8B2C346"/// InvoiceGUID Bkav trả về khi thêm mới Hóa đơn
+}
+3.4.2	Đối tượng Result khi Webservice trả về
+{ 
+  "Status":0,
+  "Object":11, 		// Trạng thái của Hóa đơn, xem thêm tại mục 4.4
+  "isOk":true,
+  "isError":false
+}
+3.5	Mã lệnh 802: Lấy lịch sử xử lý Hóa đơn
+3.5.1	Đối tượng CommandData
+{
+  "CmdType":802,
+  "CommandObject":"E4EBAB10-265A-4F18-8513-9F58B8B2C346"		/// InvoiceGUID Bkav trả về khi thêm mới Hóa đơn
+}
+3.5.2	Đối tượng Result khi Webservice trả về
+{
+  "Status":0,
+  "Object":"[
+  {
+   "FuncId":0,
+   "STT":1,
+   "UserName":"3700256179", /// Username của người xử lý
+   "ID":0,
+   "CreateDate":"2017-09-18T16:08:22.437", /// Ngày xử lý
+   "IP":null, 
+   "UserID":0,
+   "ObjectGUID":"00000000-0000-0000-0000-000000000000",
+   "LogContent":"Cập nhật Hóa đơn: Trạng thái: <b>Mới tạo</b>; Mẫu số: <b>01GTKT0/001</b>; HTTT: <b>Chuyển khoản</b>; Cấp số: 0000005; Lý do: abc"s
+  },
+  {
+   "FuncId":0,
+   "STT":2,
+   "UserName":"3700256179",
+   "ID":0,
+   "CreateDate":"2017-09-18T15:36:38.957",
+   "IP":null,
+   "UserID":0,
+   "ObjectGUID":"00000000-0000-0000-0000-000000000000",
+   "LogContent":"Thêm Hàng hóa, dịch vụ: <b>phôi thép</b>; Thành tiền: <b>40.000.000</b>; Tiền thuế: <b>4.000.000</b>"
+  },
+  {
+   "FuncId":0,
+   "STT":3,
+   "UserName":"3700256179",
+   "ID":0,
+   "CreateDate":"2017-09-18T15:36:38.95",
+   "IP":null,
+   "UserID":0,
+   "ObjectGUID":"00000000-0000-0000-0000-000000000000",
+   "LogContent":"Thêm mới Hóa đơn: Ký hiệu: <b>AA/17E</b>; Ngày Hóa đơn: <b>18/09/2017</b>"
+  }
+]",
+  "isOk":true,
+  "isError":false
+}
+3.6	Mã lệnh 804: Lấy link tải Hoá đơn chuyển đổi
+3.6.1	Đối tượng CommandData
+{
+	"CmdType": 804,
+	"CommandObject": [{
+		"PartnerInvoiceID": 0,			
+		"PartnerInvoiceStringID": "aaaaaa"		// PartnerInvoiceID/ PartnerInvoiceStringID của Hoá đơn cần huỷ/xoá bỏ trong PMKT
+	}]
+}
+3.6.2	Đối tượng Result khi Webservice trả về
+{
+	"Status": 0,
+	"Object": [
+	{
+		"PartnerInvoiceID": 0,
+		"PartnerInvoiceStringID": "aaaaaa",
+		"InvoiceGUID": "00000000-0000-0000-0000-000000000000",
+		"InvoiceForm": "",
+		"InvoiceSerial": "",
+		"InvoiceNo": 0,
+		"MTC": "",
+		"Status": 0,
+		"MessLog": "/Invoice_View_Demo/AB/-1/AB-19E-0000004-KTORBDZIF-DPH.pdf" 	// Link tải Hoá đơn chuyển đổi
+	}
+]
+	"isOk": true,
+	"isError": false
+}
+3.7	Mã lệnh 808, 809: Lấy bản thể hiện Hóa đơn/ File XML dạng PDF Base 64
+3.7.1	Đối tượng CommandData
+{
+  "CmdType":808,
+  "CommandObject":"aaaaaa"		/// PartnerInvoiceID /PartnerInvoiceStringID của Hoá đơn cần lấy thông tin
+}
+3.7.2	Đối tượng Result khi Webservice trả về
+{
+  "Status":0,
+  "Object":"[
+   {
+ "PDF":"JVBERi0xLjQKJeLjz9MKNCAwIG9iago8PC9MZW5ndGggM…",		// Dữ liệu file tương ứng đã được encode base 64
+ "XML":null,
+  }
+]",
+  "isOk":true,
+  "isError":false
+}
+
+3.8	Mã lệnh 810: Lấy thông tin Hoá đơn bằng Mẫu số, Ký hiệu, Số Hoá đơn
+3.8.1	Đối tượng CommandData
+{
+	"CmdType": 810,
+	"CommandObject": {
+		"InvoiceForm": "01GTKT0/001",
+		"InvoiceSerial": "AA/19E",
+		"FromInvoiceNo": 1,		
+		"ToInvoiceNo": 30		/// Khoảng số Hoá đơn cần lấy thông tin. Tối đa 30 Hoá đơn
+	}
+}
+3.8.2	Đối tượng Result khi Webservice trả về
+•	Tương tự mã lệnh 800
+3.9	Mã lệnh 811, 812, 813: Lấy Hoá đơn bản thể hiện/Hoá đơn chuyển đổi/File XML Base 64 bằng mã tra cứu
+3.9.1	Đối tượng CommandData
+{
+  "CmdType":811,
+  "CommandObject":" KTORBDZIF"	/// Mã tra cứu của Hoá đơn cần lấy thông tin
+}
+3.9.2	Đối tượng Result khi Webservice trả về
+{
+  "Status":0,
+  "Object":"[
+   {
+ "PDF":"JVBERi0xLjQKJeLjz9MKNCAwIG9iago8PC9MZW5ndGggM…",		// Dữ liệu file tương ứng đã được encode base 64
+ "XML":null,
+  }
+]",
+  "isOk":true,
+  "isError":false
+}
+3.10	Mã lệnh 904: Lấy thông tin Doanh nghiệp theo MST
+3.10.1	Đối tượng CommandData
+{
+  "CmdType":904,
+  "CommandObject":"0100104193-007"/// Mã số thuế
+}
+3.10.2	Đối tượng Result khi Webservice trả về
+{
+ "Status": 0,
+ "Object": {
+  "MaSoThue": "0100104193-007", /// Mã số thuế
+  "TenChinhThuc": "Trung tâm nghiên cứu Quy hoạch và Kinh tế đất", /// Tên Cty
+  "DiaChiGiaoDichChinh": "Đường Hoàng Quốc Việt, Quận Cầu Giấy, Hà Nội", /// Địa chỉ giao dịch
+  "DiaChiGiaoDichPhu": "Đường Hoàng Quốc Việt", /// Địa chỉ giao dịch phụ
+  "TrangThaiHoatDong": "NNT ngừng hoạt động nhưng chưa hoàn thành thủ tục đóng MST" /// Trạng thái hoạt động
+ },
+ "isOk": true,
+ "isError": false
+}
+4	Phụ lục
+4.1	Danh sách InvoiceTypeID
+ID	Description
+1	Hóa đơn Giá trị gia tăng
+2	Hóa đơn bán hàng
+4	Hóa đơn bán hàng (dành cho Tổ chức, Cá nhân trong khu PTQ)
+5	Phiếu xuất kho & vận chuyển nội bộ
+6	Phiếu xuất kho gửi bán hàng đại lý
+1	Hóa đơn Giá trị gia tăng
+
+4.2	Danh sách ItemTypeID
+ID	Description
+0	Hàng hoá dịch vụ (mặc định)
+1	Thuế khác
+2	Phí khác
+3	Phí phục vụ
+4	Ghi chú
+10	Tiền đất giảm trừ khi tính thuế
+
+
+4.3	Danh sách hình thức thanh toán
+ID	Name	Description
+1	TM	Tiền mặt 
+2	CK	Chuyển khoản 
+3	TM/CK	Tiền mặt/Chuyển khoản 
+4	Xuất hàng cho chi nhánh	Xuất hàng cho chi nhánh
+5	Hàng biếu tặng	Hàng biếu tặng
+6	Cấn trừ công nợ	Cấn trừ công nợ
+7	Trả hàng	Trả hàng
+8	Khuyến mại không thu tiền	Khuyến mại, quảng cáo, hàng mẫu không thu tiền 
+9	Xuất sử dụng	Xuất sử dụng
+10	Không thu tiền	Không thu tiền
+11	D/A	Nhờ thu chấp nhận chứng từ
+12	D/P	Nhờ thu đổi chứng từ 
+13	TT	Trả trước 
+14	L/C	Thư tín dụng 
+15	Công nợ	Công nợ
+16	Nhờ thu	Nhờ thu
+17	TM/CK/B	TM/CK/B
+18	Thẻ tín dụng	Thẻ tín dụng
+19	CK/CTCN	Chuyển khoản/Cấn trừ công nợ
+20	Hàng hoá	Hàng hoá
+21	Hàng mẫu	Hàng mẫu
+22	Thẻ	Thẻ
+23	Bù trừ công nợ	Bù trừ công nợ
+4.4	Danh sách trạng thái Hoá đơn
+ID	Description
+1	Mới tạo
+2	Đã phát hành
+3	Đã hủy
+5	Chờ thay thế
+6	Thay thế
+7	Chờ điều chỉnh
+8	Điều chỉnh
+9	Bị thay thế
+10	Bị điều chỉnh
+11	Trống (Đã cấp số, Chờ ký)
+12	Không sử dụng
+13	Chờ huỷ
+14	Chờ điều chỉnh chiết khấu
+15	Điều chỉnh chiết khấu
+
+

@@ -23,7 +23,7 @@ return [
     'KBANK' => ['public_name' => 'NH TMCP Đại chúng Việt Nam - KBANK', 'bidv_name' => 'NHTMCP DAI CHUNG VN-HOI SO CHINH -HA NOI - 01360002'],
     'DongA' => 'NH TMCP Đông Á - 79304001',
     'SEABANK' => ['public_name' => 'NH TMCP Đông Nam Á - SEABANK', 'bidv_name' => 'NHTMCP DONG NAM A-HOI SO CHINH - HA NOI - 01317001'],
-    'BIDV' => ['public_name' => 'NH TMCP Đầu tư Và Phát triển Việt Nam - BIDV', 'bidv_name' => 'NHTMCP DT&PT VN-HOI SO CHINH - HA NOI - 01202001'],
+    'BIDV' => ['public_name' => 'NH TMCP Đầu tư Và Phát triển Việt Nam - BIDV', 'bidv_name' => 'NHTMCP DT&PT VN-CN TRANG AN - HA NOI - 01202024'],
     'MSB' => ['public_name' => 'NH TMCP Hàng hải Việt Nam - MSB', 'bidv_name' => 'NHTMCP HANG HAI VN-HOI SO CHINH - HA NOI - 01302001'],
     'TECHCOMBANK' => ['public_name' => 'NH TMCP Kỹ thương Việt Nam - TECHCOMBANK', 'bidv_name' => 'NHTMCP KY THUONG VN-HOI SO CHINH -HA NOI - 01310001'],
     'VIETCOMBANK' => ['public_name' => 'NH TMCP Ngoại thương Việt Nam - VIETCOMBANK', 'bidv_name' => 'NHTMCP NGOAI THUONG-HOI SO CHINH-HA NOI - 01203001'],

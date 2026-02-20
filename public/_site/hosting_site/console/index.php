@@ -1,9 +1,48 @@
+<?php
+
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+//
+//
+require "/var/www/html/vendor/autoload.php";
+$app = require_once '/var/www/html/bootstrap/app.php';
+$kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
+$response = $kernel->handle(
+    $request = Illuminate\Http\Request::capture()
+);
+
+$uid = getCurrentUserId();
+if(!$uid){
+    die("You need Login!");
+}
+$instanceId = $_REQUEST['instance_id'] ?? '';
+$vmi = \App\Models\VpsInstance::find($instanceId);
+if(!$vmi || $vmi->user_id != $uid){
+    if(!isAdminCookie())
+        die("Not valid access this resource!");
+}
+
+// Get VM value (bios_uuid) from instance
+$vmValue = $vmi->bios_uuid;
+
+// Get ESXi host from vps_usage
+$vmUsage = \App\Models\VpsUsage::where("bios_uuid", $vmValue)->orderBy('id', 'DESC')->first();
+if(!$vmUsage){
+    die('VPS usage not found!');
+}
+
+$lastIpFound = $vmUsage->list_ip_address;
+if(!$lastIpFound)
+    $lastIpFound = 'not found ip!';
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=1280, initial-scale=0.5, user-scalable=yes">
-    <title>VM Console</title>
+    <title>VM <?php echo htmlspecialchars($vmi->name) ?></title>
     <style>
         * {
             margin: 0;
@@ -119,12 +158,12 @@
             background: #ffa726;
         }
 
-        button.disconnect {
-            background: #d32f2f;
+        button.refresh {
+            background: #4caf50;
         }
 
-        button.disconnect:hover {
-            background: #e53935;
+        button.refresh:hover {
+            background: #66bb6a;
         }
 
         .status {
@@ -421,16 +460,11 @@
     <div class="header">
         <h1>🖥️ VM Remote Console</h1>
         <div class="controls">
-            <select id="hostSelect">
-                <option value="">Select ESXi Host</option>
-                <option value="10.0.1.11" selected>10.0.1.11</option>
-                <option value="10.0.1.12">10.0.1.12</option>
-                <option value="10.0.1.13">10.0.1.13</option>
-                <option value="10.0.1.19">10.0.1.19</option>
-            </select>
-            <input type="text" id="vmNameInput" placeholder="VM Name" value="00_Backup1" style="width: 150px;" />
+            <!-- <input type="text" id="vmNameInput" placeholder="VM Name" value="00_Backup1" style="width: 150px;" /> -->
+            <b> <?php echo htmlspecialchars($vmi->name) . " , IP Address:  <span style='color: green'> $lastIpFound  </span> "; ?> </b>
+
             <button id="connectBtn" onclick="connectConsole()">Connect</button>
-            <button id="disconnectBtn" class="disconnect" onclick="disconnectConsole()" disabled>Disconnect</button>
+            <button id="refreshBtn" class="refresh" onclick="location.reload()" title="Refresh Page">🔄 Refresh</button>
 
             <div class="control-group">
                 <span class="control-group-label">Power:</span>
@@ -466,18 +500,18 @@
             <span class="info-label">VM:</span>
             <span class="info-value" id="infoVmName">-</span>
         </div>
-        <div class="info-item">
+        <!-- <div class="info-item">
             <span class="info-label">Host:</span>
             <span class="info-value" id="infoHost">-</span>
-        </div>
+        </div> -->
         <div class="info-item">
             <span class="info-label">State:</span>
             <span class="info-value" id="infoPowerState">-</span>
         </div>
-        <div class="info-item">
+        <!-- <div class="info-item">
             <span class="info-label">Ticket:</span>
             <span class="info-value" id="infoTicket">-</span>
-        </div>
+        </div> -->
     </div>
 
     <!-- Virtual Keyboard -->

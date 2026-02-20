@@ -1679,6 +1679,7 @@ use App\Models\EventInfo_Meta;
                     }
 
                     let contentx2 = data.payload[select_content + '_en'];
+                    if(select_content !='content4' && select_content !='content5')
                     if(!contentx2 || contentx2.length == 0){
                         alert("Nội dung tiếng Anh chưa có? Bạn hãy tạo nội dung trước khi gửi tin: " + select_content)
                         return;
@@ -1688,7 +1689,9 @@ use App\Models\EventInfo_Meta;
                     if(lang1 == 'en'){
                         contentx = contentx2;
                     }
+
                     contentx = contentx.trim()
+                    if(select_content !='content4' && select_content !='content5')
                     if(!contentx || contentx.length == 0){
                         alert("Nội dung chưa có? Bạn hãy tạo nội dung trước khi gửi tin: " + select_content)
                         return;

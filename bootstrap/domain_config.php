@@ -16,6 +16,7 @@ return $GLOBALS['mMapDomainDb'] = [
         'logo' => '/images/logo/mytree1.png',
         'rand_in_redis'=> 0,
         'use_snowflake_models' => 'FileUpload,GiaPha,MyTreeInfo,User,OrderItem,OrderInfo',
+//        'use_unixtime_id_models'=> 'abc,xyz',
     ],
     'test1.mytree.vn' => ['siteid' => 1, 'db_name' => env('DB_DATABASE'), 'layout_name' => 'glx2021',
         'logo' => '/images/logo/mytree1.png',
@@ -212,6 +213,7 @@ return $GLOBALS['mMapDomainDb'] = [
         'enable_multi_language' =>1],
     'glx.lad.vn' => ['siteid' => 63, 'db_name' => 'DB_RM_HOST-8', 'layout_name' => 'glxv3',
         'use_own_meta_table'=>1,
+        'use_unixtime_id_models' => 'PartnerInfo,VpsInstance,VpsUsage,User,OrderItem,OrderInfo,UserRecharge,FileUpload,FileCloud',
         'force_fallback_language'=>'vi',
         'dbadmin' => "/phpmyadmin6868",
         'enable_multi_language' =>1

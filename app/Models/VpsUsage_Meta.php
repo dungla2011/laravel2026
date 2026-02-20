@@ -28,6 +28,11 @@ class VpsUsage_Meta extends MetaOfTableInDb
             ]);
     }
 
+
+    function _name($obj, $val, $field)
+    {
+        return "$obj->_email, UID: $obj->user_id";
+    }
     function _email($obj, $val, $field)
     {
         return "$val";
@@ -50,6 +55,13 @@ class VpsUsage_Meta extends MetaOfTableInDb
     public function extraCssInclude()
     {
         ?>
+
+        <style>
+            .input_value_to_post.name{
+                min-width: 250px;
+            }
+
+        </style>
 
         <style>
             .input_value_to_post.readonly.list_ip_address{
@@ -100,6 +112,12 @@ class VpsUsage_Meta extends MetaOfTableInDb
 
         return "<div style='color: $color; font-size: smaller; margin-left: 5px; text-align: center'>$val1 </div>";
     }
+
+
+    function _image_list($obj, $val, $field){
+        return Helper1::imageShow1($obj, $val, $field);
+    }
+
 
     function _lastest_time_the_same($obj, $val, $field)
     {
@@ -159,10 +177,22 @@ class VpsUsage_Meta extends MetaOfTableInDb
         return "<span style='color: $color; font-size: smaller; margin-left: 5px'>($display)</span>";
     }
 
+    public function extraContentIndexButton1($v1 = null, $v2 = null, $v3 = null)
+    {
+       ?>
+
+       <a href="/tool/site/galaxy/join_vps_usage_the_same_config.php" target="_blank">
+
+        <button type="button" class="btn btn-sm btn-info float-right mt-2" id="join_all_the_same_vps_time"> JOIN ALL </button>
+       </a>
+
+<?php
+    }
+
     function _calculated_fee($obj, $val, $field)
     {
         if(!str_contains(UrlHelper1::getFullUrl(), 'edit/')){
-            return number_format($val,1) . " K ";
+//            return number_format($val,1) . " K ";
         }
 
         // Get pricing config
@@ -246,8 +276,11 @@ class VpsUsage_Meta extends MetaOfTableInDb
                 <td style='border: 1px solid #ddd; padding: 3px; text-align: right;' colspan='2' style='text-align: right;'><b>Phí: " . number_format($periodFee, 4) . "K</b></td>
             </tr>
         </table>";
-
-        return "<span style='color: $color; font-weight: bold'>" . number_format($fee, 2) . " K</span>" . $detail;
+        $ret = "<div style='color: $color;  padding: 5px'>" . number_format(round($periodFee), 0, '.') . " K</div>";
+        if(!str_contains(UrlHelper1::getFullUrl(), 'edit/')){
+            return $ret;
+        }
+        return   $ret . $detail;
     }
 
     function _duration_minutes($obj, $val, $field)
@@ -278,5 +311,6 @@ class VpsUsage_Meta extends MetaOfTableInDb
 
         return "{$days}d {$hrs}h";
     }
+
 }
 

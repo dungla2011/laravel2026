@@ -17,6 +17,13 @@ class EventInfo extends ModelGlxBase {
     static $DEF_USER_NAME = ['[USER_NAME]' , "Gồm TITLE + LASTNAME + FIRSTNAME "];
     static $DEF_LINKTHAMDU = ['[LINKTHAMDU]' , "Link bấm vào xác nhận tham dự"];
     static $DEF_EVENT_NAME = ['[EVENT_NAME]' , "Tên sự kiện"];
+
+    static $DEF_USER_EMAIL = ['[USER_EMAIL]' , " User Email"];
+
+    static $DEF_CHI_PHI_THANH_TOAN = ['[CHI_PHI_THANH_TOAN]' , "Chi phí thanh toán"];
+    static $DEF_TAI_KHOAN_THANH_TOAN = ['[TAI_KHOAN_THANH_TOAN]' , "Tài khoản thanh toán"];
+
+
     static $DEF_QRCODE = ['[QRCODE]' , "QR CODE"];
 
     static $DEF_ADDRESS_LOCATION = ['[LOCATION]' , "Địa điểm"];

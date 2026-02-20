@@ -5,18 +5,22 @@
 
 let wmks = null;
 let consoleTicket = null;
+let instanceId = null;
 
 // API endpoint
 const API_URL = 'get_console_ticket.php';
 
+// Get instance_id from URL parameters
+function getInstanceIdFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('instance_id');
+}
+
 // UI Elements
 const connectBtn = document.getElementById('connectBtn');
-const disconnectBtn = document.getElementById('disconnectBtn');
 const statusDot = document.getElementById('statusDot');
 const statusText = document.getElementById('statusText');
 const messageDiv = document.getElementById('message');
-const vmNameInput = document.getElementById('vmNameInput');
-const hostSelect = document.getElementById('hostSelect');
 
 // Info panel
 const infoVmName = document.getElementById('infoVmName');
@@ -26,33 +30,29 @@ const infoTicket = document.getElementById('infoTicket');
 
 function updateStatus(status, message) {
     statusDot.className = 'status-dot';
-    
+
     switch(status) {
         case 'connected':
             statusDot.classList.add('connected');
             statusText.textContent = 'Connected';
             connectBtn.disabled = true;
-            disconnectBtn.disabled = false;
             messageDiv.style.display = 'none';
             break;
         case 'connecting':
             statusDot.classList.add('connecting');
             statusText.textContent = 'Connecting...';
             connectBtn.disabled = true;
-            disconnectBtn.disabled = true;
             showMessage('connecting', message || 'Connecting...');
             break;
         case 'disconnected':
             statusText.textContent = 'Disconnected';
             connectBtn.disabled = false;
-            disconnectBtn.disabled = true;
-            showMessage('info', message || 'Select ESXi host and enter VM name, then click Connect');
+            showMessage('info', message || 'Click Connect to access VM console');
             break;
         case 'error':
             statusDot.classList.add('error');
             statusText.textContent = 'Error';
             connectBtn.disabled = false;
-            disconnectBtn.disabled = true;
             showMessage('error', message || 'Connection error');
             break;
     }
@@ -61,7 +61,7 @@ function updateStatus(status, message) {
 function showMessage(type, text) {
     messageDiv.style.display = 'block';
     messageDiv.className = 'message';
-    
+
     if (type === 'error') {
         messageDiv.classList.add('error');
         messageDiv.innerHTML = `❌ ${text}`;
@@ -72,17 +72,22 @@ function showMessage(type, text) {
     }
 }
 
-async function getConsoleTicket(vmName, host) {
+async function getConsoleTicket(instanceId) {
     try {
         updateStatus('connecting', 'Requesting console ticket...');
-        
-        const response = await fetch(`${API_URL}?vm=${encodeURIComponent(vmName)}&host=${encodeURIComponent(host)}`);
+
+        // Build query params with instance_id only
+        const params = new URLSearchParams({
+            'instance_id': instanceId
+        });
+
+        const response = await fetch(`${API_URL}?${params.toString()}`);
         const data = await response.json();
-        
+
         if (!data.success) {
             throw new Error(data.error || 'Failed to get console ticket');
         }
-        
+
         return data;
     } catch (error) {
         throw new Error(`Failed to get ticket: ${error.message}`);
@@ -90,34 +95,31 @@ async function getConsoleTicket(vmName, host) {
 }
 
 async function connectConsole() {
-    const vmName = vmNameInput.value.trim();
-    const host = hostSelect.value;
-    
-    if (!vmName || !host) {
-        updateStatus('error', 'Please select ESXi host and enter VM name');
+    if (!instanceId) {
+        updateStatus('error', 'Instance ID not found in URL');
         return;
     }
-    
+
     try {
         // Get console ticket
-        updateStatus('connecting', `Getting console ticket for ${vmName}...`);
-        consoleTicket = await getConsoleTicket(vmName, host);
-        
+        updateStatus('connecting', 'Getting console ticket...');
+        consoleTicket = await getConsoleTicket(instanceId);
+
         // Update info panel
-        infoVmName.textContent = consoleTicket.vm_name || vmName;
-        infoHost.textContent = consoleTicket.host || host;
+        infoVmName.textContent = consoleTicket.vm_name || 'Unknown';
+        if(infoHost) infoHost.textContent = consoleTicket.host || 'Unknown';
         infoPowerState.textContent = consoleTicket.power_state || 'Unknown';
-        infoTicket.textContent = consoleTicket.ticket ? consoleTicket.ticket.substring(0, 20) + '...' : '-';
-        
+        if(infoTicket) infoTicket.textContent = consoleTicket.ticket ? consoleTicket.ticket.substring(0, 20) + '...' : '-';
+
         // Clear message
         messageDiv.style.display = 'none';
-        
+
         // Initialize WMKS if not already created
         if (!wmks) {
             wmks = WMKS.createWMKS('wmksContainer', {})
                 .register(WMKS.CONST.Events.CONNECTION_STATE_CHANGE, function(event, data) {
                     console.log('WMKS Connection state:', data.state);
-                    
+
                     if (data.state === WMKS.CONST.ConnectionState.CONNECTED) {
                         updateStatus('connected', 'Console connected');
                     } else if (data.state === WMKS.CONST.ConnectionState.DISCONNECTED) {
@@ -134,17 +136,17 @@ async function connectConsole() {
                     console.log('Screen size changed:', data);
                 });
         }
-        
+
         // Build WebMKS URL
         // Format: wss://host:port/ticket/ticket_value
-        const wsUrl = `wss://${consoleTicket.host}:${consoleTicket.port}/ticket/${consoleTicket.ticket}`;
-        
+        const wsUrl = `wss://${consoleTicket.host}/ticket/${consoleTicket.ticket}`;
+
         console.log('Connecting to:', wsUrl);
         updateStatus('connecting', 'Connecting to VM console...');
-        
+
         // Connect using WMKS
         wmks.connect(wsUrl);
-        
+
     } catch (error) {
         console.error('Connection error:', error);
         updateStatus('error', error.message);
@@ -155,8 +157,8 @@ function disconnectConsole() {
     if (wmks) {
         wmks.disconnect();
     }
-    updateStatus('disconnected', 'Disconnected by user');
-    
+    updateStatus('disconnected', 'Disconnected');
+
     // Reset info
     infoVmName.textContent = '-';
     infoHost.textContent = '-';
@@ -191,19 +193,16 @@ function updateScreen() {
 
 // VM Power Control Functions
 function powerOn() {
-    if (!consoleTicket) {
-        alert('Please connect to VM first');
+    if (!instanceId) {
+        alert('Please load the page with instance_id');
         return;
     }
-    
+
     if (!confirm('Are you sure you want to Power ON this VM?')) {
         return;
     }
-    
-    const vmName = vmNameInput.value.trim();
-    const host = hostSelect.value;
-    
-    fetch(`get_console_ticket.php?vm=${encodeURIComponent(vmName)}&host=${encodeURIComponent(host)}&cmd=poweron`)
+
+    fetch(`get_console_ticket.php?instance_id=${encodeURIComponent(instanceId)}&cmd=poweron`)
         .then(response => response.json())
         .then(data => {
             if (data.success) {
@@ -219,19 +218,16 @@ function powerOn() {
 }
 
 function powerOff() {
-    if (!consoleTicket) {
-        alert('Please connect to VM first');
+    if (!instanceId) {
+        alert('Please load the page with instance_id');
         return;
     }
-    
+
     if (!confirm('Are you sure you want to Power OFF this VM?')) {
         return;
     }
-    
-    const vmName = vmNameInput.value.trim();
-    const host = hostSelect.value;
-    
-    fetch(`get_console_ticket.php?vm=${encodeURIComponent(vmName)}&host=${encodeURIComponent(host)}&cmd=poweroff`)
+
+    fetch(`get_console_ticket.php?instance_id=${encodeURIComponent(instanceId)}&cmd=poweroff`)
         .then(response => response.json())
         .then(data => {
             if (data.success) {
@@ -249,19 +245,16 @@ function powerOff() {
 }
 
 function resetVM() {
-    if (!consoleTicket) {
-        alert('Please connect to VM first');
+    if (!instanceId) {
+        alert('Please load the page with instance_id');
         return;
     }
-    
+
     if (!confirm('Are you sure you want to RESET this VM?')) {
         return;
     }
-    
-    const vmName = vmNameInput.value.trim();
-    const host = hostSelect.value;
-    
-    fetch(`get_console_ticket.php?vm=${encodeURIComponent(vmName)}&host=${encodeURIComponent(host)}&cmd=reset`)
+
+    fetch(`get_console_ticket.php?instance_id=${encodeURIComponent(instanceId)}&cmd=reset`)
         .then(response => response.json())
         .then(data => {
             if (data.success) {
@@ -284,7 +277,7 @@ function toggleKeyboard() {
     const keyboard = document.getElementById('virtualKeyboard');
     keyboardVisible = !keyboardVisible;
     keyboard.style.display = keyboardVisible ? 'block' : 'none';
-    
+
     if (keyboardVisible) {
         keyboardMinimized = false;
         keyboard.classList.remove('minimized');
@@ -294,7 +287,7 @@ function toggleKeyboard() {
 function minimizeKeyboard() {
     const keyboard = document.getElementById('virtualKeyboard');
     keyboardMinimized = !keyboardMinimized;
-    
+
     if (keyboardMinimized) {
         keyboard.classList.add('minimized');
     } else {
@@ -314,7 +307,7 @@ let yOffset = 0;
 function initKeyboardDrag() {
     const keyboardHeader = document.getElementById('keyboardHeader');
     const keyboard = document.getElementById('virtualKeyboard');
-    
+
     if (!keyboardHeader || !keyboard) {
         return;
     }
@@ -326,7 +319,7 @@ function initKeyboardDrag() {
     function dragStart(e) {
         initialX = e.clientX - xOffset;
         initialY = e.clientY - yOffset;
-        
+
         if (e.target === keyboardHeader || keyboardHeader.contains(e.target)) {
             isDragging = true;
         }
@@ -339,7 +332,7 @@ function initKeyboardDrag() {
             currentY = e.clientY - initialY;
             xOffset = currentX;
             yOffset = currentY;
-            
+
             keyboard.style.transform = `translate(${currentX}px, ${currentY}px)`;
         }
     }
@@ -353,9 +346,9 @@ function initKeyboardDrag() {
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize keyboard drag functionality
     initKeyboardDrag();
-    
+
     const keys = document.querySelectorAll('.key');
-    
+
     // Track toggle states for modifier keys
     const modifierStates = {
         capsLock: false,
@@ -363,11 +356,11 @@ document.addEventListener('DOMContentLoaded', function() {
         control: false,
         alt: false
     };
-    
+
     keys.forEach(key => {
         key.addEventListener('click', function() {
             const keyValue = this.getAttribute('data-key');
-            
+
             if (wmks && keyValue) {
                 // Map special keys to key codes
                 const specialKeys = {
@@ -388,7 +381,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     'CapsLock': 20,
                     'Meta': 91
                 };
-                
+
                 // Handle toggle keys (CapsLock, Shift, Control, Alt)
                 if (keyValue === 'CapsLock') {
                     modifierStates.capsLock = !modifierStates.capsLock;
@@ -421,7 +414,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     console.log('Alt toggled:', modifierStates.alt);
                     return;
                 }
-                
+
                 // Check if it's a special key
                 if (specialKeys[keyValue]) {
                     // Send with modifiers if active
@@ -432,7 +425,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         keyCodes.push(specialKeys[keyValue]);
                         wmks.sendKeyCodes(keyCodes);
                         console.log('Special key with modifiers:', keyValue, keyCodes);
-                        
+
                         // Auto-reset modifiers
                         if (modifierStates.control) {
                             modifierStates.control = false;
@@ -460,20 +453,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 } else {
                     // Regular character
                     let charToSend = keyValue;
-                    
+
                     // Handle Ctrl/Alt combinations (e.g., Ctrl+A, Ctrl+C)
                     if (modifierStates.control || modifierStates.alt) {
                         // Get key code for the character
                         const charCode = keyValue.toUpperCase().charCodeAt(0);
                         const keyCodes = [];
-                        
+
                         if (modifierStates.control) keyCodes.push(17); // Ctrl
                         if (modifierStates.alt) keyCodes.push(18); // Alt
                         keyCodes.push(charCode);
-                        
+
                         wmks.sendKeyCodes(keyCodes);
                         console.log('Key combination:', keyValue, keyCodes);
-                        
+
                         // Auto-reset modifiers after combination
                         if (modifierStates.control) {
                             modifierStates.control = false;
@@ -495,10 +488,10 @@ document.addEventListener('DOMContentLoaded', function() {
                             const shouldBeUpperCase = modifierStates.capsLock !== modifierStates.shift;
                             charToSend = shouldBeUpperCase ? keyValue.toUpperCase() : keyValue.toLowerCase();
                         }
-                        
+
                         wmks.sendInputString(charToSend);
                         console.log('Virtual key pressed:', charToSend, 'CapsLock:', modifierStates.capsLock, 'Shift:', modifierStates.shift);
-                        
+
                         // Auto-reset Shift after character (like real keyboard)
                         if (modifierStates.shift) {
                             modifierStates.shift = false;
@@ -508,7 +501,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
                     }
                 }
-                
+
                 // Visual feedback for non-toggle keys
                 if (!['CapsLock', 'Shift', 'Control', 'Alt'].includes(keyValue)) {
                     this.style.background = '#0e639c';
@@ -524,12 +517,22 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Allow Enter key to connect
-vmNameInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-        connectConsole();
-    }
-});
+// Allow Enter key to connect - only if vmNameInput exists
+const vmNameInput = document.getElementById('vmNameInput');
+if (vmNameInput) {
+    vmNameInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            connectConsole();
+        }
+    });
+}
 
-// Initialize
-updateStatus('disconnected');
+// Initialize - get instance_id from URL
+instanceId = getInstanceIdFromUrl();
+if (!instanceId) {
+    updateStatus('error', 'Error: instance_id parameter missing from URL');
+} else {
+    updateStatus('disconnected');
+    // Auto-connect when page loads
+    setTimeout(connectConsole, 500);
+}

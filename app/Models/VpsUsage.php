@@ -9,7 +9,195 @@ use LadLib\Laravel\Database\TraitModelExtra;
 
 class VpsUsage extends ModelGlxBase
 {
-    use HasFactory, SoftDeletes, TraitModelExtra;
+    use HasFactory, SoftDeletes, TraitModelExtra, UnixTimeId;
     protected $guarded = [];
 
+    /**
+     * Calculate fee with formula breakdown
+     * 
+     * @param string|null $fromTime Thời gian bắt đầu tính phí (nếu có)
+     * @param string|null $toTime Thời gian kết thúc tính phí (nếu có)
+     * @return array ['text' => string, 'fee' => float, 'details' => array]
+     */
+    public function calculateFee($fromTime = null, $toTime = null)
+    {
+        // Check if using fixed monthly price
+        if ($this->price_month && $this->price_month > 0) {
+            return $this->calculateFeeFixedMonthly($fromTime, $toTime);
+        }
+        
+        // Otherwise use config-based calculation
+        return $this->calculateFeeConfigBased($fromTime, $toTime);
+    }
+    
+    /**
+     * Calculate fee using fixed monthly price
+     * 
+     * @param string|null $fromTime Thời gian bắt đầu tính phí (nếu có)
+     * @param string|null $toTime Thời gian kết thúc tính phí (nếu có)
+     */
+    private function calculateFeeFixedMonthly($fromTime = null, $toTime = null)
+    {
+        $pricePerMonth = floatval($this->price_month);
+        
+        // Use custom fromTime if provided, otherwise use last_billing_start_at or created_at
+        $startTime = $fromTime ?: ($this->last_billing_start_at ?: $this->created_at);
+        $createdTime = new \DateTime($startTime);
+        
+        // Use custom toTime if provided, otherwise use timestamp_minute
+        $endTime = $toTime ?: $this->timestamp_minute;
+        $timestampTime = new \DateTime($endTime);
+        $interval = $createdTime->diff($timestampTime);
+        $durationMinutes = ($interval->days * 1440) + ($interval->h * 60) + $interval->i;
+
+        $fee = $pricePerMonth * ($durationMinutes / 43200);
+        $fee = round($fee, 0);
+
+        // Convert duration to text
+        $days = floor($durationMinutes / 1440);
+        $remainingMinutes = $durationMinutes % 1440;
+        $hours = floor($remainingMinutes / 60);
+        $minutes = $remainingMinutes % 60;
+
+        $durationText = '';
+        if ($days > 0) $durationText .= $days . ' ngày ';
+        if ($hours > 0 || $days > 0) $durationText .= $hours . ' giờ ';
+        $durationText .= $minutes . ' phút';
+
+        $text = sprintf(
+            "Fixed: %s K/month × %s = %s K",
+            number_format($pricePerMonth, 0, ',', '.'),
+            $durationText,
+            number_format($fee, 0, ',', '.')
+        );
+        
+        return [
+            'text' => $text,
+            'fee' => $fee,
+            'details' => [
+                'type' => 'fixed_monthly',
+                'price_month' => $pricePerMonth,
+                'duration_minutes' => $durationMinutes,
+                'duration_days' => $days,
+                'duration_hours' => $hours,
+                'duration_mins' => $minutes,
+                'period_fee' => $fee,
+                'power_state' => $this->power_state
+            ]
+        ];
+    }
+    
+    /**
+     * Calculate fee using config-based pricing
+     * 
+     * @param string|null $fromTime Thời gian bắt đầu tính phí (nếu có)
+     * @param string|null $toTime Thời gian kết thúc tính phí (nếu có)
+     */
+    private function calculateFeeConfigBased($fromTime = null, $toTime = null)
+    {
+        // Parse price config
+        $priceConfig = json_decode($this->price_config, true);
+        if (!$priceConfig) {
+            return [
+                'text' => 'No price config',
+                'fee' => 0,
+                'details' => []
+            ];
+        }
+
+        // Calculate duration in minutes
+        // Use custom fromTime if provided, otherwise use last_billing_start_at or created_at
+        if ($fromTime) {
+            $startTime = strtotime($fromTime);
+        } else {
+            $startTime = $this->last_billing_start_at ? strtotime($this->last_billing_start_at) : strtotime($this->created_at);
+        }
+        
+        // Use custom toTime if provided, otherwise use lastest_time_the_same or created_at
+        if ($toTime) {
+            $lastestTime = strtotime($toTime);
+        } else {
+            $lastestTime = strtotime($this->lastest_time_the_same ?? $this->created_at);
+        }
+        $durationMinutes = max(0, floor(($lastestTime - $startTime) / 60));
+
+        // Determine CPU and RAM for fee calculation (0 if powered off)
+        $feeCpu = (strtoupper($this->power_state) === 'POWERED_OFF') ? 0 : $this->cpu;
+        $feeRam = (strtoupper($this->power_state) === 'POWERED_OFF') ? 0 : $this->ram_gb;
+
+        // Get prices per 30 days
+        $priceCpu = $priceConfig['n_cpu_core_price'] ?? 0;
+        $priceRam = $priceConfig['n_ram_gb_price'] ?? 0;
+        $priceDisk = $priceConfig['n_gb_disk_price'] ?? 0;
+        $priceIp = $priceConfig['n_ip_address_price'] ?? 0;
+
+        // Calculate daily fees
+        $dailyCpuFee = ($priceCpu / 30) * $feeCpu;
+        $dailyRamFee = ($priceRam / 30) * $feeRam;
+        $dailyDiskFee = ($priceDisk / 30) * $this->disk_gb;
+
+        // Count chargeable IPs (excluding local IPs and 1 free internet IP)
+        $chargeableIpCount = \App\Services\VpsUsageFeeService::countChargeableIPs($this->list_ip_address);
+        $dailyIpFee = ($priceIp / 30) * $chargeableIpCount;
+
+        // Total daily fee
+        $dailyTotalFee = $dailyCpuFee + $dailyRamFee + $dailyDiskFee + $dailyIpFee;
+
+        // Calculate period fee
+        $periodFee = $dailyTotalFee * ($durationMinutes / 1440);
+        $periodFee = round($periodFee, 0); // Round to integer, no decimals
+
+        // Convert duration to days/hours/minutes
+        $days = floor($durationMinutes / 1440);
+        $remainingMinutes = $durationMinutes % 1440;
+        $hours = floor($remainingMinutes / 60);
+        $minutes = $remainingMinutes % 60;
+        
+        $durationText = '';
+        if ($days > 0) {
+            $durationText .= $days . ' ngày ';
+        }
+        if ($hours > 0 || $days > 0) {
+            $durationText .= $hours . ' giờ ';
+        }
+        $durationText .= $minutes . ' phút';
+
+        // Build formula text (2 lines, shorter version)
+        $text = sprintf(
+            "%d×%sK + %d×%sK + %d×%sK + %d×%sK = %s K\n | %s",
+            $feeCpu,
+            number_format($priceCpu, 0),
+            $feeRam,
+            number_format($priceRam, 0),
+            $this->disk_gb,
+            number_format($priceDisk, 0),
+            $chargeableIpCount,
+            number_format($priceIp, 0),
+            number_format($periodFee, 0, ',', '.'),
+            $durationText
+        );
+
+        return [
+            'text' => $text,
+            'fee' => $periodFee,
+            'details' => [
+                'cpu_count' => $feeCpu,
+                'cpu_price' => $priceCpu,
+                'cpu_daily_fee' => $dailyCpuFee,
+                'ram_gb' => $feeRam,
+                'ram_price' => $priceRam,
+                'ram_daily_fee' => $dailyRamFee,
+                'disk_gb' => $this->disk_gb,
+                'disk_price' => $priceDisk,
+                'disk_daily_fee' => $dailyDiskFee,
+                'ip_count' => $chargeableIpCount,
+                'ip_price' => $priceIp,
+                'ip_daily_fee' => $dailyIpFee,
+                'daily_total_fee' => $dailyTotalFee,
+                'duration_minutes' => $durationMinutes,
+                'period_fee' => $periodFee,
+                'power_state' => $this->power_state
+            ]
+        ];
+    }
 }
