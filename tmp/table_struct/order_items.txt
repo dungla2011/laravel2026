@@ -1,0 +1,30 @@
+-- Table: order_items
+-- Generated: 2026-02-25 21:42:07
+
++---------------------+---------------+------+-----+---------------------+-------------------------------+
+| Field               | Type          | Null | Key | Default             | Extra                         |
++---------------------+---------------+------+-----+---------------------+-------------------------------+
+| id                  | bigint(20)    | NO   | PRI |                     | auto_increment                |
+| old_id              | bigint(20)    | YES  | MUL |                     |                               |
+| user_id             | bigint(20)    | YES  | MUL |                     |                               |
+| old_user_id         | bigint(20)    | YES  | MUL |                     |                               |
+| created_at          | timestamp     | YES  |     | current_timestamp() |                               |
+| updated_at          | timestamp     | YES  |     |                     | on update current_timestamp() |
+| deleted_at          | timestamp     | YES  | MUL |                     |                               |
+| order_id            | bigint(20)    | YES  | MUL |                     |                               |
+| old_order_id        | bigint(20)    | YES  | MUL |                     |                               |
+| sku_id              | bigint(20)    | YES  |     |                     |                               |
+| sku_string          | varchar(256)  | YES  |     |                     |                               |
+| product_id          | bigint(20)    | YES  | MUL |                     |                               |
+| price               | bigint(20)    | YES  |     |                     |                               |
+| price_org           | bigint(20)    | YES  |     |                     |                               |
+| quantity            | bigint(20)    | YES  |     |                     |                               |
+| client_session_time | varchar(16)   | YES  |     |                     |                               |
+| end_time            | timestamp     | YES  |     |                     |                               |
+| param1              | bigint(20)    | YES  |     |                     |                               |
+| used                | bigint(20)    | YES  |     | 0                   |                               |
+| log                 | text          | YES  |     |                     |                               |
+| note                | varchar(1024) | YES  |     |                     |                               |
++---------------------+---------------+------+-----+---------------------+-------------------------------+
+
+21 columns

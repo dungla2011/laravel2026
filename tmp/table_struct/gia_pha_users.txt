@@ -1,0 +1,20 @@
+-- Table: gia_pha_users
+-- Generated: 2026-02-25 21:42:00
+
++----------------+------------+------+-----+---------+----------------+
+| Field          | Type       | Null | Key | Default | Extra          |
++----------------+------------+------+-----+---------+----------------+
+| id             | bigint(20) | NO   | PRI |         | auto_increment |
+| old_id         | bigint(20) | YES  | MUL |         |                |
+| user_id        | bigint(20) | NO   | MUL |         |                |
+| old_user_id    | bigint(20) | YES  | MUL |         |                |
+| created_at     | timestamp  | YES  |     |         |                |
+| deleted_at     | timestamp  | YES  | MUL |         |                |
+| updated_at     | timestamp  | YES  |     |         |                |
+| max_quota_node | bigint(20) | YES  |     |         |                |
+| parent_id      | bigint(20) | YES  |     |         |                |
+| old_parent_id  | bigint(20) | YES  | MUL |         |                |
+| version_using  | bigint(20) | YES  |     | 1       |                |
++----------------+------------+------+-----+---------+----------------+
+
+11 columns

@@ -1,0 +1,17 @@
+-- Table: telescope_entries
+-- Generated: 2026-02-25 21:42:16
+
++-------------------------+---------------------+------+-----+---------+----------------+
+| Field                   | Type                | Null | Key | Default | Extra          |
++-------------------------+---------------------+------+-----+---------+----------------+
+| sequence                | bigint(20) unsigned | NO   | PRI |         | auto_increment |
+| uuid                    | char(36)            | NO   | UNI |         |                |
+| batch_id                | char(36)            | NO   | MUL |         |                |
+| family_hash             | varchar(255)        | YES  | MUL |         |                |
+| should_display_on_index | tinyint(1)          | NO   |     | 1       |                |
+| type                    | varchar(20)         | NO   | MUL |         |                |
+| content                 | longtext            | NO   |     |         |                |
+| created_at              | datetime            | YES  | MUL |         |                |
++-------------------------+---------------------+------+-----+---------+----------------+
+
+8 columns

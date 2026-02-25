@@ -1,0 +1,34 @@
+-- Table: event_send_actions
+-- Generated: 2026-02-25 21:41:57
+
++--------------------------+--------------+------+-----+---------------------+-------------------------------+
+| Field                    | Type         | Null | Key | Default             | Extra                         |
++--------------------------+--------------+------+-----+---------------------+-------------------------------+
+| id                       | bigint(20)   | NO   | PRI |                     | auto_increment                |
+| old_id                   | bigint(20)   | YES  | MUL |                     |                               |
+| name                     | varchar(256) | YES  |     |                     |                               |
+| user_id                  | bigint(20)   | YES  | MUL |                     |                               |
+| old_user_id              | bigint(20)   | YES  | MUL |                     |                               |
+| status                   | bigint(20)   | YES  | MUL |                     |                               |
+| created_at               | timestamp    | YES  |     | current_timestamp() |                               |
+| updated_at               | timestamp    | YES  |     |                     | on update current_timestamp() |
+| deleted_at               | timestamp    | YES  |     |                     |                               |
+| image_list               | varchar(256) | YES  |     |                     |                               |
+| old_image_list           | varchar(256) | YES  | MUL |                     |                               |
+| log                      | mediumtext   | YES  |     |                     |                               |
+| type                     | varchar(10)  | YES  |     |                     |                               |
+| event_id                 | bigint(20)   | YES  |     |                     |                               |
+| done                     | tinyint(1)   | YES  |     | 0                   |                               |
+| count_send               | bigint(20)   | YES  |     |                     |                               |
+| pusher_chanel            | varchar(64)  | YES  |     |                     |                               |
+| select_content           | varchar(32)  | YES  |     |                     |                               |
+| select_user_type         | varchar(32)  | YES  |     |                     |                               |
+| user_email_send_override | text         | YES  |     |                     |                               |
+| last_force_send          | timestamp    | YES  |     |                     |                               |
+| content_raw_send         | text         | YES  |     |                     |                               |
+| list_uid_send_done       | text         | YES  |     |                     |                               |
+| count_success            | varchar(20)  | YES  |     |                     |                               |
+| pushed_all_sms_to_queue  | timestamp    | YES  |     |                     |                               |
++--------------------------+--------------+------+-----+---------------------+-------------------------------+
+
+25 columns

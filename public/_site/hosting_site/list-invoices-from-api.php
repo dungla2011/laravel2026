@@ -27,7 +27,7 @@ $filter_status = $_GET['status'] ?? '';
 $filter_serial = $_GET['serial'] ?? '';
 $filter_buyer = $_GET['buyer'] ?? '';
 
-if (!isAdminLrv_()) {
+if (!isSupperAdmin_()) {
     die("You do not have permission to access this page.");
 }
 
@@ -51,82 +51,82 @@ if (isset($_GET['action']) && $_GET['action'] === 'view_pdf' && isset($_GET['fil
 }
 
 // Auto-load nếu truy cập lần đầu (không có param gì)
-$is_first_visit = !isset($_GET['from_date']) && !isset($_GET['to_date']) && 
-                  !isset($_GET['serial']) && !isset($_GET['buyer']) && 
+$is_first_visit = !isset($_GET['from_date']) && !isset($_GET['to_date']) &&
+                  !isset($_GET['serial']) && !isset($_GET['buyer']) &&
                   !isset($_GET['status']) && !isset($_GET['action']);
 
 // Nếu có request lấy danh sách hoặc truy cập lần đầu
 if ((isset($_GET['action']) && $_GET['action'] === 'load') || $is_first_visit) {
     $loading = true;
-    
+
     try {
         $api = new BkavEHoaDonAPI();
         $page = 1;
-        
+
         while (true) {
             $result = $api->getInvoicesByDate($from_date, $to_date, $page);
-            
+
             if (!$result['isOk'] || $result['Status'] != 0) {
                 $errors[] = "Lỗi trang $page: " . ($result['Object'] ?? 'Unknown');
                 break;
             }
-            
+
             $page_invoices = $result['Object'];
             if (is_string($page_invoices)) {
                 $page_invoices = json_decode($page_invoices, true);
             }
-            
+
             if (!is_array($page_invoices) || count($page_invoices) === 0) {
                 break;
             }
-            
+
             $invoices = array_merge($invoices, $page_invoices);
-            
+
             if (count($page_invoices) < 30) {
                 break;
             }
-            
+
             $page++;
-            
+
             if ($page > 100) {
                 $errors[] = "Đã lấy 100 trang, dừng để an toàn";
                 break;
             }
         }
-        
+
         $total_count = count($invoices);
-        
+
         // Áp dụng filter
         if (!empty($filter_status) || !empty($filter_serial) || !empty($filter_buyer)) {
             $invoices = array_filter($invoices, function($inv_data) use ($filter_status, $filter_serial, $filter_buyer) {
                 $invoice = $inv_data['Invoice'] ?? [];
-                
+
                 if (!empty($filter_status)) {
                     $status = $invoice['InvoiceStatusID'] ?? 0;
                     if ($status != $filter_status) return false;
                 }
-                
+
                 if (!empty($filter_serial)) {
                     $serial = $invoice['InvoiceSerial'] ?? '';
                     if (stripos($serial, $filter_serial) === false) return false;
                 }
-                
+
                 if (!empty($filter_buyer)) {
                     $buyer = $invoice['BuyerUnitName'] ?? '';
                     if (stripos($buyer, $filter_buyer) === false) return false;
                 }
-                
+
                 return true;
             });
         }
-        
+
         // Sắp xếp từ mới nhất
         usort($invoices, function($a, $b) {
             $date_a = strtotime($a['Invoice']['InvoiceDate'] ?? '1970-01-01');
             $date_b = strtotime($b['Invoice']['InvoiceDate'] ?? '1970-01-01');
             return $date_b - $date_a;
         });
-        
+
     } catch (Exception $e) {
         $errors[] = $e->getMessage();
     }
@@ -157,14 +157,14 @@ $status_names = [
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
         }
-        
+
         .container {
             max-width: 1600px;
             margin: 0 auto;
@@ -173,44 +173,44 @@ $status_names = [
             box-shadow: 0 10px 40px rgba(0,0,0,0.2);
             overflow: hidden;
         }
-        
+
         .header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             padding: 30px;
             text-align: center;
         }
-        
+
         .header h1 {
             font-size: 28px;
             margin-bottom: 10px;
         }
-        
+
         .filters {
             padding: 20px;
             background: #f8f9fa;
             border-bottom: 1px solid #e0e0e0;
         }
-        
+
         .filter-row {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 15px;
             margin-bottom: 15px;
         }
-        
+
         .filter-row input, .filter-row select {
             padding: 10px;
             border: 1px solid #ddd;
             border-radius: 5px;
             font-size: 13px;
         }
-        
+
         .btn-group {
             display: flex;
             gap: 10px;
         }
-        
+
         button {
             padding: 10px 20px;
             background: #667eea;
@@ -221,20 +221,20 @@ $status_names = [
             font-weight: 600;
             transition: all 0.3s;
         }
-        
+
         button:hover {
             background: #5568d3;
             transform: translateY(-2px);
         }
-        
+
         .btn-secondary {
             background: #6c757d;
         }
-        
+
         .btn-secondary:hover {
             background: #5a6268;
         }
-        
+
         .stats {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -242,7 +242,7 @@ $status_names = [
             padding: 20px;
             background: #f8f9fa;
         }
-        
+
         .stat-box {
             text-align: center;
             padding: 15px;
@@ -250,38 +250,38 @@ $status_names = [
             border-radius: 5px;
             border-left: 4px solid #667eea;
         }
-        
+
         .stat-box .number {
             font-size: 24px;
             font-weight: bold;
             color: #667eea;
         }
-        
+
         .stat-box .label {
             font-size: 12px;
             color: #666;
             margin-top: 5px;
         }
-        
+
         .content {
             padding: 20px;
         }
-        
+
         .table-responsive {
             overflow-x: auto;
         }
-        
+
         table {
             width: 100%;
             border-collapse: collapse;
             font-size: 13px;
         }
-        
+
         table thead {
             background: #f8f9fa;
             border-bottom: 2px solid #dee2e6;
         }
-        
+
         table th {
             padding: 12px;
             text-align: left;
@@ -289,16 +289,16 @@ $status_names = [
             color: #333;
             white-space: nowrap;
         }
-        
+
         table td {
             padding: 10px 12px;
             border-bottom: 1px solid #dee2e6;
         }
-        
+
         table tbody tr:hover {
             background: #f8f9fa;
         }
-        
+
         .badge {
             display: inline-block;
             padding: 4px 8px;
@@ -306,32 +306,32 @@ $status_names = [
             font-size: 11px;
             font-weight: 600;
         }
-        
+
         .badge-primary {
             background: #cce5ff;
             color: #004085;
         }
-        
+
         .badge-success {
             background: #d4edda;
             color: #155724;
         }
-        
+
         .badge-warning {
             background: #fff3cd;
             color: #856404;
         }
-        
+
         .badge-info {
             background: #d1ecf1;
             color: #0c5460;
         }
-        
+
         .badge-danger {
             background: #f8d7da;
             color: #721c24;
         }
-        
+
         .error-box {
             background: #f8d7da;
             border: 1px solid #f5c6cb;
@@ -340,36 +340,36 @@ $status_names = [
             border-radius: 5px;
             margin-bottom: 20px;
         }
-        
+
         .no-data {
             text-align: center;
             padding: 40px;
             color: #999;
         }
-        
+
         .text-right {
             text-align: right;
         }
-        
+
         .text-center {
             text-align: center;
         }
-        
+
         .loading {
             text-align: center;
             padding: 40px;
             color: #667eea;
             font-weight: 600;
         }
-        
+
         .expandable-row {
             cursor: pointer;
         }
-        
+
         .expandable-row:hover {
             background: #e8f4f8 !important;
         }
-        
+
         a[href*="action=view_pdf"]:hover {
             background: #5568d3 !important;
             transform: translateY(-2px);
@@ -381,16 +381,16 @@ $status_names = [
             // Tìm cột Ký hiệu/Số
             const serialCell = row.querySelector('td:nth-child(2)');
             const mtcCell = row.querySelector('td:nth-child(3)');
-            
+
             if (serialCell && mtcCell) {
                 // Lấy nội dung từ badge
                 const serialBadge = serialCell.querySelector('.badge-primary');
                 const mtcBadge = mtcCell.querySelector('.badge-primary');
-                
+
                 let textToCopy = '';
                 if (serialBadge) textToCopy = serialBadge.textContent.trim();
                 if (mtcBadge) textToCopy += ' | ' + mtcBadge.textContent.trim();
-                
+
                 if (textToCopy) {
                     navigator.clipboard.writeText(textToCopy).then(() => {
                         // Hiển thị thông báo
@@ -413,7 +413,7 @@ $status_names = [
             <h1>📋 Danh sách tất cả hoá đơn</h1>
             <p>Lấy trực tiếp từ Bkav API (CmdType 853)</p>
         </div>
-        
+
         <div class="filters">
             <form method="GET">
                 <div class="filter-row">
@@ -438,7 +438,7 @@ $status_names = [
                 </div>
             </form>
         </div>
-        
+
         <?php if (!empty($errors)): ?>
         <div class="error-box">
             <?php foreach ($errors as $error): ?>
@@ -446,7 +446,7 @@ $status_names = [
             <?php endforeach; ?>
         </div>
         <?php endif; ?>
-        
+
         <?php if ($loading && !empty($invoices)): ?>
         <div class="stats">
             <div class="stat-box">
@@ -459,11 +459,21 @@ $status_names = [
             </div>
             <?php
             $status_count = [];
+            $total_amount = 0;
             foreach ($invoices as $inv_data) {
                 $status = $inv_data['Invoice']['InvoiceStatusID'] ?? 0;
                 $status_count[$status] = ($status_count[$status] ?? 0) + 1;
+                // Chỉ cộng tổng cho hoá đơn "Đã phát hành" (status = 2)
+                if ($status == 2) {
+                    $amount = $inv_data['Invoice']['SumPaymentAmount'] ?? 0;
+                    $total_amount += $amount;
+                }
             }
             ?>
+            <div class="stat-box">
+                <div class="number"><?php echo number_format($total_amount, 0, ',', '.'); ?></div>
+                <div class="label">Tổng số tiền</div>
+            </div>
             <div class="stat-box">
                 <div class="number"><?php echo $status_count[2] ?? 0; ?></div>
                 <div class="label">Đã phát hành</div>
@@ -474,7 +484,7 @@ $status_names = [
             </div>
         </div>
         <?php endif; ?>
-        
+
         <div class="content">
             <?php if (!$loading): ?>
                 <div class="no-data">
@@ -514,19 +524,19 @@ $status_names = [
                                 $status = $invoice['InvoiceStatusID'] ?? 0;
                                 $mtc = $invoice['InvoiceCode'] ?? '';
                                 $invoice_guid = $invoice['InvoiceGUID'] ?? '';
-                                
+
                                 // Chọn màu badge theo status
                                 if ($status == 2) $badge_class = 'badge-success';
                                 elseif ($status == 1 || $status == 11) $badge_class = 'badge-warning';
                                 elseif ($status == 3) $badge_class = 'badge-danger';
                                 else $badge_class = 'badge-info';
-                                
+
                                 $status_name = $status_names[$status] ?? "Status $status";
-                                
+
                                 // Kiểm tra file PDF - thử nhiều tên file khác nhau
                                 $pdf_exists = false;
                                 $pdf_filename = '';
-                                
+
                                 // Cách 1: Serial_No_MTC
                                 if (!empty($serial) && !empty($no) && !empty($mtc)) {
                                     $try_filename = $serial . '_' . str_pad($no, 4, '0', STR_PAD_LEFT) . '_' . $mtc;
@@ -536,7 +546,7 @@ $status_names = [
                                         $pdf_filename = $try_filename;
                                     }
                                 }
-                                
+
                                 // Cách 2: Serial-No
                                 if (!$pdf_exists && !empty($serial) && !empty($no)) {
                                     $try_filename = $serial . '-' . str_pad($no, 4, '0', STR_PAD_LEFT);
@@ -546,7 +556,7 @@ $status_names = [
                                         $pdf_filename = $try_filename;
                                     }
                                 }
-                                
+
                                 // Cách 3: Serial_No
                                 if (!$pdf_exists && !empty($serial) && !empty($no)) {
                                     $try_filename = $serial . '_' . str_pad($no, 4, '0', STR_PAD_LEFT);
@@ -556,7 +566,7 @@ $status_names = [
                                         $pdf_filename = $try_filename;
                                     }
                                 }
-                                
+
                                 // Cách 4: Chỉ dùng MTC
                                 if (!$pdf_exists && !empty($mtc)) {
                                     $try_filename = $mtc;
@@ -566,7 +576,7 @@ $status_names = [
                                         $pdf_filename = $try_filename;
                                     }
                                 }
-                                
+
                                 // Cách 5: Dùng InvoiceGUID
                                 if (!$pdf_exists && !empty($invoice_guid)) {
                                     $try_filename = $invoice_guid;
@@ -588,7 +598,7 @@ $status_names = [
                                     <?php endif; ?>
                                 </td>
                                 <td><?php echo $date; ?></td>
-                                <td><?php echo htmlspecialchars(substr($buyer, 0, 30)); ?></td>
+                                <td><?php echo htmlspecialchars(substr($buyer, 0, 300)); ?></td>
                                 <td><?php echo htmlspecialchars($tax_code); ?></td>
                                 <td class="text-right"><strong><?php echo number_format($amount, 0, ',', '.'); ?></strong></td>
                                 <td><span class="badge <?php echo $badge_class; ?>"><?php echo $status_name; ?></span></td>

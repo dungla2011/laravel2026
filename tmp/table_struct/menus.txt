@@ -1,0 +1,19 @@
+-- Table: menus
+-- Generated: 2026-02-25 21:42:03
+
++---------------+---------------------+------+-----+---------+----------------+
+| Field         | Type                | Null | Key | Default | Extra          |
++---------------+---------------------+------+-----+---------+----------------+
+| id            | bigint(20) unsigned | NO   | PRI |         | auto_increment |
+| old_id        | bigint(20) unsigned | YES  | MUL |         |                |
+| name          | varchar(255)        | NO   |     |         |                |
+| parent_id     | bigint(20)          | YES  |     | 0       |                |
+| old_parent_id | bigint(20)          | YES  | MUL | 0       |                |
+| created_at    | timestamp           | YES  |     |         |                |
+| updated_at    | timestamp           | YES  |     |         |                |
+| deleted_at    | timestamp           | YES  |     |         |                |
+| slug          | varchar(255)        | NO   |     |         |                |
+| site_id       | bigint(20)          | NO   |     |         |                |
++---------------+---------------------+------+-----+---------+----------------+
+
+10 columns

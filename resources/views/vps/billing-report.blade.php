@@ -21,6 +21,16 @@ $uid = getCurrentUserId();
 
 @section("css")
     <style>
+        .badge-danger,.badge-secondary {
+            font-weight: inherit;
+        }
+        .table-sm td{
+            vertical-align: middle;
+        }
+        td.instance-id{
+            font-size: 80%;
+        }
+
         .new-instance {
              border-top: 2px solid #007bff !important;
         }
@@ -196,11 +206,11 @@ $uid = getCurrentUserId();
                 </div>
 
                 <!-- Instance Totals -->
-                <div class="row">
+                <div class="row d-none" >
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header">
-                                <h3 class="card-title"><i class="fas fa-chart-bar"></i> Instance Totals Summary</h3>
+                                <h3 class="card-title"><i class="fas fa-chart-bar"></i> Danh sách VPS </h3>
                             </div>
                             <div class="card-body table-responsive p-0">
                                 <table class="table table-hover table-striped">
@@ -246,23 +256,22 @@ $uid = getCurrentUserId();
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header">
-                                <h3 class="card-title"><i class="fas fa-list"></i> All VPS Usage Records (Detail)</h3>
+                                <h3 class="card-title"><i class="fas fa-list"></i> Chi tiết sử dụng VPS</h3>
                             </div>
                             <div class="card-body table-responsive p-0" data-code-pos='ppp17711880711391'>
                                 <table class="table table-hover table-sm text-nowrap">
                                     <thead>
                                         <tr class="bg-light">
-                                            <th width="40">STT</th>
-                                            <th width="50"><i class="fas fa-info-circle"></i></th>
-                                            <th>Mã số VPS</th>
-                                            <th>Name</th>
-                                            <th>IP Address</th>
+                                            <th>STT</th>
+                                            <th>Mã số</th>
+                                            <th>Tên Vps</th>
+                                            <th>Địa chỉ IP</th>
                                             <th>Ngày tính phí</th>
                                             <th>Tính phí đến</th>
                                             <th>Thời gian sử dụng</th>
-                                            <th>Giá/Tháng</th>
+                                            <th>Phí/Tháng</th>
                                             <th>Trạng thái</th>
-                                            <th class="text-right"> Chi phí</th>
+                                            <th class="text-right"> Tổng Chi phí</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -289,23 +298,21 @@ $uid = getCurrentUserId();
                                         @endphp
                                         <tr @if($isNewInstance) class="new-instance" @endif data-instance-id="{{ $row['instance_id'] }}" data-created-at="{{ $row['created_at'] }}" data-timestamp="{{ $row['timestamp'] }}">
                                             <td class="stt {{ $isCrossed ? 'row-crossed' : '' }}">{{ $loop->iteration }}</td>
-                                            <td class="text-center info-icon {{ $isCrossed ? 'row-crossed' : '' }}">
-                                                <a href="{{ route('vps.billing.detail', $row['usage_id']) }}" class="btn btn-xs btn-info" title="View detailed calculation">
-                                                    <i class="fas fa-calculator"></i>
-                                                </a>
-                                            </td>
                                             <td class="instance-id {{ $isCrossed ? 'row-crossed' : '' }}"><span class="badge1 badge-secondary1">{{ $row['instance_id'] }}</span></td>
                                             <td class="name {{ $isCrossed ? 'row-crossed' : '' }}">
-                                                {{ $row['instance_name'] }}<br>
+                                                <a href="/member/vps-instance/edit/{{$row['instance_id']}}" target="_blank" data-code-pos='ppp17720149046371'>
+                                                {{ $row['instance_name'] }}
+                                                </a>
+                                                <br>
                                                 <small1>
-                                                    <span class="badge {{ $cpuChanged ? 'badge-danger' : 'badge-info' }}">{{ $row['cpu'] }} Core </span>
-                                                    <span class="badge {{ $ramChanged ? 'badge-danger' : 'badge-info' }}">{{ $row['ram_gb'] }} GB</span>
-                                                    <span class="badge {{ $diskChanged ? 'badge-danger' : 'badge-info' }}">{{ $row['disk_gb'] }} GB</span>
-                                                    <span class="badge {{ $ipChanged ? 'badge-danger' : 'badge-info' }}">{{ $row['ip_count'] }}IP</span>
+                                                    <span class="badge {{ $cpuChanged ? 'badge-danger' : 'badge-secondary' }}">{{ $row['cpu'] }} Core </span>
+                                                    <span class="badge {{ $ramChanged ? 'badge-danger' : 'badge-secondary' }}">{{ $row['ram_gb'] }} GB</span>
+                                                    <span class="badge {{ $diskChanged ? 'badge-danger' : 'badge-secondary' }}">{{ $row['disk_gb'] }} GB</span>
+                                                    <span class="badge {{ $ipChanged ? 'badge-danger' : 'badge-secondary' }}">{{ $row['ip_count'] }} IP</span>
                                                 </small1>
                                             </td>
                                             <td class="list-ip-address {{ $isCrossed ? 'row-crossed' : '' }}">
-                                                <small>{{ $row['list_ip_address'] }}</small>
+                                                <small>{!!  str_replace( ",", "<br>", $row['list_ip_address']) !!}</small>
                                             </td>
                                             <td class="last-billing-start-at {{ $isCrossed ? 'row-crossed' : '' }}">
                                                 @if($row['last_billing_start_at'])
@@ -359,7 +366,7 @@ $uid = getCurrentUserId();
                                     </tbody>
                                     <tfoot class="bg-light">
                                         <tr>
-                                            <th colspan="8" class="text-right" title="Chỉ lấy các Cấu hình cuối cùng nếu có thay đổi">TỔNG CỘNG:</th>
+                                            <th colspan="7" class="text-right" title="Chỉ lấy các Cấu hình cuối cùng nếu có thay đổi">TỔNG CỘNG:</th>
                                             <th class="text-left">
                                                 <h4 class="mb-0" title="Chỉ lấy các Cấu hình cuối cùng nếu có thay đổi">
                                                     <span class="badge badge-success" style="font-size: 16px; padding: 8px 12px;">{{ number_format($totalPriceMonth, 0, $dec_separator, $thousands_separator) }}K <small>/Tháng</small></span>
@@ -378,7 +385,7 @@ $uid = getCurrentUserId();
                 </div>
 
                 <!-- Report Notes -->
-                <div class="row">
+                <div class="row d-none">
                     <div class="col-12">
                         <div class="callout callout-info">
                             <h5><i class="fas fa-info-circle"></i> Report Notes</h5>
@@ -391,6 +398,15 @@ $uid = getCurrentUserId();
                                 <li>Generated at: <strong>{{ $generated_at->format('Y-m-d H:i:s') }}</strong></li>
                             </ul>
                         </div>
+                    </div>
+                </div>
+
+                <!-- Export PDF Button -->
+                <div class="row mt-4 mb-3">
+                    <div class="col-12">
+                        <button type="button" class="btn btn-danger" id="exportPdfBtn">
+                            <i class="fas fa-file-pdf mr-2"></i> Export PDF
+                        </button>
                     </div>
                 </div>
 
@@ -433,7 +449,7 @@ $uid = getCurrentUserId();
                     // Compare and color changed specs on PREVIOUS row (older config)
                     if (currentSpecs.cpu !== previousSpecs.cpu && previousBadges[0]) {
                         previousBadges[0].classList.remove('badge-info');
-                        previousBadges[0].classList.add('badge-success');
+                        previousBadges[0].classList.add('badge-warning');
                     }
                     if (currentSpecs.ram !== previousSpecs.ram && previousBadges[1]) {
                         previousBadges[1].classList.remove('badge-info');
@@ -682,5 +698,43 @@ $uid = getCurrentUserId();
 
         console.log('✅ All tables processed!');
     }, 500); // Wait 500ms for other scripts to finish
+
+    // Export to PDF using html2pdf
+    document.addEventListener('DOMContentLoaded', function() {
+        const exportPdfBtn = document.getElementById('exportPdfBtn');
+        if (exportPdfBtn) {
+            exportPdfBtn.addEventListener('click', function() {
+                exportToPdf();
+            });
+        }
+    });
+
+    function exportToPdf() {
+        // Get content to export
+        const element = document.querySelector('.content-wrapper');
+        const fileName = `vps-billing-${new Date().toISOString().split('T')[0]}.pdf`;
+
+        // Options for html2pdf
+        const options = {
+            margin: 10,
+            filename: fileName,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { orientation: 'landscape', unit: 'mm', format: 'a4' }
+        };
+
+        // Check if html2pdf library is loaded
+        if (typeof html2pdf === 'undefined') {
+            // Load library dynamically
+            const script = document.createElement('script');
+            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
+            script.onload = function() {
+                html2pdf().set(options).from(element).save();
+            };
+            document.head.appendChild(script);
+        } else {
+            html2pdf().set(options).from(element).save();
+        }
+    }
     </script>
 @endsection

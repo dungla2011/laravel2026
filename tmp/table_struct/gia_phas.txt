@@ -1,0 +1,52 @@
+-- Table: gia_phas
+-- Generated: 2026-02-25 21:42:00
+
++-----------------------------+---------------+------+-----+---------------------+-------------------------------+
+| Field                       | Type          | Null | Key | Default             | Extra                         |
++-----------------------------+---------------+------+-----+---------------------+-------------------------------+
+| id                          | bigint(20)    | NO   | PRI |                     | auto_increment                |
+| old_id                      | bigint(20)    | YES  | MUL |                     |                               |
+| id__                        | varchar(32)   | YES  | UNI |                     |                               |
+| parent_id                   | bigint(20)    | YES  | MUL | 0                   |                               |
+| old_parent_id               | bigint(20)    | YES  | MUL | 0                   |                               |
+| created_at                  | timestamp     | YES  | MUL | current_timestamp() |                               |
+| updated_at                  | timestamp     | YES  |     |                     | on update current_timestamp() |
+| deleted_at                  | timestamp     | YES  | MUL |                     |                               |
+| name                        | varchar(256)  | NO   |     |                     |                               |
+| title                       | varchar(64)   | YES  |     |                     |                               |
+| home_address                | varchar(64)   | YES  |     |                     |                               |
+| summary                     | text          | YES  |     |                     |                               |
+| content                     | text          | YES  |     |                     |                               |
+| orders                      | bigint(20)    | YES  | MUL | 0                   |                               |
+| child_type                  | smallint(6)   | YES  |     |                     |                               |
+| gender                      | smallint(6)   | YES  |     | 1                   |                               |
+| birthday                    | varchar(30)   | YES  |     |                     |                               |
+| date_of_death               | varchar(32)   | YES  |     |                     |                               |
+| place_birthday              | varchar(64)   | YES  |     |                     |                               |
+| place_heaven                | varchar(64)   | YES  |     |                     |                               |
+| child_of_second_married     | bigint(20)    | YES  | MUL |                     |                               |
+| old_child_of_second_married | bigint(20)    | YES  | MUL |                     |                               |
+| status                      | tinyint(4)    | YES  |     | 1                   |                               |
+| last_name                   | varchar(128)  | YES  |     |                     |                               |
+| sur_name                    | varchar(128)  | YES  |     |                     |                               |
+| married_with                | bigint(20)    | YES  | MUL |                     |                               |
+| old_married_with            | bigint(20)    | YES  | MUL |                     |                               |
+| image_list                  | varchar(1024) | YES  |     |                     |                               |
+| old_image_list              | varchar(1024) | YES  | MUL |                     |                               |
+| user_id                     | bigint(20)    | YES  | MUL |                     |                               |
+| old_user_id                 | bigint(20)    | YES  | MUL |                     |                               |
+| tmp_old_id                  | bigint(20)    | YES  | MUL |                     |                               |
+| tmp_old_pid                 | bigint(20)    | YES  |     |                     |                               |
+| tmp_old_obj_json            | text          | YES  |     |                     |                               |
+| phone_number                | varchar(32)   | YES  |     |                     |                               |
+| email_address               | varchar(64)   | YES  |     |                     |                               |
+| col_fix                     | mediumint(9)  | YES  |     |                     |                               |
+| row_fix                     | mediumint(9)  | YES  |     |                     |                               |
+| link_remote                 | text          | YES  |     |                     |                               |
+| set_nu_dinh                 | tinyint(1)    | YES  |     |                     |                               |
+| list_child_x_y              | mediumtext    | YES  |     |                     |                               |
+| old_list_child_x_y          | mediumtext    | YES  | MUL |                     |                               |
+| stepchild_of                | bigint(20)    | YES  |     |                     |                               |
++-----------------------------+---------------+------+-----+---------------------+-------------------------------+
+
+43 columns

@@ -13,6 +13,14 @@ class VpsUsage extends ModelGlxBase
     protected $guarded = [];
 
     /**
+     * Relationship: VpsUsage belongs to VpsInstance
+     */
+    public function instance()
+    {
+        return $this->belongsTo(VpsInstance::class, 'instance_id', 'id');
+    }
+
+    /**
      * Calculate fee with formula breakdown
      * 
      * @param string|null $fromTime Thời gian bắt đầu tính phí (nếu có)

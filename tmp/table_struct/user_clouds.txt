@@ -1,0 +1,27 @@
+-- Table: user_clouds
+-- Generated: 2026-02-25 21:42:19
+
++----------------------+--------------+------+-----+---------------+----------------+
+| Field                | Type         | Null | Key | Default       | Extra          |
++----------------------+--------------+------+-----+---------------+----------------+
+| id                   | bigint(20)   | NO   | PRI |               | auto_increment |
+| old_id               | bigint(20)   | YES  | MUL |               |                |
+| user_id              | bigint(20)   | NO   | UNI |               |                |
+| old_user_id          | bigint(20)   | YES  | MUL |               |                |
+| quota_size           | bigint(20)   | YES  |     |               |                |
+| quota_file           | bigint(20)   | YES  |     |               |                |
+| updated_at           | timestamp    | YES  |     |               |                |
+| deleted_at           | timestamp    | YES  | MUL |               |                |
+| created_at           | timestamp    | YES  |     |               |                |
+| location_store_file  | varchar(256) | YES  |     |               |                |
+| glx_bytes_in_used    | bigint(20)   | YES  |     | 0             |                |
+| glx_files_in_used    | bigint(20)   | YES  |     | 0             |                |
+| quota_daily_download | bigint(20)   | YES  |     |               |                |
+| quota_limit_data     | bigint(20)   | YES  |     |               |                |
+| glx_download_his     | text         | YES  |     |               |                |
+| glx_shell            | varchar(50)  | YES  |     | /sbin/nologin |                |
+| glx_uid              | bigint(20)   | YES  |     | 48            |                |
+| glx_gid              | bigint(20)   | YES  |     | 48            |                |
++----------------------+--------------+------+-----+---------------+----------------+
+
+18 columns

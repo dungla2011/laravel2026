@@ -53,9 +53,12 @@ class VpsBillingController extends Controller
      */
     public function downloadPdf(Request $request)
     {
-        // Get user by email or ID
-        $email = $request->get('email', 'khanhdh389@gmail.com');
-        $user = User::where('email', $email)->firstOrFail();
+        // Get current user
+        $user = getCurrentUserId(1);
+        if (!$user) {
+            bl("Login please!");
+            return redirect()->route('login');
+        }
 
         // Generate PDF
         $options = [];

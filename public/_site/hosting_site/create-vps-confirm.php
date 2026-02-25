@@ -202,7 +202,7 @@ if(!isAdminACP_()){
 
 // Get user ID
 $uid = getCurrentUserId();
-
+$email = getCurrentUserEmail();
 if (!$uid) {
     http_response_code(401);
     die(json_encode(['success' => false, 'message' => 'User not authenticated']));
@@ -436,10 +436,10 @@ try {
     // Generate instance name
     // $instanceName = 'vps-' . $uid . '-' . time();
 
-    $instanceName = $osSlug .'_' . date('Y.m.d-H.i.s');
+    $emailFirst = explode("@", $email)[0];
+    $instanceName = $osSlug .'_' . date("Ymd-His") ."-". substr($emailFirst, 0,20);
 
     //Lấy tên trong
-
 
     // Calculate price per minute from monthly price
     $pricePerMinute = $price / (30 * 24 * 60);

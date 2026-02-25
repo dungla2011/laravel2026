@@ -1,0 +1,43 @@
+-- Table: event_user_infos
+-- Generated: 2026-02-25 21:41:58
+
++----------------+---------------+------+-----+---------------------+-------------------------------+
+| Field          | Type          | Null | Key | Default             | Extra                         |
++----------------+---------------+------+-----+---------------------+-------------------------------+
+| id             | bigint(20)    | NO   | PRI |                     | auto_increment                |
+| old_id         | bigint(20)    | YES  | MUL |                     |                               |
+| name           | varchar(256)  | YES  |     |                     |                               |
+| user_id        | bigint(20)    | YES  | MUL |                     |                               |
+| old_user_id    | bigint(20)    | YES  | MUL |                     |                               |
+| status         | bigint(20)    | YES  | MUL |                     |                               |
+| created_at     | timestamp     | YES  |     | current_timestamp() |                               |
+| updated_at     | timestamp     | YES  |     |                     | on update current_timestamp() |
+| deleted_at     | timestamp     | YES  |     |                     |                               |
+| image_list     | varchar(256)  | YES  |     |                     |                               |
+| old_image_list | varchar(256)  | YES  | MUL |                     |                               |
+| log            | text          | YES  |     |                     |                               |
+| parent_id      | bigint(20)    | YES  | MUL |                     |                               |
+| old_parent_id  | bigint(20)    | YES  | MUL |                     |                               |
+| parent_extra   | varchar(256)  | YES  |     |                     |                               |
+| parent_all     | varchar(256)  | YES  |     |                     |                               |
+| old_parent_all | varchar(256)  | YES  | MUL |                     |                               |
+| title          | varchar(64)   | YES  |     |                     |                               |
+| first_name     | varchar(64)   | YES  |     |                     |                               |
+| last_name      | varchar(64)   | YES  |     |                     |                               |
+| email          | varchar(64)   | NO   | MUL |                     |                               |
+| phone          | varchar(16)   | YES  | MUL |                     |                               |
+| address        | varchar(128)  | YES  |     |                     |                               |
+| organization   | text          | YES  |     |                     |                               |
+| designation    | varchar(128)  | YES  |     |                     |                               |
+| language       | varchar(3)    | YES  |     | vi                  |                               |
+| extra_info1    | varchar(1024) | YES  |     |                     |                               |
+| extra_info2    | varchar(1024) | YES  |     |                     |                               |
+| extra_info3    | varchar(1024) | YES  |     |                     |                               |
+| extra_info4    | varchar(256)  | YES  |     |                     |                               |
+| extra_info5    | varchar(256)  | YES  |     |                     |                               |
+| signature      | varchar(128)  | YES  |     |                     |                               |
+| note           | varchar(512)  | YES  |     |                     |                               |
+| gender         | smallint(6)   | YES  |     |                     |                               |
++----------------+---------------+------+-----+---------------------+-------------------------------+
+
+34 columns

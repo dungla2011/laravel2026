@@ -853,19 +853,17 @@ class='sl_option $field $objMeta->css_class' style='$objMeta->css;' data-field='
 //                                            if($joinSpan)
 //                                                $valueField = $joinSpan;
 
-                                            echo "<div data-pos='32453452345'  class='readonly_imgs'> $allNodeNameImg </div>";
+                                            echo "<div data-pos='324534522345'  class='readonly_imgs'> $allNodeNameImg </div>";
 
                                             if($isRichText){
-                                                echo "<div data-pos='32453452345'  class='_read_only_' data-type='rich_text' data-field='$field' style='border: 0px solid red' class='' id='edit_rich_text_$field'>$valueField</div>";
+                                                echo "<div data-pos='324534532345'  class='_read_only_' data-type='rich_text' data-field='$field' style='border: 0px solid red' class='' id='edit_rich_text_$field'>$valueField</div>";
                                             }
                                             elseif($isTextArea)
-                                                echo "<textarea data-pos='32453452345'  title='$fullDes / $field' readonly class='text_area_edit' >$valueField</textarea>";
+                                                echo "<textarea data-pos='324533452345'  title='$fullDes / $field' readonly class='text_area_edit' >$valueField</textarea>";
                                             else
-                                                echo "<div data-pos='32453452345' title='$fullDes / $field' class='one_item_edit'> $valueField $joinSpan </div>";
-
+                                                echo "<div data-pos='3245343352345' title='$fullDes / $field' class='one_item_edit'> $valueField  </div>"; //$joinSpan
 
                                            // $isTextArea = 1;
-
                                         }
 
 

@@ -1,0 +1,25 @@
+-- Table: quiz_choices
+-- Generated: 2026-02-25 21:42:11
+
++-----------------+--------------+------+-----+---------------------+-------------------------------+
+| Field           | Type         | Null | Key | Default             | Extra                         |
++-----------------+--------------+------+-----+---------------------+-------------------------------+
+| id              | bigint(20)   | NO   | PRI |                     | auto_increment                |
+| old_id          | bigint(20)   | YES  | MUL |                     |                               |
+| name            | varchar(256) | YES  |     |                     |                               |
+| value           | varchar(256) | YES  |     |                     |                               |
+| value_richtext  | text         | YES  |     |                     |                               |
+| question_id     | bigint(20)   | YES  | MUL |                     |                               |
+| is_right_choice | tinyint(4)   | YES  |     |                     |                               |
+| choice          | text         | YES  |     |                     |                               |
+| created_at      | timestamp    | YES  |     | current_timestamp() |                               |
+| updated_at      | timestamp    | YES  |     |                     | on update current_timestamp() |
+| deleted_at      | timestamp    | YES  |     |                     |                               |
+| image_list      | text         | YES  |     |                     |                               |
+| old_image_list  | text         | YES  | MUL |                     |                               |
+| note            | text         | YES  |     |                     |                               |
+| orders          | smallint(6)  | YES  |     |                     |                               |
+| enable          | tinyint(4)   | YES  |     |                     |                               |
++-----------------+--------------+------+-----+---------------------+-------------------------------+
+
+16 columns

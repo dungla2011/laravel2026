@@ -144,9 +144,10 @@ GetInvoice </button>
         $vatFormat = number_format($vat, 0, ',', '.');
 
         $str = '';
-        if(isAdminLrv_())
-            $str = "/var/www/html/public/_site/hosting_site/download-invoices.php";
+        if(isSupperAdmin_() && isAdminLrv_()) {
+            $str = "/var/www/html/public/_site/hosting_site/download-invoices.php <a href='/_site/hosting_site/list-invoices-from-api.php' target='_blank'> [LIST API] </a>";
 
+        }
         $text = cstring2::toTienVietNamString3($tt);
         echo " <div class='p-2 m-2 bg-light' style='font-size: 90%; border: 1px solid #ccc'> Tổng đã thanh toán: <b> $notVATFormat + $vatFormat (VAT) = $ttFormat VND </b> ($text) <br> $str </div>";
 
@@ -155,6 +156,26 @@ GetInvoice </button>
 
 
 
+<?php
+    }
+
+    public function extraCssInclude()
+    {
+?>
+
+        <style>
+            .one_link_ {
+                display:block;
+                margin: 3px 10px!important;
+            }
+            .divTable2Cell > textarea {
+                min-width: 300px;
+                min-height: 70px!important;
+            }
+            input.input_value_to_post.image_list {
+                display: none;
+            }
+        </style>
 <?php
     }
 

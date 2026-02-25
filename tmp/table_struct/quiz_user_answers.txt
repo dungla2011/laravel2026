@@ -1,0 +1,22 @@
+-- Table: quiz_user_answers
+-- Generated: 2026-02-25 21:42:13
+
++-------------+------------+------+-----+---------------------+-------------------------------+
+| Field       | Type       | Null | Key | Default             | Extra                         |
++-------------+------------+------+-----+---------------------+-------------------------------+
+| id          | bigint(20) | NO   | PRI |                     | auto_increment                |
+| old_id      | bigint(20) | YES  | MUL |                     |                               |
+| question_id | bigint(20) | YES  | MUL |                     |                               |
+| test_id     | bigint(20) | YES  | MUL |                     |                               |
+| choice_id   | bigint(20) | YES  |     |                     |                               |
+| explains    | text       | YES  |     |                     |                               |
+| is_right    | tinyint(4) | YES  |     |                     |                               |
+| user_id     | bigint(20) | YES  | MUL |                     |                               |
+| old_user_id | bigint(20) | YES  | MUL |                     |                               |
+| created_at  | timestamp  | YES  |     | current_timestamp() |                               |
+| updated_at  | timestamp  | YES  |     |                     | on update current_timestamp() |
+| deleted_at  | timestamp  | YES  |     |                     |                               |
+| note        | text       | YES  |     |                     |                               |
++-------------+------------+------+-----+---------------------+-------------------------------+
+
+13 columns

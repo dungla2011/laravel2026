@@ -1,0 +1,21 @@
+-- Table: media_cats
+-- Generated: 2026-02-25 21:42:01
+
++----------------+--------------+------+-----+---------------------+-------------------------------+
+| Field          | Type         | Null | Key | Default             | Extra                         |
++----------------+--------------+------+-----+---------------------+-------------------------------+
+| id             | bigint(20)   | NO   | PRI |                     | auto_increment                |
+| old_id         | bigint(20)   | YES  | MUL |                     |                               |
+| name           | varchar(256) | YES  |     |                     |                               |
+| user_id        | bigint(20)   | YES  | MUL |                     |                               |
+| old_user_id    | bigint(20)   | YES  | MUL |                     |                               |
+| status         | bigint(20)   | YES  | MUL |                     |                               |
+| created_at     | timestamp    | YES  |     | current_timestamp() |                               |
+| updated_at     | timestamp    | YES  |     |                     | on update current_timestamp() |
+| deleted_at     | timestamp    | YES  |     |                     |                               |
+| image_list     | varchar(256) | YES  |     |                     |                               |
+| old_image_list | varchar(256) | YES  | MUL |                     |                               |
+| log            | text         | YES  |     |                     |                               |
++----------------+--------------+------+-----+---------------------+-------------------------------+
+
+12 columns

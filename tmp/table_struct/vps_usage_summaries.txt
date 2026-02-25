@@ -1,0 +1,21 @@
+-- Table: vps_usage_summaries
+-- Generated: 2026-02-25 21:42:21
+
++-----------------------+----------------------------------+------+-----+---------------------+-------------------------------+
+| Field                 | Type                             | Null | Key | Default             | Extra                         |
++-----------------------+----------------------------------+------+-----+---------------------+-------------------------------+
+| id                    | bigint(20) unsigned              | NO   | PRI |                     | auto_increment                |
+| user_id               | bigint(20)                       | YES  | MUL |                     |                               |
+| instance_id           | bigint(20)                       | NO   | MUL |                     |                               |
+| period_start          | datetime                         | NO   | MUL |                     |                               |
+| period_type           | enum('hourly','daily','monthly') | NO   | MUL | hourly              |                               |
+| total_records         | int(11)                          | NO   |     | 0                   |                               |
+| avg_price_per_minute  | decimal(18,8)                    | NO   |     | 0.00000000          |                               |
+| total_price           | decimal(18,2)                    | NO   |     | 0.00                |                               |
+| power_state           | varchar(32)                      | YES  |     |                     |                               |
+| avg_number_ip_address | int(11)                          | YES  |     | 0                   |                               |
+| created_at            | datetime                         | YES  |     | current_timestamp() |                               |
+| updated_at            | datetime                         | YES  |     | current_timestamp() | on update current_timestamp() |
++-----------------------+----------------------------------+------+-----+---------------------+-------------------------------+
+
+12 columns

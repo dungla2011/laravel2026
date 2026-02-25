@@ -1,0 +1,35 @@
+-- Table: block_uis
+-- Generated: 2026-02-25 21:41:50
+
++------------------------+---------------+------+-----+---------------------+-------------------------------+
+| Field                  | Type          | Null | Key | Default             | Extra                         |
++------------------------+---------------+------+-----+---------------------+-------------------------------+
+| id                     | bigint(20)    | NO   | PRI |                     | auto_increment                |
+| old_id                 | bigint(20)    | YES  | MUL |                     |                               |
+| name_bak               | varchar(255)  | YES  |     |                     |                               |
+| name                   | longtext      | YES  |     |                     |                               |
+| sname                  | varchar(128)  | YES  | UNI |                     |                               |
+| summary_bak            | text          | YES  |     |                     |                               |
+| summary                | longtext      | YES  |     |                     |                               |
+| summary2               | text          | YES  |     |                     |                               |
+| module_table           | varchar(255)  | YES  |     |                     |                               |
+| idModule               | varchar(1024) | YES  |     |                     |                               |
+| deleted_at             | timestamp     | YES  |     |                     |                               |
+| updated_at             | timestamp     | YES  |     |                     | on update current_timestamp() |
+| log                    | text          | YES  |     |                     |                               |
+| siteid                 | bigint(20)    | YES  |     |                     |                               |
+| extra_info_bak         | text          | YES  |     |                     |                               |
+| extra_info             | longtext      | YES  |     |                     |                               |
+| image_list             | varchar(1024) | YES  |     |                     |                               |
+| old_image_list         | varchar(1024) | YES  | MUL |                     |                               |
+| tags_list              | varchar(1024) | YES  |     |                     |                               |
+| created_at             | timestamp     | YES  |     | current_timestamp() |                               |
+| status                 | smallint(6)   | YES  |     | 1                   |                               |
+| content                | text          | YES  |     |                     |                               |
+| guide_admin            | text          | YES  |     |                     |                               |
+| extra_color_background | varchar(10)   | YES  |     |                     |                               |
+| extra_color_text       | varchar(10)   | YES  |     |                     |                               |
+| group_name             | varchar(32)   | YES  |     |                     |                               |
++------------------------+---------------+------+-----+---------------------+-------------------------------+
+
+26 columns

@@ -1,0 +1,28 @@
+-- Table: file_clouds
+-- Generated: 2026-02-25 21:41:59
+
++---------------+--------------+------+-----+---------------------+-------------------------------+
+| Field         | Type         | Null | Key | Default             | Extra                         |
++---------------+--------------+------+-----+---------------------+-------------------------------+
+| id            | bigint(20)   | NO   | PRI |                     |                               |
+| old_id        | bigint(20)   | YES  | MUL |                     |                               |
+| name          | varchar(512) | NO   |     |                     |                               |
+| size          | bigint(20)   | YES  |     |                     |                               |
+| file_path     | varchar(256) | YES  |     |                     |                               |
+| md5           | varchar(32)  | YES  | MUL |                     |                               |
+| user_id       | bigint(20)   | YES  | MUL |                     |                               |
+| old_user_id   | bigint(20)   | YES  | MUL |                     |                               |
+| crc32         | varchar(16)  | YES  | MUL |                     |                               |
+| updated_at    | timestamp    | YES  |     |                     | on update current_timestamp() |
+| deleted_at    | timestamp    | YES  | MUL |                     |                               |
+| created_at    | timestamp    | YES  |     | current_timestamp() |                               |
+| location      | varchar(256) | YES  |     |                     |                               |
+| mime          | varchar(128) | YES  |     |                     |                               |
+| server1       | varchar(128) | YES  |     |                     |                               |
+| location1     | varchar(128) | YES  |     |                     |                               |
+| checksum      | varchar(64)  | YES  |     |                     |                               |
+| log           | text         | YES  |     |                     |                               |
+| last_save_doc | timestamp    | YES  |     |                     |                               |
++---------------+--------------+------+-----+---------------------+-------------------------------+
+
+19 columns

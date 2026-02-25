@@ -357,7 +357,7 @@ def create_vps_thread(vps_id, init_os_id, vps_name):
         
         try:
             with conn.cursor() as cursor:
-                sql = "SELECT id, vm_name FROM vps_os_versions WHERE id = %s"
+                sql = "SELECT id, vm_name FROM vps_os_versions WHERE id = %s AND is_active = 1"
                 cursor.execute(sql, (init_os_id,))
                 os_info = cursor.fetchone()
             
@@ -466,7 +466,7 @@ def create_vps_thread(vps_id, init_os_id, vps_name):
             if conn:
                 try:
                     with conn.cursor() as cursor:
-                        sql = "SELECT cpu, ram_gb, disk_gb FROM vps_instances WHERE id = %s"
+                        sql = "SELECT cpu, ram_gb, disk_gb FROM vps_instances WHERE id = %s AND deleted_at IS NULL"
                         cursor.execute(sql, (vps_id,))
                         vps_hw = cursor.fetchone()
                 finally:
@@ -621,7 +621,7 @@ def get_pending_vps_creations():
     
     try:
         with conn.cursor() as cursor:
-            sql = "SELECT * FROM vps_instances WHERE create_status = %s"
+            sql = "SELECT * FROM vps_instances WHERE create_status = %s AND deleted_at IS NULL"
             cursor.execute(sql, ('vps_new_create',))
             return cursor.fetchall()
     except Exception as e:

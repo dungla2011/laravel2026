@@ -1,0 +1,35 @@
+-- Table: order_ships
+-- Generated: 2026-02-25 21:42:08
+
+CREATE TABLE `order_ships` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `old_id` bigint(20) DEFAULT NULL,
+  `fee` bigint(20) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp(),
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `user_id` bigint(20) DEFAULT NULL,
+  `old_user_id` bigint(20) DEFAULT NULL,
+  `vendor_id` bigint(20) DEFAULT NULL,
+  `order_id` bigint(20) NOT NULL,
+  `old_order_id` bigint(20) DEFAULT NULL,
+  `remote_tracking_id` varchar(30) DEFAULT NULL,
+  `status` bigint(20) DEFAULT NULL,
+  `log` text DEFAULT NULL,
+  `pick_time` timestamp NULL DEFAULT NULL,
+  `delive_time` timestamp NULL DEFAULT NULL,
+  `remote_label` varchar(64) DEFAULT NULL,
+  `json_send` text DEFAULT NULL,
+  `json_get` text DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `vendor and id` (`vendor_id`,`remote_label`),
+  KEY `order_ships_old_id_index` (`old_id`),
+  KEY `order_ships_user_id_index` (`user_id`),
+  KEY `order_ships_old_user_id_index` (`old_user_id`),
+  KEY `order_ships_vendor_id_index` (`vendor_id`),
+  KEY `order_ships_order_id_index` (`order_id`),
+  KEY `order_ships_old_order_id_index` (`old_order_id`),
+  KEY `order_ships_remote_tracking_id_index` (`remote_tracking_id`),
+  KEY `order_ships_status_index` (`status`),
+  KEY `order_ships_remote_label_index` (`remote_label`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

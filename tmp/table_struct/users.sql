@@ -1,0 +1,35 @@
+-- Table: users
+-- Generated: 2026-02-25 21:42:19
+
+CREATE TABLE `users` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `old_id` bigint(20) unsigned DEFAULT NULL,
+  `id__` varchar(32) DEFAULT NULL,
+  `username` varchar(255) DEFAULT NULL,
+  `password` varchar(255) DEFAULT NULL,
+  `email` varchar(255) NOT NULL,
+  `phone_number` bigint(20) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `is_admin` bigint(20) DEFAULT 0,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `token_user` varchar(255) DEFAULT NULL,
+  `site_id` bigint(20) DEFAULT 0,
+  `name` varchar(128) DEFAULT NULL,
+  `remember_token` varchar(100) DEFAULT NULL,
+  `email_active_at` timestamp NULL DEFAULT NULL,
+  `reg_str` varchar(256) DEFAULT NULL,
+  `log` text DEFAULT NULL,
+  `reset_pw` varchar(128) DEFAULT NULL,
+  `avatar` varchar(128) DEFAULT NULL,
+  `language` varchar(3) DEFAULT 'en',
+  `old_uid` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `users_email_unique` (`email`),
+  UNIQUE KEY `users_id___unique` (`id__`),
+  KEY `users_old_id_index` (`old_id`),
+  KEY `users_token_user_index` (`token_user`),
+  KEY `users_reg_str_index` (`reg_str`),
+  KEY `users_reset_pw_index` (`reset_pw`),
+  KEY `old_uid` (`old_uid`)
+) ENGINE=InnoDB AUTO_INCREMENT=12505980518269489 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

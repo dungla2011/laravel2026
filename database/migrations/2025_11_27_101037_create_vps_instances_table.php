@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('vps_instances', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('name', 64);
+            $table->string('name', 128);
             $table->smallInteger('status')->nullable()->default(1);
             $table->bigInteger('user_id')->nullable()->index();
             $table->bigInteger('plan_id')->nullable()->index();

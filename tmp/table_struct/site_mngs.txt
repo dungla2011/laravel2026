@@ -1,0 +1,72 @@
+-- Table: site_mngs
+-- Generated: 2026-02-25 21:42:14
+
++-------------------------------+---------------+------+-----+--------------------------------------------------------------------------+-------------------------------+
+| Field                         | Type          | Null | Key | Default                                                                  | Extra                         |
++-------------------------------+---------------+------+-----+--------------------------------------------------------------------------+-------------------------------+
+| id                            | bigint(20)    | NO   | PRI |                                                                          | auto_increment                |
+| old_id                        | bigint(20)    | YES  | MUL |                                                                          |                               |
+| userid                        | bigint(20)    | YES  |     |                                                                          |                               |
+| domain                        | varchar(128)  | YES  | UNI |                                                                          |                               |
+| domain1                       | varchar(100)  | YES  | MUL |                                                                          |                               |
+| domain2                       | varchar(100)  | YES  | MUL |                                                                          |                               |
+| domain3                       | varchar(50)   | YES  |     |                                                                          |                               |
+| domain4                       | varchar(50)   | YES  |     |                                                                          |                               |
+| domain5                       | varchar(50)   | YES  |     |                                                                          |                               |
+| templateName                  | varchar(100)  | YES  |     | default_news                                                             |                               |
+| MEMBER_APP_NAME               | varchar(50)   | YES  |     | DEFAULT NAME                                                             |                               |
+| logo_image                    | varchar(255)  | YES  |     |                                                                          |                               |
+| logo_image2                   | varchar(1024) | YES  |     |                                                                          |                               |
+| logo_image3                   | varchar(1024) | YES  |     |                                                                          |                               |
+| logo_text                     | varchar(30)   | YES  |     |                                                                          |                               |
+| color1                        | varchar(12)   | YES  |     |                                                                          |                               |
+| color2                        | varchar(12)   | YES  |     |                                                                          |                               |
+| color3                        | varchar(12)   | YES  |     |                                                                          |                               |
+| metaTitle                     | text          | YES  |     |                                                                          |                               |
+| metaTitleEn                   | text          | YES  |     |                                                                          |                               |
+| metaDescription               | text          | YES  |     |                                                                          |                               |
+| metaKeyword                   | text          | YES  |     |                                                                          |                               |
+| metaHeader                    | text          | YES  |     |                                                                          |                               |
+| FACEBOOK_APP_ID               | varchar(200)  | YES  |     | 1842535416029056                                                         |                               |
+| FACEBOOK_APP_SECRET           | varchar(200)  | YES  |     | 639330ee1b76aea59a5edab7ed3e171e                                         |                               |
+| GOOGLE_OAUTH2_CLIENT_ID       | varchar(200)  | YES  |     | 211733424826-d7dns77hrghn70tugmlbo7p15ugfed4m.apps.googleusercontent.com |                               |
+| GOOGLE_OAUTH2_CLIENT_SECRET   | varchar(200)  | YES  |     | BxHtGddkUIqQKPyEb957AjvY                                                 |                               |
+| GOOGLE_SITE_VERIFICATION_CODE | varchar(256)  | YES  |     |                                                                          |                               |
+| google_analytics_code         | text          | YES  |     |                                                                          |                               |
+| language                      | varchar(3)    | YES  |     |                                                                          |                               |
+| siteid                        | bigint(20)    | YES  |     |                                                                          |                               |
+| admin_email                   | varchar(128)  | YES  |     |                                                                          |                               |
+| admin_phone_support           | varchar(20)   | YES  |     |                                                                          |                               |
+| admin_name                    | varchar(255)  | YES  |     |                                                                          |                               |
+| address1                      | varchar(1024) | YES  |     |                                                                          |                               |
+| address2                      | text          | YES  |     |                                                                          |                               |
+| cache_time_minute             | bigint(20)    | YES  |     | 0                                                                        |                               |
+| cache_disable_to_time         | bigint(20)    | YES  |     | 0                                                                        |                               |
+| useMongo                      | smallint(6)   | NO   |     | 0                                                                        |                               |
+| not_found_image_default       | varchar(512)  | YES  |     |                                                                          |                               |
+| facebook_message_appid        | varchar(30)   | YES  |     |                                                                          |                               |
+| facebook_message_link         | varchar(255)  | YES  |     |                                                                          |                               |
+| og_image_default              | varchar(255)  | YES  |     |                                                                          |                               |
+| maintain_text                 | text          | YES  |     |                                                                          |                               |
+| remarketting                  | text          | YES  |     |                                                                          |                               |
+| livechat                      | text          | YES  |     |                                                                          |                               |
+| facebook_pixel                | text          | YES  |     |                                                                          |                               |
+| google_analytics_code2        | text          | YES  |     |                                                                          |                               |
+| metaTitle_en                  | varchar(255)  | YES  |     |                                                                          |                               |
+| metaTitle_jp                  | varchar(255)  | YES  |     |                                                                          |                               |
+| metaDescription_en            | varchar(512)  | YES  |     |                                                                          |                               |
+| metaDescription_jp            | varchar(512)  | YES  |     |                                                                          |                               |
+| metaKeyword_en                | varchar(512)  | YES  |     |                                                                          |                               |
+| metaKeyword_jp                | varchar(512)  | YES  |     |                                                                          |                               |
+| encode_id1                    | smallint(6)   | YES  |     |                                                                          |                               |
+| encode_id2                    | smallint(6)   | YES  |     |                                                                          |                               |
+| useMetaReserveOfData          | bigint(20)    | YES  |     |                                                                          |                               |
+| useMetaReserveOfNews          | bigint(20)    | YES  |     |                                                                          |                               |
+| maxSizeUploadWebMB            | bigint(20)    | YES  |     | 10                                                                       |                               |
+| created_at                    | timestamp     | YES  |     | current_timestamp()                                                      |                               |
+| updated_at                    | timestamp     | YES  |     |                                                                          | on update current_timestamp() |
+| deleted_at                    | bigint(20)    | YES  |     |                                                                          |                               |
+| site_code                     | varchar(32)   | YES  |     |                                                                          |                               |
++-------------------------------+---------------+------+-----+--------------------------------------------------------------------------+-------------------------------+
+
+63 columns

@@ -1,0 +1,25 @@
+-- Table: tmp_download_sessions
+-- Generated: 2026-02-25 21:42:17
+
++------------------------+---------------+------+-----+---------------------+-------------------------------+
+| Field                  | Type          | Null | Key | Default             | Extra                         |
++------------------------+---------------+------+-----+---------------------+-------------------------------+
+| id                     | bigint(20)    | NO   | PRI |                     | auto_increment                |
+| old_id                 | bigint(20)    | YES  | MUL |                     |                               |
+| user_id                | bigint(20)    | YES  | MUL |                     |                               |
+| old_user_id            | bigint(20)    | YES  | MUL |                     |                               |
+| token                  | varchar(255)  | YES  | MUL |                     |                               |
+| fid                    | bigint(20)    | YES  | MUL |                     |                               |
+| created_at             | timestamp     | YES  |     | current_timestamp() |                               |
+| updated_at             | timestamp     | YES  |     |                     | on update current_timestamp() |
+| done_bytes             | bigint(20)    | YES  |     | 0                   |                               |
+| ip_address             | varchar(64)   | YES  |     |                     |                               |
+| ip_download_list       | varchar(4096) | YES  |     |                     |                               |
+| file_size              | bigint(20)    | YES  |     |                     |                               |
+| deleted_at             | timestamp     | YES  | MUL |                     |                               |
+| time_begin_update_byte | timestamp     | YES  |     |                     |                               |
+| time_end_update_byte   | timestamp     | YES  |     |                     |                               |
+| logs                   | varchar(4096) | YES  |     |                     |                               |
++------------------------+---------------+------+-----+---------------------+-------------------------------+
+
+16 columns

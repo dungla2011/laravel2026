@@ -1,22 +1,26 @@
 -- Table: user_recharges
--- Generated: 2026-01-10 15:41:23
+-- Generated: 2026-02-25 21:42:19
 
-+------------------+---------------------+------+-----+---------------+----------------+
-| Field            | Type                | Null | Key | Default       | Extra          |
-+------------------+---------------------+------+-----+---------------+----------------+
-| id               | bigint(20) unsigned | NO   | PRI |               | auto_increment |
-| user_id          | bigint(20)          | NO   | MUL |               |                |
-| amount           | decimal(15,2)       | NO   |     |               |                |
-| payment_method   | varchar(255)        | NO   |     | bank_transfer |                |
-| transaction_code | varchar(255)        | YES  | UNI |               |                |
-| status           | varchar(255)        | NO   | MUL | pending       |                |
-| paid_at          | timestamp           | YES  | MUL |               |                |
-| completed_at     | timestamp           | YES  |     |               |                |
-| expired_at       | timestamp           | YES  |     |               |                |
-| gateway_response | longtext            | YES  |     |               |                |
-| ip_address       | varchar(255)        | YES  |     |               |                |
-| created_at       | timestamp           | YES  | MUL |               |                |
-| updated_at       | timestamp           | YES  |     |               |                |
-+------------------+---------------------+------+-----+---------------+----------------+
++------------------+---------------+------+-----+---------------+----------------+
+| Field            | Type          | Null | Key | Default       | Extra          |
++------------------+---------------+------+-----+---------------+----------------+
+| id               | bigint(11)    | NO   | PRI |               | auto_increment |
+| user_id          | bigint(20)    | NO   | MUL |               |                |
+| amount           | decimal(15,2) | NO   |     |               |                |
+| payment_method   | varchar(255)  | NO   |     | bank_transfer |                |
+| transaction_code | varchar(255)  | YES  | UNI |               |                |
+| mrc_order_id     | varchar(64)   | YES  | UNI |               |                |
+| status           | varchar(255)  | NO   | MUL | pending       |                |
+| paid_at          | timestamp     | YES  | MUL |               |                |
+| completed_at     | timestamp     | YES  |     |               |                |
+| expired_at       | timestamp     | YES  |     |               |                |
+| gateway_response | longtext      | YES  |     |               |                |
+| ip_address       | varchar(255)  | YES  |     |               |                |
+| created_at       | timestamp     | YES  | MUL |               |                |
+| updated_at       | timestamp     | YES  |     |               |                |
+| image_list       | varchar(1024) | YES  |     |               |                |
+| log              | text          | YES  |     |               |                |
+| invoice_number   | varchar(64)   | YES  |     |               |                |
++------------------+---------------+------+-----+---------------+----------------+
 
-13 columns
+17 columns

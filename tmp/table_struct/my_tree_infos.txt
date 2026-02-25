@@ -1,0 +1,60 @@
+-- Table: my_tree_infos
+-- Generated: 2026-02-25 21:42:06
+
++----------------------------+--------------+------+-----+---------------------+-------------------------------+
+| Field                      | Type         | Null | Key | Default             | Extra                         |
++----------------------------+--------------+------+-----+---------------------+-------------------------------+
+| id                         | bigint(20)   | NO   | PRI |                     | auto_increment                |
+| old_id                     | bigint(20)   | YES  | MUL |                     |                               |
+| id__                       | varchar(32)  | YES  | UNI |                     |                               |
+| name                       | varchar(256) | NO   |     |                     |                               |
+| title                      | varchar(256) | YES  |     |                     |                               |
+| created_at                 | timestamp    | YES  | MUL | current_timestamp() |                               |
+| updated_at                 | timestamp    | YES  |     |                     | on update current_timestamp() |
+| deleted_at                 | timestamp    | YES  | MUL |                     |                               |
+| user_id                    | bigint(20)   | YES  | MUL |                     |                               |
+| old_user_id                | bigint(20)   | YES  | MUL |                     |                               |
+| tree_id                    | bigint(20)   | YES  | UNI |                     |                               |
+| old_tree_id                | bigint(20)   | YES  | MUL |                     |                               |
+| status                     | tinyint(4)   | YES  |     |                     |                               |
+| image_list                 | varchar(64)  | YES  |     |                     |                               |
+| old_image_list             | varchar(64)  | YES  | MUL |                     |                               |
+| color_name                 | varchar(12)  | YES  |     |                     |                               |
+| color_title                | varchar(12)  | YES  |     |                     |                               |
+| fontsize_name              | smallint(6)  | YES  |     |                     |                               |
+| fontsize_title             | smallint(6)  | YES  |     |                     |                               |
+| banner_name_margin_top     | smallint(6)  | YES  |     | 0                   |                               |
+| banner_name_margin_bottom  | smallint(6)  | YES  |     | 0                   |                               |
+| banner_title_margin_top    | smallint(6)  | YES  |     | 0                   |                               |
+| banner_title_margin_bottom | smallint(6)  | YES  |     | 0                   |                               |
+| member_background_img      | varchar(256) | YES  |     |                     |                               |
+| member_background_img2     | varchar(256) | YES  |     |                     |                               |
+| banner_width               | mediumint(9) | YES  |     |                     |                               |
+| banner_height              | mediumint(9) | YES  |     |                     |                               |
+| banner_name_bold           | varchar(20)  | YES  |     |                     |                               |
+| banner_name_italic         | varchar(20)  | YES  |     |                     |                               |
+| banner_title_bold          | varchar(20)  | YES  |     |                     |                               |
+| banner_title_italic        | varchar(20)  | YES  |     |                     |                               |
+| banner_title_curver        | mediumint(9) | YES  |     |                     |                               |
+| banner_name_curver         | mediumint(9) | YES  |     |                     |                               |
+| banner_text_shadow_name    | varchar(30)  | YES  |     |                     |                               |
+| banner_text_shadow_title   | varchar(30)  | YES  |     |                     |                               |
+| banner_margin_top          | smallint(6)  | YES  |     |                     |                               |
+| title_before_or_after_name | tinyint(4)   | YES  |     | 0                   |                               |
+| tree_nodes_xy              | mediumtext   | YES  |     |                     |                               |
+| old_tree_nodes_xy          | mediumtext   | YES  | MUL |                     |                               |
+| minX                       | bigint(20)   | YES  |     |                     |                               |
+| minY                       | bigint(20)   | YES  |     |                     |                               |
+| show_node_name_one         | tinyint(4)   | YES  |     | 1                   |                               |
+| show_node_title            | tinyint(4)   | YES  |     | 1                   |                               |
+| show_node_birthday_one     | tinyint(4)   | YES  |     | 1                   |                               |
+| show_node_date_of_death    | tinyint(4)   | YES  |     | 1                   |                               |
+| show_node_image            | tinyint(4)   | YES  |     | 1                   |                               |
+| node_width                 | smallint(6)  | YES  |     |                     |                               |
+| node_height                | smallint(6)  | YES  |     |                     |                               |
+| space_node_x               | smallint(6)  | YES  |     |                     |                               |
+| space_node_y               | smallint(6)  | YES  |     |                     |                               |
+| font_size_node             | smallint(6)  | YES  |     |                     |                               |
++----------------------------+--------------+------+-----+---------------------+-------------------------------+
+
+51 columns

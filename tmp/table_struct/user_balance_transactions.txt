@@ -1,0 +1,27 @@
+-- Table: user_balance_transactions
+-- Generated: 2026-02-25 21:42:18
+
++---------------------+---------------------+------+-----+---------------------+----------------+
+| Field               | Type                | Null | Key | Default             | Extra          |
++---------------------+---------------------+------+-----+---------------------+----------------+
+| id                  | bigint(20) unsigned | NO   | PRI |                     | auto_increment |
+| user_id             | bigint(20)          | NO   | MUL |                     |                |
+| transaction_type    | varchar(255)        | NO   | MUL |                     |                |
+| service_type        | varchar(255)        | YES  | MUL |                     |                |
+| reference_model     | varchar(255)        | YES  | MUL |                     |                |
+| reference_id        | bigint(20)          | YES  |     |                     |                |
+| related_recharge_id | bigint(20)          | YES  |     |                     |                |
+| amount              | decimal(15,2)       | NO   |     |                     |                |
+| balance_before      | decimal(15,2)       | NO   |     |                     |                |
+| balance_after       | decimal(15,2)       | NO   |     |                     |                |
+| description         | text                | YES  |     |                     |                |
+| status              | varchar(255)        | NO   | MUL | completed           |                |
+| is_reversed         | tinyint(1)          | NO   |     | 0                   |                |
+| reversed_at         | timestamp           | YES  |     |                     |                |
+| reversed_reason     | varchar(255)        | YES  |     |                     |                |
+| transaction_date    | timestamp           | NO   | MUL | current_timestamp() |                |
+| created_at          | timestamp           | YES  | MUL |                     |                |
+| updated_at          | timestamp           | YES  |     |                     |                |
++---------------------+---------------------+------+-----+---------------------+----------------+
+
+18 columns

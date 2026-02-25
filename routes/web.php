@@ -23,8 +23,8 @@ Route::prefix('/member/vps-billing')->group(function () {
     Route::get('/report-detail/{id}', [\App\Http\Controllers\VpsBillingController::class, 'showDetail'])
         ->name('vps.billing.detail');
     
-    // Download PDF
-    Route::get('/report/pdf', [\App\Http\Controllers\VpsBillingController::class, 'downloadPdf'])
+    // Download PDF (GET and POST methods)
+    Route::match(['GET', 'POST'], '/report/pdf', [\App\Http\Controllers\VpsBillingController::class, 'downloadPdf'])
         ->name('vps.billing.pdf');
     
     // Gửi email

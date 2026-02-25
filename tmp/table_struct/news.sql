@@ -1,0 +1,37 @@
+-- Table: news
+-- Generated: 2026-02-25 21:42:06
+
+CREATE TABLE `news` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `old_id` bigint(20) DEFAULT NULL,
+  `name` varchar(256) NOT NULL,
+  `user_id` bigint(20) DEFAULT NULL,
+  `old_user_id` bigint(20) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp(),
+  `log` text DEFAULT NULL,
+  `parent_id` bigint(20) DEFAULT NULL,
+  `old_parent_id` bigint(20) DEFAULT NULL,
+  `summary` text DEFAULT NULL,
+  `content` mediumtext DEFAULT NULL,
+  `image_list` varchar(256) DEFAULT NULL,
+  `old_image_list` varchar(256) DEFAULT NULL,
+  `status` smallint(6) DEFAULT 0,
+  `meta_desc` text DEFAULT NULL,
+  `options` bigint(20) DEFAULT NULL,
+  `orders` bigint(20) DEFAULT NULL,
+  `publish_status` bigint(20) DEFAULT NULL,
+  `count_view` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `news_old_id_index` (`old_id`),
+  KEY `news_user_id_index` (`user_id`),
+  KEY `news_old_user_id_index` (`old_user_id`),
+  KEY `news_created_at_index` (`created_at`),
+  KEY `news_parent_id_index` (`parent_id`),
+  KEY `news_old_parent_id_index` (`old_parent_id`),
+  KEY `news_old_image_list_index` (`old_image_list`),
+  KEY `news_status_index` (`status`),
+  KEY `news_options_index` (`options`),
+  KEY `news_orders_index` (`orders`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

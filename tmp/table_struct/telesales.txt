@@ -1,0 +1,39 @@
+-- Table: telesales
+-- Generated: 2026-02-25 21:42:16
+
++-----------------+--------------+------+-----+---------------------+-------------------------------+
+| Field           | Type         | Null | Key | Default             | Extra                         |
++-----------------+--------------+------+-----+---------------------+-------------------------------+
+| id              | bigint(20)   | NO   | PRI |                     |                               |
+| old_id          | bigint(20)   | YES  | MUL |                     |                               |
+| name            | varchar(256) | YES  |     |                     |                               |
+| from_address    | varchar(256) | YES  |     |                     |                               |
+| to_address      | varchar(256) | YES  |     |                     |                               |
+| created_at      | timestamp    | YES  |     | current_timestamp() |                               |
+| updated_at      | timestamp    | YES  |     |                     | on update current_timestamp() |
+| deleted_at      | timestamp    | YES  |     |                     |                               |
+| user_id         | bigint(20)   | YES  |     | 0                   |                               |
+| old_user_id     | bigint(20)   | YES  | MUL | 0                   |                               |
+| phone_request   | varchar(30)  | YES  |     |                     |                               |
+| email_request   | varchar(50)  | YES  |     |                     |                               |
+| note1           | text         | YES  |     |                     |                               |
+| note2           | text         | YES  |     |                     |                               |
+| user_id_post    | bigint(20)   | YES  |     |                     |                               |
+| user_id_get     | bigint(20)   | YES  |     |                     |                               |
+| service_require | tinyint(4)   | YES  |     |                     |                               |
+| start_time      | timestamp    | YES  |     |                     |                               |
+| end_time        | timestamp    | YES  |     |                     |                               |
+| money           | bigint(20)   | YES  |     |                     |                               |
+| done_at         | timestamp    | YES  |     |                     |                               |
+| status          | smallint(6)  | YES  |     |                     |                               |
+| image_list      | varchar(256) | YES  |     |                     |                               |
+| old_image_list  | varchar(256) | YES  | MUL |                     |                               |
+| order_status    | bigint(20)   | YES  |     | 0                   |                               |
+| from_chanel     | text         | YES  |     |                     |                               |
+| order_id_link   | bigint(20)   | NO   |     |                     |                               |
+| token_time      | timestamp    | YES  |     | current_timestamp() |                               |
+| api_key_ship    | bigint(20)   | YES  |     |                     |                               |
+| print_status    | smallint(6)  | YES  | MUL |                     |                               |
++-----------------+--------------+------+-----+---------------------+-------------------------------+
+
+30 columns

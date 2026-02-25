@@ -1,0 +1,73 @@
+-- Table: event_infos
+-- Generated: 2026-02-25 21:41:56
+
++--------------------------+---------------+------+-----+---------------------+-------------------------------+
+| Field                    | Type          | Null | Key | Default             | Extra                         |
++--------------------------+---------------+------+-----+---------------------+-------------------------------+
+| id                       | bigint(20)    | NO   | PRI |                     | auto_increment                |
+| old_id                   | bigint(20)    | YES  | MUL |                     |                               |
+| id__                     | varchar(32)   | YES  | UNI |                     |                               |
+| name                     | varchar(256)  | YES  |     |                     |                               |
+| name_sub                 | varchar(1024) | YES  |     |                     |                               |
+| parent_id                | bigint(20)    | YES  |     | 0                   |                               |
+| old_parent_id            | bigint(20)    | YES  | MUL | 0                   |                               |
+| orders                   | bigint(20)    | YES  |     | 0                   |                               |
+| action                   | text          | YES  |     |                     |                               |
+| user_id                  | bigint(20)    | YES  | MUL |                     |                               |
+| old_user_id              | bigint(20)    | YES  | MUL |                     |                               |
+| status                   | bigint(20)    | YES  | MUL |                     |                               |
+| created_at               | timestamp     | YES  |     | current_timestamp() |                               |
+| updated_at               | timestamp     | YES  |     |                     | on update current_timestamp() |
+| deleted_at               | timestamp     | YES  |     |                     |                               |
+| image_list               | varchar(256)  | YES  |     |                     |                               |
+| old_image_list           | varchar(256)  | YES  | MUL |                     |                               |
+| image_register           | varchar(64)   | YES  |     |                     |                               |
+| opacity                  | smallint(6)   | YES  |     | 80                  |                               |
+| log                      | text          | YES  |     |                     |                               |
+| location                 | varchar(256)  | YES  |     |                     |                               |
+| number_user              | bigint(20)    | YES  |     |                     |                               |
+| time_start               | datetime      | YES  | MUL |                     |                               |
+| time_end                 | datetime      | YES  |     |                     |                               |
+| mail_title1              | varchar(512)  | YES  |     |                     |                               |
+| content1                 | text          | YES  |     |                     |                               |
+| content1_en              | text          | YES  |     |                     |                               |
+| content3                 | text          | YES  |     |                     |                               |
+| content2                 | text          | YES  |     |                     |                               |
+| content2_en              | text          | YES  |     |                     |                               |
+| content3_en              | text          | YES  |     |                     |                               |
+| sms_content3             | varchar(1024) | YES  |     |                     |                               |
+| sms_content1             | varchar(1024) | YES  |     |                     |                               |
+| sms_content2             | varchar(1024) | YES  |     |                     |                               |
+| sms_content1_en          | varchar(1024) | YES  |     |                     |                               |
+| sms_content2_en          | varchar(1024) | YES  |     |                     |                               |
+| sms_content3_en          | varchar(1024) | YES  |     |                     |                               |
+| attached_files_email1    | varchar(128)  | YES  |     |                     |                               |
+| attached_files_email1_en | varchar(64)   | YES  |     |                     |                               |
+| attached_files_email2    | varchar(64)   | YES  |     |                     |                               |
+| attached_files_email2_en | varchar(64)   | YES  |     |                     |                               |
+| attached_files_email3    | varchar(64)   | YES  |     |                     |                               |
+| attached_files_email3_en | varchar(64)   | YES  |     |                     |                               |
+| files                    | varchar(128)  | YES  |     |                     |                               |
+| mail_title2              | varchar(512)  | YES  |     |                     |                               |
+| mail_title3              | varchar(512)  | YES  |     |                     |                               |
+| mail_title1_en           | varchar(512)  | YES  |     |                     |                               |
+| mail_title2_en           | varchar(512)  | YES  |     |                     |                               |
+| mail_title3_en           | varchar(512)  | YES  |     |                     |                               |
+| require_sign             | smallint(6)   | YES  |     | 0                   |                               |
+| require_sign_this_event  | smallint(6)   | YES  |     |                     |                               |
+| allow_public_reg         | smallint(6)   | YES  |     | 1                   |                               |
+| reg_mail_01_vi           | text          | YES  |     |                     |                               |
+| reg_mail_02_vi           | text          | YES  |     |                     |                               |
+| reg_mail_01_en           | text          | YES  |     |                     |                               |
+| reg_mail_02_en           | text          | YES  |     |                     |                               |
+| reg_mail_title_vi1       | varchar(512)  | YES  |     |                     |                               |
+| reg_mail_title_vi2       | varchar(512)  | YES  |     |                     |                               |
+| reg_mail_title_en1       | varchar(512)  | YES  |     |                     |                               |
+| reg_mail_title_en2       | varchar(512)  | YES  |     |                     |                               |
+| department               | bigint(20)    | YES  |     |                     |                               |
+| time_start_check_in      | timestamp     | YES  |     |                     |                               |
+| user_need_image_to_reg   | smallint(6)   | YES  |     | 0                   |                               |
+| limit_max_member         | bigint(20)    | YES  |     | 0                   |                               |
++--------------------------+---------------+------+-----+---------------------+-------------------------------+
+
+64 columns

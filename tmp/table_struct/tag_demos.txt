@@ -1,0 +1,15 @@
+-- Table: tag_demos
+-- Generated: 2026-02-25 21:42:15
+
++------------+---------------------+------+-----+---------+----------------+
+| Field      | Type                | Null | Key | Default | Extra          |
++------------+---------------------+------+-----+---------+----------------+
+| id         | bigint(20) unsigned | NO   | PRI |         | auto_increment |
+| old_id     | bigint(20) unsigned | YES  | MUL |         |                |
+| name       | varchar(255)        | NO   |     |         |                |
+| created_at | timestamp           | YES  |     |         |                |
+| updated_at | timestamp           | YES  |     |         |                |
+| site_id    | bigint(20)          | NO   |     | 0       |                |
++------------+---------------------+------+-----+---------+----------------+
+
+6 columns

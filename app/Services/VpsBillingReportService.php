@@ -17,13 +17,19 @@ class VpsBillingReportService
      */
     public function generateReportData(User $user, array $options = []): array
     {
+
+
         // Number format for VND currency
         $decimal = 0;
         $dec_separator = ',';
         $thousands_separator = '.';
 
         // Query usages with optional date filtering
-        $query = VpsUsage::where('user_id', $user->id)
+        // Get VPS usages through vps_instances by user_id (not from vps_usages.user_id)
+        $query = VpsUsage::whereHas('instance', function($q) use ($user) {
+            $q->where('user_id', $user->id)
+              ->whereNull('deleted_at');
+        })
             ->whereNull('deleted_at');
 
         if (!empty($options['date_from'])) {
@@ -88,7 +94,7 @@ class VpsBillingReportService
                 $ramPrice = ($priceConfig['n_ram_gb_price'] ?? 0) * $usage->ram_gb;
                 $diskPrice = ($priceConfig['n_gb_disk_price'] ?? 0) * $usage->disk_gb;
                 $ipPrice = ($priceConfig['n_ip_address_price'] ?? 0) * $usage->number_ip_address;
-                
+
                 $configPrice = $cpuPrice + $ramPrice + $diskPrice + $ipPrice;
                 $configDisplay = sprintf(
                     'CPU: %.1fK, RAM: %.1fK, Disk: %.1fK, IP: %.1fK',
@@ -251,7 +257,7 @@ class VpsBillingReportService
             return false;
         }
     }
-    
+
     /**
      * Extract total monthly price from price_config with quantities
      */
@@ -260,14 +266,14 @@ class VpsBillingReportService
         if (!$priceConfig || !is_array($priceConfig)) {
             return 0;
         }
-        
+
         $total = 0;
         $total += ($priceConfig['n_cpu_core_price'] ?? 0) * $cpu;
         $total += ($priceConfig['n_ram_gb_price'] ?? 0) * $ram;
         $total += ($priceConfig['n_gb_disk_price'] ?? 0) * $disk;
         $total += ($priceConfig['n_ip_address_price'] ?? 0) * $ip;
-        
+
         return $total;
     }
-    
+
 }

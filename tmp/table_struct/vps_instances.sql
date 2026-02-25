@@ -1,9 +1,9 @@
 -- Table: vps_instances
--- Generated: 2026-01-08 18:55:54
+-- Generated: 2026-02-25 21:42:20
 
 CREATE TABLE `vps_instances` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(64) NOT NULL,
+  `id` bigint(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(128) NOT NULL,
   `status` smallint(6) DEFAULT 1,
   `init_os` bigint(20) unsigned DEFAULT NULL COMMENT 'Operating system to initialize (references vps_os_versions.id)',
   `init_ip` varchar(32) DEFAULT NULL,
@@ -30,10 +30,12 @@ CREATE TABLE `vps_instances` (
   `infos` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`infos`)),
   `type` varchar(64) DEFAULT NULL COMMENT 'Instance type (e.g., VM, Container, etc.)',
   `price_month` decimal(18,2) DEFAULT NULL COMMENT 'Fixed monthly price for old VPS billing (default null for new per-minute billing)',
+  `last_billing_start_at` datetime DEFAULT NULL COMMENT 'Next billing period starts from this timestamp',
+  `image_list` varchar(512) DEFAULT NULL COMMENT 'List of images (512 chars max)',
   PRIMARY KEY (`id`),
   UNIQUE KEY `vps_instances_bios_uuid_unique` (`bios_uuid`),
   KEY `vps_instances_user_id_index` (`user_id`),
   KEY `vps_instances_plan_id_index` (`plan_id`),
   KEY `vps_instances_deleted_at_index` (`deleted_at`),
   KEY `vps_instances_instance_uuid_index` (`instance_uuid`)
-) ENGINE=InnoDB AUTO_INCREMENT=180 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=72017101110 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

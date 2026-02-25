@@ -1,0 +1,29 @@
+-- Table: task_infos
+-- Generated: 2026-02-25 21:42:15
+
++----------------+--------------------------------------------------------------------+------+-----+---------------------+-------------------------------+
+| Field          | Type                                                               | Null | Key | Default             | Extra                         |
++----------------+--------------------------------------------------------------------+------+-----+---------------------+-------------------------------+
+| id             | bigint(20)                                                         | NO   | PRI |                     | auto_increment                |
+| old_id         | bigint(20)                                                         | YES  | MUL |                     |                               |
+| user_id        | bigint(20)                                                         | NO   |     |                     |                               |
+| old_user_id    | bigint(20)                                                         | YES  | MUL |                     |                               |
+| name           | varchar(255)                                                       | NO   |     |                     |                               |
+| description    | text                                                               | YES  |     |                     |                               |
+| status         | enum('not_started','in_progress','completed','pending','canceled') | YES  |     | not_started         |                               |
+| priority       | enum('low','medium','high','urgent')                               | YES  |     | medium              |                               |
+| due_date       | date                                                               | YES  |     |                     |                               |
+| created_at     | datetime                                                           | YES  |     | current_timestamp() |                               |
+| updated_at     | datetime                                                           | YES  |     | current_timestamp() | on update current_timestamp() |
+| deleted_at     | datetime                                                           | YES  |     |                     |                               |
+| assigned_to    | bigint(20)                                                         | YES  |     |                     |                               |
+| parent_id      | bigint(20)                                                         | YES  |     | 0                   |                               |
+| old_parent_id  | bigint(20)                                                         | YES  | MUL | 0                   |                               |
+| orders         | bigint(20)                                                         | YES  |     |                     |                               |
+| file_list      | varchar(255)                                                       | YES  |     |                     |                               |
+| parent_extra   | varchar(255)                                                       | YES  |     |                     |                               |
+| parent_all     | varchar(255)                                                       | YES  |     |                     |                               |
+| old_parent_all | varchar(255)                                                       | YES  | MUL |                     |                               |
++----------------+--------------------------------------------------------------------+------+-----+---------------------+-------------------------------+
+
+20 columns

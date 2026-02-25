@@ -1,0 +1,32 @@
+-- Table: monitor_items_del
+-- Generated: 2026-02-25 21:42:05
+
++-----------------------------------+---------------+------+-----+---------------------+-------------------------------+
+| Field                             | Type          | Null | Key | Default             | Extra                         |
++-----------------------------------+---------------+------+-----+---------------------+-------------------------------+
+| id                                | bigint(20)    | NO   | PRI |                     | auto_increment                |
+| name                              | varchar(255)  | NO   |     |                     |                               |
+| enable                            | tinyint(4)    | YES  | MUL | 1                   |                               |
+| last_check_status                 | smallint(6)   | YES  |     |                     |                               |
+| url_check                         | varchar(1024) | YES  |     |                     |                               |
+| type                              | varchar(32)   | YES  | MUL |                     |                               |
+| maxAlertCount                     | bigint(20)    | YES  |     |                     |                               |
+| user_id                           | bigint(20)    | YES  | MUL | 0                   |                               |
+| created_at                        | datetime      | YES  | MUL | current_timestamp() |                               |
+| deleted_at                        | datetime      | YES  | MUL |                     |                               |
+| updated_at                        | datetime      | YES  |     |                     | on update current_timestamp() |
+| check_interval_seconds            | bigint(20)    | YES  |     | 360                 |                               |
+| result_valid                      | varchar(1024) | YES  |     |                     |                               |
+| result_error                      | varchar(1024) | YES  |     |                     |                               |
+| stopTo                            | datetime      | YES  |     |                     |                               |
+| pingType                          | bigint(20)    | YES  |     | 1                   |                               |
+| log                               | text          | YES  |     |                     |                               |
+| last_check_time                   | datetime      | YES  | MUL |                     |                               |
+| queuedSendStr                     | text          | YES  |     |                     |                               |
+| forceRestart                      | tinyint(1)    | YES  |     | 0                   |                               |
+| count_online                      | bigint(20)    | NO   |     | 0                   |                               |
+| count_offline                     | bigint(20)    | NO   |     | 0                   |                               |
+| allow_alert_for_consecutive_error | smallint(6)   | YES  | MUL |                     |                               |
++-----------------------------------+---------------+------+-----+---------------------+-------------------------------+
+
+23 columns

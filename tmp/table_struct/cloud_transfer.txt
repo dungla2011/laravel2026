@@ -1,0 +1,20 @@
+-- Table: cloud_transfer
+-- Generated: 2026-02-25 21:41:52
+
++---------------+--------------+------+-----+---------+----------------+
+| Field         | Type         | Null | Key | Default | Extra          |
++---------------+--------------+------+-----+---------+----------------+
+| id            | bigint(20)   | NO   | PRI |         | auto_increment |
+| old_id        | bigint(20)   | YES  | MUL |         |                |
+| userid        | varchar(50)  | YES  |     |         |                |
+| file          | varchar(255) | YES  |     |         |                |
+| bytes         | bigint(20)   | YES  |     |         |                |
+| host          | varchar(255) | YES  |     |         |                |
+| ip            | varchar(20)  | YES  |     |         |                |
+| cmd           | varchar(20)  | YES  |     |         |                |
+| transfer_time | bigint(20)   | YES  |     |         |                |
+| time          | datetime     | YES  |     |         |                |
+| status        | varchar(5)   | YES  |     |         |                |
++---------------+--------------+------+-----+---------+----------------+
+
+11 columns

@@ -1,0 +1,20 @@
+-- Table: money_logs
+-- Generated: 2026-02-25 21:42:04
+
++-------------+--------------+------+-----+---------+----------------+
+| Field       | Type         | Null | Key | Default | Extra          |
++-------------+--------------+------+-----+---------+----------------+
+| id          | bigint(20)   | NO   | PRI |         | auto_increment |
+| old_id      | bigint(20)   | YES  | MUL |         |                |
+| user_id     | bigint(20)   | YES  |     |         |                |
+| old_user_id | bigint(20)   | YES  | MUL |         |                |
+| name        | varchar(256) | YES  |     |         |                |
+| price       | bigint(20)   | NO   |     |         |                |
+| created_at  | timestamp    | YES  |     |         |                |
+| updated_at  | timestamp    | YES  |     |         |                |
+| deleted_at  | timestamp    | YES  |     |         |                |
+| log         | text         | YES  |     |         |                |
+| cat         | varchar(256) | YES  |     |         |                |
++-------------+--------------+------+-----+---------+----------------+
+
+11 columns

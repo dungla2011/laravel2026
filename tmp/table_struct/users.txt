@@ -1,0 +1,31 @@
+-- Table: users
+-- Generated: 2026-02-25 21:42:19
+
++-----------------+---------------------+------+-----+---------+----------------+
+| Field           | Type                | Null | Key | Default | Extra          |
++-----------------+---------------------+------+-----+---------+----------------+
+| id              | bigint(20) unsigned | NO   | PRI |         | auto_increment |
+| old_id          | bigint(20) unsigned | YES  | MUL |         |                |
+| id__            | varchar(32)         | YES  | UNI |         |                |
+| username        | varchar(255)        | YES  |     |         |                |
+| password        | varchar(255)        | YES  |     |         |                |
+| email           | varchar(255)        | NO   | UNI |         |                |
+| phone_number    | bigint(20)          | YES  |     |         |                |
+| created_at      | timestamp           | YES  |     |         |                |
+| updated_at      | timestamp           | YES  |     |         |                |
+| is_admin        | bigint(20)          | YES  |     | 0       |                |
+| deleted_at      | timestamp           | YES  |     |         |                |
+| token_user      | varchar(255)        | YES  | MUL |         |                |
+| site_id         | bigint(20)          | YES  |     | 0       |                |
+| name            | varchar(128)        | YES  |     |         |                |
+| remember_token  | varchar(100)        | YES  |     |         |                |
+| email_active_at | timestamp           | YES  |     |         |                |
+| reg_str         | varchar(256)        | YES  | MUL |         |                |
+| log             | text                | YES  |     |         |                |
+| reset_pw        | varchar(128)        | YES  | MUL |         |                |
+| avatar          | varchar(128)        | YES  |     |         |                |
+| language        | varchar(3)          | YES  |     | en      |                |
+| old_uid         | int(11)             | YES  | MUL |         |                |
++-----------------+---------------------+------+-----+---------+----------------+
+
+22 columns

@@ -435,8 +435,8 @@ class Helper1
                 //                $ext = pathinfo($objFile->name, PATHINFO_EXTENSION);
                 if (
                     $objFile->isImageFileName()
-//                    ||
-//                    strstr($objFile->mime, 'image') !== false
+                    ||
+                    strstr($objFile->mime, 'image') !== false
 //                    ||
 //                strstr($objFile->mime, 'video') !== false||
 //                strstr($objFile->mime, 'pdf') !== false
@@ -459,7 +459,7 @@ data-id='$objFile->id' data-field='$field'>  </span> </span>";
             }
             else{
                 if(str_starts_with($idF, "https://")){
-                    $ret = "<a class='mx-2' href='$idF' target='_blank'> LINK </a> ";
+                    $ret .= "<a class='mx-1 one_link_' href='$idF' target='_blank'> LINK </a>  ";
                 }
 
             }

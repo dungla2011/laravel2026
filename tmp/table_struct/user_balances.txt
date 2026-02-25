@@ -1,0 +1,22 @@
+-- Table: user_balances
+-- Generated: 2026-02-25 21:42:18
+
++------------------------+---------------------+------+-----+----------+----------------+
+| Field                  | Type                | Null | Key | Default  | Extra          |
++------------------------+---------------------+------+-----+----------+----------------+
+| id                     | bigint(20) unsigned | NO   | PRI |          | auto_increment |
+| user_id                | bigint(20)          | NO   | UNI |          |                |
+| balance                | decimal(15,2)       | NO   |     | 0.00     |                |
+| total_recharged        | decimal(15,2)       | NO   |     | 0.00     |                |
+| total_spent            | decimal(15,2)       | NO   |     | 0.00     |                |
+| status                 | tinyint(4)          | NO   | MUL | 1        |                |
+| is_frozen              | tinyint(1)          | NO   | MUL | 0        |                |
+| frozen_reason          | varchar(255)        | YES  |     |          |                |
+| low_balance_threshold  | decimal(15,2)       | NO   |     | 10000.00 |                |
+| last_low_balance_alert | timestamp           | YES  |     |          |                |
+| last_transaction_at    | timestamp           | YES  |     |          |                |
+| created_at             | timestamp           | YES  |     |          |                |
+| updated_at             | timestamp           | YES  |     |          |                |
++------------------------+---------------------+------+-----+----------+----------------+
+
+13 columns

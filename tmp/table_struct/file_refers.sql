@@ -1,0 +1,38 @@
+-- Table: file_refers
+-- Generated: 2026-02-25 21:41:59
+
+CREATE TABLE `file_refers` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `old_id` bigint(20) DEFAULT NULL,
+  `name` varchar(256) DEFAULT NULL,
+  `user_id` bigint(20) DEFAULT NULL,
+  `old_user_id` bigint(20) DEFAULT NULL,
+  `status` bigint(20) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp(),
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `image_list` varchar(256) DEFAULT NULL,
+  `old_image_list` varchar(256) DEFAULT NULL,
+  `log` text DEFAULT NULL,
+  `site` varchar(8) DEFAULT NULL COMMENT 'tên, ví dụ 4s, fs, gg,...',
+  `remote_id` bigint(20) DEFAULT NULL,
+  `remote_url` varchar(256) DEFAULT NULL,
+  `filesize` bigint(20) DEFAULT NULL,
+  `param1` varchar(64) DEFAULT NULL,
+  `param2` varchar(64) DEFAULT NULL,
+  `refer_obj` text DEFAULT NULL,
+  `price_k` mediumint(9) DEFAULT NULL,
+  `count_dl` bigint(20) DEFAULT NULL,
+  `make_torrent` smallint(6) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `remote_id_2` (`remote_id`,`site`),
+  UNIQUE KEY `file_refers_remote_url_unique` (`remote_url`),
+  KEY `file_refers_old_id_index` (`old_id`),
+  KEY `file_refers_user_id_index` (`user_id`),
+  KEY `file_refers_old_user_id_index` (`old_user_id`),
+  KEY `file_refers_status_index` (`status`),
+  KEY `file_refers_old_image_list_index` (`old_image_list`),
+  KEY `file_refers_site_index` (`site`),
+  KEY `file_refers_remote_id_index` (`remote_id`),
+  KEY `file_refers_count_dl_index` (`count_dl`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

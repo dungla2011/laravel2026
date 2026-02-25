@@ -1,0 +1,33 @@
+-- Table: demo_tbls
+-- Generated: 2026-02-25 21:41:54
+
++---------------+---------------------+------+-----+---------+----------------+
+| Field         | Type                | Null | Key | Default | Extra          |
++---------------+---------------------+------+-----+---------+----------------+
+| deleted_at    | timestamp           | YES  | MUL |         |                |
+| id            | bigint(20) unsigned | NO   | PRI |         | auto_increment |
+| old_id        | bigint(20) unsigned | YES  | MUL |         |                |
+| created_at    | timestamp           | YES  |     |         |                |
+| updated_at    | timestamp           | YES  |     |         |                |
+| user_id       | bigint(20)          | YES  |     |         |                |
+| old_user_id   | bigint(20)          | YES  | MUL |         |                |
+| number1       | bigint(20)          | YES  |     |         |                |
+| number2       | bigint(20)          | YES  |     |         |                |
+| string1       | varchar(255)        | YES  |     |         |                |
+| string2       | varchar(255)        | YES  |     |         |                |
+| textarea1     | varchar(255)        | YES  |     |         |                |
+| textarea2     | varchar(255)        | YES  |     |         |                |
+| tag_list_id   | text                | YES  |     |         |                |
+| status        | tinyint(4)          | YES  |     |         |                |
+| parent_id     | bigint(20)          | YES  |     | 0       |                |
+| old_parent_id | bigint(20)          | YES  | MUL | 0       |                |
+| parent2       | bigint(20)          | YES  |     |         |                |
+| parent_multi  | text                | YES  |     |         |                |
+| parent_multi2 | text                | YES  |     |         |                |
+| image_list1   | text                | YES  |     |         |                |
+| image_list2   | text                | YES  |     |         |                |
+| orders        | bigint(20)          | YES  |     | 0       |                |
+| name          | varchar(256)        | YES  |     |         |                |
++---------------+---------------------+------+-----+---------+----------------+
+
+24 columns

@@ -1,0 +1,27 @@
+-- Table: product_attributes
+-- Generated: 2026-02-25 21:42:10
+
+CREATE TABLE `product_attributes` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `old_id` bigint(20) DEFAULT NULL,
+  `name` varchar(256) DEFAULT NULL,
+  `user_id` bigint(20) DEFAULT NULL,
+  `old_user_id` bigint(20) DEFAULT NULL,
+  `status` bigint(20) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp(),
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `image_list` varchar(256) DEFAULT NULL,
+  `old_image_list` varchar(256) DEFAULT NULL,
+  `log` text DEFAULT NULL,
+  `product_id` bigint(20) NOT NULL,
+  `attribute_name` varchar(128) NOT NULL,
+  `attribute_value` varchar(128) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `product_attributes_old_id_index` (`old_id`),
+  KEY `product_attributes_user_id_index` (`user_id`),
+  KEY `product_attributes_old_user_id_index` (`old_user_id`),
+  KEY `product_attributes_status_index` (`status`),
+  KEY `product_attributes_old_image_list_index` (`old_image_list`),
+  KEY `product_attributes_product_id_index` (`product_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

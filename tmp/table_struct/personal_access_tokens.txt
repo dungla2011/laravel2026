@@ -1,0 +1,20 @@
+-- Table: personal_access_tokens
+-- Generated: 2026-02-25 21:42:09
+
++----------------+---------------------+------+-----+---------+----------------+
+| Field          | Type                | Null | Key | Default | Extra          |
++----------------+---------------------+------+-----+---------+----------------+
+| id             | bigint(20) unsigned | NO   | PRI |         | auto_increment |
+| old_id         | bigint(20) unsigned | YES  | MUL |         |                |
+| tokenable_type | varchar(255)        | NO   | MUL |         |                |
+| tokenable_id   | bigint(20) unsigned | NO   |     |         |                |
+| name           | varchar(255)        | NO   |     |         |                |
+| token          | varchar(64)         | NO   | UNI |         |                |
+| abilities      | text                | YES  |     |         |                |
+| last_used_at   | timestamp           | YES  |     |         |                |
+| created_at     | timestamp           | YES  |     |         |                |
+| updated_at     | timestamp           | YES  |     |         |                |
+| site_id        | bigint(20)          | NO   |     |         |                |
++----------------+---------------------+------+-----+---------+----------------+
+
+11 columns

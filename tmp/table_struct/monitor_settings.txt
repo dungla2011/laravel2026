@@ -1,0 +1,21 @@
+-- Table: monitor_settings
+-- Generated: 2026-02-25 21:42:05
+
++----------------------+--------------+------+-----+---------------------+-------------------------------+
+| Field                | Type         | Null | Key | Default             | Extra                         |
++----------------------+--------------+------+-----+---------------------+-------------------------------+
+| id                   | bigint(20)   | NO   | PRI |                     | auto_increment                |
+| user_id              | bigint(20)   | YES  | UNI |                     |                               |
+| status               | bigint(20)   | YES  | MUL | 1                   |                               |
+| created_at           | timestamp    | YES  |     | current_timestamp() |                               |
+| updated_at           | timestamp    | YES  |     |                     | on update current_timestamp() |
+| deleted_at           | timestamp    | YES  |     |                     |                               |
+| log                  | text         | YES  |     |                     |                               |
+| alert_time_ranges    | varchar(64)  | YES  |     | 05:30-23:00         |                               |
+| timezone             | smallint(6)  | YES  |     | 7                   |                               |
+| global_stop_alert_to | datetime     | YES  |     |                     |                               |
+| max_quota_node       | smallint(6)  | NO   |     | 5                   |                               |
+| firebase_token       | varchar(512) | YES  |     |                     |                               |
++----------------------+--------------+------+-----+---------------------+-------------------------------+
+
+12 columns

@@ -1,0 +1,31 @@
+-- Table: vps_instance_config_histories
+-- Generated: 2026-02-25 21:42:20
+
++-------------------+---------------------+------+-----+---------------------+-------------------------------+
+| Field             | Type                | Null | Key | Default             | Extra                         |
++-------------------+---------------------+------+-----+---------------------+-------------------------------+
+| id                | bigint(20) unsigned | NO   | PRI |                     | auto_increment                |
+| name              | varchar(64)         | YES  |     |                     |                               |
+| status            | smallint(6)         | YES  |     | 1                   |                               |
+| user_id           | bigint(20)          | YES  | MUL |                     |                               |
+| instance_id       | bigint(20)          | NO   | MUL |                     |                               |
+| vmware_vm_id      | varchar(255)        | YES  |     |                     |                               |
+| bios_uuid         | varchar(64)         | YES  | MUL |                     |                               |
+| instance_uuid     | varchar(64)         | YES  | MUL |                     |                               |
+| cpu               | int(11)             | NO   |     |                     |                               |
+| ram_gb            | int(11)             | NO   |     |                     |                               |
+| disk_gb           | int(11)             | NO   |     |                     |                               |
+| network_mbit      | int(11)             | YES  |     | 0                   |                               |
+| number_ip_address | int(11)             | YES  |     | 0                   |                               |
+| power_state       | varchar(255)        | YES  |     |                     |                               |
+| price_per_minute  | decimal(18,8)       | NO   |     |                     |                               |
+| change_type       | varchar(64)         | YES  |     |                     |                               |
+| changed_at        | datetime            | YES  |     | current_timestamp() |                               |
+| created_at        | datetime            | YES  |     | current_timestamp() |                               |
+| updated_at        | datetime            | YES  |     | current_timestamp() | on update current_timestamp() |
+| deleted_at        | datetime            | YES  | MUL |                     |                               |
+| log               | text                | YES  |     |                     |                               |
+| full_info         | longtext            | YES  |     |                     |                               |
++-------------------+---------------------+------+-----+---------------------+-------------------------------+
+
+22 columns

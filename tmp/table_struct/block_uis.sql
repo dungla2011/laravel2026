@@ -1,0 +1,35 @@
+-- Table: block_uis
+-- Generated: 2026-02-25 21:41:50
+
+CREATE TABLE `block_uis` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `old_id` bigint(20) DEFAULT NULL,
+  `name_bak` varchar(255) DEFAULT NULL,
+  `name` longtext DEFAULT NULL,
+  `sname` varchar(128) DEFAULT NULL,
+  `summary_bak` text DEFAULT NULL,
+  `summary` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`summary`)),
+  `summary2` text DEFAULT NULL,
+  `module_table` varchar(255) DEFAULT NULL,
+  `idModule` varchar(1024) DEFAULT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp(),
+  `log` text DEFAULT NULL,
+  `siteid` bigint(20) DEFAULT NULL,
+  `extra_info_bak` text DEFAULT NULL,
+  `extra_info` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`extra_info`)),
+  `image_list` varchar(1024) DEFAULT NULL,
+  `old_image_list` varchar(1024) DEFAULT NULL,
+  `tags_list` varchar(1024) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  `status` smallint(6) DEFAULT 1,
+  `content` text DEFAULT NULL,
+  `guide_admin` text DEFAULT NULL,
+  `extra_color_background` varchar(10) DEFAULT NULL,
+  `extra_color_text` varchar(10) DEFAULT NULL,
+  `group_name` varchar(32) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `block_uis_sname_unique` (`sname`),
+  KEY `block_uis_old_id_index` (`old_id`),
+  KEY `block_uis_old_image_list_index` (`old_image_list`(768))
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

@@ -1,0 +1,36 @@
+-- Table: monitor_items_del
+-- Generated: 2026-02-25 21:42:05
+
+CREATE TABLE `monitor_items_del` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `enable` tinyint(4) DEFAULT 1,
+  `last_check_status` smallint(6) DEFAULT NULL,
+  `url_check` varchar(1024) DEFAULT NULL,
+  `type` varchar(32) DEFAULT NULL,
+  `maxAlertCount` bigint(20) DEFAULT NULL,
+  `user_id` bigint(20) DEFAULT 0,
+  `created_at` datetime DEFAULT current_timestamp(),
+  `deleted_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL ON UPDATE current_timestamp(),
+  `check_interval_seconds` bigint(20) DEFAULT 360,
+  `result_valid` varchar(1024) DEFAULT NULL,
+  `result_error` varchar(1024) DEFAULT NULL,
+  `stopTo` datetime DEFAULT NULL,
+  `pingType` bigint(20) DEFAULT 1,
+  `log` text DEFAULT NULL,
+  `last_check_time` datetime DEFAULT NULL,
+  `queuedSendStr` text DEFAULT NULL,
+  `forceRestart` tinyint(1) DEFAULT 0,
+  `count_online` bigint(20) NOT NULL DEFAULT 0,
+  `count_offline` bigint(20) NOT NULL DEFAULT 0,
+  `allow_alert_for_consecutive_error` smallint(6) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `monitor_items_del_enable_index` (`enable`),
+  KEY `monitor_items_del_type_index` (`type`),
+  KEY `monitor_items_del_user_id_index` (`user_id`),
+  KEY `monitor_items_del_created_at_index` (`created_at`),
+  KEY `monitor_items_del_deleted_at_index` (`deleted_at`),
+  KEY `monitor_items_del_last_check_time_index` (`last_check_time`),
+  KEY `monitor_items_del_allow_alert_for_consecutive_error_index` (`allow_alert_for_consecutive_error`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

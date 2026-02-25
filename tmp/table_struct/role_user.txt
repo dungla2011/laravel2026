@@ -1,0 +1,18 @@
+-- Table: role_user
+-- Generated: 2026-02-25 21:42:14
+
++-------------+---------------------+------+-----+---------+----------------+
+| Field       | Type                | Null | Key | Default | Extra          |
++-------------+---------------------+------+-----+---------+----------------+
+| id          | bigint(20) unsigned | NO   | PRI |         | auto_increment |
+| old_id      | bigint(20) unsigned | YES  | MUL |         |                |
+| user_id     | bigint(20)          | NO   | MUL |         |                |
+| old_user_id | bigint(20)          | YES  | MUL |         |                |
+| role_id     | bigint(20)          | NO   | MUL |         |                |
+| created_at  | timestamp           | YES  |     |         |                |
+| updated_at  | timestamp           | YES  |     |         |                |
+| site_id     | bigint(20)          | NO   |     | 0       |                |
+| deleted_at  | datetime            | YES  |     |         |                |
++-------------+---------------------+------+-----+---------+----------------+
+
+9 columns

@@ -1,0 +1,38 @@
+-- Table: event_and_users
+-- Generated: 2026-02-25 21:41:56
+
+CREATE TABLE `event_and_users` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `old_id` bigint(20) DEFAULT NULL,
+  `name` varchar(256) DEFAULT NULL,
+  `user_id` bigint(20) DEFAULT NULL,
+  `old_user_id` bigint(20) DEFAULT NULL,
+  `user_event_id` bigint(20) DEFAULT NULL,
+  `event_id` bigint(20) DEFAULT NULL,
+  `status` bigint(20) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp(),
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `image_list` varchar(256) DEFAULT NULL,
+  `old_image_list` varchar(256) DEFAULT NULL,
+  `log` text DEFAULT NULL,
+  `sent_mail_at` datetime DEFAULT NULL,
+  `sent_sms_at` datetime DEFAULT NULL,
+  `confirm_join_at` datetime DEFAULT NULL,
+  `deny_join_at` datetime DEFAULT NULL,
+  `attend_at` datetime DEFAULT NULL,
+  `note` text DEFAULT NULL,
+  `extra_info1` varchar(256) DEFAULT NULL,
+  `extra_info2` varchar(256) DEFAULT NULL,
+  `extra_info3` varchar(256) DEFAULT NULL,
+  `extra_info4` varchar(256) DEFAULT NULL,
+  `extra_info5` varchar(256) DEFAULT NULL,
+  `signature` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `event_and_users_old_id_index` (`old_id`),
+  KEY `event_and_users_user_id_index` (`user_id`),
+  KEY `event_and_users_old_user_id_index` (`old_user_id`),
+  KEY `event_and_users_user_event_id_index` (`user_event_id`),
+  KEY `event_and_users_status_index` (`status`),
+  KEY `event_and_users_old_image_list_index` (`old_image_list`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

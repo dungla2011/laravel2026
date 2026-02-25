@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 // Parse arguments
 $tableName = null;
 $force = false;
+$shouldZip = false;
 foreach ($argv as $arg) {
     if (strpos($arg, 'table=') === 0) {
         $tableName = substr($arg, 6);
@@ -20,12 +21,17 @@ foreach ($argv as $arg) {
     if ($arg === 'force' || $arg === '--force' || $arg === '-f') {
         $force = true;
     }
+    if ($arg === 'zip' || $arg === '--zip' || $arg === '-z') {
+        $shouldZip = true;
+    }
 }
 
 if (!$tableName) {
-    echo "Usage: php get_table_struct.php table=<tablename> [force]\n";
-    echo "Example: php get_table_struct.php table=vps_instances\n";
-    echo "         php get_table_struct.php table=all force\n";
+    echo "Usage: php 01.get_table_struct.php table=<tablename> [force] [zip]\n";
+    echo "Example: php 01.get_table_struct.php table=vps_instances\n";
+    echo "         php 01.get_table_struct.php table=all force\n";
+    echo "         php 01.get_table_struct.php table=all force zip\n";
+    echo "         php 01.get_table_struct.php table=all zip\n";
     exit(1);
 }
 
@@ -47,8 +53,44 @@ foreach ($tableNames as $currentTable) {
     processTable($currentTable, $force);
 }
 
+// Create backup zip if requested
+$outputDir = __DIR__ . '/table_struct';
+if ($shouldZip && is_dir($outputDir)) {
+    createBackupZip($outputDir);
+}
+
 echo "\nAll done!\n";
 exit(0);
+
+function createBackupZip($outputDir) {
+    $zipFilename = 'bak_table_' . date('Y-m-d-H-i-s') . '.zip';
+    $zipFilepath = $outputDir . '/' . $zipFilename;
+    
+    // Create zip file
+    $zip = new ZipArchive();
+    
+    if ($zip->open($zipFilepath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
+        echo "Error: Cannot create zip file.\n";
+        return false;
+    }
+    
+    // Add all files from table_struct directory
+    $files = glob($outputDir . '/*.{php,sql,txt,json}', GLOB_BRACE);
+    $addedCount = 0;
+    
+    foreach ($files as $file) {
+        if (is_file($file) && basename($file) !== $zipFilename) {
+            $zip->addFile($file, basename($file));
+            $addedCount++;
+        }
+    }
+    
+    $zip->close();
+    
+    echo "Created backup: " . basename($zipFilepath) . " ({$addedCount} files)\n";
+    
+    return true;
+}
 
 function processTable($tableName, $force) {
     $outputDir = __DIR__ . '/table_struct';

@@ -117,10 +117,10 @@ class SyncVmwareInstancesCommand extends Command
                             ->first();
 
 
-                        if($lastUsage->user_id != $instance->user_id){
-                            $this->warn("  ⚠️  User ID mismatch between vps_instances and vps_usages for BIOS UUID {$vm->bios_uuid}. Updating usage record to match instance user_id.");
-                            $lastUsage->update(['user_id' => $instance->user_id]);
-                        }
+//                        if($lastUsage->user_id != $instance->user_id){
+//                            $this->warn("  ⚠️  User ID mismatch between vps_instances and vps_usages for BIOS UUID {$vm->bios_uuid}. Updating usage record to match instance user_id.");
+//                            $lastUsage->update(['user_id' => $instance->user_id]);
+//                        }
 
 
                         // Get IP addresses from MAC address mapping
@@ -179,7 +179,7 @@ class SyncVmwareInstancesCommand extends Command
                             if ($lastUsage->end_time_used && now()->gt(\Carbon\Carbon::parse($lastUsage->end_time_used))) {
                                 // Update old record: set end_time_used = now() to close the session
                                 // VpsUsage::where('id', $lastUsage->id)->update(['end_time_used' => now()]);
-                                
+
                                 // Create new record for new billing session
                                 $this->createNewVpsUsageRecord($vm, $instance, $powerState, $listIpAddress, $lastFoundIpTime, $currentPricingConfig, $lastUsage->end_time_used);
                                 $this->line("  ⏰ end_time_used expired! Updated old record end_time_used = now(), inserted new vps_usages record");
@@ -526,7 +526,7 @@ class SyncVmwareInstancesCommand extends Command
     private function createNewVpsUsageRecord($vm, $instance, $powerState, $listIpAddress, $lastFoundIpTime, $pricingConfig, $createdAt = null)
     {
         usleep(10000); // 0.01 second delay to avoid ID collisions
-        
+
         $data = [
             'name' => $vm->name,
             'instance_id' => $instance->id,
@@ -535,7 +535,7 @@ class SyncVmwareInstancesCommand extends Command
             'last_host_ip' => $vm->host_ip,
             'ram_gb' => intval($vm->memory_gb),
             'disk_gb' => intval($vm->disk_gb),
-            'user_id' => $instance->user_id,
+//            'user_id' => $instance->user_id,
             'timestamp_minute' => now()->startOfMinute(),
             'power_state' => $powerState,
             'bios_uuid' => $vm->bios_uuid,
@@ -550,12 +550,12 @@ class SyncVmwareInstancesCommand extends Command
             'mac_address' => implode(',', $vm->mac_addresses ?? []),
             'last_found_ip' => $lastFoundIpTime,
         ];
-        
+
         // Set custom created_at if provided (for session continuation)
         if ($createdAt) {
             $data['created_at'] = $createdAt;
         }
-        
+
         return VpsUsage::create($data);
     }
 

@@ -1,5 +1,5 @@
 -- Table: vps_usages
--- Generated: 2026-01-09 12:52:34
+-- Generated: 2026-02-25 21:42:21
 
 +-----------------------+---------------------+------+-----+---------------------+-------------------------------+
 | Field                 | Type                | Null | Key | Default             | Extra                         |
@@ -16,7 +16,9 @@
 | bios_uuid             | varchar(64)         | YES  | MUL |                     |                               |
 | instance_uuid         | varchar(64)         | YES  | MUL |                     |                               |
 | timestamp_minute      | datetime            | NO   | MUL |                     |                               |
+| end_time_used         | datetime            | YES  |     |                     |                               |
 | number_ip_address     | int(11)             | YES  |     | 0                   |                               |
+| price_month           | decimal(18,2)       | YES  |     |                     |                               |
 | price_config          | longtext            | YES  |     |                     |                               |
 | calculated_fee        | decimal(15,4)       | NO   |     | 0.0000              |                               |
 | power_state           | varchar(32)         | YES  |     | running             |                               |
@@ -31,6 +33,10 @@
 | last_found_ip         | datetime            | YES  |     |                     |                               |
 | mac_address           | text                | YES  |     |                     |                               |
 | uptime_minutes        | bigint(20)          | NO   |     | 0                   |                               |
+| last_billing_start_at | datetime            | YES  |     |                     |                               |
+| last_host_ip          | varchar(32)         | YES  |     |                     |                               |
+| image_list            | varchar(512)        | YES  |     |                     |                               |
+| tmp_del               | bigint(20)          | YES  |     |                     |                               |
 +-----------------------+---------------------+------+-----+---------------------+-------------------------------+
 
-27 columns
+33 columns

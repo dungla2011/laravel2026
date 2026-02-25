@@ -1,0 +1,20 @@
+-- Table: permissions
+-- Generated: 2026-02-25 21:42:09
+
++-----------------+---------------------+------+-----+---------+----------------+
+| Field           | Type                | Null | Key | Default | Extra          |
++-----------------+---------------------+------+-----+---------+----------------+
+| id              | bigint(20) unsigned | NO   | PRI |         | auto_increment |
+| old_id          | bigint(20) unsigned | YES  | MUL |         |                |
+| route_name_code | varchar(255)        | YES  | UNI |         |                |
+| display_name    | varchar(255)        | YES  |     |         |                |
+| created_at      | timestamp           | YES  |     |         |                |
+| updated_at      | timestamp           | YES  |     |         |                |
+| parent_id       | bigint(20)          | NO   |     | 0       |                |
+| old_parent_id   | bigint(20)          | YES  | MUL | 0       |                |
+| prefix          | varchar(255)        | YES  |     |         |                |
+| url             | varchar(512)        | YES  |     |         |                |
+| site_id         | bigint(20)          | YES  |     | 0       |                |
++-----------------+---------------------+------+-----+---------+----------------+
+
+11 columns

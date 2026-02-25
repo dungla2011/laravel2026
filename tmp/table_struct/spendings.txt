@@ -1,0 +1,22 @@
+-- Table: spendings
+-- Generated: 2026-02-25 21:42:15
+
++----------------+--------------+------+-----+---------------------+-------------------------------+
+| Field          | Type         | Null | Key | Default             | Extra                         |
++----------------+--------------+------+-----+---------------------+-------------------------------+
+| id             | bigint(20)   | NO   | PRI |                     | auto_increment                |
+| old_id         | bigint(20)   | YES  | MUL |                     |                               |
+| name           | varchar(256) | YES  |     |                     |                               |
+| created_at     | timestamp    | YES  |     | current_timestamp() |                               |
+| updated_at     | timestamp    | YES  |     |                     | on update current_timestamp() |
+| deleted_at     | timestamp    | YES  |     |                     |                               |
+| user_id        | bigint(20)   | YES  |     | 0                   |                               |
+| old_user_id    | bigint(20)   | YES  | MUL | 0                   |                               |
+| cat            | bigint(20)   | YES  |     |                     |                               |
+| money          | bigint(20)   | YES  |     |                     |                               |
+| note           | text         | YES  |     |                     |                               |
+| image_list     | varchar(256) | YES  |     |                     |                               |
+| old_image_list | varchar(256) | YES  | MUL |                     |                               |
++----------------+--------------+------+-----+---------------------+-------------------------------+
+
+13 columns

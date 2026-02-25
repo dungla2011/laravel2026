@@ -1,0 +1,17 @@
+-- Table: tree_mng_col_fixes
+-- Generated: 2026-02-25 21:42:17
+
++------------+------------+------+-----+---------------------+-------------------------------+
+| Field      | Type       | Null | Key | Default             | Extra                         |
++------------+------------+------+-----+---------------------+-------------------------------+
+| id         | bigint(20) | NO   | PRI |                     | auto_increment                |
+| old_id     | bigint(20) | YES  | MUL |                     |                               |
+| pid        | bigint(20) | YES  | MUL |                     |                               |
+| node_id    | bigint(20) | YES  | MUL |                     |                               |
+| col_fix    | bigint(20) | YES  |     |                     |                               |
+| created_at | timestamp  | YES  |     | current_timestamp() |                               |
+| updated_at | timestamp  | YES  |     |                     | on update current_timestamp() |
+| log        | text       | YES  |     |                     |                               |
++------------+------------+------+-----+---------------------+-------------------------------+
+
+8 columns

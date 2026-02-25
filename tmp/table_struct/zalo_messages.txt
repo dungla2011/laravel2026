@@ -1,0 +1,40 @@
+-- Table: zalo_messages
+-- Generated: 2026-02-25 21:42:21
+
++--------------+--------------+------+-----+---------------------+----------------+
+| Field        | Type         | Null | Key | Default             | Extra          |
++--------------+--------------+------+-----+---------------------+----------------+
+| id           | bigint(20)   | NO   | PRI |                     | auto_increment |
+| timestamp    | datetime     | NO   | MUL |                     |                |
+| account      | varchar(50)  | NO   | MUL |                     |                |
+| direction    | varchar(20)  | NO   |     |                     |                |
+| type         | varchar(20)  | NO   |     |                     |                |
+| thread_id    | varchar(100) | NO   | MUL |                     |                |
+| content      | text         | YES  |     |                     |                |
+| action_id    | varchar(50)  | YES  |     |                     |                |
+| msg_id       | varchar(50)  | YES  | MUL |                     |                |
+| cli_msg_id   | varchar(50)  | YES  |     |                     |                |
+| msg_type     | varchar(20)  | YES  |     |                     |                |
+| uid_from     | varchar(100) | YES  | MUL |                     |                |
+| id_to        | varchar(100) | YES  |     |                     |                |
+| d_name       | varchar(100) | YES  |     |                     |                |
+| ts           | bigint(20)   | YES  |     |                     |                |
+| status       | bigint(20)   | YES  |     |                     |                |
+| notify       | varchar(10)  | YES  |     |                     |                |
+| ttl          | bigint(20)   | YES  |     |                     |                |
+| user_id_ext  | varchar(100) | YES  |     |                     |                |
+| uin          | varchar(100) | YES  |     |                     |                |
+| cmd          | bigint(20)   | YES  |     |                     |                |
+| st           | bigint(20)   | YES  |     |                     |                |
+| at           | bigint(20)   | YES  |     |                     |                |
+| real_msg_id  | varchar(50)  | YES  |     |                     |                |
+| is_self      | tinyint(1)   | YES  |     | 0                   |                |
+| user_id      | varchar(100) | YES  | MUL |                     |                |
+| property_ext | longtext     | YES  |     |                     |                |
+| params_ext   | longtext     | YES  |     |                     |                |
+| channel_name | varchar(100) | YES  | MUL |                     |                |
+| log          | text         | YES  |     |                     |                |
+| created_at   | timestamp    | NO   |     | current_timestamp() |                |
++--------------+--------------+------+-----+---------------------+----------------+
+
+31 columns

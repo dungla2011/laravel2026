@@ -1,0 +1,24 @@
+-- Table: cloud_servers
+-- Generated: 2026-02-25 21:41:52
+
++------------------------+--------------+------+-----+---------------------+-------------------------------+
+| Field                  | Type         | Null | Key | Default             | Extra                         |
++------------------------+--------------+------+-----+---------------------+-------------------------------+
+| id                     | bigint(20)   | NO   | PRI |                     | auto_increment                |
+| old_id                 | bigint(20)   | YES  | MUL |                     |                               |
+| name                   | varchar(100) | NO   | UNI |                     |                               |
+| domain                 | varchar(100) | NO   | UNI |                     |                               |
+| proxy_domain           | varchar(100) | YES  |     |                     |                               |
+| mount_list             | text         | NO   |     |                     |                               |
+| mount_list_disable_rep | text         | YES  |     |                     |                               |
+| replicate_now          | tinyint(4)   | NO   |     | 0                   |                               |
+| iscache                | tinyint(4)   | YES  |     |                     |                               |
+| comment                | text         | YES  |     |                     |                               |
+| enable                 | smallint(6)  | YES  |     | 0                   |                               |
+| file_service_port      | bigint(20)   | YES  |     | 16868               |                               |
+| created_at             | timestamp    | YES  |     | current_timestamp() |                               |
+| updated_at             | timestamp    | YES  |     |                     | on update current_timestamp() |
+| deleted_at             | timestamp    | YES  |     |                     |                               |
++------------------------+--------------+------+-----+---------------------+-------------------------------+
+
+15 columns

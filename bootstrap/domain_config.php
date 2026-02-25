@@ -218,6 +218,14 @@ return $GLOBALS['mMapDomainDb'] = [
         'dbadmin' => "/phpmyadmin6868",
         'enable_multi_language' =>1
     ],
+    'glx.com.vn' => ['siteid' => 63, 'db_name' => 'DB_RM_HOST-8', 'layout_name' => 'glxv3',
+        'use_own_meta_table'=>1,
+        'use_unixtime_id_models' => 'PartnerInfo,VpsInstance,VpsUsage,User,OrderItem,OrderInfo,UserRecharge,FileUpload,FileCloud',
+        'force_fallback_language'=>'vi',
+        'dbadmin' => "/phpmyadmin6868",
+        'enable_multi_language' =>1
+    ],
+
     '10.1.1.1' => ['siteid' => 63, 'db_name' => 'DB_RM_HOST-8', 'layout_name' => 'glxv3',
         'use_own_meta_table'=>1,
         'force_fallback_language'=>'vi',

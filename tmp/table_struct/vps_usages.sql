@@ -1,5 +1,5 @@
 -- Table: vps_usages
--- Generated: 2026-01-09 12:52:34
+-- Generated: 2026-02-25 21:42:21
 
 CREATE TABLE `vps_usages` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -14,7 +14,9 @@ CREATE TABLE `vps_usages` (
   `bios_uuid` varchar(64) DEFAULT NULL COMMENT 'UUID from VM BIOS - persists across vCenter moves',
   `instance_uuid` varchar(64) DEFAULT NULL COMMENT 'UUID from vCenter - changes when moved',
   `timestamp_minute` datetime NOT NULL,
+  `end_time_used` datetime DEFAULT NULL COMMENT 'End time of usage session - when reached, create new record for new session',
   `number_ip_address` int(11) DEFAULT 0,
+  `price_month` decimal(18,2) DEFAULT NULL COMMENT 'Fixed monthly price from vps_instances (null for per-minute billing)',
   `price_config` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT 'Pricing config snapshot từ config/vps_config.php' CHECK (json_valid(`price_config`)),
   `calculated_fee` decimal(15,4) NOT NULL DEFAULT 0.0000 COMMENT 'Calculated fee = (n_cpu_core_price * cpu + n_ram_gb_price * ram_gb + ...) * duration_minutes / 1440 (in thousands VND)',
   `power_state` varchar(32) DEFAULT 'running',
@@ -29,6 +31,10 @@ CREATE TABLE `vps_usages` (
   `last_found_ip` datetime DEFAULT NULL COMMENT 'Last time IP addresses were found/updated',
   `mac_address` text DEFAULT NULL,
   `uptime_minutes` bigint(20) NOT NULL DEFAULT 0 COMMENT 'VM uptime in minutes (from created_at to now)',
+  `last_billing_start_at` datetime DEFAULT NULL COMMENT 'Next billing period starts from this timestamp',
+  `last_host_ip` varchar(32) DEFAULT NULL COMMENT 'Host IP address (32 chars max)',
+  `image_list` varchar(512) DEFAULT NULL COMMENT 'List of images (512 chars max)',
+  `tmp_del` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `vps_usages_instance_id_timestamp_minute_index` (`instance_id`,`timestamp_minute`),
   KEY `vps_usages_timestamp_minute_user_id_index` (`timestamp_minute`,`user_id`),
@@ -41,4 +47,4 @@ CREATE TABLE `vps_usages` (
   KEY `vps_usages_bios_uuid_index` (`bios_uuid`),
   KEY `vps_usages_created_at_index` (`created_at`),
   KEY `vps_usages_bios_uuid_created_at_index` (`bios_uuid`,`created_at`)
-) ENGINE=InnoDB AUTO_INCREMENT=1180 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=72019071222 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

@@ -1,0 +1,14 @@
+-- Table: cache_key_values
+-- Generated: 2026-02-25 21:41:51
+
++------------+--------------+------+-----+---------+-------+
+| Field      | Type         | Null | Key | Default | Extra |
++------------+--------------+------+-----+---------+-------+
+| id         | varchar(255) | NO   | PRI |         |       |
+| old_id     | varchar(255) | YES  | MUL |         |       |
+| value      | mediumtext   | YES  |     |         |       |
+| created_at | varchar(20)  | YES  |     |         |       |
+| updated_at | varchar(20)  | YES  |     |         |       |
++------------+--------------+------+-----+---------+-------+
+
+5 columns
