@@ -557,8 +557,8 @@ class VpsBillingReportService
         $linkRow = $rowIndex + 2;
         $sheet->setCellValue('A' . $linkRow, 'Link URL: ' . $currentUrl);
         
-        // Merge cells A to J (10 columns)
-        $sheet->mergeCells('A' . $linkRow . ':J' . $linkRow);
+        // Merge cells A to G (7 columns)
+        $sheet->mergeCells('A' . $linkRow . ':G' . $linkRow);
         
         // Set hyperlink
         $sheet->getCell('A' . $linkRow)->getHyperlink()->setUrl($currentUrl);
@@ -601,7 +601,7 @@ class VpsBillingReportService
             'H' => 5,      // CPU
             'I' => 10,     // RAM (GB)
             'J' => 10,     // Disk (GB)
-            // 'K' => 6,      // IPs
+            'K' => 6,      // IPs
             'L' => 14,     // Monthly Price
             'M' => 15,     // Old Config Price
             'N' => 12,     // Power State

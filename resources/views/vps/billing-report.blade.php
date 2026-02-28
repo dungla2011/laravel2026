@@ -431,22 +431,23 @@ $uid = getCurrentUserId();
         <section class="content mx-2 mb-5">
         <div class="row">
             <div class="col-12">
-                <button type="button" class="btn btn-success" id="exportPdfBtnxxx">
-                    <i class="fas fa-file-pdf mr-2"></i>
-                    <a href="{{ route('vps.billing.pdf', array_merge(['email' => $user->email], request()->only(['to_time', 'from_time']))) }}" class="text-white" style="text-decoration: none;">
-                    Export PDF
-                    </a>
-                </button>
 
-                <button type="button" class="btn btn-success ml-2" id="exportExcelBtn111">
+                <button type="button" class="btn btn-success ml-2 mb-3 float-right" id="exportExcelBtn111">
                     <a href="{{ route('vps.billing.excel', array_merge(['email' => $user->email], request()->only(['to_time', 'from_time']))) }}" class="text-white" style="text-decoration: none;">
                     Export Excel
                     </a>
                 </button>
 
-                <button type="button" class="btn btn-info ml-2" id="exportPngBtn">
+                <!-- <button type="button" class="btn btn-info ml-2" id="exportPngBtn">
                     <i class="fas fa-image mr-2"></i> Export PNG
                 </button>
+                                <button type="button" class="btn btn-success" id="exportPdfBtnxxx">
+                    <i class="fas fa-file-pdf mr-2"></i>
+                    <a href="{{ route('vps.billing.pdf', array_merge(['email' => $user->email], request()->only(['to_time', 'from_time']))) }}" class="text-white" style="text-decoration: none;">
+                    Export PDF
+                    </a>
+                </button> -->
+
             </div>
         </div>
         </section>
