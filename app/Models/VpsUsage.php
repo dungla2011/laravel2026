@@ -22,7 +22,7 @@ class VpsUsage extends ModelGlxBase
 
     /**
      * Calculate fee with formula breakdown
-     * 
+     *
      * @param string|null $fromTime Thời gian bắt đầu tính phí (nếu có)
      * @param string|null $toTime Thời gian kết thúc tính phí (nếu có)
      * @return array ['text' => string, 'fee' => float, 'details' => array]
@@ -33,27 +33,33 @@ class VpsUsage extends ModelGlxBase
         if ($this->price_month && $this->price_month > 0) {
             return $this->calculateFeeFixedMonthly($fromTime, $toTime);
         }
-        
+
         // Otherwise use config-based calculation
         return $this->calculateFeeConfigBased($fromTime, $toTime);
     }
-    
+
     /**
      * Calculate fee using fixed monthly price
-     * 
+     *
      * @param string|null $fromTime Thời gian bắt đầu tính phí (nếu có)
      * @param string|null $toTime Thời gian kết thúc tính phí (nếu có)
      */
     private function calculateFeeFixedMonthly($fromTime = null, $toTime = null)
     {
         $pricePerMonth = floatval($this->price_month);
-        
+
         // Use custom fromTime if provided, otherwise use last_billing_start_at or created_at
         $startTime = $fromTime ?: ($this->last_billing_start_at ?: $this->created_at);
         $createdTime = new \DateTime($startTime);
-        
+
         // Use custom toTime if provided, otherwise use timestamp_minute
         $endTime = $toTime ?: $this->timestamp_minute;
+
+        //Nếu ko còn dùng nữa, là đã hết hạn, thì $endTime tính đến lúc dùng thôi
+        if($this->end_time_used){
+            $endTime = $this->timestamp_minute;
+        }
+
         $timestampTime = new \DateTime($endTime);
         $interval = $createdTime->diff($timestampTime);
         $durationMinutes = ($interval->days * 1440) + ($interval->h * 60) + $interval->i;
@@ -78,7 +84,7 @@ class VpsUsage extends ModelGlxBase
             $durationText,
             number_format($fee, 0, ',', '.')
         );
-        
+
         return [
             'text' => $text,
             'fee' => $fee,
@@ -94,10 +100,10 @@ class VpsUsage extends ModelGlxBase
             ]
         ];
     }
-    
+
     /**
      * Calculate fee using config-based pricing
-     * 
+     *
      * @param string|null $fromTime Thời gian bắt đầu tính phí (nếu có)
      * @param string|null $toTime Thời gian kết thúc tính phí (nếu có)
      */
@@ -120,9 +126,10 @@ class VpsUsage extends ModelGlxBase
         } else {
             $startTime = $this->last_billing_start_at ? strtotime($this->last_billing_start_at) : strtotime($this->created_at);
         }
-        
+
         // Use custom toTime if provided, otherwise use lastest_time_the_same or created_at
-        if ($toTime) {
+        //Nếu ko còn dùng nữa, là đã hết hạn, thì $lastestTime tính đến lúc dùng thôi
+        if ($toTime && !$this->end_time_used) {
             $lastestTime = strtotime($toTime);
         } else {
             $lastestTime = strtotime($this->lastest_time_the_same ?? $this->created_at);
@@ -160,7 +167,7 @@ class VpsUsage extends ModelGlxBase
         $remainingMinutes = $durationMinutes % 1440;
         $hours = floor($remainingMinutes / 60);
         $minutes = $remainingMinutes % 60;
-        
+
         $durationText = '';
         if ($days > 0) {
             $durationText .= $days . ' ngày ';

@@ -27,6 +27,10 @@ Route::prefix('/member/vps-billing')->group(function () {
     Route::match(['GET', 'POST'], '/report/pdf', [\App\Http\Controllers\VpsBillingController::class, 'downloadPdf'])
         ->name('vps.billing.pdf');
     
+    // Download Excel
+    Route::get('/report/excel', [\App\Http\Controllers\VpsBillingController::class, 'downloadExcel'])
+        ->name('vps.billing.excel');
+    
     // Gửi email
     Route::post('/report/send-email', [\App\Http\Controllers\VpsBillingController::class, 'sendEmail'])
         ->name('vps.billing.email');

@@ -45,6 +45,8 @@ class VpsInstance_Meta extends MetaOfTableInDb
         return $objMeta;
     }
 
+
+
     function _name($obj, $val, $field)
     {
         $vpsUsage = VpsUsage::where('instance_id', $obj->id)->orderBy('id', "DESC")->first();
@@ -54,8 +56,15 @@ class VpsInstance_Meta extends MetaOfTableInDb
 
             $consoleText = "<a href='/_site/hosting_site/console/?instance_id=$obj->id' target='_blank'> <button type='button' class='my-2 mx-2 btn btn-sm btn-outline-primary'> <i class='fa fa-desktop' aria-hidden='true'></i>
  Điều khiển Console </button> </a>";
+
+
+
         $ipList = '';
         if($vpsUsage){
+
+                if(!$vpsUsage->last_host_ip){
+                    $consoleText = '';
+                }
 
             $ips = $vpsUsage->list_ip_address ?? '';
             $ips = str_replace(",", "<br>", $ips);
@@ -94,7 +103,9 @@ class VpsInstance_Meta extends MetaOfTableInDb
 
         $ret = "$obj->_email UID: $obj->user_id";
 
-        $md5 = substr(md5($obj->bios_uuid), -8);
+        $md5 = '';
+        if(Helper1::isAdminModule())
+            $md5 = substr(md5($obj->bios_uuid), -8);
 
 
         return "<div style='color: transparent'> P$md5</div> <div class='m-2 mx-3'> $ret </div> $ipList";
@@ -149,8 +160,12 @@ class VpsInstance_Meta extends MetaOfTableInDb
 
     function _number_ip_address($obj, $val, $field){
 
+        $vpsUsage = VpsUsage::where('instance_id', $obj->id)->orderBy('id', "DESC")->first();
 
-//        return "<div class='m-2'> $ip </div>";
+        if($vpsUsage){
+            return "<div class='m-2 text-sm'> $vpsUsage->list_ip_address </div>";
+        }
+
     }
 
     function _user_id($obj, $val, $field)
@@ -193,19 +208,17 @@ class VpsInstance_Meta extends MetaOfTableInDb
 
 
     <style>
-        .input_value_to_post.readonly.list_ip_address{
-            display: none;
+        .divTable2Cell td input{
+            text-align: center;
         }
-
+        input.number_ip_address {
+            display: none!important;
+        }
         .input_value_to_post.name{
             min-width: 250px;
         }
-
     </style>
 
-    <script>
-        
-    </script>
 
 <?php
     }

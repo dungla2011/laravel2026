@@ -173,7 +173,7 @@ class SyncVmwareInstancesCommand extends Command
                         // Get current pricing config (needed for both update and insert)
                         $currentPricingConfig = VpsPricingService::getPricingConfig();
 
-                        if ($lastUsage) {
+                        if ($lastUsage && ($lastUsage->power_state == "POWERED_ON" || $lastUsage->power_state == "POWERED_OFF")) {
 
                             // Check if end_time_used has expired - if yes, insert new record
                             if ($lastUsage->end_time_used && now()->gt(\Carbon\Carbon::parse($lastUsage->end_time_used))) {
@@ -245,7 +245,7 @@ class SyncVmwareInstancesCommand extends Command
 //                                || $instance->type == 'backup_glx' || $instance->type == 'ignore_compare_config'
 //                            )
                             //Bỏ qua Time, vì có nhiều time script ko chạy, hoặc ko kết nối được HostVM
-                            if (($currentConfigHash === $lastConfigHash && !$pricingHasChanged)
+                            if (($currentConfigHash === $lastConfigHash)
                                 || $instance->type == 'backup_glx' || $instance->type == 'ignore_compare_config'
                             )
                             {
@@ -296,6 +296,12 @@ class SyncVmwareInstancesCommand extends Command
                             } else {
                                 // Config changed or 10+ minutes passed, insert new record (fee = 0 on first insert)
                                 $this->createNewVpsUsageRecord($vm, $instance, $powerState, $listIpAddress, $lastFoundIpTime, $currentPricingConfig);
+
+                                $lastUsage->end_time_used = nowyh();
+                                //Khong the de la off, vì sẽ làm mất bikl
+                                $lastUsage->power_state = "OLD_CONFIG";
+                                $lastUsage->addLog(" set end_time_used");
+                                $lastUsage->update();
 
                                 if ($pricingHasChanged) {
                                     $this->line("  💰 Pricing config changed! Inserted new vps_usages snapshot");

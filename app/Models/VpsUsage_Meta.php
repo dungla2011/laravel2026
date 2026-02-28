@@ -13,6 +13,21 @@ class VpsUsage_Meta extends MetaOfTableInDb
 
     public static $modelClass = VpsUsage::class;
 
+    public function getHardCodeMetaObj($field) {
+
+        $objMeta = new MetaOfTableInDb();
+        if($field == 'power_state'){
+            $objMeta->dataType = DEF_DATA_TYPE_HTML_SELECT_OPTION;
+        }
+
+
+
+//        if(!$objMeta->dataType)
+//            return null;
+
+        return $objMeta;
+    }
+
     function getMapJoinFieldAlias()
     {
         return [
@@ -84,6 +99,9 @@ class VpsUsage_Meta extends MetaOfTableInDb
 
     function _price_config($obj, $val, $field)
     {
+        if(!$obj || !$val)
+            return;
+
         $mm = json_decode($val);
         $ret = '';
         $cc = 0;
@@ -102,15 +120,24 @@ class VpsUsage_Meta extends MetaOfTableInDb
     }
 
     function _power_state($obj, $val, $field){
-        $val1 = "OFF";
-        if(str_contains($val, "_ON")){
-            $color = "green";
-            $val1 = "ON";
-        }
-        else
-            $color = "red";
 
-        return "<div style='color: $color; font-size: smaller; margin-left: 5px; text-align: center'>$val1 </div>";
+        $mm = [
+            "" => "-change-",
+            "POWERED_OFF" => "POWERED_OFF",
+            "POWERED_ON" => "POWERED_ON",
+            "OLD_CONFIG" => "OLD_CONFIG",
+        ];
+        return $mm;
+
+//        $val1 = "OFF";
+//        if(str_contains($val, "_ON")){
+//            $color = "green";
+//            $val1 = "ON";
+//        }
+//        else
+//            $color = "red";
+//
+//        return "<div style='color: $color; font-size: smaller; margin-left: 5px; text-align: center'>$val1 </div>";
     }
 
 

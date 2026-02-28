@@ -40,7 +40,7 @@ class VpsBillingController extends Controller
             $options['date_to'] = $request->get('date_to');
         }
 
-        $data = $this->billingService->generateReportData($user, $options);
+        $data = $this->billingService->generateReportData($user, $options, $fromTime = null, $request->get('to_time') );
 
         return view('vps.billing-report', $data);
     }
@@ -53,6 +53,7 @@ class VpsBillingController extends Controller
      */
     public function downloadPdf(Request $request)
     {
+
         // Get current user
         $user = getCurrentUserId(1);
         if (!$user) {
@@ -69,16 +70,43 @@ class VpsBillingController extends Controller
             $options['date_to'] = $request->get('date_to');
         }
 
-        $pdf = $this->billingService->generatePdf($user, $options);
+        $pdf = $this->billingService->generatePdf($user, $options, $request->from_time, $request->to_time);
 
         // Download PDF
         $fileName = sprintf(
-            'vps-billing-%s-%s.pdf',
+            'vps-billing-glx-%s-%s.pdf',
             $user->id,
             now()->format('Y-m-d')
         );
 
         return $pdf->download($fileName);
+    }
+
+    /**
+     * Download billing report as Excel
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function downloadExcel(Request $request)
+    {
+        // Get current user
+        $user = getCurrentUserId(1);
+        if (!$user) {
+            bl("Login please!");
+            return redirect()->route('login');
+        }
+
+        // Generate Excel
+        $options = [];
+        if ($request->has('date_from')) {
+            $options['date_from'] = $request->get('date_from');
+        }
+        if ($request->has('date_to')) {
+            $options['date_to'] = $request->get('date_to');
+        }
+
+        return $this->billingService->generateExcel($user, $options, $request->from_time, $request->to_time);
     }
 
     /**
@@ -90,10 +118,10 @@ class VpsBillingController extends Controller
     public function showDetail($id)
     {
         $usage = \App\Models\VpsUsage::findOrFail($id);
-        
+
         // Get instance info
         $instance = \App\Models\VpsInstance::find($usage->instance_id);
-        
+
         // Calculate fee with full details
         if ($usage->price_month && $usage->price_month > 0) {
             // Fixed monthly price calculation
@@ -120,7 +148,7 @@ class VpsBillingController extends Controller
                 'duration_hours' => $hours,
                 'duration_mins' => $minutes,
                 'fee' => $fee,
-                'formula' => sprintf('%s K/tháng × %d phút / 43200 phút = %s K', 
+                'formula' => sprintf('%s K/tháng × %d phút / 43200 phút = %s K',
                     number_format($pricePerMonth, 0, ',', '.'),
                     $durationMinutes,
                     number_format($fee, 0, ',', '.')

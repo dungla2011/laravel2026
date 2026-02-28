@@ -35,12 +35,10 @@
 
 </head>
 
-<body data-code-pos='ppp173267362752951' class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed
-<?php
+<body data-code-pos='ppp173267362752951' class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed <?php
 if(\App\Models\SiteMng::isAdminSidebarCollapse())
     echo "sidebar-collapse";
-?>
-">
+?>">
 
 <div class="wrapper">
     @yield('header')

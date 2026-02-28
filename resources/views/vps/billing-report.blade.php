@@ -24,7 +24,7 @@ $uid = getCurrentUserId();
         .badge-danger,.badge-secondary {
             font-weight: inherit;
         }
-        .table-sm td{
+        .table-sm td, .table-sm th{
             vertical-align: middle;
         }
         td.instance-id{
@@ -64,46 +64,119 @@ $uid = getCurrentUserId();
         .connected-cell-3 { background-color: lavender !important; border: 0px solid lavender !important; font-weight: bold; }
         .connected-cell-4 { background-color: lavender !important; border: 0px solid lavender !important; font-weight: bold; }
         .connected-cell-5 { background-color: lavender !important; border: 2px solid lavender !important; font-weight: bold; }
+
+        /* PDF Export Optimization */
+        .content-wrapper {
+            padding-top: 0 !important;
+        }
+        .all_content_report_vps {
+            /*padding: 0 !important;*/
+            /*margin: 0 !important;*/
+        }
+        .all_content_report_vps > .container-fluid {
+            padding: 5px !important;
+            /*margin: 0 !important;*/
+        }
+        .all_content_report_vps .row {
+            /*margin: 0 !important;*/
+            /*margin-bottom: 5px !important;*/
+        }
+        .all_content_report_vps .info-box {
+            /*margin-bottom: 0 !important;*/
+        }
     </style>
 @endsection
 
 @section('content')
-    <div class="content-wrapper pt-3">
-        <!-- Content Header -->
-        <div class="content-header d-none">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-sm-6">
-                        <h3 class="m-0"> VPS Billing Report</h3>
-                    </div>
-                    <div class="col-sm-6">
-                        <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="/">Home</a></li>
-                            <li class="breadcrumb-item active">VPS Billing</li>
-                        </ol>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <?php
+    $totalCostVND = $totalCost * 1000;
+    ?>
+    <div class="content-wrapper" style="padding-top: 1px!important;">
 
         <!-- Main content -->
-        <section class="content">
+        <section class="content all_content_report_vps mt-3">
             <div class="container-fluid">
                 <!-- Summary Financial Info -->
+                <!-- Partner Info -->
+                <div class="row mb-3 partner-info d-none">
+                    <div class=" text-center" style="border-bottom: 1px solid #ccc; padding-bottom: 20px">
+                        <div class="text-muted">CÔNG TY CÔNG NGHỆ SỐ GLAXY VIỆT NAM - GLX.COM.VN
+                        </div>
+                    </div>
+
+
+                    <DIV class="m-3 text-center">
+                        <?php
+
+                        $toTime = request('to_time');
+
+                        ?>
+                        <b style="color: gray; font-size: 120%">
+
+                        Đối soát sử dụng VPS đến thời điểm {{ $toTime ? $toTime : "hiện tại - " . nowyh_vn()  }}
+                        </b>
+                    </DIV>
+
+                    <div class="text-center">
+                        <?php
+                        $pn = \App\Models\PartnerInfo::where("user_id", getCurrentUserId())->first();
+                        if($pn){
+                            ?>
+                        <div class="text-muted">
+                           Khách hàng:  {{ $pn->partner_name }} - {{ $pn->tax_code }}
+                        </div>
+                            <?php
+                        }
+                        ?>
+                    </div>
+
+
+                </div>
                 <div class="row">
+                    <?php
+                    $soDuDuong = $soDu = $totalRecharge / 1.1 - $totalCostVND;
+                    if($soDu < 0){
+                        $soDuDuong = -1 * $soDu;
+                    }
+
+                    $tt = number_format($soDu , 0, ',', '.');
+                    ?>
+                    <div class="col-12 col-md-4">
+                        <div class="info-box bg-gradient-success">
+                            <span class="info-box-icon"><i class="fas fa-coins"></i></span>
+                            <div class="info-box-content">
+                                <span class="info-box-text">
+
+                                    {{ $soDu > 0 ? "Số dư: " : "Cần thanh toán: " }}
+
+                                </span>
+                                <span class="info-box-number">{{ number_format($soDuDuong , 0, ',', '.'); }} VND </span>
+                                <div class="progress">
+                                </div>
+                                <span class="progress-description">
+                                    {{ \LadLib\Common\cstring2::toTienVietNamString3(( $soDuDuong))  }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="col-12 col-md-4">
                         <div class="info-box bg-info">
                             <span class="info-box-icon"><i class="fas fa-wallet"></i></span>
                             <div class="info-box-content">
-                                <span class="info-box-text">Đã thanh toán</span>
-                                <span class="info-box-number">{{ number_format($totalRecharge / 1000000 / 1.1, 2, ',', '.') }}M VND (Chưa VAT)</span>
+                                <span class="info-box-text">Đã thanh toán:
+
+                                </span>
+                                <span class="info-box-number">{{ number_format($totalRecharge / 1.1, 0, ',', '.') }} VND
+                                         <a href="/member/user-recharge" class="text-white" style="font-size: 80%"><i>
+                                        (Chưa VAT, Xem danh sách)
+                                         </i></a>
+                                </span>
                                 <div class="progress">
                                     <div class="progress-bar" style="width: 100%"></div>
                                 </div>
                                 <span class="progress-description">
-                                    <a href="/member/user-recharge" class="text-white">
-                                        <i class="fas fa-arrow-circle-right"></i> Chi tiết thanh toán
-                                    </a>
+{{ \LadLib\Common\cstring2::toTienVietNamString3($totalRecharge)  }}
                                 </span>
                             </div>
                         </div>
@@ -113,54 +186,66 @@ $uid = getCurrentUserId();
                         <div class="info-box bg-info">
                             <span class="info-box-icon"><i class="fas fa-file-invoice-dollar"></i></span>
                             <div class="info-box-content">
-                                <span class="info-box-text">Tổng chi phí VPS</span>
-                                <span class="info-box-number">{{ number_format($totalCost / 1000, 2, ',', '.') }}M VND</span>
+                                <span class="info-box-text">Tổng chi phí VPS:
+
+                                </span>
+                                <span class="info-box-number">{{ number_format($totalCostVND, 0, ',', '.') }} VND</span>
                                 <div class="progress">
-                                    <div class="progress-bar" style="width: {{ $totalRecharge > 0 ? min(100, (($totalCost * 1000) / $totalRecharge) * 100) : 0 }}%"></div>
+                                    <div class="progress-bar" style="width: {{ $totalRecharge > 0 ? min(100, (($totalCostVND ) / $totalRecharge) * 100) : 0 }}%"></div>
                                 </div>
                                 <span class="progress-description">
-                                    {{ number_format($totalCost, 0, ',', '.') }} K VND
+                                    {{ \LadLib\Common\cstring2::toTienVietNamString3($totalCostVND)  }}
                                 </span>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-12 col-md-4">
-                        <div class="info-box bg-gradient-success">
-                            <span class="info-box-icon"><i class="fas fa-coins"></i></span>
-                            <div class="info-box-content">
-                                <span class="info-box-text">Số dư tài khoản</span>
-                                <span class="info-box-number">{{ number_format(($totalRecharge / 1000 / 1.1 - $totalCost) / 1000, 2, ',', '.') }}M VND</span>
-                                <div class="progress">
-                                    <div class="progress-bar" style="width: {{ $totalRecharge > 0 ? (($totalRecharge / 1000 / 1.1 - $totalCost) / ($totalRecharge / 1000 / 1.1)) * 100 : 0 }}%"></div>
-                                </div>
-                                <span class="progress-description">
-                                    {{ number_format($totalRecharge / 1000 / 1.1 - $totalCost, 0, ',', '.') }} K VND
-                                </span>
-                            </div>
-                        </div>
-                    </div>
+                    
                 </div>
 
                 <!-- Info boxes -->
                 <div class="row">
 
-                    <div class="col-12 col-sm-6 col-md-6">
+                    <div class="col-12 col-sm-6 col-md-4">
                         <div class="info-box">
                             <span class="info-box-icon bg-success elevation-1"><i class="fas fa-database"></i></span>
                             <div class="info-box-content">
-                                <span class="info-box-text">Usage Records</span>
+                                <span class="info-box-text">Usage Records:</span>
                                 <span class="info-box-number">{{ number_format(count($results), 0) }}</span>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-12 col-sm-6 col-md-6">
+                    <div class="col-12 col-sm-6 col-md-4">
                         <div class="info-box">
                             <span class="info-box-icon bg-info elevation-1"><i class="fas fa-server"></i></span>
                             <div class="info-box-content">
-                                <span class="info-box-text">VPS Instances</span>
+                                <span class="info-box-text">VPS Instances:</span>
                                 <span class="info-box-number">{{ count($instanceTotals) }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-sm-6 col-md-4 select_date_bill">
+                        <div class="info-box">
+                            <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-calendar"></i></span>
+                            <div class="info-box-content">
+
+                                <div style="margin-top: 8px;">
+                                    <input type="date" id="paymentDate" class="form-control form-control-sm" 
+                                        value="{{ request('to_time') }}" style="font-size: 100%; {{ request('to_time') ? 'color:white; border: 1px solid red; background-color: red;' : '' }}"
+                                        placeholder="Chọn thời điểm báo cáo"
+                                        >
+                                </div>
+                                <div style="margin-top: 8px; display: flex; gap: 5px;">
+                                    <button class="btn btn-primary btn-sm flex-grow-1" onclick="filterByDate()">
+                                        <i class="fas fa-search"></i> Chọn ngày
+                                    </button>
+                                    <button class="btn btn-secondary btn-sm" onclick="clearDate()" 
+                                        {{ !request('to_time') ? 'disabled' : '' }}>
+                                        <i class="fas fa-times"></i> Xoá
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -176,11 +261,11 @@ $uid = getCurrentUserId();
                                     <div class="col-md-9">
                                         <h3 class="mb-1">Total Cost</h3>
                                         <h1 class="display-4 text-primary mb-2">
-                                            <strong>{{ number_format($totalCost, $decimal, $dec_separator, $thousands_separator) }}</strong>
-                                            <small class="text-muted">K VND</small>
+                                            <strong>{{ number_format($totalCostVND, $decimal, $dec_separator, $thousands_separator) }}</strong>
+                                            <small class="text-muted"> VND</small>
                                         </h1>
                                         <p class="text-muted mb-0">
-                                            <i class="fas fa-equals"></i> Approximately {{ number_format($totalCost / 1000, 3, $dec_separator, $thousands_separator) }} Million VND
+                                            <i class="fas fa-equals"></i> Approximately {{ number_format($totalCostVND , 0, $dec_separator, $thousands_separator) }} VND
                                         </p>
                                         @if($date_from || $date_to)
                                         <p class="text-muted mt-2">
@@ -205,51 +290,6 @@ $uid = getCurrentUserId();
                     </div>
                 </div>
 
-                <!-- Instance Totals -->
-                <div class="row d-none" >
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <h3 class="card-title"><i class="fas fa-chart-bar"></i> Danh sách VPS </h3>
-                            </div>
-                            <div class="card-body table-responsive p-0">
-                                <table class="table table-hover table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th width="50">STT</th>
-                                            <th>Mã số VPS</th>
-                                            <th>Tên VPS</th>
-                                            <th>Số bản ghi</th>
-                                            <th class="text-right">Tổng chi phí (K VND)</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($instanceTotals as $instId => $instData)
-                                        <tr>
-                                            <td>{{ $loop->iteration }}</td>
-                                            <td><span class="badge1 badge-secondary1">{{ $instId }}</span></td>
-                                            <td>{{ $instData['name'] }}</td>
-                                            <td>{{ number_format($instData['count'], 0, $dec_separator, $thousands_separator) }}</td>
-                                            <td class="text-right">
-                                                <strong class="text-primary">{{ number_format($instData['total'], $decimal, $dec_separator, $thousands_separator) }}</strong>
-                                            </td>
-                                        </tr>
-                                        @endforeach
-                                    </tbody>
-                                    <tfoot class="bg-light">
-                                        <tr>
-                                            <th colspan="3" class="text-right">TỔNG CỘNG:</th>
-                                            <th>{{ number_format(count($results), 0, $dec_separator, $thousands_separator) }}</th>
-                                            <th class="text-right">
-                                                <strong class="text-danger">{{ number_format($totalCost, $decimal, $dec_separator, $thousands_separator) }}</strong>
-                                            </th>
-                                        </tr>
-                                    </tfoot>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
                 <!-- Detailed Records -->
                 <div class="row" data-code-pos='ppp17711880674321'>
@@ -269,9 +309,9 @@ $uid = getCurrentUserId();
                                             <th>Ngày tính phí</th>
                                             <th>Tính phí đến</th>
                                             <th>Thời gian sử dụng</th>
-                                            <th>Phí/Tháng</th>
+                                            <th>Phí/Tháng (nghìn) </th>
                                             <th>Trạng thái</th>
-                                            <th class="text-right"> Tổng Chi phí</th>
+                                            <th class="text-right"> Tổng số (Nghìn)</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -289,7 +329,7 @@ $uid = getCurrentUserId();
                                             $diskChanged = false;
                                             $ipChanged = false;
 
-                                            if (!$isNewInstance && $previousRow && strtoupper($row['power_state']) === 'CHANGE_CONFIG') {
+                                            if (!$isNewInstance && $previousRow && strtoupper($row['power_state']) === 'OLD_CONFIG') {
                                                 $cpuChanged = $previousRow['cpu'] != $row['cpu'];
                                                 $ramChanged = $previousRow['ram_gb'] != $row['ram_gb'];
                                                 $diskChanged = $previousRow['disk_gb'] != $row['disk_gb'];
@@ -305,10 +345,10 @@ $uid = getCurrentUserId();
                                                 </a>
                                                 <br>
                                                 <small1>
-                                                    <span class="badge {{ $cpuChanged ? 'badge-danger' : 'badge-secondary' }}">{{ $row['cpu'] }} Core </span>
-                                                    <span class="badge {{ $ramChanged ? 'badge-danger' : 'badge-secondary' }}">{{ $row['ram_gb'] }} GB</span>
-                                                    <span class="badge {{ $diskChanged ? 'badge-danger' : 'badge-secondary' }}">{{ $row['disk_gb'] }} GB</span>
-                                                    <span class="badge {{ $ipChanged ? 'badge-danger' : 'badge-secondary' }}">{{ $row['ip_count'] }} IP</span>
+                                                    <span class="badge {{ $cpuChanged ? 'badge-warning' : 'badge-secondary' }}">{{ $row['cpu'] }} Core </span>
+                                                    <span class="badge {{ $ramChanged ? 'badge-warning' : 'badge-secondary' }}">{{ $row['ram_gb'] }} GB</span>
+                                                    <span class="badge {{ $diskChanged ? 'badge-warning' : 'badge-secondary' }}">{{ $row['disk_gb'] }} GB</span>
+                                                    <span class="badge {{ $ipChanged ? 'badge-warning' : 'badge-secondary' }}">{{ $row['ip_count'] }} IP</span>
                                                 </small1>
                                             </td>
                                             <td class="list-ip-address {{ $isCrossed ? 'row-crossed' : '' }}">
@@ -323,7 +363,7 @@ $uid = getCurrentUserId();
                                                 @endif
                                             </td>
                                             <td class="timestamp {{ $isCrossed ? 'row-crossed' : '' }}">
-                                                <small>{{ \Carbon\Carbon::parse($row['timestamp'])->format('Y-m-d H:i') }}</small>
+                                                <small>{{ \Carbon\Carbon::parse($row['timestamp'])->format('Y-m-d H:i') }}  </small>
                                             </td>
                                             <td class="time-usage {{ $isCrossed ? 'row-crossed' : '' }}"><small class="text-muted">{{ $row['time_usage'] }}</small></td>
                                             <td class="price-month {{ $isCrossed ? 'row-crossed' : '' }}">
@@ -333,9 +373,9 @@ $uid = getCurrentUserId();
                                                 @endphp
                                                 @if ($displayPrice && !$isPoweredOff)
                                                     @if (!$isChangeConfig)
-                                                    <span class="badge badge-primary">{{ number_format($displayPrice, 0, $dec_separator, $thousands_separator) }}K</span>
+                                                    <span class="color-primary">{{ ($displayPrice) }} </span>
                                                     @else
-                                                    <small class="badge badge-secondary">{{ number_format($displayPrice, 0, $dec_separator, $thousands_separator) }}K</small>
+                                                    <span class="color-primary">{{($displayPrice) }} </span>
                                                     @endif
                                                 @elseif ($isPoweredOff)
                                                 <small class="text-muted">-</small>
@@ -344,19 +384,15 @@ $uid = getCurrentUserId();
                                                 @endif
                                             </td>
                                             <td class="power-state {{ $isCrossed ? 'row-crossed' : '' }}">
-                                                @if($row['is_latest_config'])
-                                                    <span class="{{ strtoupper($row['power_state']) === 'POWERED_ON' ? 'badge badge-success' : 'badge badge-danger' }}">
+                                                
+                                                    <span class="{{ strtoupper($row['power_state']) === 'POWERED_ON' ? 'badge badge-success' : 'badge badge-secondary' }}">
                                                         {{ $row['power_state'] }}
                                                     </span>
-                                                @else
-                                                    <span class="badge badge-secondary">
-                                                        CHANGE_CONFIG
-                                                    </span>
-                                                @endif
+                                                
                                             </td>
                                             <td class="text-right fee {{ $isCrossed ? 'row-crossed' : '' }}">
                                                 <a href="{{ route('vps.billing.detail', $row['usage_id']) }}" class="text-primary" title="Click to view detailed calculation">
-                                                    <strong>{{ number_format($row['calculated_fee'], $decimal, $dec_separator, $thousands_separator) }} K</strong>
+                                                    <strong>{{ $row['calculated_fee'] }} </strong>
                                                     <i class="fas fa-external-link-alt ml-1" style="font-size: 10px;"></i>
                                                 </a>
                                             </td>
@@ -369,12 +405,12 @@ $uid = getCurrentUserId();
                                             <th colspan="7" class="text-right" title="Chỉ lấy các Cấu hình cuối cùng nếu có thay đổi">TỔNG CỘNG:</th>
                                             <th class="text-left">
                                                 <h4 class="mb-0" title="Chỉ lấy các Cấu hình cuối cùng nếu có thay đổi">
-                                                    <span class="badge badge-success" style="font-size: 16px; padding: 8px 12px;">{{ number_format($totalPriceMonth, 0, $dec_separator, $thousands_separator) }}K <small>/Tháng</small></span>
+                                                    <span class="badge badge-success" style=" padding: 5px 5px;">{{ ($totalPriceMonth) }} </span>
                                                 </h4>
                                             </th>
                                             <th>{{ number_format(count($results), 0, $dec_separator, $thousands_separator) }} records</th>
                                             <th class="text-right">
-                                                <strong class="text-danger">{{ number_format($totalCost, $decimal, $dec_separator, $thousands_separator) }} K </strong>
+                                                <strong class="text-danger">{{ $totalCost}} </strong>
                                             </th>
                                         </tr>
                                     </tfoot>
@@ -384,37 +420,64 @@ $uid = getCurrentUserId();
                     </div>
                 </div>
 
-                <!-- Report Notes -->
-                <div class="row d-none">
-                    <div class="col-12">
-                        <div class="callout callout-info">
-                            <h5><i class="fas fa-info-circle"></i> Report Notes</h5>
-                            <ul class="mb-0">
-                                <li>Each record represents VPS configuration at a specific timestamp_minute</li>
-                                <li><strong class="text-danger">POWERED_OFF state = NO CHARGE:</strong> Fee is set to 0</li>
-                                <li>Instance Totals section shows sum of all records grouped by instance_id</li>
-                                <li>Blue border separates different instances in detailed list</li>
-                                <li>Time-connected rows: Same instance_id with consecutive billing periods shown with background color</li>
-                                <li>Generated at: <strong>{{ $generated_at->format('Y-m-d H:i:s') }}</strong></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- Export PDF Button -->
-                <div class="row mt-4 mb-3">
-                    <div class="col-12">
-                        <button type="button" class="btn btn-danger" id="exportPdfBtn">
-                            <i class="fas fa-file-pdf mr-2"></i> Export PDF
-                        </button>
-                    </div>
-                </div>
+
+
 
             </div>
         </section>
+
+        <!-- Export Buttons -->
+        <section class="content mx-2 mb-5">
+        <div class="row">
+            <div class="col-12">
+                <button type="button" class="btn btn-success" id="exportPdfBtnxxx">
+                    <i class="fas fa-file-pdf mr-2"></i>
+                    <a href="{{ route('vps.billing.pdf', array_merge(['email' => $user->email], request()->only(['to_time', 'from_time']))) }}" class="text-white" style="text-decoration: none;">
+                    Export PDF
+                    </a>
+                </button>
+
+                <button type="button" class="btn btn-success ml-2" id="exportExcelBtn111">
+                    <a href="{{ route('vps.billing.excel', array_merge(['email' => $user->email], request()->only(['to_time', 'from_time']))) }}" class="text-white" style="text-decoration: none;">
+                    Export Excel
+                    </a>
+                </button>
+
+                <button type="button" class="btn btn-info ml-2" id="exportPngBtn">
+                    <i class="fas fa-image mr-2"></i> Export PNG
+                </button>
+            </div>
+        </div>
+        </section>
     </div>
 
+
+
     <script>
+    // Filter by payment date
+    function filterByDate() {
+        const dateInput = document.getElementById('paymentDate');
+        const dateValue = dateInput.value;
+        
+        if (!dateValue) {
+            alert('Vui lòng chọn ngày!');
+            return;
+        }
+        
+        // Get current URL and add/update to_time parameter
+        const url = new URL(window.location);
+        url.searchParams.set('to_time', dateValue);
+        window.location.href = url.toString();
+    }
+
+    // Clear date filter
+    function clearDate() {
+        const url = new URL(window.location);
+        url.searchParams.delete('to_time');
+        window.location.href = url.toString();
+    }
+
     // Function to highlight config changes
     function highlightConfigChanges(rows) {
         for (let i = 1; i < rows.length; i++) {
@@ -425,8 +488,8 @@ $uid = getCurrentUserId();
             const previousInstanceId = previousRow.getAttribute('data-instance-id');
             const powerState = currentRow.querySelector('td.power-state');
 
-            // Check if it's CHANGE_CONFIG and same instance
-            if (currentInstanceId === previousInstanceId && powerState && powerState.textContent.includes('CHANGE_CONFIG')) {
+            // Check if it's OLD_CONFIG and same instance
+            if (currentInstanceId === previousInstanceId && powerState && powerState.textContent.includes('OLD_CONFIG')) {
                 // Extract config values from badges
                 const currentNameCell = currentRow.querySelector('td.name');
                 const previousNameCell = previousRow.querySelector('td.name');
@@ -707,20 +770,50 @@ $uid = getCurrentUserId();
                 exportToPdf();
             });
         }
+
+        const exportExcelBtn = document.getElementById('exportExcelBtn');
+        if (exportExcelBtn) {
+            exportExcelBtn.addEventListener('click', function() {
+                exportToExcel();
+            });
+        }
+
+        const exportPngBtn = document.getElementById('exportPngBtn');
+        if (exportPngBtn) {
+            exportPngBtn.addEventListener('click', function() {
+                exportToPng();
+            });
+        }
     });
 
     function exportToPdf() {
-        // Get content to export
-        const element = document.querySelector('.content-wrapper');
+        // Get content to export - only the report content, not the button
+        const element = document.querySelector('.all_content_report_vps');
         const fileName = `vps-billing-${new Date().toISOString().split('T')[0]}.pdf`;
 
-        // Options for html2pdf
+        // Clone element and remove extra padding
+        const clonedElement = element.cloneNode(true);
+        clonedElement.style.padding = '0';
+        clonedElement.style.margin = '0';
+
+        // Options for html2pdf - optimize to fit in 1 page
         const options = {
-            margin: 10,
+            margin: [1, 1, 1, 1],  // Minimal margins (top, left, bottom, right) in mm
             filename: fileName,
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2 },
-            jsPDF: { orientation: 'landscape', unit: 'mm', format: 'a4' }
+            image: { type: 'jpeg', quality: 0.95 },
+            html2canvas: {
+                scale: 1.0,  // Reduced from 1.5 to reduce whitespace
+                useCORS: true,
+                allowTaint: true,
+                logging: false
+            },
+            jsPDF: {
+                orientation: 'landscape',
+                unit: 'mm',
+                format: [600, 400],  // Custom size to fit content
+                compress: true
+            },
+            pagebreak: { mode: ['avoid-all'] }  // Avoid page breaks
         };
 
         // Check if html2pdf library is loaded
@@ -729,12 +822,69 @@ $uid = getCurrentUserId();
             const script = document.createElement('script');
             script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
             script.onload = function() {
-                html2pdf().set(options).from(element).save();
+                html2pdf().set(options).from(clonedElement).save();
             };
             document.head.appendChild(script);
         } else {
-            html2pdf().set(options).from(element).save();
+            html2pdf().set(options).from(clonedElement).save();
         }
     }
+
+    function exportToPng() {
+        // Get content to export
+        const element = document.querySelector('.all_content_report_vps');
+        const fileName = `vps-billing-${new Date().toISOString().split('T')[0]}.png`;
+
+        // Load html2canvas library if not loaded
+        if (typeof html2canvas === 'undefined') {
+            const script = document.createElement('script');
+            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+            script.onload = function() {
+                captureAsImage(element, fileName);
+            };
+            document.head.appendChild(script);
+        } else {
+            captureAsImage(element, fileName);
+        }
+    }
+
+    function captureAsImage(element, fileName) {
+        html2canvas(element, {
+            scale: 2,
+            useCORS: true,
+            allowTaint: true,
+            logging: false,
+            backgroundColor: '#ffffff'
+        }).then(canvas => {
+            const link = document.createElement('a');
+            link.href = canvas.toDataURL('image/png');
+            link.download = fileName;
+            link.click();
+        }).catch(err => {
+            console.error('Error capturing image:', err);
+            alert('Error capturing PNG. Please try again.');
+        });
+    }
+
+    function exportToExcel() {
+        // Get current URL parameters
+        const url = new URL(window.location);
+        const params = new URLSearchParams(url.search);
+        
+        // Build download URL with parameters
+        let downloadUrl = '{{ route("vps.billing.excel") }}?email={{ $user->email }}';
+        
+        // Add filter parameters if they exist
+        if (params.has('to_time')) {
+            downloadUrl += '&to_time=' + params.get('to_time');
+        }
+        if (params.has('from_time')) {
+            downloadUrl += '&from_time=' + params.get('from_time');
+        }
+        
+        // Trigger download
+        window.location.href = downloadUrl;
+    }
     </script>
+
 @endsection
