@@ -147,16 +147,19 @@ class VpsBillingReportService
 
             $endTime = $toTime ?: $usage->timestamp_minute;
             //Nếu ko còn dùng nữa, là đã hết hạn, thì $endTime tính đến lúc dùng thôi
-            if($usage->end_time_used){
+//            if($usage->end_time_used)
+            if($usage->power_state == 'OLD_CONFIG')
+            {
                 $endTime = $usage->timestamp_minute;
             }
+
 
 
             $interval = $createdTime->diff(new \DateTime($endTime));
             $timeUsage = '';
             if ($interval->days > 0) $timeUsage .= $interval->days . ' ngày ';
             if ($interval->h > 0 || $interval->days > 0) $timeUsage .= $interval->h . ' giờ ';
-            $timeUsage .= $interval->i . ' phút';
+            $timeUsage .= $interval->i . ' phút ';// " xxx = $startTime - $endTime ";
 
             // Track totals per instance
             if (!isset($instanceTotals[$instanceId])) {
@@ -401,9 +404,10 @@ class VpsBillingReportService
     {
         $data = $this->generateReportData($user, $options, $fromTime, $toTime);
 
-        if(@request('dump')){
-//             print_r($data);
-//             die();
+        // if(@request('dump'))
+            {
+            // print_r($data);
+            // die();
         }
 
 
@@ -486,7 +490,8 @@ class VpsBillingReportService
         // Usage records and track monthly price sum
         $monthlyPriceSum = 0;
         foreach ($data['results'] as $key => $row) {
-            $monthlyPrice = strtoupper($row['power_state']) === 'OLD_CONFIG' ? 0 : ($row['price_month'] * 1000 ?: $row['price_config'] * 1000);
+            $monthlyPrice = ($row['power_state']) === 'OLD_CONFIG' ? 0 : ($row['price_month'] * 1000 ?: $row['price_config'] * 1000);
+            // $monthlyPrice = ($row['price_month'] * 1000 ?: $row['price_config'] * 1000);
             $monthlyPriceSum += $monthlyPrice;
             $rows[] = [
                 $key + 1,
@@ -501,7 +506,7 @@ class VpsBillingReportService
                 $row['disk_gb'],
                 $row['ip_count'],
                 $monthlyPrice,
-                strtoupper($row['power_state']) === 'OLD_CONFIG' ? ($row['price_month'] * 1000) : '',
+                ($row['power_state']) === 'OLD_CONFIG' ? ($row['price_month'] * 1000 ?: $row['price_config'] * 1000) : '',
                 $row['power_state'],
                 $row['calculated_fee'] * 1000
             ];
@@ -556,13 +561,13 @@ class VpsBillingReportService
         $currentUrl = "https://$domain/member/vps-billing/report?to_time=".request('to_time');
         $linkRow = $rowIndex + 2;
         $sheet->setCellValue('A' . $linkRow, 'Link URL: ' . $currentUrl);
-        
+
         // Merge cells A to G (7 columns)
         $sheet->mergeCells('A' . $linkRow . ':G' . $linkRow);
-        
+
         // Set hyperlink
         $sheet->getCell('A' . $linkRow)->getHyperlink()->setUrl($currentUrl);
-        
+
         // Add green background color and formatting
         $style = $sheet->getStyle('A' . $linkRow);
         $style->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID);

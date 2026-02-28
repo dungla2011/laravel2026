@@ -105,6 +105,7 @@ class VpsUsage_Meta extends MetaOfTableInDb
         $mm = json_decode($val);
         $ret = '';
         $cc = 0;
+        if(is_array($mm ) || is_object($mm ))
         foreach ($mm AS $key=>$val){
             $cc++;
             $ret .= "$val/";

@@ -373,9 +373,9 @@ $uid = getCurrentUserId();
                                                 @endphp
                                                 @if ($displayPrice && !$isPoweredOff)
                                                     @if (!$isChangeConfig)
-                                                    <span class="color-primary">{{ ($displayPrice) }} </span>
+                                                    <span class="color-primary">{{ ($displayPrice) }} K </span>
                                                     @else
-                                                    <span class="color-primary">{{($displayPrice) }} </span>
+                                                    <span class="color-primary">{{($displayPrice) }} K </span>
                                                     @endif
                                                 @elseif ($isPoweredOff)
                                                 <small class="text-muted">-</small>
@@ -392,7 +392,7 @@ $uid = getCurrentUserId();
                                             </td>
                                             <td class="text-right fee {{ $isCrossed ? 'row-crossed' : '' }}">
                                                 <a href="{{ route('vps.billing.detail', $row['usage_id']) }}" class="text-primary" title="Click to view detailed calculation">
-                                                    <strong>{{ $row['calculated_fee'] }} </strong>
+                                                    <strong>{{ number_format($row['calculated_fee'], 0, ',', '.') }} K </strong>
                                                     <i class="fas fa-external-link-alt ml-1" style="font-size: 10px;"></i>
                                                 </a>
                                             </td>
@@ -404,13 +404,13 @@ $uid = getCurrentUserId();
                                         <tr>
                                             <th colspan="7" class="text-right" title="Chỉ lấy các Cấu hình cuối cùng nếu có thay đổi">TỔNG CỘNG:</th>
                                             <th class="text-left">
-                                                <h4 class="mb-0" title="Chỉ lấy các Cấu hình cuối cùng nếu có thay đổi">
-                                                    <span class="badge badge-success" style=" padding: 5px 5px;">{{ ($totalPriceMonth) }} </span>
-                                                </h4>
+                                                
+                                                    <span class="" style=" padding: 5px 5px;">{{ $formatted = number_format($totalPriceMonth, 0, ',', '.') }} K / Tháng</span>
+                                                
                                             </th>
-                                            <th>{{ number_format(count($results), 0, $dec_separator, $thousands_separator) }} records</th>
+                                            <th>{{ number_format(count($results), 0, ',', '.') }} records</th>
                                             <th class="text-right">
-                                                <strong class="text-danger">{{ $totalCost}} </strong>
+                                                <strong class="text-danger">{{ number_format($totalCost, 0, ',', '.') }} K </strong>
                                             </th>
                                         </tr>
                                     </tfoot>

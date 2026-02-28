@@ -56,7 +56,9 @@ class VpsUsage extends ModelGlxBase
         $endTime = $toTime ?: $this->timestamp_minute;
 
         //Nếu ko còn dùng nữa, là đã hết hạn, thì $endTime tính đến lúc dùng thôi
-        if($this->end_time_used){
+//        if($this->end_time_used)
+        if($this->power_state == 'OLD_CONFIG')
+        {
             $endTime = $this->timestamp_minute;
         }
 
@@ -127,14 +129,16 @@ class VpsUsage extends ModelGlxBase
             $startTime = $this->last_billing_start_at ? strtotime($this->last_billing_start_at) : strtotime($this->created_at);
         }
 
-        // Use custom toTime if provided, otherwise use lastest_time_the_same or created_at
-        //Nếu ko còn dùng nữa, là đã hết hạn, thì $lastestTime tính đến lúc dùng thôi
-        if ($toTime && !$this->end_time_used) {
-            $lastestTime = strtotime($toTime);
-        } else {
-            $lastestTime = strtotime($this->lastest_time_the_same ?? $this->created_at);
+        ////////////////////
+        $endTime = $toTime ?: $this->timestamp_minute;
+        //Nếu ko còn dùng nữa, là đã hết hạn, thì $endTime tính đến lúc dùng thôi
+        if($this->power_state == 'OLD_CONFIG')
+        {
+            $endTime = ($this->timestamp_minute);
         }
-        $durationMinutes = max(0, floor(($lastestTime - $startTime) / 60));
+        $endTime = strtotime($endTime);
+
+        $durationMinutes = max(0, floor(($endTime - $startTime) / 60));
 
         // Determine CPU and RAM for fee calculation (0 if powered off)
         $feeCpu = (strtoupper($this->power_state) === 'POWERED_OFF') ? 0 : $this->cpu;

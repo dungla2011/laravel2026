@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Components\Helper1;
 use LadLib\Common\cstring2;
 use LadLib\Common\Database\MetaOfTableInDb;
+use LadLib\Common\UrlHelper1;
 
 class UserRecharge_Meta extends MetaOfTableInDb
 {
@@ -13,6 +14,7 @@ class UserRecharge_Meta extends MetaOfTableInDb
 
 //    public static $disableAddItem = 1;
 //    public static $disableSaveAllButton = 1;
+
 
 
     public function getHardCodeMetaObj($field) {
@@ -57,6 +59,11 @@ class UserRecharge_Meta extends MetaOfTableInDb
                 ->addSelect([
                     'users.email AS _email',
                 ]);
+        else{
+//            die(UrlHelper1::getFullUrl());
+            if(!str_contains(UrlHelper1::getFullUrl() , 'soby_'))
+                return $x->orderBy("created_at", "DESC");
+        }
     }
 
     function _image_list($obj, $val, $field){
