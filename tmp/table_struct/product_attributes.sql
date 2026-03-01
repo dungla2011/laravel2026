@@ -1,5 +1,5 @@
 -- Table: product_attributes
--- Generated: 2026-02-25 21:42:10
+-- Generated: 2026-02-28 23:12:36
 
 CREATE TABLE `product_attributes` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

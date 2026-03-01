@@ -1,5 +1,5 @@
 -- Table: model_meta_infos
--- Generated: 2026-02-25 21:42:03
+-- Generated: 2026-02-28 23:12:30
 
 CREATE TABLE `model_meta_infos` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -50,4 +50,4 @@ CREATE TABLE `model_meta_infos` (
   KEY `model_meta_infos_old_id_index` (`old_id`),
   KEY `model_meta_infos_table_name_model_index` (`table_name_model`),
   KEY `model_meta_infos_field_index` (`field`)
-) ENGINE=InnoDB AUTO_INCREMENT=3621 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3622 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

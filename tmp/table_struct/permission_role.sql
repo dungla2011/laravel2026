@@ -1,5 +1,5 @@
 -- Table: permission_role
--- Generated: 2026-02-25 21:42:08
+-- Generated: 2026-02-28 23:12:35
 
 CREATE TABLE `permission_role` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,

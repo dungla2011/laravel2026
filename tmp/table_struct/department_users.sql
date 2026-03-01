@@ -1,5 +1,5 @@
 -- Table: department_users
--- Generated: 2026-02-25 21:41:55
+-- Generated: 2026-02-28 23:12:22
 
 CREATE TABLE `department_users` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

@@ -1,5 +1,5 @@
 -- Table: roles
--- Generated: 2026-02-25 21:42:14
+-- Generated: 2026-02-28 23:12:40
 
 CREATE TABLE `roles` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,

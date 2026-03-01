@@ -1,5 +1,5 @@
 -- Table: task_infos
--- Generated: 2026-02-25 21:42:15
+-- Generated: 2026-02-28 23:12:41
 
 CREATE TABLE `task_infos` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

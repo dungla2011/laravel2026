@@ -1,5 +1,5 @@
 -- Table: menus
--- Generated: 2026-02-25 21:42:03
+-- Generated: 2026-02-28 23:12:29
 
 CREATE TABLE `menus` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,

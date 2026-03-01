@@ -1,5 +1,5 @@
 -- Table: migrations
--- Generated: 2026-02-25 21:42:03
+-- Generated: 2026-02-28 23:12:29
 
 CREATE TABLE `migrations` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,

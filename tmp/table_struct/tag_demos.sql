@@ -1,5 +1,5 @@
 -- Table: tag_demos
--- Generated: 2026-02-25 21:42:15
+-- Generated: 2026-02-28 23:12:41
 
 CREATE TABLE `tag_demos` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,

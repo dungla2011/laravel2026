@@ -1,5 +1,5 @@
 -- Table: user_groups
--- Generated: 2026-02-25 21:42:19
+-- Generated: 2026-02-28 23:12:44
 
 CREATE TABLE `user_groups` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

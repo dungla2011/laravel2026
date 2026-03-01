@@ -1,5 +1,5 @@
 -- Table: ocr_images
--- Generated: 2026-02-25 21:42:07
+-- Generated: 2026-02-28 23:12:33
 
 CREATE TABLE `ocr_images` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

@@ -1,5 +1,5 @@
 -- Table: my_tree_infos
--- Generated: 2026-02-25 21:42:06
+-- Generated: 2026-02-28 23:12:32
 
 CREATE TABLE `my_tree_infos` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

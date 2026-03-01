@@ -1,5 +1,5 @@
 -- Table: vps_os_versions
--- Generated: 2026-02-25 21:42:20
+-- Generated: 2026-02-28 23:12:46
 
 CREATE TABLE `vps_os_versions` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,

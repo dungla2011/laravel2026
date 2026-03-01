@@ -1,5 +1,5 @@
 -- Table: translations
--- Generated: 2026-02-25 21:42:17
+-- Generated: 2026-02-28 23:12:43
 
 CREATE TABLE `translations` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

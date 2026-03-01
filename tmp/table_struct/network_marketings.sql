@@ -1,5 +1,5 @@
 -- Table: network_marketings
--- Generated: 2026-02-25 21:42:06
+-- Generated: 2026-02-28 23:12:32
 
 CREATE TABLE `network_marketings` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

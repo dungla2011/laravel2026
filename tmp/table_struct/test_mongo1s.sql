@@ -1,5 +1,5 @@
 -- Table: test_mongo1s
--- Generated: 2026-02-25 21:42:16
+-- Generated: 2026-02-28 23:12:42
 
 CREATE TABLE `test_mongo1s` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

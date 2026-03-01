@@ -1,5 +1,5 @@
 -- Table: media_vendors
--- Generated: 2026-02-25 21:42:02
+-- Generated: 2026-02-28 23:12:29
 
 CREATE TABLE `media_vendors` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

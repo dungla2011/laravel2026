@@ -1,5 +1,5 @@
 -- Table: product_images
--- Generated: 2026-02-25 21:42:10
+-- Generated: 2026-02-28 23:12:36
 
 CREATE TABLE `product_images` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,

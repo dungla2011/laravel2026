@@ -1,5 +1,5 @@
 -- Table: zalo_messages
--- Generated: 2026-02-25 21:42:21
+-- Generated: 2026-02-28 23:12:47
 
 CREATE TABLE `zalo_messages` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

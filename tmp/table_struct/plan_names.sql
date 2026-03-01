@@ -1,5 +1,5 @@
 -- Table: plan_names
--- Generated: 2026-02-25 21:42:10
+-- Generated: 2026-02-28 23:12:35
 
 CREATE TABLE `plan_names` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

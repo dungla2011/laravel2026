@@ -1,5 +1,5 @@
 -- Table: partner_infos
--- Generated: 2026-02-25 21:42:08
+-- Generated: 2026-02-28 23:12:34
 
 CREATE TABLE `partner_infos` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

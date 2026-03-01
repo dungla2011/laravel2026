@@ -1,5 +1,5 @@
 -- Table: product_variants
--- Generated: 2026-02-25 21:42:11
+-- Generated: 2026-02-28 23:12:37
 
 CREATE TABLE `product_variants` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

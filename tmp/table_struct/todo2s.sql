@@ -1,5 +1,5 @@
 -- Table: todo2s
--- Generated: 2026-02-25 21:42:17
+-- Generated: 2026-02-28 23:12:42
 
 CREATE TABLE `todo2s` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

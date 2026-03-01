@@ -1,5 +1,5 @@
 -- Table: don_vi_hanh_chinhs
--- Generated: 2026-02-25 21:41:55
+-- Generated: 2026-02-28 23:12:22
 
 CREATE TABLE `don_vi_hanh_chinhs` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

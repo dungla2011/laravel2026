@@ -1,5 +1,5 @@
 -- Table: cloud_group
--- Generated: 2026-02-25 21:41:52
+-- Generated: 2026-02-28 23:12:19
 
 CREATE TABLE `cloud_group` (
   `groupname` varchar(16) NOT NULL DEFAULT '',

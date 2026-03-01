@@ -1,5 +1,5 @@
 -- Table: notifications
--- Generated: 2026-02-25 21:42:07
+-- Generated: 2026-02-28 23:12:33
 
 CREATE TABLE `notifications` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

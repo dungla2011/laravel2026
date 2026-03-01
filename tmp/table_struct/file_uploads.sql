@@ -1,5 +1,5 @@
 -- Table: file_uploads
--- Generated: 2026-02-25 21:42:00
+-- Generated: 2026-02-28 23:12:27
 
 CREATE TABLE `file_uploads` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -42,4 +42,4 @@ CREATE TABLE `file_uploads` (
   KEY `file_uploads_crc32_index` (`crc32`),
   KEY `file_uploads_refer_index` (`refer`),
   KEY `file_uploads_link1_index` (`link1`)
-) ENGINE=InnoDB AUTO_INCREMENT=72018750341 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=72172654892 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

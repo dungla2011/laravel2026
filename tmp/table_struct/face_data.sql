@@ -1,5 +1,5 @@
 -- Table: face_data
--- Generated: 2026-02-25 21:41:59
+-- Generated: 2026-02-28 23:12:26
 
 CREATE TABLE `face_data` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

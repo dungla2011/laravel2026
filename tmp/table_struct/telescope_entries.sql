@@ -1,5 +1,5 @@
 -- Table: telescope_entries
--- Generated: 2026-02-25 21:42:16
+-- Generated: 2026-02-28 23:12:42
 
 CREATE TABLE `telescope_entries` (
   `sequence` bigint(20) unsigned NOT NULL AUTO_INCREMENT,

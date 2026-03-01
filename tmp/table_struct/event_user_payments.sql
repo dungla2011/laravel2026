@@ -1,5 +1,5 @@
 -- Table: event_user_payments
--- Generated: 2026-02-25 21:41:58
+-- Generated: 2026-02-28 23:12:25
 
 CREATE TABLE `event_user_payments` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

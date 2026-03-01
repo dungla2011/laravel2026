@@ -1,5 +1,5 @@
 -- Table: download_logs
--- Generated: 2026-02-25 21:41:55
+-- Generated: 2026-02-28 23:12:23
 
 CREATE TABLE `download_logs` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

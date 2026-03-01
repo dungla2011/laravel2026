@@ -1,5 +1,5 @@
 -- Table: vps_instances
--- Generated: 2026-02-25 21:42:20
+-- Generated: 2026-02-28 23:12:45
 
 CREATE TABLE `vps_instances` (
   `id` bigint(11) NOT NULL AUTO_INCREMENT,

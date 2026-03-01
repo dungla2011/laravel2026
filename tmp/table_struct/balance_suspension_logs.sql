@@ -1,5 +1,5 @@
 -- Table: balance_suspension_logs
--- Generated: 2026-02-25 21:41:50
+-- Generated: 2026-02-28 23:12:18
 
 CREATE TABLE `balance_suspension_logs` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,

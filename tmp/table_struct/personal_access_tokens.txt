@@ -1,5 +1,5 @@
 -- Table: personal_access_tokens
--- Generated: 2026-02-25 21:42:09
+-- Generated: 2026-02-28 23:12:35
 
 +----------------+---------------------+------+-----+---------+----------------+
 | Field          | Type                | Null | Key | Default | Extra          |

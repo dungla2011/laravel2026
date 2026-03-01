@@ -1,5 +1,5 @@
 -- Table: skus_product_variant_options
--- Generated: 2026-02-25 21:42:15
+-- Generated: 2026-02-28 23:12:40
 
 CREATE TABLE `skus_product_variant_options` (
   `sku_id` bigint(20) NOT NULL,

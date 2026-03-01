@@ -1,5 +1,5 @@
 -- Table: demo_folder_tbls
--- Generated: 2026-02-25 21:41:54
+-- Generated: 2026-02-28 23:12:21
 
 CREATE TABLE `demo_folder_tbls` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,

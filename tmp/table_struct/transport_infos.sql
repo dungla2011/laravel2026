@@ -1,5 +1,5 @@
 -- Table: transport_infos
--- Generated: 2026-02-25 21:42:17
+-- Generated: 2026-02-28 23:12:43
 
 CREATE TABLE `transport_infos` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

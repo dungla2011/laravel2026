@@ -113,7 +113,7 @@ class SyncVmwareInstancesCommand extends Command
                     if ($instance) {
                         // Get latest vps_usages record for this bios_uuid
                         $lastUsage = VpsUsage::where('bios_uuid', $vm->bios_uuid)
-                            ->latest('id')
+                            ->latest('created_at')
                             ->first();
 
 

@@ -1,5 +1,5 @@
 -- Table: plan_define_values
--- Generated: 2026-02-25 21:42:09
+-- Generated: 2026-02-28 23:12:35
 
 CREATE TABLE `plan_define_values` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

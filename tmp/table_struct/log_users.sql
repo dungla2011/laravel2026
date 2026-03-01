@@ -1,5 +1,5 @@
 -- Table: log_users
--- Generated: 2026-02-25 21:42:01
+-- Generated: 2026-02-28 23:12:27
 
 CREATE TABLE `log_users` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

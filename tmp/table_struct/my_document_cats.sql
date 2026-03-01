@@ -1,5 +1,5 @@
 -- Table: my_document_cats
--- Generated: 2026-02-25 21:42:05
+-- Generated: 2026-02-28 23:12:31
 
 CREATE TABLE `my_document_cats` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

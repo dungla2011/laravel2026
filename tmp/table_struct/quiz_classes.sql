@@ -1,5 +1,5 @@
 -- Table: quiz_classes
--- Generated: 2026-02-25 21:42:12
+-- Generated: 2026-02-28 23:12:37
 
 CREATE TABLE `quiz_classes` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

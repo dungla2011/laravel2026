@@ -1,5 +1,5 @@
 -- Table: event_registers
--- Generated: 2026-02-25 21:41:56
+-- Generated: 2026-02-28 23:12:24
 
 CREATE TABLE `event_registers` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

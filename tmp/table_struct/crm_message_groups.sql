@@ -1,5 +1,5 @@
 -- Table: crm_message_groups
--- Generated: 2026-02-25 21:41:53
+-- Generated: 2026-02-28 23:12:21
 
 CREATE TABLE `crm_message_groups` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

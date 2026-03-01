@@ -1,5 +1,5 @@
 -- Table: vps_plans
--- Generated: 2026-02-25 21:42:20
+-- Generated: 2026-02-28 23:12:46
 
 CREATE TABLE `vps_plans` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
