@@ -971,8 +971,9 @@ use App\Models\EventInfo_Meta;
             $(".action_zone11").toggle();
         });
 
-        $("#sendTin3").on('click', function () {
+        $("#sendTin3, #sendTinZalo").on('click', function () {
             console.log(" Click sendTin3 ...");
+
 
             //confirm js
             if (!confirm("Bạn có chắc chắn muốn gửi tin cho tất cả thành viên đã chọn không?\n\n" +
@@ -981,6 +982,7 @@ use App\Models\EventInfo_Meta;
                 "Bấm 'OK' để gửi, hoặc 'Huỷ' để bỏ qua!")){
                 return;
             }
+
 
             //Tim tat ca email trong td.email_to_send1
             let emailList = '';
@@ -1003,6 +1005,9 @@ use App\Models\EventInfo_Meta;
             }
             if(message_field_send.startsWith('content')){
                 typeX = 'email'
+            }
+            if(this.id == 'sendTinZalo'){
+                typeX = 'zalo'
             }
 
             if(!typeX){

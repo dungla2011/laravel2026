@@ -24,6 +24,7 @@ if(isset($_POST['action']) && $_POST['action'] == 'translate') {
     try {
         $text = $_POST['text'] ?? '';
         $targetLang = $_POST['target_lang'] ?? '';
+        $sourceLang = $_POST['source_lang'] ?? 'en'; // Default to English if not specified
 
         if(!$text || !$targetLang) {
             echo json_encode(['success' => false, 'message' => 'Missing parameters']);
@@ -82,7 +83,7 @@ if(isset($_POST['action']) && $_POST['action'] == 'translate') {
         try {
             $url = "https://translate.googleapis.com/translate_a/single?" . http_build_query([
                 'client' => 'gtx',
-                'sl' => 'en',
+                'sl' => $sourceLang,
                 'tl' => $targetLang,
                 'dt' => 't',
                 'q' => $textWithPlaceholders,
@@ -452,6 +453,7 @@ require "menu_lang.php";
         
         let currentRecord = null;
         let currentData = {};
+        let baseLanguage = 'en'; // Current base language for translations
 
         // Load record data
         function loadRecord(recordId) {
@@ -491,6 +493,32 @@ require "menu_lang.php";
                     <div class="field-section">
                         <div class="field-title">📝 Field: ${fieldName}</div>
 
+                        <!-- Base Language Selector -->
+                        <div class="mb-3 p-3" style="background: #e8f4f8; border-radius: 6px; border-left: 4px solid #0097a7;">
+                            <strong style="color: #0097a7;">🎯 Select Base Language for Translation:</strong><br>
+                            <div style="margin-top: 10px;">
+                `;
+
+                // Add radio buttons for each language
+                for(let lang in languages) {
+                    const isChecked = (lang === baseLanguage) ? 'checked' : '';
+                    const flagClass = lang === 'en' ? 'fi fi-us' : 'fi fi-' + flagMap[lang].toLowerCase();
+                    const langName = lang === 'en' ? 'English' : languagesEnglish[lang];
+                    
+                    html += `
+                                <label style="display: inline-block; margin-right: 20px; cursor: pointer;">
+                                    <input type="radio" name="baseLanguage_${fieldName}" value="${lang}" ${isChecked} 
+                                           onchange="setBaseLanguage('${fieldName}', '${lang}')" />
+                                    <span class="${flagClass}" style="font-size: 18px; margin-right: 5px;"></span>
+                                    ${langName}
+                                </label>
+                    `;
+                }
+
+                html += `
+                            </div>
+                        </div>
+
                         <div class="mb-3">
                             <button class="btn btn-translate btn-sm" onclick="translateAllEmpty('${fieldName}')">
                                 🌍 Auto-translate all empty fields
@@ -501,46 +529,27 @@ require "menu_lang.php";
                         </div>
                 `;
 
-                // Render English first (editable but not translatable)
-                html += `
-                    <div class="language-row" style="background: #fff3cd; border-left: 4px solid #ffc107;">
-                        <div class="row align-items-center">
-                            <div class="col-md-2">
-                                <span class="fi fi-us flag-icon-lg"></span>
-                                <strong>English</strong><br>
-                                <small class="text-muted">Base language</small>
-                            </div>
-                            <div class="col-md-8">
-                                <textarea 
-                                    class="translation-input" 
-                                    rows="2"
-                                    data-field="${fieldName}"
-                                    data-lang="en"
-                                    placeholder="Enter English text (base language)..."
-                                    style="border-color: #ffc107; background: #fffbf0;"
-                                >${enText}</textarea>
-                            </div>
-                            <div class="col-md-2">
-                                <span class="badge bg-warning text-dark w-100">Base Language</span>
-                            </div>
-                        </div>
-                    </div>
-                `;
+                // Get base text from selected language
+                const baseText = fieldData[baseLanguage] || '';
 
-                // Render each language
+                // Render all languages
                 for(let langCode in languages) {
-                    if(langCode === 'en') continue;
-
                     const currentValue = fieldData[langCode] || '';
-                    const flagClass = 'fi fi-' + flagMap[langCode].toLowerCase();
+                    const isBaseLanguage = (langCode === baseLanguage);
+                    const flagClass = langCode === 'en' ? 'fi fi-us' : 'fi fi-' + flagMap[langCode].toLowerCase();
+
+                    // Style untuk base language
+                    const bgColor = isBaseLanguage ? '#fff3cd' : 'white';
+                    const borderColor = isBaseLanguage ? '#ffc107' : '#ddd';
+                    const borderLeft = isBaseLanguage ? '4px solid #ffc107' : 'none';
 
                     html += `
-                        <div class="language-row">
+                        <div class="language-row" style="background: ${bgColor}; border-left: ${borderLeft};">
                             <div class="row align-items-center">
                                 <div class="col-md-2">
                                     <span class="${flagClass} flag-icon-lg"></span>
-                                    <strong>${languagesEnglish[langCode]}</strong><br>
-                                    <small class="text-muted">${languages[langCode]}</small>
+                                    <strong>${languages[langCode]}</strong><br>
+                                    <small class="text-muted">${isBaseLanguage ? '📌 Base Language' : langCode}</small>
                                 </div>
                                 <div class="col-md-8">
                                     <textarea 
@@ -548,16 +557,27 @@ require "menu_lang.php";
                                         rows="2"
                                         data-field="${fieldName}"
                                         data-lang="${langCode}"
-                                        placeholder="Enter ${languagesEnglish[langCode]} translation..."
+                                        placeholder="Enter ${languages[langCode]} text..."
+                                        style="border-color: ${borderColor}; background: ${bgColor};"
                                     >${currentValue}</textarea>
                                 </div>
                                 <div class="col-md-2">
-                                    <button 
-                                        class="btn btn-translate btn-sm w-100" 
-                                        onclick="translateSingle('${fieldName}', '${langCode}')"
-                                    >
-                                        🤖 Translate
-                                    </button>
+                    `;
+
+                    if (isBaseLanguage) {
+                        html += `<span class="badge bg-warning text-dark w-100">📌 Base Language</span>`;
+                    } else {
+                        html += `
+                            <button 
+                                class="btn btn-translate btn-sm w-100" 
+                                onclick="translateSingle('${fieldName}', '${langCode}')"
+                            >
+                                🤖 Translate
+                            </button>
+                        `;
+                    }
+
+                    html += `
                                 </div>
                             </div>
                         </div>
@@ -577,12 +597,18 @@ require "menu_lang.php";
             $('#editorContent').html(html);
         }
 
+        // Set base language for current field
+        function setBaseLanguage(fieldName, langCode) {
+            baseLanguage = langCode;
+            renderEditor(); // Re-render to update UI
+        }
+
         // Translate single field
         async function translateSingle(fieldName, targetLang) {
-            const sourceText = currentData[fieldName]['en'] || '';
+            const sourceText = currentData[fieldName][baseLanguage] || '';
             
             if(!sourceText) {
-                alert('No English text to translate');
+                alert(`No ${languages[baseLanguage]} text to translate`);
                 return;
             }
 
@@ -590,7 +616,7 @@ require "menu_lang.php";
             $input.prop('disabled', true);
 
             try {
-                const result = await translateText(sourceText, targetLang);
+                const result = await translateText(sourceText, targetLang, baseLanguage);
                 if(result) {
                     $input.val(result);
                     updateCurrentData(fieldName, targetLang, result);
@@ -606,16 +632,16 @@ require "menu_lang.php";
 
         // Translate all empty fields
         async function translateAllEmpty(fieldName) {
-            const sourceText = currentData[fieldName]['en'] || '';
+            const sourceText = currentData[fieldName][baseLanguage] || '';
             
             if(!sourceText) {
-                alert('No English text to translate');
+                alert(`No ${languages[baseLanguage]} text to translate`);
                 return;
             }
 
             let emptyLangs = [];
             for(let lang in languages) {
-                if(lang === 'en') continue;
+                if(lang === baseLanguage) continue;
                 if(!currentData[fieldName][lang] || !currentData[fieldName][lang].trim()) {
                     emptyLangs.push(lang);
                 }
@@ -626,7 +652,7 @@ require "menu_lang.php";
                 return;
             }
 
-            if(!confirm(`Translate to ${emptyLangs.length} empty languages?`)) {
+            if(!confirm(`Translate to ${emptyLangs.length} empty languages from ${languages[baseLanguage]}?`)) {
                 return;
             }
 
@@ -634,7 +660,7 @@ require "menu_lang.php";
 
             for(let lang of emptyLangs) {
                 try {
-                    const result = await translateText(sourceText, lang);
+                    const result = await translateText(sourceText, lang, baseLanguage);
                     if(result) {
                         const $input = $(`.translation-input[data-field="${fieldName}"][data-lang="${lang}"]`);
                         $input.val(result);
@@ -653,20 +679,20 @@ require "menu_lang.php";
 
         // Force translate all languages (including existing)
         async function translateAllForce(fieldName) {
-            const sourceText = currentData[fieldName]['en'] || '';
+            const sourceText = currentData[fieldName][baseLanguage] || '';
             
             if(!sourceText) {
-                alert('No English text to translate');
+                alert(`No ${languages[baseLanguage]} text to translate`);
                 return;
             }
 
             const allLangs = [];
             for(let lang in languages) {
-                if(lang === 'en') continue;
+                if(lang === baseLanguage) continue;
                 allLangs.push(lang);
             }
 
-            if(!confirm(`🔥 Force translate ALL ${allLangs.length} languages?\n\n⚠️ This will OVERWRITE existing translations!`)) {
+            if(!confirm(`🔥 Force translate ALL ${allLangs.length} languages from ${languages[baseLanguage]}?\n\n⚠️ This will OVERWRITE existing translations!`)) {
                 return;
             }
 
@@ -677,7 +703,7 @@ require "menu_lang.php";
 
             for(let lang of allLangs) {
                 try {
-                    const result = await translateText(sourceText, lang);
+                    const result = await translateText(sourceText, lang, baseLanguage);
                     if(result) {
                         const $input = $(`.translation-input[data-field="${fieldName}"][data-lang="${lang}"]`);
                         $input.val(result);
@@ -699,7 +725,7 @@ require "menu_lang.php";
         }
 
         // Translate text via server
-        function translateText(text, targetLang) {
+        function translateText(text, targetLang, sourceLang = 'en') {
             return new Promise((resolve, reject) => {
                 $.ajax({
                     url: '',
@@ -707,7 +733,8 @@ require "menu_lang.php";
                     data: {
                         action: 'translate',
                         text: text,
-                        target_lang: targetLang
+                        target_lang: targetLang,
+                        source_lang: sourceLang
                     },
                     success: function(response) {
                         if(response.success) {

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Services\VpsBillingReportService;
 use Illuminate\Http\Request;
+use LadLib\Common\cstring2;
 
 class VpsBillingController extends Controller
 {
@@ -178,18 +179,85 @@ class VpsBillingController extends Controller
     }
 
     /**
-     * Send billing report via email
+     * Show form to edit email before sending
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\View\View
      */
-    public function sendEmail(Request $request)
+    public function sendEmailForm(Request $request)
     {
-        // Get user by email or ID
-        $email = $request->get('email', 'khanhdh389@gmail.com');
-        $user = User::where('email', $email)->firstOrFail();
+        // Get current user
+        $user = getCurrentUserId(1);
+        if (!$user) {
+            return redirect()->route('login')->with('error', 'Please login');
+        }
 
-        // Send email
+        $sv = new VpsBillingReportService();
+        $data = $sv->generateReportData($user, [], $request->from_time, $request->to_time);
+
+        $totalRecharge = $data['totalRecharge'];
+        $totalCost = $data['totalCost'];
+
+        $totalRechargeNoVat = $totalRecharge / 1.1;
+
+        $needPay = $totalCost * 1000 - $totalRechargeNoVat;
+        $needPayDot = number_formatvn0($needPay);
+        $needPayStrVn = cstring2::toTienVietNamString3($needPay);
+
+        $needPayVAT = $needPay / 10;
+        $needPayFullVAT = $needPay * 1.1;
+        $needPayVATDot = number_formatvn0($needPayVAT);
+        $needPayFullVATDot = number_formatvn0($needPayFullVAT);
+        $needPayFullVATDotStr = cstring2::toTienVietNamString3($needPayFullVAT);
+        $toTimeVN = nowy_vn(null, "/");
+        if($request->to_time)
+            $toTimeVN = nowy_vn(strtotime($request->to_time), "/");
+
+//        die("$needPay , $toTimeVN , $needPayDot, $needPayStrVn , $user->email, Total = $totalRechargeNoVat ,  $totalCost, toTime = $request->to_time");
+
+        // Default email content
+        $title = "GalaxyCloud - Đối soát thanh toán dịch vụ - $toTimeVN";
+        $content = "Kính chào quý khách hàng!\n\nCông ty Công nghệ số Galaxy Việt Nam xin thông báo phí dịch vụ!" .
+            "\nChi phí thanh toán: $needPayDot + $needPayVATDot (VAT) = $needPayFullVATDot VND\n($needPayFullVATDotStr)".
+            "\nThời gian sử dụng: $toTimeVN".
+
+            "\n\nQuý khách vui lòng thanh toán qua Số tài khoản thanh toán:".
+            "\n110389898, Công ty TNHH Công nghệ số Galaxy Việt nam".
+            "\nTại: Ngân hàng Thương mại Cổ phần Á Châu (ACB)".
+            "\n\nChi tiết vui lòng xem trong File đính kèm.".
+            "\n\nXin trân trọng cảm ơn Quý khách hàng!"
+           ;
+
+//        die($title . $content);
+
+        return view('vps.send-email-form', [
+            'user' => $user,
+            'title' => $title,
+            'content' => $content,
+            'filters' => $request->only(['to_time', 'from_time', 'date_from', 'date_to']),
+            'report_url' => route('vps.billing.report', $request->only(['to_time', 'from_time', 'date_from', 'date_to']))
+        ]);
+    }
+
+    /**
+     * Send billing report via email with custom title and content
+     *
+     * @param Request $request
+     * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
+     */
+    public function sendEmailPage(Request $request)
+    {
+        // Get current user
+        $user = getCurrentUserId(1);
+        if (!$user) {
+            return redirect()->route('login')->with('error', 'Please login');
+        }
+
+        // Get title and content from form
+        $title = $request->get('title', 'GalaxyCloud - Đối soát thanh toán dịch vụ');
+        $content = $request->get('content', '');
+
+        // Get filter options
         $options = [];
         if ($request->has('date_from')) {
             $options['date_from'] = $request->get('date_from');
@@ -198,18 +266,29 @@ class VpsBillingController extends Controller
             $options['date_to'] = $request->get('date_to');
         }
 
-        $success = $this->billingService->sendEmail($user, $options);
+        if ($request->has('debug')) {
+            $options['debug'] = 1;
+        }
+
+
+
+        // Send email with custom title and content
+        $success = $this->billingService->sendEmail($user, $options, $title, $content, $request->from_time, $request->to_time);
+
+//        die("OK  = $success");
 
         if ($success) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Billing report sent to ' . $user->email
+            return view('vps.send-email-success', [
+                'user' => $user,
+                'message' => 'Billing report has been sent to ' . $user->email,
+                'report_url' => route('vps.billing.report', $request->only(['date_from', 'date_to', 'to_time']))
             ]);
         } else {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to send billing report'
-            ], 500);
+            return view('vps.send-email-error', [
+                'user' => $user,
+                'message' => 'Failed to send billing report. Please try again.',
+                'report_url' => route('vps.billing.report', $request->only(['date_from', 'date_to', 'to_time']))
+            ]);
         }
     }
 }

@@ -83,7 +83,7 @@ class User_Meta extends MetaOfTableInDb
         $ret = '';
         if ($value && $obj = \App\Models\User::where('id', $value)->first()) {
             $ret = "<span data-code-pos='ppp166502584' data-autocomplete-id='$objData->id-$field' class='span_auto_complete'
-data-item-value='$obj->id' title='Remove this item'>$obj->email [x]</span>";
+data-item-value='$obj->id' title='Remove this item'>$obj->email <span class='remove_item'> [x] </span></span>";
             $obj = json_decode($obj);
             //return 'abc';
             if (Helper1::isApiCurrentRequest()) {

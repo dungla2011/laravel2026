@@ -14,7 +14,6 @@ class ClassMail1
     public static $debug = 0;
 
     public static $mAcc = [
-        ['dungbkhn02@gmail.com', '325954405853435b584b435c5b445e4245'],
         ['dungla2011@gmail.com', '33585b5145425a5049404b5956595a525b'],
         ['megamail.vn@gmail.com','35514058425b5147414151404345564f57'],
         ];

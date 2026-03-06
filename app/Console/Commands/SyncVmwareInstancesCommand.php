@@ -32,7 +32,8 @@ class SyncVmwareInstancesCommand extends Command
 
         $this->info("🔗 Connecting to vCenter: $domain");
 
-        // Login to vCenter
+        // Login to vCenter, khong lay tu vc nua
+        if(0)
         if (!VmwareHelper::loginVC($domain, $uid, $pw)) {
             $this->error('❌ Failed to connect to vCenter');
             return 1;
@@ -112,11 +113,14 @@ class SyncVmwareInstancesCommand extends Command
 
                     if ($instance) {
                         // Get latest vps_usages record for this bios_uuid
+//                        $lastUsage = VpsUsage::where('bios_uuid', $vm->bios_uuid)
+//                            ->latest('created_at')
+//                            ->first();
+
                         $lastUsage = VpsUsage::where('bios_uuid', $vm->bios_uuid)
-                            ->latest('created_at')
+                            ->orderBy('created_at', 'desc')
+                            ->orderBy('id', 'desc')
                             ->first();
-
-
 //                        if($lastUsage->user_id != $instance->user_id){
 //                            $this->warn("  ⚠️  User ID mismatch between vps_instances and vps_usages for BIOS UUID {$vm->bios_uuid}. Updating usage record to match instance user_id.");
 //                            $lastUsage->update(['user_id' => $instance->user_id]);
@@ -139,28 +143,28 @@ class SyncVmwareInstancesCommand extends Command
                             continue;
                         }
 
-                        if(0)
-                        if ($vm->disk_gb == 0 && $powerState === 'POWERED_OFF' && $listIpAddress && $lastFoundIpTime) {
-
-
-                            // Check if IP was found recently (< 10 minutes)
-                            $ipFoundMinutesAgo = \Carbon\Carbon::parse($lastFoundIpTime)->diffInMinutes(now());
-
-                            if ($ipFoundMinutesAgo < 10 && $lastUsage && $lastUsage->disk_gb > 0) {
-                                // VM has recent IP address = still running, not actually OFF
-                                $this->warn("  🔧 Detected incorrect state: disk_gb=0 & POWERED_OFF but has recent IP");
-                                $this->line("     IP found {$ipFoundMinutesAgo} min ago: {$listIpAddress}");
-
-                                // Fix power state
-                                $powerState = 'POWERED_ON';
-                                $vm->power_state = 'poweredOn';
-
-                                // Fix disk_gb from last known good value
-                                $vm->disk_gb = $lastUsage->disk_gb;
-
-                                $this->line("     ✓ Corrected: POWERED_ON, disk_gb={$vm->disk_gb}GB (from last usage)");
-                            }
-                        }
+//                        if(0)
+//                        if ($vm->disk_gb == 0 && $powerState === 'POWERED_OFF' && $listIpAddress && $lastFoundIpTime) {
+//
+//
+//                            // Check if IP was found recently (< 10 minutes)
+//                            $ipFoundMinutesAgo = \Carbon\Carbon::parse($lastFoundIpTime)->diffInMinutes(now());
+//
+//                            if ($ipFoundMinutesAgo < 10 && $lastUsage && $lastUsage->disk_gb > 0) {
+//                                // VM has recent IP address = still running, not actually OFF
+//                                $this->warn("  🔧 Detected incorrect state: disk_gb=0 & POWERED_OFF but has recent IP");
+//                                $this->line("     IP found {$ipFoundMinutesAgo} min ago: {$listIpAddress}");
+//
+//                                // Fix power state
+//                                $powerState = 'POWERED_ON';
+//                                $vm->power_state = 'poweredOn';
+//
+//                                // Fix disk_gb from last known good value
+//                                $vm->disk_gb = $lastUsage->disk_gb;
+//
+//                                $this->line("     ✓ Corrected: POWERED_ON, disk_gb={$vm->disk_gb}GB (from last usage)");
+//                            }
+//                        }
 
                         // Calculate config hash for comparison (including IP addresses)
                         $currentConfigHash = md5(json_encode([
@@ -176,10 +180,12 @@ class SyncVmwareInstancesCommand extends Command
                         if ($lastUsage && ($lastUsage->power_state == "POWERED_ON" || $lastUsage->power_state == "POWERED_OFF")) {
 
                             // Check if end_time_used has expired - if yes, insert new record
-                            if ($lastUsage->end_time_used && now()->gt(\Carbon\Carbon::parse($lastUsage->end_time_used))) {
+//                            if ($lastUsage->end_time_used && now()->gt(\Carbon\Carbon::parse($lastUsage->end_time_used))) {
+                            if ($lastUsage->end_time_used && nowyh() > $lastUsage->end_time_used){
                                 // Update old record: set end_time_used = now() to close the session
                                 // VpsUsage::where('id', $lastUsage->id)->update(['end_time_used' => now()]);
 
+                                // getch(" new vps 3  $lastUsage->end_time_used , "  );
                                 // Create new record for new billing session
                                 $this->createNewVpsUsageRecord($vm, $instance, $powerState, $listIpAddress, $lastFoundIpTime, $currentPricingConfig, $lastUsage->end_time_used);
                                 $this->line("  ⏰ end_time_used expired! Updated old record end_time_used = now(), inserted new vps_usages record");
@@ -294,10 +300,12 @@ class SyncVmwareInstancesCommand extends Command
 
                                 $this->line("  ♻️  Updated vps_usages1 (count_update: " . ($lastUsage->count_update_status + 1) . ", Fee: " . number_format($calculatedFee, 0) . "K)");
                             } else {
+//                                getch(" new vps 1");
                                 // Config changed or 10+ minutes passed, insert new record (fee = 0 on first insert)
                                 $this->createNewVpsUsageRecord($vm, $instance, $powerState, $listIpAddress, $lastFoundIpTime, $currentPricingConfig);
 
                                 $lastUsage->end_time_used = nowyh();
+
                                 //Khong the de la off, vì sẽ làm mất bikl
                                 $lastUsage->power_state = "OLD_CONFIG";
                                 $lastUsage->addLog(" set end_time_used");
@@ -310,6 +318,17 @@ class SyncVmwareInstancesCommand extends Command
                                 }
                             }
                         } else {
+
+                            if(!$lastUsage){
+                                echo "\n Not last usage";
+                            }
+                            else{
+
+                                print_r($lastUsage->toArray());
+                                echo "\n $lastUsage->power_state";
+                            }
+
+//                            getch(" new vps 2");
                             // No previous record, insert new one - calculated_fee is 0 on first insert
                             $this->createNewVpsUsageRecord($vm, $instance, $powerState, $listIpAddress, $lastFoundIpTime, $currentPricingConfig);
                             $this->line("  📊 Inserted vps_usages snapshot (first record)");

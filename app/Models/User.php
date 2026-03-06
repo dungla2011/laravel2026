@@ -36,6 +36,17 @@ class User extends UserGlx
     //Token phan quyen ko dung cai nay van chay: use HasApiTokens;
 
     protected $guarded = [];
+    
+    /**
+     * Many-to-many relationship: User has many VPS instances
+     * VPS instances this user has access to (as owner, admin, manager, etc)
+     */
+    public function vpsInstances()
+    {
+        return $this->belongsToMany(VpsInstance::class, 'vps_and_users', 'user_id', 'instance_id')
+            ->withPivot('role', 'created_at', 'updated_at', 'deleted_at')
+            ->withTimestamps();
+    }
     //
     //    function getTable()
     //    {

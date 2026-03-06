@@ -3,6 +3,8 @@
 //use App\Models\User_Meta;
 //
 //$GLOBALS['DISABLE_DEBUG_BAR'] = 0;
+use App\Models\EventUserInfo;
+
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 //
@@ -21,7 +23,7 @@ foreach ($mm AS $obj){
     if($obj instanceof \App\Models\EventUserInfo);
     $fn = $obj->getFullname();
 
-    $phone = fixPhoneNumber($obj->phone);
+    $phone = EventUserInfo::fixPhoneNumber($obj->phone);
 
     if(!$phone)
         continue;

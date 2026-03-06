@@ -17,9 +17,12 @@ if(!$uid){
 }
 $instanceId = $_REQUEST['instance_id'] ?? '';
 $vmi = \App\Models\VpsInstance::find($instanceId);
-if(!$vmi || $vmi->user_id != $uid){
-    if(!isAdminCookie())
-        die("Not valid access this resource!");
+
+$belongVendor = \App\Models\VpsAndUser::where('user_id_vendor', $uid)->where("instance_id", $instanceId)->first();
+
+if(!$vmi || ($vmi->user_id != $uid && !$belongVendor)){
+    if(!isAdminLrv_())
+        die("Not valid access this resource-1!");
 }
 
 // Get VM value (bios_uuid) from instance
@@ -458,7 +461,7 @@ if(!$lastIpFound)
 </head>
 <body>
     <div class="header">
-        <h1>🖥️ VM Remote Console</h1>
+        <h1><a style="text-decoration: none; color: white" href="/">HOME</a>       🖥️ VM Remote Console</h1>
         <div class="controls">
             <!-- <input type="text" id="vmNameInput" placeholder="VM Name" value="00_Backup1" style="width: 150px;" /> -->
             <b> <?php echo htmlspecialchars($vmi->name) . " , IP Address:  <span style='color: green'> $lastIpFound  </span> "; ?> </b>

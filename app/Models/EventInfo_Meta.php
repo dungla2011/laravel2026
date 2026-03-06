@@ -34,6 +34,8 @@ class EventInfo_Meta extends MetaOfTableInDb
 
     public static $typeEmail = 'email';
 
+    public static $typeZalo = 'zalo';
+
     public static $typeSms = 'sms';
 
     /**
@@ -939,7 +941,8 @@ $str
                     </div>
                     <div class="modal-footer" style="font-size: smaller">
                         <span class="numberOfMemberToSend"> ... </span>
-                        <button type="button" class="btn btn-sm btn-primary" id="sendTin3">Gửi tin</button>
+                        <button type="button" class="btn btn-sm btn-info" id="sendTinZalo">Gửi tin Zalo</button>
+                        <button type="button" class="btn btn-sm btn-primary" id="sendTin3">Gửi tin SMS/Email</button>
                     </div>
                 </div>
             </div>

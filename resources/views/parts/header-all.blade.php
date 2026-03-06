@@ -82,8 +82,8 @@
     </ul>
 
     <?php
-    $linkAdm = \App\Components\Helper1::isMemberModule() ? '/member' : '/admin';
-    $titleAdm = \App\Components\Helper1::isMemberModule() ? 'Member' : 'Admin';
+    $linkAdm = \App\Components\Helper1::isAdminModule() ? '/admin' : '/member';
+    $titleAdm = \App\Components\Helper1::isAdminModule() ? 'Admin' : 'Member';
     $linkAdm = "<a data-pos='489753947593745' href='$linkAdm' style=''>$titleAdm</a>
     <i class='fa fa-fw fa-angle-right'> </i> ";
     ?>

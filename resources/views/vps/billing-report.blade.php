@@ -438,6 +438,15 @@ $uid = getCurrentUserId();
                     </a>
                 </button>
 
+                
+                <?php
+                if(isAdminCookie())
+                 {
+?>
+                <a href="{{ route('vps.billing.send-email-form', array_merge(['email' => $user->email], request()->only(['to_time', 'from_time', 'date_from', 'date_to']))) }}" class="btn btn-primary ml-2 mb-3 float-right">
+                    <i class="fas fa-envelope mr-2"></i> Send Mail
+                </a>
+
                 <!-- <button type="button" class="btn btn-info ml-2" id="exportPngBtn">
                     <i class="fas fa-image mr-2"></i> Export PNG
                 </button>
@@ -447,6 +456,10 @@ $uid = getCurrentUserId();
                     Export PDF
                     </a>
                 </button> -->
+
+                <?php
+                }
+                ?>
 
             </div>
         </div>

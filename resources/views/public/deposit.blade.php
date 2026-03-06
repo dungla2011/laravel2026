@@ -110,24 +110,24 @@
                         <h3 class="deposit-name">Nạp Tiền Vào Tài Khoản</h3>
                     </div>
 
-                    <form id="depositForm">
+                    <form id="depositForm" style="text-align: center">
                         <div class="mb-4">
                             <label for="amountMoney" class="form-label">
                                 <i class="fas fa-coins"></i> Nhập số tiền nạp <span class="text-danger">*</span>
                             </label>
-                            <input type="number" class="form-control form-control-lg text-danger" id="amountMoney"
+                            <input type="number" class="form-control form-control-lg text-center text-danger" id="amountMoney"
                                    name="total_amount" required min="50000" step="50000"
                                    placeholder="Nhập số tiền (VNĐ)">
-                            <div class="text-danger" id="amountInWords">Số tiền tối thiểu: 5,000 VNĐ</div>
+{{--                            <div class="text-danger" id="amountInWords">Số tiền tối thiểu: 5,000 VNĐ</div>--}}
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Chọn nhanh:</label>
-                            <div class="d-flex gap-2 flex-wrap">
+                            <div class="d-flex gap-2 flex-wrap justify-content-center">
                                 @php
                                     $quickAmounts = [
-                                        10000 => '10K',
-                                        50000 => '50K',
+//                                        10000 => '10K',
+//                                        50000 => '50K',
                                         100000 => '100K',
                                         200000 => '200K',
                                         500000 => '500K',
@@ -152,7 +152,7 @@
                         </div>
 
                         <div class="text-center mt-4">
-                            <button type="button" class="btn btn-primary" onclick="showDepositModal()">
+                            <button type="button" class="btn btn-primary btn-deposit" onclick="showDepositModal()">
                                 <i class="fas fa-credit-card"></i> Tiếp Tục Nạp Tiền
                             </button>
                         </div>

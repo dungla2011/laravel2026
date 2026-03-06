@@ -24,6 +24,26 @@ class EventUserInfo extends ModelGlxBase
         return "$this->title $this->last_name $this->first_name";
     }
 
+    static function fixPhoneNumber($phone)
+    {
+        //xoá tất cả ký tự không phải số (không phải từ 0-9)
+        $phone = preg_replace('/[^0-9]/', '', $phone);
+        $phone = str_replace('+', '', $phone);
+
+        if(strlen($phone) == 12)
+            if (substr($phone, 0, 3) == '084') {
+                return '0'.substr($phone, 3);
+            }
+//    if (substr($phone, 0, 3) == '+84') {
+//        return '0'.substr($phone, 3);
+//    }
+        if(strlen($phone) == 11)
+            if (substr($phone, 0, 2) == '84') {
+                return '0'.substr($phone, 2);
+            }
+        return $phone;
+    }
+
     public function getValidateRuleInsert()
     {
         return [

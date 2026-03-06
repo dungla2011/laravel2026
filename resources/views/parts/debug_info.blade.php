@@ -26,7 +26,7 @@ if(!isDebugViewable()){
         $dbAdminLink = \App\Models\SiteMng::getDbAdminUrl();
 
         $linkDB = "#";
-        if(isDebugIp()){
+        if(isAdminCookie()){
             $linkDB = "https://mytree.vn/dbadmin123/index.php?route=/sql&server=1&db=$db&table=$objMeta->table_name_model&pos=0";
             if($dbAdminLink)
                 $linkDB = $dbAdminLink . "/index.php?route=/sql&server=1&db=$db&table=$objMeta->table_name_model&pos=0";

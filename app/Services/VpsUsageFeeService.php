@@ -175,27 +175,7 @@ class VpsUsageFeeService
      * @param object|array $record vps_usages table record
      * @return float Calculated fee in thousands VND
      */
-    public static function calculateFeeFromRecord($record)
-    {
-        $priceConfig = is_array($record) ? $record['price_config'] : $record->price_config;
-        $cpu = is_array($record) ? $record['cpu'] : $record->cpu;
-        $ramGb = is_array($record) ? $record['ram_gb'] : $record->ram_gb;
-        $diskGb = is_array($record) ? $record['disk_gb'] : $record->disk_gb;
 
-        // Calculate duration from created_at and lastest_time_the_same
-        if (is_array($record)) {
-            $createdAt = strtotime($record['created_at']);
-            $lastestTime = strtotime($record['lastest_time_the_same'] ?? $record['created_at']);
-        } else {
-            $createdAt = strtotime($record->created_at);
-            $lastestTime = strtotime($record->lastest_time_the_same ?? $record->created_at);
-        }
-
-        $durationMinutes = max(0, floor(($lastestTime - $createdAt) / 60));
-        $ipCount = 0; // Default to 0 IP
-
-        return self::calculateFee($priceConfig, $cpu, $ramGb, $diskGb, $durationMinutes, $ipCount);
-    }
 
     /**
      * Get price per component for display

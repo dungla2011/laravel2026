@@ -38,13 +38,7 @@ class VpsUsage extends ModelGlxBase
         return $this->calculateFeeConfigBased($fromTime, $toTime);
     }
 
-    /**
-     * Calculate fee using fixed monthly price
-     *
-     * @param string|null $fromTime Thời gian bắt đầu tính phí (nếu có)
-     * @param string|null $toTime Thời gian kết thúc tính phí (nếu có)
-     */
-    private function calculateFeeFixedMonthly($fromTime = null, $toTime = null)
+     private function calculateFeeFixedMonthly_Old($fromTime = null, $toTime = null)
     {
         $pricePerMonth = floatval($this->price_month);
 
@@ -99,6 +93,125 @@ class VpsUsage extends ModelGlxBase
                 'duration_mins' => $minutes,
                 'period_fee' => $fee,
                 'power_state' => $this->power_state
+            ]
+        ];
+    }
+
+
+
+    /**
+     * Calculate fee using fixed monthly price - calculated by actual months
+     * Special logic: if end day = start day, count as full month
+     *
+     * @param string|null $fromTime Thời gian bắt đầu tính phí (nếu có)
+     * @param string|null $toTime Thời gian kết thúc tính phí (nếu có)
+     */
+    private function calculateFeeFixedMonthly($fromTime = null, $toTime = null)
+    {
+        $pricePerMonth = floatval($this->price_month);
+
+        // Use custom fromTime if provided, otherwise use last_billing_start_at or created_at
+        $startTime = $fromTime ?: ($this->last_billing_start_at ?: $this->created_at);
+        
+        // Ensure fromTime has time component, default to 00:00:00
+        if (!preg_match('/\d{2}:\d{2}:\d{2}/', $startTime)) {
+            $startTime .= ' 00:00:00';
+        }
+        
+        $startDate = new \DateTime($startTime);
+
+        // Use custom toTime if provided, otherwise use timestamp_minute
+        $endTime = $toTime ?: $this->timestamp_minute;
+        
+        // Ensure toTime has time component, default to 00:00:00
+        if (!preg_match('/\d{2}:\d{2}:\d{2}/', $endTime)) {
+            $endTime .= ' 00:00:00';
+        }
+
+        //Nếu ko còn dùng nữa, là đã hết hạn, thì $endTime tính đến lúc dùng thôi
+        if($this->power_state == 'OLD_CONFIG')
+        {
+            $endTime = $this->timestamp_minute;
+        }
+
+        $endDate = new \DateTime($endTime);
+
+        // Calculate fee by counting full months using anniversary date logic
+        $monthCount = 0;
+        $partialMonthFee = 0;
+        $monthBreakdown = [];
+
+        // Start date anniversary (day of month we started on)
+        $startDay = (int)$startDate->format('d');
+        
+        // Simple logic: count how many times we can add 1 month and still be <= endDate
+        $anniversaryDate = clone $startDate;
+        $firstAnniversary = clone $startDate;
+        $firstAnniversary->add(new \DateInterval('P1M'));
+
+        // Count full months by anniversary dates
+        while ($firstAnniversary <= $endDate) {
+            $monthCount++;
+            $monthBreakdown[] = sprintf("%s (full month)", $anniversaryDate->format('M Y'));
+            $anniversaryDate = clone $firstAnniversary;
+            $firstAnniversary->add(new \DateInterval('P1M'));
+        }
+
+        // If endDate is before the next anniversary, calculate pro-rata for remaining days
+        if ($anniversaryDate < $endDate) {
+            // There are remaining days after the last full month
+            $daysInMonth = (int)$endDate->format('t');
+            $daysUsed = (int)$endDate->format('d');
+            $partialMonthFee = $pricePerMonth * ($daysUsed / $daysInMonth);
+            
+            $monthBreakdown[] = sprintf(
+                "%s (%.0f/%d days)",
+                $endDate->format('M Y'),
+                $daysUsed,
+                $daysInMonth
+            );
+        }
+
+        // Total fee: full months + partial month pro-rata
+        $fee = ($monthCount * $pricePerMonth) + $partialMonthFee;
+        $fee = round($fee, 0);
+
+        // Format text
+        $breakdownText = implode(' + ', $monthBreakdown);
+        $text = sprintf(
+            "Fixed: %s K/month × [%s] = %s K",
+            number_format($pricePerMonth, 0, ',', '.'),
+            $breakdownText,
+            number_format($fee, 0, ',', '.')
+        );
+
+        // Duration text for reference
+        $interval = $startDate->diff($endDate);
+        $days = $interval->days;
+        $remainingMinutes = ($interval->h * 60) + $interval->i;
+        $hours = floor($remainingMinutes / 60);
+        $minutes = $remainingMinutes % 60;
+
+        $durationText = '';
+        if ($days > 0) $durationText .= $days . ' ngày ';
+        if ($hours > 0 || $days > 0) $durationText .= $hours . ' giờ ';
+        $durationText .= $minutes . ' phút';
+
+        return [
+            'text' => $text,
+            'fee' => $fee,
+            'details' => [
+                'type' => 'fixed_monthly',
+                'price_month' => $pricePerMonth,
+                'full_months' => $monthCount,
+                'partial_month_fee' => round($partialMonthFee, 0),
+                'duration_days' => $days,
+                'duration_hours' => $hours,
+                'duration_mins' => $minutes,
+                'duration_text' => $durationText,
+                'period_fee' => $fee,
+                'power_state' => $this->power_state,
+                'breakdown' => $monthBreakdown
             ]
         ];
     }
@@ -218,5 +331,64 @@ class VpsUsage extends ModelGlxBase
                 'power_state' => $this->power_state
             ]
         ];
+    }
+
+    /**
+     * Test function: Calculate fee for manual testing
+     * Usage: VpsUsage::testCalculateMonthly('2026-03-11 00:00:00', '2027-02-11 23:59:59', 1280000);
+     */
+    public static function testCalculateMonthly($from, $to, $pricePerMonth)
+    {
+        // Create test instance
+        $test = new self();
+        $test->price_month = $pricePerMonth;
+        $test->last_billing_start_at = $from;
+        $test->timestamp_minute = $to;
+        $test->power_state = 'POWERED_ON';
+
+        // Calculate
+        $result = $test->calculateFeeFixedMonthly($from, $to);
+
+        // Calculate duration
+        $startDate = new \DateTime($from);
+        $endDate = new \DateTime($to);
+        $interval = $startDate->diff($endDate);
+        
+        // Get start and end days
+        $startDay = (int)$startDate->format('d');
+        $endDay = (int)$endDate->format('d');
+
+        echo "<pre>";
+        echo "=== TEST CALCULATE MONTHLY ===\n";
+        echo "From: $from (day " . $startDay . ")\n";
+        echo "To: $to (day " . $endDay . ")\n";
+        echo "Duration: " . $interval->days . " days\n";
+        echo "Price/month: " . number_format($pricePerMonth, 0, ',', '.') . "\n\n";
+        
+        echo "Calculation:\n";
+        echo "- Start day: " . $startDay . "\n";
+        echo "- End day: " . $endDay . "\n";
+        
+        if ($endDay == $startDay) {
+            echo "- Logic: End day = Start day → Count as FULL MONTHS\n";
+        } elseif ($endDay > $startDay) {
+            echo "- Logic: End day > Start day → Full months + " . ($endDay - $startDay) . " extra days\n";
+        } else {
+            echo "- Logic: End day < Start day → Pro-rata calculation\n";
+        }
+        
+        echo "\nResult: " . $result['text'] . "\n";
+        echo "Total Fee: " . number_format($result['fee'], 0, ',', '.') . " K\n\n";
+        
+        echo "Breakdown:\n";
+        foreach ($result['details']['breakdown'] as $line) {
+            echo "  - $line\n";
+        }
+        echo "\nFull months: " . $result['details']['full_months'] . "\n";
+
+        echo "Partial fee: " . number_format($result['details']['partial_month_fee'], 0, ',', '.') . " K\n";
+        echo "</pre>";
+
+        return $result;
     }
 }

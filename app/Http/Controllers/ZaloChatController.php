@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ZaloHelper;
 use App\Models\CrmMessage;
 use App\Models\CrmMessageGroup;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Zalo\Zalo;
 
-class ChatController extends Controller
+class ZaloChatController extends Controller
 {
     /**
      * Hiển thị giao diện chat chính
@@ -65,7 +67,7 @@ class ChatController extends Controller
             }
 
             // 3. Gọi API Zalo để lấy thông tin user
-            $helper = new \ZaloHelper(
+            $helper = new ZaloHelper(
                 'http://localhost:30000',
                 env('ZALO_API_USER', 'admin'),
                 env('ZALO_API_PASSWORD', '938475wufo87908u09')
@@ -288,7 +290,7 @@ class ChatController extends Controller
     private function sendToZalo($uid, $message, $channel = 'event1')
     {
         try {
-            $helper = new \ZaloHelper(
+            $helper = new ZaloHelper(
                 'http://localhost:30000',
                 env('ZALO_API_USER', 'admin'),
                 env('ZALO_API_PASSWORD', '938475wufo87908u09')

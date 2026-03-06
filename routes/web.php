@@ -32,8 +32,11 @@ Route::prefix('/member/vps-billing')->group(function () {
         ->name('vps.billing.excel');
     
     // Gửi email
-    Route::post('/report/send-email', [\App\Http\Controllers\VpsBillingController::class, 'sendEmail'])
-        ->name('vps.billing.email');
+    Route::get('/send-email', [\App\Http\Controllers\VpsBillingController::class, 'sendEmailForm'])
+        ->name('vps.billing.send-email-form');
+    
+    Route::post('/send-email', [\App\Http\Controllers\VpsBillingController::class, 'sendEmailPage'])
+        ->name('vps.billing.send-email');
 });
 
 // Note: Dynamic catch-all route moved to web_zzz_dynamic.php

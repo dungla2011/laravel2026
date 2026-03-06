@@ -13,6 +13,26 @@ class VpsInstance extends ModelGlxBase
     protected $guarded = [];
 
     /**
+     * Many-to-many relationship: VPS has many users
+     * Users who have access to this VPS (owner, admins, managers, etc)
+     */
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'vps_and_users', 'instance_id', 'user_id')
+            ->withPivot('role', 'created_at', 'updated_at', 'deleted_at')
+            ->withTimestamps();
+    }
+
+    /**
+     * Get primary owner of VPS (user_id from original table)
+     * Keep for backward compatibility
+     */
+    public function owner()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    /**
      * Find VPS by MAC address and return init_ip
      *
      * @param string $mac MAC address (can be in any case, with/without colons)

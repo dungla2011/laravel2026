@@ -242,6 +242,11 @@ def main():
             'password': os.getenv('ES_PW') + '6868'
         },
         {
+            'host': "10.0.1.18",
+            'user': os.getenv('ES_USER'),
+            'password': os.getenv('ES_PW') + '6868'
+        },
+        {
             'host': "10.0.1.19",
             'user': os.getenv('ES_USER'),
             'password': os.getenv('ES_PW2') + '098#'

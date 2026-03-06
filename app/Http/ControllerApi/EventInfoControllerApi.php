@@ -6,6 +6,7 @@ use App\Components\ClassMail1;
 use App\Components\ClassMailV2;
 use App\Components\clsParamRequestEx;
 use App\Components\Helper1;
+use App\Helpers\ZaloHelper;
 use App\Models\Data;
 use App\Models\EventAndUser;
 use App\Models\EventInfo;
@@ -22,6 +23,7 @@ use App\Models\FileUpload;
 use App\Models\ModelGlxBase;
 use App\Models\SiteMng;
 use App\Models\User;
+use App\Models\ZaloUser;
 use App\Repositories\EventInfoRepositoryInterface;
 use Illuminate\Support\Facades\DB;
 use LadLib\Common\cstring2;
@@ -377,7 +379,7 @@ class EventInfoControllerApi extends BaseApiController
                     }
                 }
                 if ($field == 'phone') {
-                    $phonex = $oneRow[$col] = fixPhoneNumber($oneRow[$col]);
+                    $phonex = $oneRow[$col] = EventUserInfo::fixPhoneNumber($oneRow[$col]);
                     if($phonex)
                         $havePhone = $phonex;
 
@@ -964,8 +966,8 @@ class EventInfoControllerApi extends BaseApiController
                     $mmDataFixSms[$i]->type = 'send';
                 if ($mmDataFixSms[$i]->type == 1)
                     $mmDataFixSms[$i]->type = 'get';
-                $mmDataFixSms[$i]->phone = fixPhoneNumber($mmDataFixSms[$i]->address);
-                $mmDataFixSms[$i]->time = fixPhoneNumber($mmDataFixSms[$i]->date);
+                $mmDataFixSms[$i]->phone = EventUserInfo::fixPhoneNumber($mmDataFixSms[$i]->address);
+                $mmDataFixSms[$i]->time = ($mmDataFixSms[$i]->date);
                 $mmDataFixSms[$i]->content = $mmDataFixSms[$i]->body;
             }
 
@@ -1172,7 +1174,7 @@ class EventInfoControllerApi extends BaseApiController
                 $objx = (object)$one;
                 //ol00("onex = $one->time"); //  . " --- ". serialize($one)
                 //                ol00("$cc/$tt . onesms = " . nowyh($objx->time / 1000) ." ". serialize($one));
-                $objx->phone = fixPhoneNumber($objx->phone);
+                $objx->phone = EventUserInfo::fixPhoneNumber($objx->phone);
                 //                $objx->content = trim(strtolower($objx->content));
                 $mmDataFix[] = $objx;
             }
@@ -1265,7 +1267,7 @@ class EventInfoControllerApi extends BaseApiController
                 $objx = (object)$one;
                 //ol00("onex = $one->time"); //  . " --- ". serialize($one)
                 //                ol00("$cc/$tt . onesms = " . nowyh($objx->time / 1000) ." ". serialize($one));
-                $objx->phone = fixPhoneNumber($objx->phone);
+                $objx->phone = EventUserInfo::fixPhoneNumber($objx->phone);
                 //                $objx->content = trim(strtolower($objx->content));
                 $mmDataFix[] = $objx;
             }
@@ -1498,13 +1500,18 @@ class EventInfoControllerApi extends BaseApiController
                     }
 
                     //Tìm EventSendInfoLog xem có chưa nếu cos rồi thì thôi, không insert vào nữa
-                    if ($evs = EventSendInfoLog::where(['session_id' => $eventSendAction->id,
+                    if ($evsL = EventSendInfoLog::where(['session_id' => $eventSendAction->id,
                         'event_user_id'=>$eventAndUser->user_event_id])->first()) {
 
                         //Bo qua SMS, vi sms se gui thong qua APP
-                        if($evs->type == 'sms'){
+                        if($evsL->type == 'sms'){
 //                            echo "\n Ignore UID ....";
                             ol1($eventSendAction, "Skip send, already queue", $ignoreEcho);
+                            continue;
+                        }
+
+                        if($evsL->status){
+                            ol1($eventSendAction, "Skip send, send ok before?", $ignoreEcho);
                             continue;
                         }
                     }
@@ -1621,16 +1628,16 @@ class EventInfoControllerApi extends BaseApiController
                     usleep(1000);
 
 
-                    if(!$evs)
-                        $evs = new EventSendInfoLog();
+                    if(!$evsL)
+                        $evsL = new EventSendInfoLog();
 
-                    $evs->event_user_id = $evUser->id;
-                    $evs->event_id = $eventId;
-                    $evs->session_id = $eventSendAction->id;
-                    $evs->type = $eventSendAction->type;
-                    $evs->count_retry_send = 0;
+                    $evsL->event_user_id = $evUser->id;
+                    $evsL->event_id = $eventId;
+                    $evsL->session_id = $eventSendAction->id;
+                    $evsL->type = $eventSendAction->type;
+                    $evsL->count_retry_send = 0;
                     //Save để lấy ID
-                    $evs->save();
+                    $evsL->save();
 
 
                     $select_content = $eventSendAction->select_content;
@@ -1717,8 +1724,91 @@ class EventInfoControllerApi extends BaseApiController
 
 //                $ctSMS = cstring2::convert_codau_khong_dau($ct);
 
+                    if ($eventSendAction->type == EventInfo_Meta::$typeZalo) {
+                        sleep(3);
+                        $zlh = new \App\Helpers\ZaloHelper('http://localhost:30000', 'admin', '938475wufo87908u09');
+                        $evsL->count_retry_send++;
+                        $evsL->save();
+                        $ct = removeSMSTextComments($ct);
+                        $ct = strip_tags($ct);
 
-                    if ($eventSendAction->type == EventInfo_Meta::$typeEmail) {
+                        if(\clsValidate::isPhone($evUser->phone)){
+
+                            $zluId = 0; $zlu = null; $haveIndb = 0;
+                            if($phone = EventUserInfo::fixPhoneNumber($evUser->phone)){
+                                $haveIndb = 1;
+                                $zlu = ZaloUser::where("phone", $phone)->first();
+                                if($zlu){
+                                    $zluId = $zlu->zalo_id;
+                                }
+                                else{
+                                    $zlu = new ZaloUser();
+                                    $zlu->phone = $phone;
+                                    $haveIndb = $zlu->save();
+                                }
+                            }
+                            if(!$zluId){
+//                                $zlh = new ZaloHelper();
+//                                $zlh = new \App\Helpers\ZaloHelper('http://localhost:30000', 'admin', '938475wufo87908u09');
+                                if($retZl = $zlh->findUserByPhone('event1', $phone)){
+                                    sleep(5);
+                                    echo "<pre> >>> " . __FILE__ . "(" . __LINE__ . ")<br/>";
+                                    print_r($retZl);
+                                    echo "</pre>";
+//                                    getch("...");
+                                    if(($retZl['success'] ?? '') && $retZl['success']){
+                                        if($zluId = ($retZl['user']['uid'] ?? '')) {
+
+                                        }
+                                        else{
+
+                                        }
+                                    }
+                                    else{
+                                        ol1($eventSendAction, "*** Lỗi api zalo jca? ($phone) " . substr(serialize($retZl),0,200), $ignoreEcho);
+                                    }
+                                    if($haveIndb && $zluId){
+                                        $zlu->zalo_id = $zluId;
+                                        $zlu->save();
+                                    }
+                                }
+                                if(!$zluId){
+                                    sleep(5);
+                                    ol1($eventSendAction, "*** Error: Không lấy được zl uid? ($phone)", $ignoreEcho);
+                                }
+
+
+                            }
+                            sleep(5);
+                            ol1($eventSendAction, "Zl UID = $zluId, ($phone)", $ignoreEcho);
+                            if(!$zluId)
+                                ol1($eventSendAction, "*** Error: Không có zalo ID ($phone)", $ignoreEcho);
+                            else{
+                                $result = $zlh->sendMessage('event1', $zluId, $ct);
+                                // Kiểm tra kết quả
+                                if ($result['success'] ?? '') {
+                                    sleep(5);
+                                    ol1($eventSendAction, "Gui zalo thanh cong ($phone)", $ignoreEcho);
+
+                                    $evsL->addLog(" send ok zalo");
+                                    $evsL->status = 1;
+                                    $evsL->done_at = nowyh();
+                                    $evsL->save();
+//                                    echo "✅ Gửi thành công! msgId: " . $result['data']['msgId'];
+                                } else {
+                                    sleep(5);
+                                    ol1($eventSendAction, "***Error: Gui zalo khong thanh cong ($phone) - " . serialize($result), $ignoreEcho);
+
+                                    $evsL->addLog("Error send zalo" . substr($result['error'] ?? '' , 0 ,500));
+                                    $evsL->save();
+//                                    echo "❌ Lỗi: " . $result['error'];
+                                }
+                            }
+
+                        }
+
+                    }
+                    elseif ($eventSendAction->type == EventInfo_Meta::$typeEmail) {
 
                         $ct = removeCommentsWithDOM2($ct);
                         $eventSendAction->content_raw_send = $ct;
@@ -1761,9 +1851,9 @@ class EventInfoControllerApi extends BaseApiController
                         $titleMail = str_replace(EventInfo::$DEF_EVENT_NAME[0], $ev->getName(), $titleMail);
 
 //                    $ct .= $strImg;
-                        $evs->content = $ct;
-                        $evs->title_email = $titleMail;
-                        $evs->save();
+                        $evsL->content = $ct;
+                        $evsL->title_email = $titleMail;
+                        $evsL->save();
 
                         if ($ev instanceof ModelGlxBase) ;
                         $obj = new ClassMailV2();
@@ -1800,8 +1890,8 @@ class EventInfoControllerApi extends BaseApiController
                             $isErrorSendMail = 1;
                         } else {
                             ol1($eventSendAction, " Send mail done: $evUser->email", $ignoreEcho);
-                            $evs->done_at = nowyh();
-                            $evs->save();
+                            $evsL->done_at = nowyh();
+                            $evsL->save();
                             $done++;
                         }
 
@@ -1834,7 +1924,7 @@ class EventInfoControllerApi extends BaseApiController
 
 
 
-                        $ct .= "\n[SMS-$evs->id]";
+                        $ct .= "\n[SMS-$evsL->id]";
 
                         //phone chi giữ lại số
                         $phone = preg_replace('/[^0-9]/', '', $evUser->phone);
@@ -1842,8 +1932,8 @@ class EventInfoControllerApi extends BaseApiController
 
                         if (!$phone || !is_numeric($phone) || strlen($phone) < 10 || strlen($phone) > 12) {
                             $log = "Not valid phone not send?: ($evUser->phone/ $phone), bỏ qua";
-                            $evs->done_at = "Not valid phone!";
-                            $evs->addLog($log,1);
+                            $evsL->done_at = "Not valid phone!";
+                            $evsL->addLog($log,1);
                             //Số phone không hợp le:
                             $ignore++;
                             ol1($eventSendAction, $log, $ignoreEcho);
@@ -1853,19 +1943,19 @@ class EventInfoControllerApi extends BaseApiController
                             $eventPusherChanel = $eventSendAction->pusher_chanel;
 //                            ol1($eventSendAction, " Channel : $evUser->$eventPusherChanel");
 
-                            $evs->content_sms = $ct;
-//                            $evs->comment = nowyh() . '# Đưa vào hàng đợi gửi SMS';
-                            $evs->addLog(' Đưa vào hàng đợi gửi SMS');
-                            $evs->save();
+                            $evsL->content_sms = $ct;
+//                            $evsL->comment = nowyh() . '# Đưa vào hàng đợi gửi SMS';
+                            $evsL->addLog(' Đưa vào hàng đợi gửi SMS');
+                            $evsL->save();
 
                             if(0){
                                 if (self::sendSms(
                                     $phone, $ct, $eventPusherChanel
                                 )) {
                                     $done++;
-                                    $evs->content_sms = $ct;
-                                    $evs->comment = nowyh() . ' Đưa vào hàng đợi gửi SMS';
-                                    $evs->save();
+                                    $evsL->content_sms = $ct;
+                                    $evsL->comment = nowyh() . ' Đưa vào hàng đợi gửi SMS';
+                                    $evsL->save();
                                     ol1($eventSendAction, " Send Sms done: $evUser->phone", $ignoreEcho);
                                 } else {
                                     ol1($eventSendAction, " Có lỗi send Sms : $evUser->phone", $ignoreEcho);
@@ -1956,6 +2046,21 @@ class EventInfoControllerApi extends BaseApiController
 //            print_r( $e->getTraceAsString());
 //            echo "</pre>";
 
+
+            if($eventSendActionCurrent ?? ''){
+                $eventSendActionCurrent->done = 1;
+                if (!$eventSendActionCurrent->count_send) {
+                    $eventSendActionCurrent->count_send = 1;
+                } else {
+                    $eventSendActionCurrent->count_send++;
+                }
+    //            $doneAll = $doneBefore + $done;
+    //            $eventSendActionCurrent->count_success = "$doneAll/$tt";
+
+                $eventSendActionCurrent->addLog("*** Co loi khi gui!");
+                $eventSendActionCurrent->save();
+            }
+
             ol1($eventSendActionCurrent, "\n\n*** ERRROR LOG1: " . substr($e->getMessage() . "... \n" . $e->getTraceAsString(), 0, 5000));
 
         }
@@ -1972,7 +2077,7 @@ class EventInfoControllerApi extends BaseApiController
         $uid0 = getCurrentUserId();
 
         $typeX = \request('typeX');
-        if (!in_array($typeX, ['email', 'sms'])) {
+        if (!in_array($typeX, ['email', 'sms', 'zalo'])) {
             return rtJsonApiError('Not valid typex?');
         }
 

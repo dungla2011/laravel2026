@@ -146,8 +146,6 @@ $currentLocale = app()->getLocale();
                         <li class="nav-item dropdown language-select text-uppercase">
                             <?php
 
-
-
                             $languageList = \clang1::getLanguageList();
                             $currentFlag = \clang1::$flagMap[$currentLocale] ?? 'us';
                             $currentName = $languageList[$currentLocale] ?? 'EN';
@@ -177,8 +175,10 @@ $currentLocale = app()->getLocale();
                         </li>
                         <li class="nav-item">
                             <?php
-                            if(getCurrentUserId())
-                                echo '<a href="/member"><b>Member</b></a>';
+                            if($objU = getCurrentUserId(1)){
+                                $em = substr(explode("@", $objU->email)[0], 0,15) ;
+                                echo "<span style='font-size: ;'> <a href='/member'>  $em </a></span> ";
+                            }
                             else
                                 echo '<a href="/login"><b>Login</b></a>';
                             ?>

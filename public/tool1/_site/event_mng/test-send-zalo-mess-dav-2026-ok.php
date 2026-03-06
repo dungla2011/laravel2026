@@ -11,8 +11,15 @@ $response = $kernel->handle(
     $request = Illuminate\Http\Request::capture()
 );
 
-$helper = new ZaloHelper('http://localhost:30000', 'admin', '938475wufo87908u09');
+$helper = new \App\Helpers\ZaloHelper('http://localhost:30000', 'admin', '938475wufo87908u09');
 
+$us = $helper->findUserByPhone('event1', "0869834392");
+
+echo "<pre> >>> " . __FILE__ . "(" . __LINE__ . ")<br/>";
+print_r($us);
+echo "</pre>";
+
+return;
 
 // Tìm user
 $phone = "0902066768";
@@ -22,15 +29,15 @@ echo "<pre> >>> " . __FILE__ . "(" . __LINE__ . ")<br/>";
 print_r($user);
 echo "</pre>";
 if ($user['success']) {
-    echo "UID: " . $user['user']['uid'];
-    echo "Name: " . $user['user']['displayName'];
+    echo "<br>UID: " . $user['user']['uid'];
+    echo "<br>Name: " . $user['user']['displayName'];
 } else {
     echo "❌ Lỗi: " . $user['error'];
 }
 
-return;
-
-$result = $helper->sendMessage('event1', '7714268566922297972', 'Hello!');
+//return;
+echo "<br/>\n";
+$result = $helper->sendMessage('event1', '5138831621894942631', 'Hello12345!');
 
 
 // Kiểm tra kết quả

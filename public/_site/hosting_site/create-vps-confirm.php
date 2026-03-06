@@ -180,8 +180,8 @@ $isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_
 $isPost = $_SERVER['REQUEST_METHOD'] === 'POST';
 
 if (!($isAjax || $isPost)) {
-    http_response_code(400);
-    die(json_encode(['success' => false, 'message' => 'Invalid request method']));
+//    http_response_code(400);
+//    die(json_encode(['success' => false, 'message' => 'Invalid request method']));
 }
 
 
@@ -192,14 +192,6 @@ $response = $kernel->handle(
     $request = Illuminate\Http\Request::capture()
 );
 
-
-
-if(!isAdminACP_()){
-    die("NOT ADMIN!");
-}
-
-
-
 // Get user ID
 $uid = getCurrentUserId();
 $email = getCurrentUserEmail();
@@ -207,6 +199,17 @@ if (!$uid) {
     http_response_code(401);
     die(json_encode(['success' => false, 'message' => 'User not authenticated']));
 }
+
+$freeMoney = 500000;
+if(\App\Services\VpsBillingReportService::getFreeMoneyVpsBilling($uid, $freeMoney) < $freeMoney){
+    die(json_encode([
+        'success' => false,
+        'error_code' => 'FREE_MONEY_VPS',
+        'message' => "⏱️ Bạn không còn đủ số dư để tạo VPS: $freeMoney - " . (\LadLib\Common\cstring2::toTienVietNamString3($freeMoney)),
+        'retry_after' => 60
+    ]));
+}
+
 
 // Anti-spam: Check if user already created instance in last 30 seconds
 $recentInstance = VpsInstance::where('user_id', $uid)

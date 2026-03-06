@@ -108,7 +108,7 @@ $keyAndName = config('vps_config.specs');
                             <label class="form-label small mb-2">
                                 <i class="fas fa-penguin"></i> Chọn hệ điều hành (tùy chọn):
                             </label>
-                            <select class="form-select form-select-sm select-os" data-plan-id="{{ $plan->id }}">
+                            <select class="select_vps_package form-select form-select-sm select-os" data-plan-id="{{ $plan->id }}">
                                 <option value="">-- Chọn OS --</option>
                                 @foreach(\App\Models\VpsOsVersion::where('is_active', 1)->get() as $os)
                                     <option value="{{ $os->id }}">{{ $os->name }}</option>
@@ -117,8 +117,8 @@ $keyAndName = config('vps_config.specs');
                         </div>
 
                         <!-- Card Footer -->
-                        <div class="card-footer bg-light border-0">
-                            <button class="btn btn-primary w-100 select-vps-btn" data-plan-id="{{ $plan->id }}">
+                        <div class="card-footer bg-light border-0" data-code-pos='ppp17727260707091'>
+                            <button id="" class="select_vps_package btn btn-primary w-100 select-vps-btn" data-plan-id="{{ $plan->id }}">
                                 <i class="fas fa-shopping-cart"></i> Chọn gói này
                             </button>
                         </div>
@@ -343,6 +343,15 @@ $keyAndName = config('vps_config.specs');
             e.preventDefault();
 
             const card = this.closest('.card');
+            const osSelect = card.querySelector('.select-os');
+
+            // Kiểm tra xem OS đã được chọn chưa
+            if (!osSelect || osSelect.value === '') {
+                alert('Vui lòng chọn hệ điều hành trước khi tiếp tục!');
+                osSelect.focus(); // Focus vào select để user biết
+                return;
+            }
+
             const specs = getSpecsFromCard(card);
 
             // Build query string from specs
@@ -361,7 +370,6 @@ $keyAndName = config('vps_config.specs');
             }
 
             // Add selected OS (init_os)
-            const osSelect = card.querySelector('.select-os');
             if (osSelect && osSelect.value) {
                 params.append('init_os', osSelect.value);
             }

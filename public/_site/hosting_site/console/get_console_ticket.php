@@ -47,15 +47,16 @@ if (empty($instanceId)) {
     exit;
 }
 
+$belongVendor = \App\Models\VpsAndUser::where('user_id_vendor', $uid)->where("instance_id", $instanceId)->first();
 
 // Validate instance and get VM details
 $vmi = \App\Models\VpsInstance::find($instanceId);
-if(!$vmi || $vmi->user_id != $uid){
+if(!$vmi || ($vmi->user_id != $uid && !$belongVendor)){
 
     if(!isAdminLrv_()){
         echo json_encode([
             'success' => false,
-            'error' => 'Not valid access to this resource!'
+            'error' => 'Not valid access to this resource-2!'
         ]);
         exit;
     }

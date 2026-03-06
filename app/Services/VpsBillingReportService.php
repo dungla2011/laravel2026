@@ -2,10 +2,14 @@
 
 namespace App\Services;
 
+use App\Components\ClassMail1;
+use App\Components\ClassMailV2;
+use App\Models\PartnerInfo;
 use App\Models\User;
 use App\Models\VpsUsage;
 use App\Models\VpsInstance;
 use LadLib\Common\cstring2;
+use PHPMailer\PHPMailer\PHPMailer;
 
 class VpsBillingReportService
 {
@@ -18,9 +22,6 @@ class VpsBillingReportService
      */
     public function generateReportData(User $user, array $options = [], $fromTime = null, $toTime = null): array
     {
-
-
-
 
 
         // Number format for VND currency
@@ -152,8 +153,6 @@ class VpsBillingReportService
             {
                 $endTime = $usage->timestamp_minute;
             }
-
-
 
             $interval = $createdTime->diff(new \DateTime($endTime));
             $timeUsage = '';
@@ -393,6 +392,36 @@ class VpsBillingReportService
 
     }
 
+    static function getFreeMoneyVpsBilling($userIdOrObj)
+    {
+        $billS = new VpsBillingReportService();
+
+        if(is_numeric($userIdOrObj)){
+            $userIdOrObj = User::find($userIdOrObj);
+        }
+
+        if(!$userIdOrObj){
+            loi("isAllowCreateVps Not valid userid!");
+        }
+
+        $mm = $billS->generateReportData($userIdOrObj, [], null, nowyh());
+
+        $totalCost = $mm['totalCost'] ?? 0;
+        $totalCost1000 = $totalCost * 1000;
+
+        $totalRecharge = $mm['totalRecharge'] ?? 0;
+        $totalRechargeNoVAt = $totalRecharge / 1.1;
+//        echo "<br/>\n $totalRechargeNoVAt - $totalCost1000  = " . ($totalRechargeNoVAt - $totalCost1000);
+//
+//        echo "<pre> >>> " . __FILE__ . "(" . __LINE__ . ")<br/>";
+//        print_r($mm);
+//        echo "</pre>";
+
+        $free = $totalRechargeNoVAt - $totalCost1000;
+        return $free;
+
+    }
+
     /**
      * Generate Excel for billing report
      *
@@ -419,9 +448,9 @@ class VpsBillingReportService
 
         // Use PhpOffice\PhpSpreadsheet\IOFactory for Excel generation
         if (class_exists('\PhpOffice\PhpSpreadsheet\IOFactory'))
-            return $this->generateExcelWithPhpOffice($data, $fileName);
+            return $this->generateExcelWithPhpOffice($data, $fileName, $fromTime, $toTime);
 
-        return $this->generateCsvExport($data, $fileName);
+        return $this->generateCsvExport($data, $fileName, $fromTime, $toTime);
     }
 
     /**
@@ -432,10 +461,13 @@ class VpsBillingReportService
     {
         $uid = $data['user']->id ?? 0;
         $pn = \App\Models\PartnerInfo::where("user_id", $uid)->first();
-        $kh = " Đơn vị sử dụng: ";
+        $kh = "Đơn vị sử dụng: ";
         $email = $data['user']->email ?? ' Lỗi email ';
         if($pn) {
-            $kh = "Đơn vị sử dụng:  " . $pn->partner_name . " " . $pn->tax_code . " (" . $email . ")";
+            $kh .= $pn->partner_name . " " . $pn->tax_code . " (" . $email . ")";
+        }
+        else{
+            $kh .= " $email ";
         }
 
         $rows = [];
@@ -489,6 +521,8 @@ class VpsBillingReportService
 
         // Usage records and track monthly price sum
         $monthlyPriceSum = 0;
+
+        if($data['results'] )
         foreach ($data['results'] as $key => $row) {
             $monthlyPrice = ($row['power_state']) === 'OLD_CONFIG' ? 0 : ($row['price_month'] * 1000 ?: $row['price_config'] * 1000);
             // $monthlyPrice = ($row['price_month'] * 1000 ?: $row['price_config'] * 1000);
@@ -519,10 +553,25 @@ class VpsBillingReportService
     }
 
     /**
-     * Generate Excel using PhpOffice\PhpSpreadsheet\IOFactory
+     * Create spreadsheet object with all data and formatting
+     * Shared between download and email sending
      */
-    private function generateExcelWithPhpOffice($data, $fileName)
+    private function createSpreadsheet($data, $fromTime = null, $toTime = null)
     {
+        $totalRecharge = $data['totalRecharge'] ?? 0;
+        $totalCost = $data['totalCost'] ?? 0;
+        $totalRechargeNoVat = $totalRecharge / 1.1;
+
+        $needPay = $totalCost * 1000 - $totalRechargeNoVat;
+        $needPayDot = number_formatvn0($needPay);
+        $needPayStrVn = cstring2::toTienVietNamString3($needPay);
+        $needPayVAT = $needPay / 10;
+
+        $toTimeVN = nowy_vn();
+        if($toTime)
+            $toTimeVN = nowy_vn(strtotime($toTime));
+
+
         $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
@@ -556,17 +605,58 @@ class VpsBillingReportService
             $sheet->getColumnDimension($column)->setWidth($width);
         }
 
+        // Footer rows with auto-increment
+        $linkRow = $rowIndex + 2;
+        $style = $sheet->getStyle('A' . $linkRow);
+        $style->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID);
+        $style->getFill()->getStartColor()->setARGB('FFD4EDDA'); // Light green background
+        $sheet->setCellValue('A' . $linkRow, "Chi phí: ");
+        $sheet->setCellValue('B' . $linkRow, $needPay);
+
+//        $sheet->mergeCells('A' . $linkRow . ':G' . $linkRow);
+        $linkRow++;
+        $style = $sheet->getStyle('A' . $linkRow);
+        $style->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID);
+        $style->getFill()->getStartColor()->setARGB('FFD4EDDA'); // Light green background
+        $sheet->setCellValue('A' . $linkRow, "Thuế VAT:  ");
+        $sheet->setCellValue('B' . $linkRow, ($needPayVAT));
+//        $sheet->mergeCells('A' . $linkRow . ':G' . $linkRow);
+        $linkRow++;
+
+        $style = $sheet->getStyle('A' . $linkRow);
+        $style->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID);
+        $style->getFill()->getStartColor()->setARGB('FFD4EDDA'); // Light green background
+        $sheet->setCellValue('A' . $linkRow, "Cần thanh toán:  ");
+        $sheet->setCellValue('B' . $linkRow, ($needPayVAT + $needPay));
+        $sheet->setCellValue('C' . $linkRow, "(" . cstring2::toTienVietNamString3($needPay * 1.1) . ")");
+//        $sheet->mergeCells('A' . $linkRow . ':G' . $linkRow);
+        $linkRow++;
+        $linkRow++;
+
+        $sheet->setCellValue('A' . $linkRow, "Tài khoản thanh toán:  110389898, Công ty TNHH Công nghệ số Galaxy Việt nam.");
+        $sheet->mergeCells('A' . $linkRow . ':G' . $linkRow);
+        $linkRow++;
+
+        $sheet->setCellValue('A' . $linkRow, "Tại: Ngân hàng Thương mại Cổ phần Á Châu (ACB)");
+        $sheet->mergeCells('A' . $linkRow . ':G' . $linkRow);
+        $linkRow += 2;  // Skip 2 blank rows
+
+
+        $sheet->setCellValue('A' . $linkRow, "Xin cảm ơn Quý khách đã sử dụng dịch vụ. Mọi thắc mắc vui lòng liên hệ bộ phận hỗ trợ.");
+        $sheet->mergeCells('A' . $linkRow . ':G' . $linkRow);
+        $linkRow += 2;  // Skip 2 blank rows
+
+
         //Thêm 1 hàng lấy link url hiện tại, laravel, và cho phép click vào link đó trong excel để mở ra:
         $domain = request()->getHost();
-        $currentUrl = "https://$domain/member/vps-billing/report?to_time=".request('to_time');
-        $linkRow = $rowIndex + 2;
-        $sheet->setCellValue('A' . $linkRow, 'Link URL: ' . $currentUrl);
+        $currentUrl = "https://$domain/member/vps-billing/report?to_time=".$toTime;
 
+        $sheet->setCellValue('A' . $linkRow, 'Thông tin chi tiết : ' . $currentUrl);
         // Merge cells A to G (7 columns)
         $sheet->mergeCells('A' . $linkRow . ':G' . $linkRow);
-
         // Set hyperlink
         $sheet->getCell('A' . $linkRow)->getHyperlink()->setUrl($currentUrl);
+
 
         // Add green background color and formatting
         $style = $sheet->getStyle('A' . $linkRow);
@@ -574,8 +664,17 @@ class VpsBillingReportService
         $style->getFill()->getStartColor()->setARGB('FFD4EDDA'); // Light green background
         $style->getFont()->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color('FF155724')); // Dark green text
         $style->getFont()->setBold(true);
-        // $style->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
         $style->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+
+        return $spreadsheet;
+    }
+
+    /**
+     * Generate Excel using PhpOffice\PhpSpreadsheet\IOFactory
+     */
+    private function generateExcelWithPhpOffice($data, $fileName, $fromTime = null, $toTime = null)
+    {
+        $spreadsheet = $this->createSpreadsheet($data, $fromTime, $toTime);
 
         // Create writer and save to stream
         $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xlsx');
@@ -632,7 +731,7 @@ class VpsBillingReportService
      * Uses generateSpreadsheetData() to ensure consistency with Excel output
      * Modify generateSpreadsheetData() only - changes will apply to both CSV and Excel
      */
-    private function generateCsvExport($data, $fileName)
+    private function generateCsvExport($data, $fileName,$fromTime = null, $toTime = null)
     {
         if(request('dump')){
             echo "<pre> >>> " . __FILE__ . "(" . __LINE__ . ")<br/>";
@@ -677,10 +776,114 @@ class VpsBillingReportService
      * Send billing report via email
      *
      * @param User $user Target user
-     * @param array $options Additional options
+     * @param array $options Additional options (date_from, date_to)
+     * @param string $title Email subject - custom or auto-generated
+     * @param string $content Email body content - custom or auto-generated
+     * @param string|null $fromTime From timestamp
+     * @param string|null $toTime To timestamp
      * @return bool Success status
      */
-    public function sendEmail(User $user, array $options = []): bool
+    public function sendEmail(User $user, array $options = [], $title = null, $content = null, $fromTime = null, $toTime = null): bool
+    {
+        try {
+            $data = $this->generateReportData($user, $options, $fromTime, $toTime);
+
+            $partner_name  = 'Quý khách';
+            if($prof = PartnerInfo::where("user_id", $user->id)->first()){
+                if($prof->partner_name ){
+                    $partner_name = $prof->partner_name;
+                }
+            }
+
+//            echo "<pre> >>> " . __FILE__ . "(" . __LINE__ . ")<br/>";
+//            print_r($data);
+//            echo "</pre>";
+            // Generate spreadsheet
+            $spreadsheet = $this->createSpreadsheet($data, $fromTime, $toTime);
+
+//            die("xxx1 - " . __LINE__);
+            if(!$user = getCurrentUserId(1)){
+                return false;
+            }
+
+            // Save to temp file
+            $tempFile = tempnam(sys_get_temp_dir(), "vps_billing-$user->id" . date("Y-m-d"));
+            $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xlsx');
+            $writer->save($tempFile);
+
+            $from = "sale@glx.com.vn";
+            $fromName = "Galaxy Cloud";
+
+            // Use provided title or generate default
+            if (!$title)
+                $title = "GalaxyCloud - Đối soát # " . nowy_vn();
+
+            $to = $user->email;
+
+            // Use provided content or generate default
+            if (!$content) {
+//                $domain = getDomainHostName();
+//                $link = "https://$domain/member/vps-billing/report";
+                if($fromTime)
+//                    $link .= "?from_time=$fromTime";
+                $content = "Kính chào $partner_name!
+Xin cảm ơn Quý khách hàng!
+---------------
+http://glx.com.vn";
+            }
+
+            $debug = false;
+            if($options['debug'] ?? 0)
+                $debug = true;
+            $mail = new PHPMailer();
+            $mail->IsSMTP();
+            $mail->SMTPDebug = $debug;
+
+            $mail->SMTPAuth = true;
+            $mail->SMTPSecure = 'ssl';
+            $mail->Host = 'smtp.gmail.com';
+            $mail->Port = 465;
+            $mail->CharSet = 'UTF-8';
+
+            if (ClassMail1::$nAccForce >= 0 && ClassMail1::$nAccForce < count(ClassMail1::$mAcc)) {
+                $mail->Username = ClassMail1::$mAcc[ClassMail1::$nAccForce][0];
+                $mail->Password = dfh1b(ClassMail1::$mAcc[ClassMail1::$nAccForce][1]);
+            } else {
+                $rand = rand(0, count(ClassMail1::$mAcc) - 1);
+                $mail->Username = ClassMail1::$mAcc[$rand][0];
+                $mail->Password = dfh1b(ClassMail1::$mAcc[$rand][1]);
+            }
+
+            $mail->From = "$from";
+            $mail->FromName = "$fromName";
+            $mail->AddReplyTo("$from", "$fromName");
+            $mail->IsHTML(false);
+            $mail->Subject = "$title";
+            $mail->Body = "$content";
+            $mail->AddAddress($to);
+            $mail->AddCC("sale@glx.com.vn");
+            $mail->AddCC("dungla2011@gmail.com");
+
+            // Attach Excel file
+            if (file_exists($tempFile))
+                $mail->AddAttachment($tempFile, "DoiSoatDichVu-VPS-$user->id-". nowy() .'.xlsx');
+
+            if ($mail->Send()) {
+                @unlink($tempFile);
+                return true;
+            } else {
+                @unlink($tempFile);
+                return false;
+            }
+        } catch (\Exception $e) {
+            echo "<br>Error: " . $e->getMessage();
+            \Log::error('Failed to send billing report email: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+
+    public function sendEmailPdfOk(User $user, array $options = []): bool
     {
         try {
             $pdf = $this->generatePdf($user, $options);
@@ -701,7 +904,6 @@ class VpsBillingReportService
             return false;
         }
     }
-
     /**
      * Extract total monthly price from price_config with quantities
      */

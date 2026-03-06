@@ -68,7 +68,12 @@ class clsParamRequestEx
         if (Helper1::isMemberModule($request)) {
             $this->set_gid = 3;
             $this->need_set_uid = -1;
-        } else {
+        } else
+        if (Helper1::isManagerModule($request)) {
+            $this->set_gid = 2;
+            $this->need_set_uid = 0;
+        } else
+        {
             $this->set_gid = 1;
             $this->need_set_uid = 0;
         }

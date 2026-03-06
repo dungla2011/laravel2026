@@ -169,10 +169,36 @@ $formatPriceK = function($priceK) {
 
             <hr class="my-3">
 
+            <?php
+                $money = 500000;
+                if(($free = \App\Services\VpsBillingReportService::getFreeMoneyVpsBilling($uid)) < $money){
+                ?>
+<div class="text-center">
+                <div class="text-red">  Bạn có {{ number_formatvn0($free) }} VND - không có đủ số dư {{ number_formatvn0($money)  }} VND </div>
+
+    <p></p>
+            <a href="/vi/deposit">
+
+                <button type="button"  class='btn btn-primary btn-sm flex-grow-1'>  Nạp phí tại đây  </button>
+            </a>
+</div>
+                <?php
+            }
+            else{
+                ?>
+
+            <?php
+            ?>
             <div class="d-flex gap-2">
                 <button id="cancelBtn" class="btn btn-secondary btn-sm flex-grow-1">Huỷ bỏ</button>
                 <button id="confirmBtn" class="btn btn-success btn-sm flex-grow-1">Xác nhận</button>
             </div>
+
+            <div class="text-red text-center my-3">  Bạn đang có số dư tài khoản: {{ number_formatvn0($free) }} VND </div>
+
+            <?php
+            }
+            ?>
         </div>
     </div>
 </div>
@@ -208,7 +234,7 @@ $formatPriceK = function($priceK) {
         .then(data => {
             if (data.success) {
                 alert('✅ Đơn hàng đã được lưu thành công!\nMã VPS: ' + data.instance_id);
-                window.location.href = '/';
+                window.location.href = '/member/vps-instance/edit/' + + data.instance_id;
             } else {
                 alert('❌ Lỗi: ' + data.message);
                 confirmBtn.disabled = false;

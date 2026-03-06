@@ -46,7 +46,8 @@ class VpsUsage_Meta extends MetaOfTableInDb
 
     function _name($obj, $val, $field)
     {
-        return "$obj->_email, UID: $obj->user_id";
+        $instance = "<a target='_blank' href='/admin/vps-instance/edit/$obj->instance_id'> Instance </a>";
+        return "$instance | $obj->_email";
     }
     function _email($obj, $val, $field)
     {
@@ -57,6 +58,7 @@ class VpsUsage_Meta extends MetaOfTableInDb
     {
         return [
             'users.email'  => "like",
+            'vps_usages.list_ip_address'  => "like",
         ];
     }
 
@@ -311,34 +313,7 @@ class VpsUsage_Meta extends MetaOfTableInDb
         return   $ret . $detail;
     }
 
-    function _duration_minutes($obj, $val, $field)
-    {
-        // Calculate duration dynamically from created_at and lastest_time_the_same
-        $createdAt = strtotime($obj->created_at);
-        $lastestTime = strtotime($obj->lastest_time_the_same ?? $obj->created_at);
 
-        $minutes = floor(($lastestTime - $createdAt) / 60);
-
-        if ($minutes < 0) {
-            $minutes = 0;
-        }
-
-        if ($minutes < 60) {
-            return "$minutes phút";
-        }
-
-        $hours = floor($minutes / 60);
-        $mins = $minutes % 60;
-
-        if ($hours < 24) {
-            return "{$hours}h {$mins}m";
-        }
-
-        $days = floor($hours / 24);
-        $hrs = $hours % 24;
-
-        return "{$days}d {$hrs}h";
-    }
 
 }
 

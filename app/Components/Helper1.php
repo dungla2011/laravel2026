@@ -100,6 +100,7 @@ class Helper1
 
         if(!$request)
             $request = \request();
+
         if (str_starts_with($request->route()->uri(), 'api/member')) {
             return 'member';
         }
@@ -111,6 +112,9 @@ class Helper1
         }
         if (str_starts_with($request->route()->uri(), 'admin')) {
             return 'admin';
+        }
+        if (str_starts_with($request->route()->uri(), 'manager')) {
+            return 'manager';
         }
         if (str_starts_with($request->route()->uri(), '_admin')) {
             return '_admin';
@@ -146,6 +150,21 @@ class Helper1
             return 1;
         }
         if (str_starts_with($rq?->route()?->uri(), 'api/member')) {
+            return 1;
+        }
+
+        return 0;
+    }
+
+    public static function isManagerModule(?Request $rq = null)
+    {
+        if (! $rq) {
+            $rq = \request();
+        }
+        if (str_starts_with($rq?->route()?->uri(), 'manager')) {
+            return 1;
+        }
+        if (str_starts_with($rq?->route()?->uri(), 'api/manager')) {
             return 1;
         }
 
@@ -237,6 +256,7 @@ class Helper1
     {
         if (str_starts_with($route->getName(), 'admin.')
         || str_starts_with($route->uri(), 'member')
+            || str_starts_with($route->uri(), 'manager')
         || str_starts_with($route->uri(), 'api/')
         || str_starts_with($route->uri(), 'task')) {
             return 1;
@@ -459,7 +479,7 @@ data-id='$objFile->id' data-field='$field'>  </span> </span>";
             }
             else{
                 if(str_starts_with($idF, "https://")){
-                    $ret .= "<a class='mx-1 one_link_' href='$idF' target='_blank'> LINK </a>  ";
+                    $ret .= "<a class='ml-2 one_link_' href='$idF' target='_blank'> LINK </a>  ";
                 }
 
             }
