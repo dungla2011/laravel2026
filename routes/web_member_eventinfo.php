@@ -1,6 +1,9 @@
 <?php
 
 use App\Components\Route2;
+$r = Route2::match(['get', 'post'], '/event-update', [
+    \App\Http\Controllers\EventUserInfoController::class, 'update_user_info',
+])->name('update_event_ui');
 
 Route2::prefix('member')->group(function () {
 

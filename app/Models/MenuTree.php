@@ -61,21 +61,11 @@ class MenuTree extends ModelGlxBase
 
         if($lang)
             $lang = "/$lang";
-    // Helper function to build menu tree
-    // Helper function to build menu tree
 
+        \App\Models\BlockUi::showEditLink_("/admin/menu-tree/tree?pid=3&gid=0&open_all=1", 'edit menu', 'position: static!important; height: 40px');
 
+        renderMenu($mm, $lang);
 
-?>
-
-
-
-    <?php
-    \App\Models\BlockUi::showEditLink_("/admin/menu-tree/tree?pid=3&gid=0&open_all=1", 'edit menu', 'position: static!important; height: 40px');
-    renderMenu($mm, $lang);
-    ?>
-
-        <?php
     }
 
     static function getMenuArrayPublic($lang = '')

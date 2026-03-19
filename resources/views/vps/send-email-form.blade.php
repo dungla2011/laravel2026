@@ -40,7 +40,7 @@ $uid = getCurrentUserId();
                     </div>
 
                     <!-- Email Edit Form -->
-                    <form method="POST" action="{{ route('vps.billing.send-email') }}" class="needs-validation">
+                    <form method="POST" action="" class="needs-validation">
                         @csrf
 
                         <!-- Hidden filter params -->
@@ -55,11 +55,11 @@ $uid = getCurrentUserId();
                             <label for="title" class="form-label fw-bold">
                                 📌 Email Subject
                             </label>
-                            <input 
-                                type="text" 
-                                class="form-control form-control-lg" 
-                                id="title" 
-                                name="title" 
+                            <input
+                                type="text"
+                                class="form-control form-control-lg"
+                                id="title"
+                                name="title"
                                 value="{{ $title }}"
                                 placeholder="Enter email subject"
                                 required
@@ -74,10 +74,10 @@ $uid = getCurrentUserId();
                             <label for="content" class="form-label fw-bold">
                                 📝 Email Content
                             </label>
-                            <textarea 
-                                class="form-control" 
-                                id="content" 
-                                name="content" 
+                            <textarea
+                                class="form-control"
+                                id="content"
+                                name="content"
                                 rows="15"
                                 placeholder="Enter email body content"
                                 style="font-family: 'Courier New', monospace; font-size: 14px;"
@@ -97,13 +97,13 @@ $uid = getCurrentUserId();
                         <!-- Action Buttons -->
                         <div class="d-flex gap-2 justify-content-between">
                             <div>
-                                <button type="submit" class="btn btn-success btn-lg" onclick="document.getElementById('debugMode').value = 0;">
+                                <button data-code-pos='ppp17731411333491' type="submit" class="btn btn-success btn-lg" onclick="document.getElementById('debugMode').value = 0;">
                                     <i class="fas fa-paper-plane mr-2"></i> Send Email
                                 </button>
-                                <button type="submit" class="btn btn-warning btn-lg ml-2" onclick="document.getElementById('debugMode').value = 1;">
+                                <button data-code-pos='ppp17731411360351' type="submit" class="btn btn-warning btn-lg ml-2" onclick="document.getElementById('debugMode').value = 1;">
                                     <i class="fas fa-bug mr-2"></i> Send Email Debug
                                 </button>
-                                <a href="{{ $report_url }}" class="btn btn-secondary btn-lg ml-2">
+                                <a data-code-pos='ppp17731411388131' href="{{ $report_url }}" class="btn btn-secondary btn-lg ml-2">
                                     <i class="fas fa-times mr-2"></i> Cancel
                                 </a>
                             </div>
@@ -140,13 +140,13 @@ document.getElementById('charCount').textContent = document.getElementById('cont
         border: none;
         border-radius: 8px;
     }
-    
+
     .form-label {
         font-size: 16px;
         color: #333;
         margin-bottom: 10px;
     }
-    
+
     .form-control {
         border: 1px solid #ddd;
         border-radius: 5px;
@@ -154,18 +154,18 @@ document.getElementById('charCount').textContent = document.getElementById('cont
         font-size: 15px;
         transition: all 0.3s;
     }
-    
+
     .form-control:focus {
         border-color: #0056b3;
         box-shadow: 0 0 0 0.2rem rgba(0, 86, 179, 0.25);
     }
-    
+
     .btn-lg {
         padding: 12px 24px;
         font-size: 16px;
         font-weight: 500;
     }
-    
+
     textarea.form-control {
         resize: vertical;
         min-height: 300px;

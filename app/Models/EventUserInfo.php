@@ -24,6 +24,27 @@ class EventUserInfo extends ModelGlxBase
         return "$this->title $this->last_name $this->first_name";
     }
 
+    function isHaveEmail()
+    {
+        $email = strtolower($this->email);
+        if($email)
+        if(!str_contains($email, 'khongcomail') && !str_contains($email, 'khongcoemail')){
+            if(\clsValidate::isEmail($email))
+                return $email;
+        }
+        return false;
+    }
+
+    function isHavePhone()
+    {
+        if($this->phone){
+            $phone = self::fixPhoneNumber($this->phone);
+            if($phone)
+                return $phone;
+        }
+        return false;
+    }
+
     static function fixPhoneNumber($phone)
     {
         //xoá tất cả ký tự không phải số (không phải từ 0-9)

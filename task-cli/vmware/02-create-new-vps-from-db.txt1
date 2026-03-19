@@ -1,0 +1,1054 @@
+#!/usr/bin/env python3
+"""
+VPS Creation Daemon
+Continuously monitors vps_instances table and creates VPS instances based on init_os
+Clones VMs and updates creation status in database
+
+Install: pip install pyvmomi pymysql python-dotenv
+"""
+
+import atexit
+import ssl
+import sys
+import os
+import json
+import time
+import threading
+from datetime import datetime
+from threading import Thread, Lock
+from dotenv import load_dotenv
+import pymysql
+from pyVmomi import vim, vmodl
+from pyVim.connect import SmartConnect, Disconnect
+
+# Load environment variables from parent .env
+env_path = os.path.join(os.path.dirname(__file__), '../../.env')
+load_dotenv(env_path)
+
+# Global lock for thread safety
+db_lock = Lock()
+print_lock = Lock()
+
+def print_log(msg, level="info"):
+    """Thread-safe print logging"""
+    with print_lock:
+        print(msg)
+
+def get_db_connection():
+    """Create and return database connection"""
+    try:
+        conn = pymysql.connect(
+            host=os.getenv('DB_RM_HOST8', 'localhost'),
+            port=int(os.getenv('DB_PORT', 3306)),
+            user=os.getenv('DB_RM_USER8', 'root'),
+            password=os.getenv('DB_RM_PW8', ''),
+            database=os.getenv('DB_RM_NAME8', 'laravel'),
+            charset='utf8mb4',
+            cursorclass=pymysql.cursors.DictCursor
+        )
+        return conn
+    except Exception as e:
+        print(f"❌ Database connection error: {e}")
+        return None
+
+def get_obj(content, vimtype, name=None, vm_id=None):
+    """Get vSphere object by name or ID"""
+    container = content.viewManager.CreateContainerView(content.rootFolder, vimtype, True)
+    try:
+        for c in container.view:
+            if vm_id:
+                if hasattr(c, 'config') and c.config and c.config.uuid == vm_id:
+                    return c
+            elif name:
+                if c.name == name:
+                    return c
+    finally:
+        container.Destroy()
+    return None
+
+def wait_for_task(task, timeout=3600, progress_callback=None):
+    """Wait for vSphere task to complete"""
+    start_time = time.time()
+    last_update = start_time
+
+    while time.time() - start_time < timeout:
+        if task.info.state == vim.TaskInfo.State.success:
+            elapsed = time.time() - start_time
+            print(f"✅ Task completed successfully in {elapsed:.2f}s")
+            return True, elapsed
+        elif task.info.state == vim.TaskInfo.State.error:
+            elapsed = time.time() - start_time
+            print(f"❌ Task failed: {task.info.error.msg}")
+            return False, elapsed
+
+        # Print progress every 10 seconds
+        now = time.time()
+        if now - last_update >= 10:
+            elapsed = now - start_time
+            progress = getattr(task.info, 'progress', 0) or 0
+            msg = f"⏳ Task running... ({elapsed:.1f}s, progress: {progress}%)"
+            print(msg)
+            if progress_callback:
+                progress_callback(msg, progress)
+            last_update = now
+
+        time.sleep(1)
+
+    print(f"❌ Task timeout after {timeout}s")
+    return False, timeout
+
+def get_hosts_and_datastores(si):
+    """
+    Get list of all ESXi hosts with their datastores and free space info
+
+    Returns:
+        list of dicts: [
+            {
+                'name': 'esxi-host-1.example.com',
+                'cpu_cores': 32,
+                'cpu_mhz_per_core': 2500,
+                'memory_mb': 262144,
+                'datastores': [
+                    {
+                        'name': 'datastore1',
+                        'capacity_gb': 1000,
+                        'free_space_gb': 500,
+                        'used_gb': 500,
+                        'percent_used': 50
+                    }
+                ]
+            }
+        ]
+    """
+    try:
+        content = si.RetrieveContent()
+        hosts_info = []
+
+        hosts_container = content.viewManager.CreateContainerView(content.rootFolder, [vim.HostSystem], True)
+
+        for host in hosts_container.view:
+            # Get CPU and memory from host.summary.hardware (more reliable)
+            cpu_cores = 0
+            cpu_mhz = 0
+            memory_mb = 0
+            
+            if host.summary and host.summary.hardware:
+                cpu_cores = host.summary.hardware.numCpuCores or 0
+                cpu_mhz = host.summary.hardware.cpuMhz or 0
+            
+            if host.summary and host.summary.config:
+                memory_mb = host.summary.config.memorySize // (1024 * 1024) if host.summary.config.memorySize else 0
+            
+            host_info = {
+                'name': host.name,
+                'cpu_cores': cpu_cores,
+                'cpu_mhz_per_core': cpu_mhz if cpu_mhz > 0 else 0,
+                'memory_mb': memory_mb,
+                'datastores': []
+            }
+
+            # Get datastores accessible from this host
+            if hasattr(host, 'datastore'):
+                for ds_ref in host.datastore:
+                    ds = ds_ref
+                    if ds.summary:
+                        ds_info = {
+                            'name': ds.name,
+                            'type': ds.summary.type,
+                            'capacity_gb': ds.summary.capacity // (1024**3) if ds.summary.capacity else 0,
+                            'free_space_gb': ds.summary.freeSpace // (1024**3) if ds.summary.freeSpace else 0,
+                        }
+                        ds_info['used_gb'] = ds_info['capacity_gb'] - ds_info['free_space_gb']
+                        ds_info['percent_used'] = int((ds_info['used_gb'] / ds_info['capacity_gb'] * 100)) if ds_info['capacity_gb'] > 0 else 0
+                        host_info['datastores'].append(ds_info)
+            
+            hosts_info.append(host_info)
+        
+        hosts_container.Destroy()
+        return hosts_info
+    
+    except Exception as e:
+        print(f"❌ Error getting hosts and datastores: {e}")
+        import traceback
+        traceback.print_exc()
+        return []
+
+def select_best_host_and_datastore(si, required_space_gb, exclude_hosts=None):
+    """
+    Select best host and datastore based on available free space
+    Only considers datastores with 'nvme' in the name
+
+    Args:
+        si: SmartConnect instance
+        required_space_gb: Required free space in GB
+        exclude_hosts: List of host names to exclude (e.g., ['esxi-host-3'])
+
+    Returns:
+        dict: {'host_name': 'esxi-host-1', 'datastore_name': 'datastore1', 'info': {...}}
+              or None if no suitable host/datastore found
+    """
+    exclude_hosts = exclude_hosts or []
+    hosts_info = get_hosts_and_datastores(si)
+
+    if not hosts_info:
+        print("❌ No hosts found")
+        return None
+
+    print(f"\n📊 Available Hosts & Datastores (required: {required_space_gb}GB free, NVMe only):")
+    print("=" * 100)
+
+    best_option = None
+    best_free_space = -1
+
+    for host in hosts_info:
+        host_name = host['name']
+
+        # Skip excluded hosts
+        if host_name in exclude_hosts:
+            print(f"⊘  {host_name} (EXCLUDED)")
+            continue
+
+        print(f"\n🖥️  Host: {host_name}")
+        print(f"    CPU: {host['cpu_cores']} cores @ {host['cpu_mhz_per_core']/1000000:.2f} GHz")
+        print(f"    Memory: {host['memory_mb']/1024:.1f}GB")
+
+        if not host['datastores']:
+            print(f"    ⊘ No datastores")
+            continue
+
+        # Filter only NVMe datastores and sort by free space (descending)
+        nvme_datastores = [ds for ds in host['datastores'] if 'nvme' in ds['name'].lower()]
+        
+        if not nvme_datastores:
+            print(f"    ⊘ No NVMe datastores found")
+            continue
+
+        for ds in sorted(nvme_datastores, key=lambda x: x['free_space_gb'], reverse=True):
+            ds_name = ds['name']
+            free_space = ds['free_space_gb']
+            capacity = ds['capacity_gb']
+            used = ds['used_gb']
+            percent = ds['percent_used']
+
+            status = "✅" if free_space >= required_space_gb else "❌"
+            print(f"    {status} {ds_name}: {free_space}GB free / {capacity}GB total (used: {percent}%)")
+
+            # Select if:
+            # 1. Has enough space
+            # 2. Has more free space than current best option
+            # 3. Name contains 'nvme' (already filtered above)
+            if free_space >= required_space_gb and free_space > best_free_space:
+                best_free_space = free_space
+                best_option = {
+                    'host_name': host_name,
+                    'datastore_name': ds_name,
+                    'free_space_gb': free_space,
+                    'capacity_gb': capacity
+                }
+
+    print("\n" + "=" * 100)
+
+    if best_option:
+        print(f"\n✅ Selected: Host={best_option['host_name']}, Datastore={best_option['datastore_name']}")
+        print(f"   Free space: {best_option['free_space_gb']}GB / {best_option['capacity_gb']}GB")
+        return best_option
+    else:
+        print(f"\n❌ No suitable NVMe datastore found with {required_space_gb}GB free space")
+        return None
+
+def clone_vm(source_vm_name, dest_vm_name, vcenter_host, vcenter_user, vcenter_password, progress_callback=None, target_host_name=None, target_datastore=None):
+    """
+    Clone a VM and return result dict
+
+    Args:
+        progress_callback: Optional function to call with progress updates (msg, percent)
+        target_host_name: Optional ESXi host name to clone to (e.g., 'esxi-host-1.example.com')
+        target_datastore: Optional datastore name to clone to (e.g., 'datastore1')
+                         If None, uses default/first available datastore
+
+    Returns:
+        dict with success, new_vm_id, error, etc.
+    """
+    result = {
+        'success': False,
+        'source_vm_name': source_vm_name,
+        'dest_vm': dest_vm_name,
+        'dest_vm_id': None,
+        'new_vm_id': None,
+        'error': '',
+        'message': ''
+    }
+
+    try:
+        context = ssl._create_unverified_context()
+
+        print(f"\n🔗 Connecting to vCenter: {vcenter_host}")
+        si = SmartConnect(
+            host=vcenter_host,
+            user=vcenter_user,
+            pwd=vcenter_password,
+            sslContext=context
+        )
+
+        if not si:
+            result['error'] = f"Failed to connect to vCenter: {vcenter_host}"
+            print(f"❌ {result['error']}")
+            return result
+
+        print(f"✅ Connected to vCenter")
+        atexit.register(Disconnect, si)
+
+        content = si.RetrieveContent()
+
+        # Find source VM
+        print(f"\n📋 Finding source VM: {source_vm_name}")
+        source_vm = get_obj(content, [vim.VirtualMachine], name=source_vm_name)
+
+        if not source_vm:
+            result['error'] = f"Source VM '{source_vm_name}' not found"
+            print(f"❌ {result['error']}")
+            return result
+
+        print(f"✅ Found source VM")
+        print(f"   - Name: {source_vm.name}")
+        print(f"   - CPU: {source_vm.config.hardware.numCPU}")
+        print(f"   - Memory: {source_vm.config.hardware.memoryMB}MB")
+
+        # Get host information
+        if source_vm.runtime.host:
+            host_name = source_vm.runtime.host.name
+            print(f"   - Host: {host_name}")
+        else:
+            # If template is not powered on, try to get host from datastore
+            if source_vm.datastore:
+                print(f"   - Host: (Template VM - will use default/resource pool allocation)")
+
+        # Prepare clone spec
+        rel_spec = vim.vm.RelocateSpec()
+
+        # If target host specified, find it and use its pool
+        if target_host_name:
+            print(f"\n🎯 Looking for target host: {target_host_name}")
+            hosts = content.viewManager.CreateContainerView(content.rootFolder, [vim.HostSystem], True)
+            target_host = None
+
+            for host in hosts.view:
+                if host.name == target_host_name:
+                    target_host = host
+                    break
+
+            hosts.Destroy()
+
+            if target_host:
+                # Get resource pool from target host
+                resource_pool = target_host.parent.resourcePool
+                if resource_pool:
+                    rel_spec.pool = resource_pool
+                    rel_spec.host = target_host
+                    print(f"✓ Using target host: {target_host_name}")
+                    print(f"✓ Using resource pool: {resource_pool.name}")
+            else:
+                print(f"⚠️  Target host {target_host_name} not found, using default")
+
+        # If target datastore specified, find and use it
+        if target_datastore:
+            print(f"\n💾 Looking for target datastore: {target_datastore}")
+            datastores = content.viewManager.CreateContainerView(content.rootFolder, [vim.Datastore], True)
+            target_ds = None
+
+            for ds in datastores.view:
+                if ds.name == target_datastore:
+                    target_ds = ds
+                    break
+
+            datastores.Destroy()
+
+            if target_ds:
+                rel_spec.datastore = target_ds
+                print(f"✓ Using target datastore: {target_datastore}")
+                if target_ds.summary:
+                    free_gb = target_ds.summary.freeSpace // (1024**3)
+                    capacity_gb = target_ds.summary.capacity // (1024**3)
+                    print(f"  Free space: {free_gb}GB / {capacity_gb}GB")
+            else:
+                print(f"⚠️  Target datastore {target_datastore} not found, using default")
+
+        # If no target datastore specified, use source VM's datastore
+        if not target_datastore or not target_ds:
+            if source_vm.datastore:
+                rel_spec.datastore = source_vm.datastore[0]
+                print(f"✓ Using source datastore: {source_vm.datastore[0].name}")
+
+        # If no target host specified, use default resource pool
+        if not target_host_name or not target_host:
+            resource_pools = content.viewManager.CreateContainerView(
+                content.rootFolder,
+                [vim.ResourcePool],
+                True
+            )
+            if resource_pools.view:
+                rel_spec.pool = resource_pools.view[0]
+                print(f"✓ Using default resource pool: {resource_pools.view[0].name}")
+            resource_pools.Destroy()
+
+        # Try to get and display available hosts
+        print(f"\n📊 Available ESXi Hosts:")
+        hosts = content.viewManager.CreateContainerView(content.rootFolder, [vim.HostSystem], True)
+        if hosts.view:
+            for i, host in enumerate(hosts.view, 1):
+                host_summary = host.summary
+                cpu_usage = host_summary.quickStats.overallCpuUsage if host_summary.quickStats else 0
+                mem_usage = host_summary.quickStats.overallMemoryUsage if host_summary.quickStats else 0
+                print(f"   [{i}] {host.name}")
+                print(f"       CPU: {cpu_usage}MHz, Memory: {mem_usage}MB")
+        hosts.Destroy()
+
+        clone_spec = vim.vm.CloneSpec()
+        clone_spec.location = rel_spec
+        clone_spec.powerOn = False
+        clone_spec.template = False
+
+        # Execute clone
+        print(f"\n🚀 Starting clone: {source_vm.name} → {dest_vm_name}")
+        task = source_vm.Clone(
+            folder=source_vm.parent,
+            name=dest_vm_name,
+            spec=clone_spec
+        )
+
+        # Wait for clone
+        print(f"⏳ Waiting for clone operation to complete...")
+        success, elapsed = wait_for_task(task, timeout=3600, progress_callback=progress_callback)
+
+        if success:
+            print(f"\n✅ Clone completed in {elapsed:.2f}s")
+
+            # Find the new VM
+            print(f"🔍 Finding cloned VM: {dest_vm_name}")
+            time.sleep(2)
+
+            new_vm = None
+            for attempt in range(5):
+                new_vm = get_obj(content, [vim.VirtualMachine], name=dest_vm_name)
+                if new_vm:
+                    break
+                print(f"  ⏳ Attempt {attempt+1}/5...")
+                time.sleep(2)
+
+            if new_vm and new_vm.config:
+                result['new_vm_id'] = new_vm.config.uuid
+                result['dest_vm_id'] = new_vm.config.uuid
+                result['success'] = True
+                result['message'] = f"VM cloned successfully: {dest_vm_name}"
+                print(f"✅ Found cloned VM: {new_vm.name}")
+                print(f"   - ID: {new_vm.config.uuid}")
+
+                # Get host information where VM was cloned to
+                if new_vm.runtime.host:
+                    host_name = new_vm.runtime.host.name
+                    print(f"   - Host: {host_name}")
+                    result['host_name'] = host_name
+                else:
+                    print(f"   - Host: Unknown (VM may be provisioning)")
+            else:
+                result['error'] = "Could not find cloned VM UUID"
+                print(f"⚠️  {result['error']}")
+        else:
+            result['error'] = "Clone operation failed or timed out"
+            print(f"❌ {result['error']}")
+
+        Disconnect(si)
+
+    except vmodl.MethodFault as e:
+        result['error'] = f"vSphere API error: {e.msg}"
+        print(f"❌ {result['error']}")
+    except Exception as e:
+        result['error'] = str(e)
+        print(f"❌ Error: {result['error']}")
+
+    return result
+
+def resize_vm_hardware(vm, cpu, ram_gb, disk_gb, disk_gb_current):
+    """
+    Resize VM hardware: CPU, RAM, Disk
+    - Không cần bật VM (VM có thể tắt)
+    - Disk chỉ extend nếu disk_gb > disk_gb_current
+    """
+    try:
+        print(f"\n⚙️  Resizing hardware...")
+
+        spec = vim.vm.ConfigSpec()
+        device_change_list = []
+
+        # 1. Resize CPU
+        if cpu and cpu > 0:
+            print(f"  💻 CPU: {cpu}")
+            spec.numCPUs = int(cpu)
+
+        # 2. Resize RAM
+        if ram_gb and ram_gb > 0:
+            print(f"  🧠 RAM: {ram_gb}GB")
+            spec.memoryMB = int(ram_gb * 1024)
+
+        # 3. Extend Disk (chỉ nếu lớn hơn cái cũ)
+        if disk_gb and disk_gb > 0:
+            disk_gb = float(disk_gb)
+            disk_gb_current = float(disk_gb_current)
+
+            if disk_gb > disk_gb_current:
+                print(f"  💾 Disk: {disk_gb_current:.1f}GB → {disk_gb:.1f}GB")
+
+                # Tìm main disk (thường là disk đầu tiên)
+                for device in vm.config.hardware.device:
+                    if isinstance(device, vim.vm.device.VirtualDisk):
+                        # Tính kích thước theo KB
+                        new_size_kb = int(disk_gb * 1024 * 1024)  # GB -> KB
+                        device.capacityInKB = new_size_kb
+
+                        # Tạo device change spec
+                        device_spec = vim.vm.device.VirtualDeviceSpec()
+                        device_spec.operation = vim.vm.device.VirtualDeviceSpec.Operation.edit
+                        device_spec.device = device
+
+                        device_change_list.append(device_spec)
+                        break  # Chỉ extend disk đầu tiên
+            else:
+                print(f"  ⚠️  Disk: {disk_gb}GB ≤ {disk_gb_current:.1f}GB (không resize)")
+
+        spec.deviceChange = device_change_list
+
+        # Apply configuration
+        print(f"  ⏳ Applying configuration...")
+        task = vm.Reconfigure(spec)
+
+        # Wait for task
+        start_time = time.time()
+        timeout = 300
+        while time.time() - start_time < timeout:
+            if task.info.state == vim.TaskInfo.State.success:
+                elapsed = time.time() - start_time
+                print(f"  ✅ Hardware resize completed in {elapsed:.2f}s")
+                return True
+            elif task.info.state == vim.TaskInfo.State.error:
+                print(f"  ❌ Resize failed: {task.info.error.msg}")
+                return False
+            time.sleep(1)
+
+        print(f"  ❌ Resize timeout")
+        return False
+
+    except Exception as e:
+        print(f"  ❌ Error: {e}")
+        return False
+
+def update_vps_status(vps_id, create_status, create_vps_progress=None):
+    """Update VPS creation status in database"""
+    with db_lock:
+        conn = get_db_connection()
+        if not conn:
+            print(f"❌ Failed to connect to database for VPS #{vps_id}")
+            return False
+
+        try:
+            with conn.cursor() as cursor:
+                if create_vps_progress:
+                    sql = """
+                    UPDATE vps_instances
+                    SET create_status = %s, create_vps_progress = %s
+                    WHERE id = %s
+                    """
+                    cursor.execute(sql, (create_status, create_vps_progress, vps_id))
+                else:
+                    sql = """
+                    UPDATE vps_instances
+                    SET create_status = %s
+                    WHERE id = %s
+                    """
+                    cursor.execute(sql, (create_status, vps_id))
+
+            conn.commit()
+            print(f"  ✅ VPS #{vps_id} status: {create_status}")
+            return True
+        except Exception as e:
+            print(f"  ❌ VPS #{vps_id} status update failed: {e}")
+            return False
+        finally:
+            conn.close()
+
+def create_vps_thread(vps_id, init_os_id, vps_name):
+    """Thread function to create a VPS"""
+    print(f"\n{'='*60}")
+    print(f"🔧 Creating VPS #{vps_id}")
+    print(f"{'='*60}")
+
+    progress = {
+        'vps_id': vps_id,
+        'start_time': datetime.now().isoformat(),
+        'steps': []
+    }
+
+    # Get OS info from database
+    with db_lock:
+        conn = get_db_connection()
+        if not conn:
+            print(f"❌ VPS #{vps_id}: Failed to connect to database")
+            update_vps_status(vps_id, 'vps_create_error', json.dumps(progress))
+            return
+
+        try:
+            with conn.cursor() as cursor:
+                sql = "SELECT id, vm_name FROM vps_os_versions WHERE id = %s AND is_active = 1"
+                cursor.execute(sql, (init_os_id,))
+                os_info = cursor.fetchone()
+
+            if not os_info or not os_info.get('vm_name'):
+                print(f"❌ VPS #{vps_id}: OS version {init_os_id} not found")
+                progress['steps'].append({
+                    'stage': 'error',
+                    'timestamp': datetime.now().isoformat(),
+                    'status': f'OS version {init_os_id} not found or no vm_name'
+                })
+                update_vps_status(vps_id, 'vps_create_error', json.dumps(progress))
+                return
+
+            source_vm_name = os_info['vm_name']
+            print(f"📋 VPS #{vps_id}: Source VM: {source_vm_name}")
+
+        except Exception as e:
+            print(f"❌ VPS #{vps_id}: Database error: {str(e)}")
+            progress['steps'].append({
+                'stage': 'error',
+                'timestamp': datetime.now().isoformat(),
+                'status': f'Database error: {str(e)}'
+            })
+            update_vps_status(vps_id, 'vps_create_error', json.dumps(progress))
+            return
+        finally:
+            conn.close()
+
+    # Mark as creating
+    print(f"🔄 VPS #{vps_id}: Updating status to vps_creating")
+    progress['steps'].append({
+        'stage': 'status_change',
+        'timestamp': datetime.now().isoformat(),
+        'status': 'Updating status to vps_creating'
+    })
+
+    # Save initial unified progress format
+    initial_progress = {
+        'vps_id': vps_id,
+        'start_time': progress['start_time'],
+        'end_time': None,
+        'current_stage': 'preparing',
+        'current_status': 'Preparing to clone VM',
+        'percent': 0,
+        'success': None,
+        'steps': progress['steps']
+    }
+    update_vps_status(vps_id, 'vps_creating', json.dumps(initial_progress))
+
+    # Use VPS name from database as destination VM name
+    dest_vm_name = vps_name
+    print(f"🎯 VPS #{vps_id}: Clone destination VM name: {dest_vm_name}")
+
+    # Clone the VM
+    print(f"🚀 VPS #{vps_id}: Starting clone operation")
+    progress['steps'].append({
+        'stage': 'cloning',
+        'timestamp': datetime.now().isoformat(),
+        'status': f'Starting clone from {source_vm_name}'
+    })
+    update_vps_status(vps_id, 'vps_creating', json.dumps(progress))
+
+    vcenter_host = os.getenv('VCENTER_DOMAIN')
+    vcenter_user = os.getenv('VCENTER_UID')
+    vcenter_password = os.getenv('VCENTER_PW')
+
+    # Define progress callback for clone operation
+    def clone_progress_callback(msg, percent):
+        """Callback to track clone progress and save to database"""
+        print(f"  📝 Saving progress to DB: {msg}")
+        current_progress = {
+            'vps_id': vps_id,
+            'start_time': progress['start_time'],
+            'end_time': None,
+            'current_stage': 'cloning',
+            'current_status': msg,
+            'percent': percent,
+            'success': None,
+            'steps': progress['steps']
+        }
+        result = update_vps_status(vps_id, 'vps_creating', json.dumps(current_progress))
+        if result:
+            print(f"  ✅ Progress saved to vps_instances.create_vps_progress")
+        else:
+            print(f"  ❌ Failed to save progress to database")
+
+    # ===== SELECT BEST HOST AND DATASTORE =====
+    print(f"\n🔍 Selecting best host and datastore for clone...")
+
+    # First, get disk size requirement from database to estimate needed space
+    vps_disk_gb = 0
+    with db_lock:
+        conn = get_db_connection()
+        if conn:
+            try:
+                with conn.cursor() as cursor:
+                    sql = "SELECT disk_gb FROM vps_instances WHERE id = %s"
+                    cursor.execute(sql, (vps_id,))
+                    result = cursor.fetchone()
+                    if result:
+                        vps_disk_gb = result.get('disk_gb', 0)
+            finally:
+                conn.close()
+
+    # Add some buffer (20% more than requested)
+    required_space_gb = int(vps_disk_gb * 1.2) if vps_disk_gb else 50
+    print(f"  Disk requirement: {vps_disk_gb}GB (with 20% buffer: {required_space_gb}GB)")
+
+    # Connect to vCenter to get host/datastore info
+    context = ssl._create_unverified_context()
+    si_select = SmartConnect(
+        host=vcenter_host,
+        user=vcenter_user,
+        pwd=vcenter_password,
+        sslContext=context
+    )
+
+    selected = None
+    if si_select:
+        selected = select_best_host_and_datastore(si_select, required_space_gb)
+        Disconnect(si_select)
+
+    if not selected:
+        print(f"⚠️  Could not select host/datastore automatically, using defaults")
+        target_host = None
+        target_datastore = None
+    else:
+        target_host = selected['host_name']
+        target_datastore = selected['datastore_name']
+        print(f"✅ Selected: {target_host} / {target_datastore}")
+    # ==========================================
+
+    clone_result = clone_vm(source_vm_name, dest_vm_name, vcenter_host, vcenter_user, vcenter_password,
+                           progress_callback=clone_progress_callback, target_host_name=target_host, target_datastore=target_datastore)
+
+    # Add clone completion to progress steps
+    progress['steps'].append({
+        'stage': 'clone_complete',
+        'timestamp': datetime.now().isoformat(),
+        'status': 'Clone completed',
+        'success': clone_result['success'],
+        'new_vm_id': clone_result['new_vm_id']
+    })
+
+    if clone_result['success']:
+        print(f"✅ Clone successful!")
+        print(f"   New VM ID: {clone_result['new_vm_id']}")
+        if clone_result.get('host_name'):
+            print(f"   Cloned to Host: {clone_result['host_name']}")
+
+        # Get hardware info from database
+        vps_hw = None
+        with db_lock:
+            conn = get_db_connection()
+            if conn:
+                try:
+                    with conn.cursor() as cursor:
+                        sql = "SELECT cpu, ram_gb, disk_gb FROM vps_instances WHERE id = %s AND deleted_at IS NULL"
+                        cursor.execute(sql, (vps_id,))
+                        vps_hw = cursor.fetchone()
+                finally:
+                    conn.close()
+
+        # Connect to vCenter for hardware resize and power on
+        mac_addresses = []
+        try:
+            context = ssl._create_unverified_context()
+            si = SmartConnect(
+                host=vcenter_host,
+                user=vcenter_user,
+                pwd=vcenter_password,
+                sslContext=context
+            )
+
+            if si:
+                content = si.RetrieveContent()
+                vm = get_obj(content, [vim.VirtualMachine], name=dest_vm_name)
+
+                if vm:
+                    # Get MAC addresses from VM
+                    print(f"\n📝 Getting MAC addresses...")
+                    for device in vm.config.hardware.device:
+                        if isinstance(device, vim.vm.device.VirtualEthernetCard):
+                            if hasattr(device, 'macAddress') and device.macAddress:
+                                mac_addresses.append(device.macAddress.lower())
+                                print(f"  ✅ Found MAC: {device.macAddress.lower()}")
+
+                    # Resize hardware if needed
+                    if vps_hw and (vps_hw.get('cpu') or vps_hw.get('ram_gb') or vps_hw.get('disk_gb')):
+                        print(f"\n⚙️  Configuring hardware resources...")
+
+                        # Get current disk size from template
+                        disk_gb_current = 0
+                        for device in vm.config.hardware.device:
+                            if isinstance(device, vim.vm.device.VirtualDisk):
+                                disk_gb_current = device.capacityInKB / (1024 * 1024)
+                                break
+
+                        # Resize
+                        resize_result = resize_vm_hardware(
+                            vm,
+                            vps_hw.get('cpu'),
+                            vps_hw.get('ram_gb'),
+                            vps_hw.get('disk_gb'),
+                            disk_gb_current
+                        )
+
+                        if resize_result:
+                            progress['steps'].append({
+                                'stage': 'hardware_config',
+                                'timestamp': datetime.now().isoformat(),
+                                'status': f'Hardware configured: {vps_hw.get("cpu", "N/A")}C {vps_hw.get("ram_gb", "N/A")}GB {vps_hw.get("disk_gb", "N/A")}GB'
+                            })
+                        else:
+                            progress['steps'].append({
+                                'stage': 'warning',
+                                'timestamp': datetime.now().isoformat(),
+                                'status': 'Hardware resize failed, continuing...'
+                            })
+
+                    # Power on VM
+                    print(f"\n🔌 Powering on VM...")
+                    if vm.runtime.powerState != vim.VirtualMachine.PowerState.poweredOn:
+                        task = vm.PowerOn()
+                        time.sleep(3)  # Wait for power on task to start
+                        print(f"  ✅ VM powered on")
+
+                        # Update power_state in database
+                        with db_lock:
+                            conn = get_db_connection()
+                            if conn:
+                                try:
+                                    with conn.cursor() as cursor:
+                                        sql = "UPDATE vps_instances SET power_state = %s WHERE id = %s"
+                                        cursor.execute(sql, ('POWERED_ON', vps_id))
+                                    conn.commit()
+                                    print(f"  💾 Updated power_state to POWERED_ON")
+                                except Exception as e:
+                                    print(f"  ⚠️  Failed to update power_state: {e}")
+                                finally:
+                                    conn.close()
+
+                        progress['steps'].append({
+                            'stage': 'power_on',
+                            'timestamp': datetime.now().isoformat(),
+                            'status': 'VM powered on'
+                        })
+                    else:
+                        print(f"  ℹ️  VM already powered on")
+
+                Disconnect(si)
+        except Exception as e:
+            print(f"⚠️  Error during hardware config/power on: {e}")
+            progress['steps'].append({
+                'stage': 'warning',
+                'timestamp': datetime.now().isoformat(),
+                'status': f'Hardware/power warning: {str(e)}'
+            })
+
+        # Insert initial record to vps_usages
+        print(f"\n📊 Creating usage record for VPS #{vps_id}...")
+        with db_lock:
+            conn = get_db_connection()
+            if conn:
+                try:
+                    with conn.cursor() as cursor:
+                        # First, get VPS instance info from database
+                        sql_select = """
+                        SELECT user_id, cpu, ram_gb, disk_gb, number_ip_address
+                        FROM vps_instances
+                        WHERE id = %s AND deleted_at IS NULL
+                        """
+                        cursor.execute(sql_select, (vps_id,))
+                        vps_info = cursor.fetchone()
+
+                        if vps_info:
+                            # Insert usage record with proper fields
+                            sql_insert = """
+                            INSERT INTO vps_usages
+                            (instance_id, name, last_host_ip, user_id, vmware_vm_id, bios_uuid, cpu, ram_gb, disk_gb,
+                             number_ip_address, timestamp_minute, power_state, created_at, updated_at)
+                            VALUES (%s , %s, %s, %s, %s, %s, %s, %s, %s, %s, NOW(), %s, NOW(), NOW())
+                            """
+                            # Get host name if available
+                            host_ip = clone_result.get('host_name', "10.0.1.11")  # Use host name if available, else placeholder
+
+                            cursor.execute(sql_insert, (
+                                vps_id,
+                                vps_name,
+                                host_ip,
+                                vps_info.get('user_id'),
+                                clone_result['new_vm_id'],
+                                clone_result['new_vm_id'],
+                                vps_info.get('cpu'),
+                                vps_info.get('ram_gb'),
+                                vps_info.get('disk_gb'),
+                                vps_info.get('number_ip_address'),
+                                'POWERED_ON'
+                            ))
+                            conn.commit()
+                            print(f"  ✅ Created usage record for VPS #{vps_id}")
+                            print(f"     - Instance ID: {vps_id}")
+                            print(f"     - User ID: {vps_info.get('user_id')}")
+                            print(f"     - Host: {host_ip}")
+                            print(f"     - CPU: {vps_info.get('cpu')}, RAM: {vps_info.get('ram_gb')}GB, Disk: {vps_info.get('disk_gb')}GB")
+                            progress['steps'].append({
+                                'stage': 'usage_record',
+                                'timestamp': datetime.now().isoformat(),
+                                'status': 'Initial usage record created'
+                            })
+                        else:
+                            print(f"  ⚠️  Could not get VPS instance info for #{vps_id}")
+                except Exception as e:
+                    print(f"  ⚠️  Failed to create usage record: {e}")
+                    progress['steps'].append({
+                        'stage': 'warning',
+                        'timestamp': datetime.now().isoformat(),
+                        'status': f'Usage record creation failed: {str(e)}'
+                    })
+                finally:
+                    conn.close()
+
+
+        # Final progress with all steps
+        final_progress = {
+            'vps_id': vps_id,
+            'start_time': progress['start_time'],
+            'end_time': datetime.now().isoformat(),
+            'current_stage': 'clone_complete',
+            'current_status': f'Clone completed successfully: {dest_vm_name}',
+            'percent': 100,
+            'success': True,
+            'steps': progress['steps']
+        }
+
+        # Update VPS with new VM ID (do not change name)
+        with db_lock:
+            conn = get_db_connection()
+            if conn:
+                try:
+                    with conn.cursor() as cursor:
+                        mac_address_str = ','.join(mac_addresses) if mac_addresses else None
+                        if mac_address_str:
+                            print(f"  💾 Saving MAC addresses to DB: {mac_address_str}")
+
+                        sql = """
+                        UPDATE vps_instances
+                        SET create_status = %s,
+                            vmware_vm_id = %s,
+                            bios_uuid = %s,
+                            init_mac_address = %s,
+                            create_vps_progress = %s
+                        WHERE id = %s
+                        """
+                        cursor.execute(sql, (
+                            'vps_create_done',
+                            clone_result['new_vm_id'],
+                            clone_result['new_vm_id'],
+                            mac_address_str,
+                            json.dumps(final_progress),
+                            vps_id
+                        ))
+                    conn.commit()
+                    print(f"✅ VPS #{vps_id} creation completed!")
+                except Exception as e:
+                    print(f"❌ Error updating VPS: {e}")
+                finally:
+                    conn.close()
+    else:
+        print(f"❌ Clone failed: {clone_result['error']}")
+        # Save error progress with all steps
+        error_progress = {
+            'vps_id': vps_id,
+            'start_time': progress['start_time'],
+            'end_time': datetime.now().isoformat(),
+            'current_stage': 'clone_error',
+            'current_status': clone_result['error'],
+            'percent': 0,
+            'success': False,
+            'steps': progress['steps']
+        }
+        update_vps_status(vps_id, 'vps_create_error', json.dumps(error_progress))
+
+def get_pending_vps_creations():
+    """Get VPS instances with create_status = 'vps_new_create'"""
+    conn = get_db_connection()
+    if not conn:
+        return []
+
+    try:
+        with conn.cursor() as cursor:
+            sql = "SELECT * FROM vps_instances WHERE create_status = %s AND deleted_at IS NULL"
+            cursor.execute(sql, ('vps_new_create',))
+            return cursor.fetchall()
+    except Exception as e:
+        print(f"❌ Error querying VPS list: {e}")
+        return []
+    finally:
+        conn.close()
+
+def main():
+    """Main loop - continuously check for VPS creation requests"""
+    print("=" * 60)
+    print("🚀 VPS Creation Daemon Started")
+    print("=" * 60)
+    print(f"Database: {os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/{os.getenv('DB_DATABASE')}")
+    print(f"vCenter: {os.getenv('VCENTER_DOMAIN')}")
+    print(f"Loop interval: 5 seconds")
+    print("=" * 60)
+
+    threads = []
+
+    try:
+        while True:
+            # Get pending VPS creations
+            pending_vps = get_pending_vps_creations()
+
+            if pending_vps:
+                print(f"\n📊 Found {len(pending_vps)} VPS(s) pending creation")
+
+                for vps in pending_vps:
+                    vps_id = vps['id']
+                    init_os = vps['init_os']
+                    vps_name = vps['name']
+
+                    print(f"  → VPS #{vps_id}: init_os={init_os}, name={vps_name}")
+
+                    # Start creation thread
+                    thread = Thread(
+                        target=create_vps_thread,
+                        args=(vps_id, init_os, vps_name),
+                        daemon=True
+                    )
+                    threads.append(thread)
+                    thread.start()
+
+            # Clean up finished threads
+            threads = [t for t in threads if t.is_alive()]
+
+            # Wait 5 seconds before next check
+            print(f"\n⏱️  Waiting 5 seconds for next check... ({len(threads)} thread(s) running)")
+            time.sleep(5)
+
+    except KeyboardInterrupt:
+        print("\n\n🛑 Stopping daemon...")
+        print(f"Waiting for {len([t for t in threads if t.is_alive()])} thread(s) to finish...")
+        for thread in threads:
+            if thread.is_alive():
+                thread.join(timeout=10)
+        print("✅ Daemon stopped")
+        sys.exit(0)
+
+if __name__ == "__main__":
+    main()

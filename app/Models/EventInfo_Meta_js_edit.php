@@ -974,6 +974,7 @@ use App\Models\EventInfo_Meta;
         $("#sendTin3, #sendTinZalo").on('click', function () {
             console.log(" Click sendTin3 ...");
 
+            $('div[class^="event_send_status"]').html("");
 
             //confirm js
             if (!confirm("Bạn có chắc chắn muốn gửi tin cho tất cả thành viên đã chọn không?\n\n" +

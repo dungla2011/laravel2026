@@ -52,14 +52,37 @@ LOG_FILE = os.path.join(LOG_DIR, 'glx.log')
 MAC_TEMPLATE_FILE = os.path.join(LOG_DIR, 'mac_address_this_template')
 PASSWORD_SET_FLAG = os.path.join(LOG_DIR, 'glx_set_pw_done')
 
-def setup_logging():
+# Global variable để track xem có in console hay không
+CONSOLE_OUTPUT = False
+
+def setup_logging(console=False):
     """Cấu hình logging"""
-    logging.basicConfig(
-        filename=LOG_FILE,
-        level=logging.INFO,
-        format='%(asctime)s - %(levelname)s - %(message)s',
+    global CONSOLE_OUTPUT
+    CONSOLE_OUTPUT = console
+    
+    # Cấu hình formatter
+    formatter = logging.Formatter(
+        '%(asctime)s - %(levelname)s - %(message)s',
         datefmt='%Y-%m-%d %H:%M:%S'
     )
+    
+    # Remove any existing handlers
+    logger = logging.getLogger()
+    logger.handlers = []
+    logger.setLevel(logging.INFO)
+    
+    # File handler
+    file_handler = logging.FileHandler(LOG_FILE)
+    file_handler.setLevel(logging.INFO)
+    file_handler.setFormatter(formatter)
+    logger.addHandler(file_handler)
+    
+    # Console handler (nếu console=True)
+    if console:
+        console_handler = logging.StreamHandler()
+        console_handler.setLevel(logging.INFO)
+        console_handler.setFormatter(formatter)
+        logger.addHandler(console_handler)
 
 # ============================================================================
 # Network Configuration Functions
@@ -619,12 +642,140 @@ def set_user_password_linux(username, password):
         return False
 
 
+def get_first_ethernet_interface():
+    """Get first found ethernet interface name on Linux (not loopback)"""
+    try:
+        # Try 'ip link show' to list all interfaces
+        result = subprocess.run(
+            ['ip', 'link', 'show'],
+            capture_output=True,
+            text=True,
+            timeout=5
+        )
+        
+        for line in result.stdout.split('\n'):
+            # Format: "1: lo: <LOOPBACK,UP,LOWER_UP> ..."
+            # or "2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> ..."
+            if ':' in line:
+                parts = line.split(':')
+                if len(parts) >= 2:
+                    # Skip loopback and other special interfaces
+                    iface_name = parts[1].strip()
+                    if iface_name and iface_name not in ['lo', 'docker0', 'virbr0', 'br-']:
+                        logging.info(f"Found ethernet interface: {iface_name}")
+                        return iface_name
+        
+        # Fallback: try ifconfig
+        try:
+            result = subprocess.run(
+                ['ifconfig', '-a'],
+                capture_output=True,
+                text=True,
+                timeout=5
+            )
+            
+            for line in result.stdout.split('\n'):
+                if line and not line.startswith((' ', '\t')):
+                    iface_name = line.split()[0]
+                    if iface_name and iface_name not in ['lo', 'docker0', 'virbr0']:
+                        logging.info(f"Found ethernet interface: {iface_name}")
+                        return iface_name
+        except:
+            pass
+    
+    except Exception as e:
+        logging.warning(f"Error detecting interface: {e}")
+    
+    # Default fallback
+    logging.warning("Could not detect interface name, using eth0 as default")
+    return 'eth0'
+
+
+def reset_interface_to_dhcp_linux():
+    """Reset first found ethernet interface to DHCP on Linux"""
+    logging.info("Attempting to reset interface to DHCP first...")
+    
+    try:
+        # Check if NetworkManager is running
+        try:
+            result = subprocess.run(
+                ['systemctl', 'is-active', 'NetworkManager'],
+                capture_output=True,
+                text=True,
+                timeout=5
+            )
+            if result.returncode == 0 and result.stdout.strip() == 'active':
+                logging.info("Using NetworkManager to reset to DHCP")
+                # Find first ethernet connection
+                result = subprocess.run(
+                    ['nmcli', '-t', '-f', 'NAME,TYPE', 'connection', 'show'],
+                    capture_output=True,
+                    text=True,
+                    timeout=5
+                )
+                for line in result.stdout.strip().split('\n'):
+                    if line:
+                        parts = line.split(':')
+                        if len(parts) >= 2 and 'ethernet' in parts[1].lower():
+                            connection_name = parts[0]
+                            logging.info(f"Resetting {connection_name} to DHCP via nmcli")
+                            cmd = ['nmcli', 'connection', 'modify', connection_name, 'ipv4.method', 'auto']
+                            subprocess.run(cmd, capture_output=True, text=True, timeout=10)
+                            subprocess.run(['nmcli', 'connection', 'down', connection_name],
+                                         capture_output=True, timeout=10)
+                            time.sleep(2)
+                            subprocess.run(['nmcli', 'connection', 'up', connection_name],
+                                         capture_output=True, timeout=10)
+                            logging.info("Interface reset to DHCP")
+                            return True
+        except:
+            pass
+        
+        # Fallback to netplan
+        if os.path.exists('/etc/netplan'):
+            logging.info("Using netplan to reset to DHCP")
+            iface = get_first_ethernet_interface()
+            netplan_config = f"""network:
+  version: 2
+  ethernets:
+    {iface}:
+      dhcp4: yes
+"""
+            config_file = "/etc/netplan/01-dhcp-reset.yaml"
+            with open(config_file, 'w') as f:
+                f.write(netplan_config)
+            subprocess.run(["netplan", "apply"], capture_output=True, timeout=30)
+            logging.info("Interface reset to DHCP via netplan")
+            return True
+        
+        # Fallback to ifupdown
+        logging.info("Using ifupdown to reset to DHCP")
+        iface = get_first_ethernet_interface()
+        interfaces_config = f"""auto {iface}
+iface {iface} inet dhcp
+"""
+        config_file = f"/etc/network/interfaces.d/{iface}-dhcp"
+        with open(config_file, 'w') as f:
+            f.write(interfaces_config)
+        subprocess.run(["systemctl", "restart", "networking"], capture_output=True, timeout=30)
+        logging.info("Interface reset to DHCP via ifupdown")
+        return True
+        
+    except Exception as e:
+        logging.warning(f"Could not reset to DHCP: {e}")
+        return False
+
+
 def apply_network_config_linux(config):
     """Apply network configuration on Linux using NetworkManager, netplan or ifupdown"""
     logging.info("Configuring network interface (Linux)...")
 
     try:
-        # Check if NetworkManager is running
+        # Step 1: Reset to DHCP first
+        reset_interface_to_dhcp_linux()
+        time.sleep(2)
+        
+        # Step 2: Check if NetworkManager is running
         try:
             result = subprocess.run(
                 ['systemctl', 'is-active', 'NetworkManager'],
@@ -742,11 +893,14 @@ def apply_netplan_config(config):
     logging.info("Using netplan for network configuration...")
 
     try:
+        iface = get_first_ethernet_interface()
+        logging.info(f"Using interface: {iface}")
+        
         netplan_config = f"""
 network:
   version: 2
   ethernets:
-    eth0:
+    {iface}:
       dhcp4: no
       addresses:
         - {config['ip_address']}/{mask_to_cidr(config['subnet_mask'])}
@@ -787,16 +941,19 @@ def apply_ifupdown_config(config):
     logging.info("Using ifupdown for network configuration...")
 
     try:
+        iface = get_first_ethernet_interface()
+        logging.info(f"Using interface: {iface}")
+        
         interfaces_config = f"""
-auto eth0
-iface eth0 inet static
+auto {iface}
+iface {iface} inet static
     address {config['ip_address']}
     netmask {config['subnet_mask']}
     gateway {config['gateway']}
     dns-nameservers {config['dns1']} {config['dns2']}
 """
 
-        config_file = "/etc/network/interfaces.d/eth0"
+        config_file = f"/etc/network/interfaces.d/{iface}"
 
         with open(config_file, 'w') as f:
             f.write(interfaces_config)
@@ -1023,8 +1180,13 @@ def perform_network_config():
 def ping_host(host='8.8.8.8'):
     """Ping một host và trả về kết quả"""
     try:
+        if SYSTEM == "Windows":
+            cmd = ['ping', '-n', '1', host]
+        else:
+            cmd = ['ping', '-c', '1', host]
+        
         result = subprocess.run(
-            ['ping', '-n', '1', host],
+            cmd,
             capture_output=True,
             text=True,
             timeout=10
@@ -1161,9 +1323,9 @@ def remove_systemd_service():
         return False
 
 
-def run_linux_daemon():
-    """Run as Linux daemon"""
-    setup_logging()
+def run_linux_daemon(console=False):
+    """Run as Linux daemon (console=True for foreground/standalone mode)"""
+    setup_logging(console=console)
     logging.info("=" * 50)
     logging.info("Glx Service started (Linux)")
     logging.info(f"Log file: {LOG_FILE}")
@@ -1247,7 +1409,7 @@ if __name__ == '__main__':
 
             elif command == '--daemon':
                 # Run as daemon (called by systemd)
-                run_linux_daemon()
+                run_linux_daemon(console=False)
 
             else:
                 print("Usage: python3 setip.py [install|remove|start|stop|status|mac]")
@@ -1256,4 +1418,4 @@ if __name__ == '__main__':
             # Run directly (foreground mode for testing)
             print("Running in foreground mode (Ctrl+C to stop)")
             print("For production, use: sudo python3 setip.py install")
-            run_linux_daemon()
+            run_linux_daemon(console=True)

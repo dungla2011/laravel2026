@@ -347,7 +347,7 @@
         $(function () {
 
             $("#loginAsUser1").autocomplete({
-                source: "/api/get-user-id?start_with=1",
+                source: "/api/get-user-id?start_with=<?php echo \App\Models\SiteMng::isSearchUIDAtStartString() ?>",
                 minLength: 0,
                 select: function (event, ui) {
                     console.log("Selected: " + ui.item.value + " aka " + ui.item.id);

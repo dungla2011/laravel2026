@@ -32,7 +32,13 @@
 <?php
 
 use App\Models\EventInfo;
-require "/var/www/html/public/index.php";
+//
+require "/var/www/html/vendor/autoload.php";
+$app = require_once '/var/www/html/bootstrap/app.php';
+$kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
+$response = $kernel->handle(
+    $request = Illuminate\Http\Request::capture()
+);
 
 
 echo "\n <A HREF='/'>TRANG CHỦ</A>";

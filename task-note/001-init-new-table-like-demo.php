@@ -168,6 +168,8 @@ $newModel = 'VpsInstance';
 $newModel = 'UserRecharge';
 $newModel = 'VpsUsage';
 
+$newModel = 'MailLog';
+
 getch(" Model: $newModel, press any key to con... ");
 
 // Ask if creating member module
@@ -184,7 +186,19 @@ if (trim(strtolower($line)) == 'y') {
 $tblNew = \LadLib\Laravel\Database\DbHelperLaravel::getTableNameFromModelName($newModel);
 
 $newModelKeba = Str::kebab($newModel);
-$lk = '/admin/'.$newModelKeba;
+
+
+$lk1 = '/admin/'.$newModelKeba;
+$lk2 = '/_admin/'.$newModelKeba;
+
+$setMenu = getch("1 to create $lk1, 2 to create $lk2");
+if($setMenu == 1)
+    $lk = $lk1;
+else
+    $lk = $lk2;
+
+getch("create: $lk");
+
 if (! \App\Models\MenuTree::where(['link' => $lk, 'parent_id' => 4])->first()) {
     echo "\n Create Menu: $lk";
     $menu = new \App\Models\MenuTree();
@@ -196,12 +210,12 @@ if (! \App\Models\MenuTree::where(['link' => $lk, 'parent_id' => 4])->first()) {
 }
 
 $mm = [
+    '/app/Models/DemoTbl_basic.txt' => "/app/Models/$newModel.php",
+    '/app/Models/DemoTbl_Meta_basic.html' => "/app/Models/$newModel".'_Meta.php',
+
     '/app/Http/ControllerApi/DemoControllerApi.php' => "/app/Http/ControllerApi/$newModel".'ControllerApi.php',
 
     '/app/Http/Controllers/DemoUseApiController.php' => "/app/Http/Controllers/$newModel".'Controller.php',
-
-    '/app/Models/DemoTbl_basic.txt' => "/app/Models/$newModel.php",
-    '/app/Models/DemoTbl_Meta_basic.html' => "/app/Models/$newModel".'_Meta.php',
 
     '/app/Repositories/DemoRepositoryInterface.php' => '/app/Repositories/'.$newModel.'RepositoryInterface.php',
 
@@ -220,30 +234,34 @@ if ($createMember) {
 
 $cc = 0;
 
-$fileService = "$bpath/app/Providers/AppServiceProvider.php";
-$c1 = file_get_contents($fileService);
+function createProvider($bpath, $newModel)
+{
+    $fileService = "$bpath/app/Providers/AppServiceProvider.php";
+    $c1 = file_get_contents($fileService);
 
-$tmp = '$this->app->bind(DemoRepositoryInterface::class, DemoRepositorySql::class);';
-$tmp1 = $tmp."\n".'$this->app->bind('.$newModel.'RepositoryInterface::class, '.$newModel.'RepositorySql::class);'."\n";
-if (! strstr($c1, $tmp1)) {
-    $c1 = str_replace($tmp, $tmp1, $c1);
+    $tmp = '$this->app->bind(DemoRepositoryInterface::class, DemoRepositorySql::class);';
+    $tmp1 = $tmp."\n".'$this->app->bind('.$newModel.'RepositoryInterface::class, '.$newModel.'RepositorySql::class);'."\n";
+    if (! strstr($c1, $tmp1)) {
+        $c1 = str_replace($tmp, $tmp1, $c1);
+    }
+
+    $tmp = 'use App\Repositories\DemoRepositorySql;';
+    $tmp1 = $tmp."\n".'use App\Repositories\\'.$newModel.'RepositorySql;'."\n";
+    if (! strstr($c1, $tmp1)) {
+        $c1 = str_replace($tmp, $tmp1, $c1);
+    }
+
+    $tmp = 'use App\Repositories\DemoRepositoryInterface;';
+    $tmp1 = $tmp."\n".'use App\Repositories\\'.$newModel.'RepositoryInterface;'."\n";
+    if (! strstr($c1, $tmp1)) {
+        $c1 = str_replace($tmp, $tmp1, $c1);
+    }
+
+    file_put_contents($fileService, $c1);
+
+    getch("Done app $fileService");
+
 }
-
-$tmp = 'use App\Repositories\DemoRepositorySql;';
-$tmp1 = $tmp."\n".'use App\Repositories\\'.$newModel.'RepositorySql;'."\n";
-if (! strstr($c1, $tmp1)) {
-    $c1 = str_replace($tmp, $tmp1, $c1);
-}
-
-$tmp = 'use App\Repositories\DemoRepositoryInterface;';
-$tmp1 = $tmp."\n".'use App\Repositories\\'.$newModel.'RepositoryInterface;'."\n";
-if (! strstr($c1, $tmp1)) {
-    $c1 = str_replace($tmp, $tmp1, $c1);
-}
-
-file_put_contents($fileService, $c1);
-
-getch("Done app $fileService");
 
 ///////
 $mrep = ['DemoControllerApi' => $newModel.'ControllerApi',
@@ -356,4 +374,7 @@ foreach ($mm as $filepath => $newFile) {
     } else {
         echo "\n *** Not found $filepath";
     }
+
 }
+
+createProvider($bpath, $newModel);

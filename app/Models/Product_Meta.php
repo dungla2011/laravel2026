@@ -404,9 +404,13 @@ class Product_Meta extends MetaOfTableInDb
      * @param int $priceElementId - ID của VPS Element product (không sử dụng, chỉ dùng config)
      * @return float - Giá tính toán
      */
-    static function calculateVpsPrice($nCPU, $nGBRam, $nGBDisk, $nMBitNetwork = 100, $nMBitNetworkDedicated = 0, $nIPAddress = 1, $priceElementId = null){
+    static function calculateVpsPrice($nCPU, $nGBRam, $nGBDisk, $nMBitNetwork = 100, $nMBitNetworkDedicated = 0, $nIPAddress = 1, $priceConfig = []){
         // Lấy config
         $vpsConfigSpecs = config('vps_config.specs', []);
+//        echo "<pre> >>> " . __FILE__ . "(" . __LINE__ . ")<br/>";
+//        print_r($vpsConfigSpecs);
+//        echo "</pre>";
+
 
         // Get specs and prices from config
         $cpuSpec = $vpsConfigSpecs['n_cpu_core'] ?? [];
@@ -428,13 +432,27 @@ class Product_Meta extends MetaOfTableInDb
         $ramPrice = $ramSpec['price'] ?? 30;
         $diskPrice = $diskSpec['price'] ?? 1;
         $networkPrice = $networkSpec['price'] ?? 1000;
+
         $ipPrice = $ipSpec['price'] ?? 50;
+
+        //{"n_cpu_core_price":50,"n_ram_gb_price":30,"n_gb_disk_price":1,"n_ip_address_price":50,"n_network_dedicated_mbit_price":1000}
+        if($priceConfig) {
+            if(is_object($priceConfig))
+                $priceConfig = (array) $priceConfig;
+            $cpuPrice = $priceConfig['n_cpu_core_price'] ?? 121689;
+            $ramPrice = $priceConfig['n_ram_gb_price'] ?? 121689;
+            $diskPrice = $priceConfig['n_gb_disk_price'] ?? 121689;
+            $networkPrice = $priceConfig['n_network_dedicated_mbit_price'] ?? 121689;
+            $ipPrice = $priceConfig['n_ip_address_price'] ??121689;
+        }
 
         // Get free quantities from specs
         $freeCPU = $cpuSpec['free'] ?? 0;
         $freeRAM = $ramSpec['free'] ?? 0;
         $freeDisk = $diskSpec['free'] ?? 0;
         $freeNetwork = $networkSpec['free'] ?? 0;
+
+
         $freeIP = $ipSpec['free'] ?? 0;
 
         // Tính giá CPU (trừ free)
@@ -467,7 +485,7 @@ class Product_Meta extends MetaOfTableInDb
         $totalPrice = $priceFromCPU + $priceFromRam + $priceFromDisk + $priceFromNetworkDedicated + $priceFromIP;
 
         // Return in VND (K * 1000)
-        return $totalPrice * 1000;
+        return $totalPrice;
 
     }
 

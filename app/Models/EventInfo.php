@@ -23,6 +23,7 @@ class EventInfo extends ModelGlxBase {
     static $DEF_CHI_PHI_THANH_TOAN = ['[CHI_PHI_THANH_TOAN]' , "Chi phí thanh toán"];
     static $DEF_TAI_KHOAN_THANH_TOAN = ['[TAI_KHOAN_THANH_TOAN]' , "Tài khoản thanh toán"];
 
+    static $DEF_CMD_UPDATE_USER_INFO = ['[CMD_UPDATE_UI]' , "Cập nhật thông tin user (User Info)"];
 
     static $DEF_QRCODE = ['[QRCODE]' , "QR CODE"];
 

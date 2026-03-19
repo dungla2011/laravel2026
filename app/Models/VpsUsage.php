@@ -112,17 +112,17 @@ class VpsUsage extends ModelGlxBase
 
         // Use custom fromTime if provided, otherwise use last_billing_start_at or created_at
         $startTime = $fromTime ?: ($this->last_billing_start_at ?: $this->created_at);
-        
+
         // Ensure fromTime has time component, default to 00:00:00
         if (!preg_match('/\d{2}:\d{2}:\d{2}/', $startTime)) {
             $startTime .= ' 00:00:00';
         }
-        
+
         $startDate = new \DateTime($startTime);
 
         // Use custom toTime if provided, otherwise use timestamp_minute
         $endTime = $toTime ?: $this->timestamp_minute;
-        
+
         // Ensure toTime has time component, default to 00:00:00
         if (!preg_match('/\d{2}:\d{2}:\d{2}/', $endTime)) {
             $endTime .= ' 00:00:00';
@@ -143,7 +143,7 @@ class VpsUsage extends ModelGlxBase
 
         // Start date anniversary (day of month we started on)
         $startDay = (int)$startDate->format('d');
-        
+
         // Simple logic: count how many times we can add 1 month and still be <= endDate
         $anniversaryDate = clone $startDate;
         $firstAnniversary = clone $startDate;
@@ -163,7 +163,7 @@ class VpsUsage extends ModelGlxBase
             $daysInMonth = (int)$endDate->format('t');
             $daysUsed = (int)$endDate->format('d');
             $partialMonthFee = $pricePerMonth * ($daysUsed / $daysInMonth);
-            
+
             $monthBreakdown[] = sprintf(
                 "%s (%.0f/%d days)",
                 $endDate->format('M Y'),
@@ -353,7 +353,7 @@ class VpsUsage extends ModelGlxBase
         $startDate = new \DateTime($from);
         $endDate = new \DateTime($to);
         $interval = $startDate->diff($endDate);
-        
+
         // Get start and end days
         $startDay = (int)$startDate->format('d');
         $endDay = (int)$endDate->format('d');
@@ -364,11 +364,11 @@ class VpsUsage extends ModelGlxBase
         echo "To: $to (day " . $endDay . ")\n";
         echo "Duration: " . $interval->days . " days\n";
         echo "Price/month: " . number_format($pricePerMonth, 0, ',', '.') . "\n\n";
-        
+
         echo "Calculation:\n";
         echo "- Start day: " . $startDay . "\n";
         echo "- End day: " . $endDay . "\n";
-        
+
         if ($endDay == $startDay) {
             echo "- Logic: End day = Start day → Count as FULL MONTHS\n";
         } elseif ($endDay > $startDay) {
@@ -376,10 +376,10 @@ class VpsUsage extends ModelGlxBase
         } else {
             echo "- Logic: End day < Start day → Pro-rata calculation\n";
         }
-        
+
         echo "\nResult: " . $result['text'] . "\n";
         echo "Total Fee: " . number_format($result['fee'], 0, ',', '.') . " K\n\n";
-        
+
         echo "Breakdown:\n";
         foreach ($result['details']['breakdown'] as $line) {
             echo "  - $line\n";

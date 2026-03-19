@@ -3502,7 +3502,10 @@ function renderMenu($menuItems, $lang = '') {
         $children = buildMenu($menuItems, $item->id);
         $hasChildren = !empty($children);
         echo '<li class="nav-item ' . ($hasChildren ? 'dropdown' : '') . '">';
-        echo '<a class="nav-link ' . ($hasChildren ? 'dropdown-toggle' : '') . '" href="' .$linkLang . '">' . $name . '</a>';
+        if(!$item->link || $item->link== '#')
+            echo '<a class="nav-link ' . ($hasChildren ? 'dropdown-toggle' : '') . '">' . $name . '</a>';
+        else
+            echo '<a class="nav-link ' . ($hasChildren ? 'dropdown-toggle' : '') . '" href="' .$linkLang . '">' . $name . '</a>';
         echo $children;
         echo '</li>';
     }

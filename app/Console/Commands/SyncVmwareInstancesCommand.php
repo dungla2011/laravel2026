@@ -175,9 +175,13 @@ class SyncVmwareInstancesCommand extends Command
                         ]));
 
                         // Get current pricing config (needed for both update and insert)
-                        $currentPricingConfig = VpsPricingService::getPricingConfig();
+                        // $currentPricingConfig = VpsPricingService::getPricingConfig();
+                            //  VpsPricingService::getPricingConfigForInstance($instance);
+                        $currentPricingConfig = $instance->price_config;
 
                         if ($lastUsage && ($lastUsage->power_state == "POWERED_ON" || $lastUsage->power_state == "POWERED_OFF")) {
+
+                            $currentPricingConfig = $lastUsage->price_config;
 
                             // Check if end_time_used has expired - if yes, insert new record
 //                            if ($lastUsage->end_time_used && now()->gt(\Carbon\Carbon::parse($lastUsage->end_time_used))) {
@@ -354,7 +358,7 @@ class SyncVmwareInstancesCommand extends Command
                             // 'number_ip_address' => $lastHistory->number_ip_address,
                             'power_state' => $lastHistory->power_state,
                         ])) : null;
-
+ 
                         // Insert only if config changed or no history exists
                         if (!$lastHistory || $configHash !== $lastConfigHash) {
                             // Calculate price_per_minute from daily fee
@@ -566,7 +570,7 @@ class SyncVmwareInstancesCommand extends Command
             'bios_uuid' => $vm->bios_uuid,
             'instance_uuid' => $vm->instance_uuid,
             'full_info' => json_encode($vm),
-            'price_config' => json_encode($pricingConfig),
+            'price_config' => $pricingConfig,
             'calculated_fee' => 0,
             'status' => 1,
             'count_update_status' => 0,

@@ -102,13 +102,16 @@ class ChangeLog_Meta extends MetaOfTableInDb
         if ($val) {
             $maxShow = 200;
             $m1 = unserialize($val);
+            $haveFromTo = 0;
             if ($m1 && is_array($m1)) {
                 foreach ($m1 as $k => $v) {
                     $from = $to = '';
                     if (isset($v['from'])) {
+                        $haveFromTo = 1;
                         $from = $v['from'];
                     }
                     if (isset($v['to'])) {
+                        $haveFromTo = 1;
                         $to = $v['to'];
                     }
 
@@ -124,6 +127,7 @@ class ChangeLog_Meta extends MetaOfTableInDb
                     if ($meta) {
                         $sname = $meta->getDescOfField($k);
                     }
+                    if($haveFromTo)
                     $ret .= "<tr> <td style=''>$k <br>($sname)</td> <td> <textarea title='$from' disabled>$from</textarea> </td> <td> <textarea title='$to' disabled>$to</textarea> </td> </tr>";
                 }
             }

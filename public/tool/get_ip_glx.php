@@ -14,6 +14,9 @@ $response = $kernel->handle(
     $request = Illuminate\Http\Request::capture()
 );
 
+
+$remoteIP = $_SERVER['REMOTE_ADDR'] ?? '';
+
 $mac = trim(strtolower($_REQUEST['mac'] ?? ''));
 $mac = str_replace("-", ':', $mac);
 
@@ -34,13 +37,20 @@ if (!$vps || !$vps->init_ip) {
     die("MAC address not found or no IP assigned!");
 }
 
+
 $ip = $vps->init_ip;
+//Neu da set IP roi thi ko set nua
+if($remoteIP == $ip){
+    die("IP is same as remote IP, not continue!");
+}
+
 $subnet = "255.255.254.0"; // Default subnet
 $gateway = "103.163.216.1"; // Default gateway
 $dns1 = "8.8.8.8";
 $dns2 = "8.8.4.4";
 $hostname = $vps->name;
-
+$ipx = str_replace(".", "-", $ip);
+$hostname = "glx-$ipx"."-".date("Ymd");
 
 // Get username from vps_os_versions based on init_os
 $username = 'root'; // Default username linux

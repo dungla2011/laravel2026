@@ -123,7 +123,9 @@ return $GLOBALS['mMapDomainDb'] = [
         'use_own_meta_table'=>1,'is_index_elastic_file' => 1,
         'upload_domain'=>'https://v2up.4share.vn',
         'upload_tmp_folder_glx'=>'/var/ufile',
+        'search_user_id_start_with' => 1,
         'dbadmin' => "http://12.0.0.116/dkjahskldfbasdhflasldfasdf/"],
+
     'api.4share.vn' => ['siteid' => 38, 'db_name' => 'DB_RM_HOST-1', 'layout_name' => 'sandbox', 'password_type' => 2,
         'encode_id_rand_models' => 'FileUpload,DownloadLogs,FolderFile', '4s_link' =>1,'is_index_elastic_file' => 1,
         'use_own_meta_table'=>1,
@@ -219,6 +221,7 @@ return $GLOBALS['mMapDomainDb'] = [
         'enable_multi_language' =>1
     ],
     'glx.com.vn' => ['siteid' => 63, 'db_name' => 'DB_RM_HOST-8', 'layout_name' => 'glxv3',
+        'password_type' => 2,
         'use_own_meta_table'=>1,
         'use_unixtime_id_models' => 'PartnerInfo,VpsInstance,VpsUsage,User,OrderItem,OrderInfo,UserRecharge,FileUpload,FileCloud',
         'force_fallback_language'=>'vi',

@@ -1,10 +1,12 @@
 <?php
 
+defined('DEF_VPS_MIN_PRICE_BUY') || define("DEF_VPS_MIN_PRICE_BUY", 100000);
+
 return [
     'specs' => [
         'n_cpu_core' => [
             'desc' => "Core CPU",
-            'max' => 64,
+            'max' => 48,
             'min' => 1,
             'free' => 0,
             'step' => 1,
@@ -14,7 +16,7 @@ return [
         ],
         'n_ram_gb' => [
             'desc' => "Memory <br><span style='font-size: 80%'>(GB)</span>",
-            'max' => 512,
+            'max' => 128,
             'min' => 1,
             'free' => 0,
             'step' => 1,
@@ -22,7 +24,7 @@ return [
         ],
         'n_gb_disk' => [
             'desc' => "SSD (GB)",
-            'max' => 2048,
+            'max' => 2000,
             'min' => 20,
             'free' => 0,
             'step' => 10,

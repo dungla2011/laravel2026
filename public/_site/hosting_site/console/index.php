@@ -36,7 +36,7 @@ if(!$vmUsage){
 
 $lastIpFound = $vmUsage->list_ip_address;
 if(!$lastIpFound)
-    $lastIpFound = 'not found ip!';
+    $lastIpFound = "$vmi->init_ip ? ";
 
 ?>
 

@@ -308,6 +308,12 @@ class SiteMng extends ModelGlxBase
         return 0;
     }
 
+    static function isSearchUIDAtStartString()
+    {
+        $domainName = \LadLib\Common\UrlHelper1::getDomainHostName();
+        return $GLOBALS['mMapDomainDb'][$domainName]['search_user_id_start_with'] ?? 0;
+    }
+
     public static function getKeyword()
     {
         if (! static::$one) {

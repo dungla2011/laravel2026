@@ -97,12 +97,228 @@ def wait_for_task(task, timeout=3600, progress_callback=None):
     print(f"❌ Task timeout after {timeout}s")
     return False, timeout
 
-def clone_vm(source_vm_name, dest_vm_name, vcenter_host, vcenter_user, vcenter_password, progress_callback=None):
+def get_hosts_and_datastores(si):
+    """
+    Get list of all ESXi hosts with their datastores and free space info
+
+    Returns:
+        list of dicts: [
+            {
+                'name': 'esxi-host-1.example.com',
+                'cpu_cores': 32,
+                'cpu_mhz_per_core': 2500,
+                'memory_mb': 262144,
+                'datastores': [
+                    {
+                        'name': 'datastore1',
+                        'capacity_gb': 1000,
+                        'free_space_gb': 500,
+                        'used_gb': 500,
+                        'percent_used': 50
+                    }
+                ]
+            }
+        ]
+    """
+    try:
+        content = si.RetrieveContent()
+        hosts_info = []
+
+        hosts_container = content.viewManager.CreateContainerView(content.rootFolder, [vim.HostSystem], True)
+
+        for host in hosts_container.view:
+            # Get CPU and memory from host.summary.hardware (more reliable)
+            cpu_cores = 0
+            cpu_mhz = 0
+            memory_mb = 0
+            cpu_usage_mhz = 0
+            memory_usage_mb = 0
+            
+            if host.summary and host.summary.hardware:
+                cpu_cores = host.summary.hardware.numCpuCores or 0
+                cpu_mhz = host.summary.hardware.cpuMhz or 0
+                # Memory from host.summary.hardware
+                if host.summary.hardware.memorySize:
+                    memory_mb = host.summary.hardware.memorySize // (1024 * 1024)
+            
+            # Get usage stats
+            if host.summary and host.summary.quickStats:
+                cpu_usage_mhz = host.summary.quickStats.overallCpuUsage or 0
+                memory_usage_mb = host.summary.quickStats.overallMemoryUsage or 0
+            
+            host_info = {
+                'name': host.name,
+                'cpu_cores': cpu_cores,
+                'cpu_mhz_per_core': cpu_mhz if cpu_mhz > 0 else 0,
+                'cpu_total_mhz': cpu_cores * cpu_mhz if cpu_mhz > 0 else 0,
+                'cpu_usage_mhz': cpu_usage_mhz,
+                'memory_mb': memory_mb,
+                'memory_usage_mb': memory_usage_mb,
+                'memory_free_mb': memory_mb - memory_usage_mb if memory_mb > memory_usage_mb else 0,
+                'datastores': []
+            }
+
+            # Get datastores accessible from this host
+            if hasattr(host, 'datastore'):
+                for ds_ref in host.datastore:
+                    ds = ds_ref
+                    if ds.summary:
+                        ds_info = {
+                            'name': ds.name,
+                            'type': ds.summary.type,
+                            'capacity_gb': ds.summary.capacity // (1024**3) if ds.summary.capacity else 0,
+                            'free_space_gb': ds.summary.freeSpace // (1024**3) if ds.summary.freeSpace else 0,
+                        }
+                        ds_info['used_gb'] = ds_info['capacity_gb'] - ds_info['free_space_gb']
+                        ds_info['percent_used'] = int((ds_info['used_gb'] / ds_info['capacity_gb'] * 100)) if ds_info['capacity_gb'] > 0 else 0
+                        host_info['datastores'].append(ds_info)
+            
+            hosts_info.append(host_info)
+        
+        hosts_container.Destroy()
+        return hosts_info
+    
+    except Exception as e:
+        print(f"❌ Error getting hosts and datastores: {e}")
+        import traceback
+        traceback.print_exc()
+        return []
+
+def select_best_host_and_datastore(si, required_space_gb, required_memory_gb=5, exclude_hosts=None):
+    """
+    Select best host and datastore with resource constraints
+    - Only hosts with CPU usage <= 85%
+    - Only hosts with free memory >= required_memory_gb
+    - Only NVMe datastores with free space >= required_space_gb
+    - Selects datastore with most free space among qualifying hosts
+
+    Args:
+        si: SmartConnect instance
+        required_space_gb: Required free disk space in GB
+        required_memory_gb: Required free memory in GB (default 5 GB)
+        exclude_hosts: List of host names to exclude (e.g., ['esxi-host-3'])
+
+    Returns:
+        dict: {'host_name': 'esxi-host-1', 'datastore_name': 'datastore1', 'free_space_gb': X, 'capacity_gb': Y}
+              or None if no suitable host/datastore found
+    """
+    exclude_hosts = exclude_hosts or []
+    hosts_info = get_hosts_and_datastores(si)
+
+    if not hosts_info:
+        print("❌ No hosts found")
+        return None
+
+    print(f"\n📊 Available Hosts & Datastores")
+    print(f"   Filters: CPU ≤ 85%, Memory ≥ {required_memory_gb}GB free, Disk ≥ {required_space_gb}GB (NVMe only)")
+    print("=" * 100)
+    best_option = None
+    best_free_space = -1
+    qualified_hosts = []  # Track hosts that pass resource filters
+
+    for host in hosts_info:
+        host_name = host['name']
+
+        # Skip excluded hosts
+        if host_name in exclude_hosts:
+            print(f"⊘  {host_name} (EXCLUDED)")
+            continue
+
+        print(f"\n🖥️  Host: {host_name}")
+        
+        # Calculate CPU usage percentage
+        cpu_percent = 0
+        if host['cpu_total_mhz'] > 0:
+            cpu_percent = (host['cpu_usage_mhz'] * 100) // host['cpu_total_mhz']
+        
+        print(f"    CPU: {host['cpu_cores']} cores @ {host['cpu_mhz_per_core']/1000:.2f} GHz")
+        print(f"        Total MHz: {host['cpu_total_mhz']:,} MHz")
+        print(f"        Usage: {host['cpu_usage_mhz']:,} MHz ({cpu_percent}%)")
+        
+        # Calculate memory info
+        memory_total_gb = host['memory_mb'] / 1024
+        memory_used_gb = host['memory_usage_mb'] / 1024
+        memory_free_gb = host['memory_free_mb'] / 1024
+        memory_percent = (host['memory_usage_mb'] * 100 // host['memory_mb']) if host['memory_mb'] > 0 else 0
+        
+        print(f"    Memory: {memory_total_gb:.1f}GB total")
+        print(f"        Usage: {memory_used_gb:.1f}GB / {memory_total_gb:.1f}GB ({memory_percent}%)")
+        print(f"        Free: {memory_free_gb:.1f}GB")
+
+        # Filter 1: CPU usage <= 85%
+        if cpu_percent > 85:
+            print(f"    ❌ CPU usage {cpu_percent}% > 85% (REJECTED)")
+            continue
+        
+        # Filter 2: Memory free >= required_memory_gb
+        if memory_free_gb < required_memory_gb:
+            print(f"    ❌ Free memory {memory_free_gb:.1f}GB < {required_memory_gb}GB required (REJECTED)")
+            continue
+        
+        print(f"    ✅ Host qualifies (CPU {cpu_percent}% ≤ 85%, Memory {memory_free_gb:.1f}GB ≥ {required_memory_gb}GB)")
+        qualified_hosts.append(host_name)
+
+        if not host['datastores']:
+            print(f"    ⊘ No datastores")
+            continue
+
+        # Filter only NVMe datastores and sort by free space (descending)
+        nvme_datastores = [ds for ds in host['datastores'] if 'nvme' in ds['name'].lower()]
+        
+        if not nvme_datastores:
+            print(f"    ⊘ No NVMe datastores found")
+            continue
+
+        print(f"    📦 Checking {len(nvme_datastores)} NVMe datastore(s):")
+        for ds in sorted(nvme_datastores, key=lambda x: x['free_space_gb'], reverse=True):
+            ds_name = ds['name']
+            free_space = ds['free_space_gb']
+            capacity = ds['capacity_gb']
+            used = ds['used_gb']
+            percent = ds['percent_used']
+
+            status = "✅" if free_space >= required_space_gb else "❌"
+            print(f"       {status} {ds_name}: {free_space}GB free / {capacity}GB total (used: {percent}%)")
+
+            # Select if:
+            # 1. Host qualifies on CPU & memory
+            # 2. Datastore has enough space
+            # 3. Has more free space than current best option
+            if free_space >= required_space_gb and free_space > best_free_space:
+                best_free_space = free_space
+                best_option = {
+                    'host_name': host_name,
+                    'datastore_name': ds_name,
+                    'free_space_gb': free_space,
+                    'capacity_gb': capacity
+                }
+                print(f"          ⭐ NEW BEST OPTION (free space: {free_space}GB)")
+
+    print("\n" + "=" * 100)
+
+    if best_option:
+        print(f"\n✅ SELECTED: Host={best_option['host_name']}, Datastore={best_option['datastore_name']}")
+        print(f"   Free space: {best_option['free_space_gb']}GB / {best_option['capacity_gb']}GB")
+        print(f"   Qualified hosts checked: {len(qualified_hosts)}")
+        return best_option
+    else:
+        if qualified_hosts:
+            print(f"\n❌ No suitable NVMe datastore found with {required_space_gb}GB free space")
+            print(f"   ({len(qualified_hosts)} host(s) qualified on CPU/memory but no sufficient disk space)")
+        else:
+            print(f"\n❌ No hosts qualified for resource requirements")
+            print(f"   Required: CPU ≤ 85%, Memory ≥ {required_memory_gb}GB free, Disk ≥ {required_space_gb}GB")
+        return None
+
+def clone_vm(source_vm_name, dest_vm_name, vcenter_host, vcenter_user, vcenter_password, progress_callback=None, target_host_name=None, target_datastore=None):
     """
     Clone a VM and return result dict
 
     Args:
         progress_callback: Optional function to call with progress updates (msg, percent)
+        target_host_name: Optional ESXi host name to clone to (e.g., 'esxi-host-1.example.com')
+        target_datastore: Optional datastore name to clone to (e.g., 'datastore1')
+                         If None, uses default/first available datastore
 
     Returns:
         dict with success, new_vm_id, error, etc.
@@ -152,24 +368,105 @@ def clone_vm(source_vm_name, dest_vm_name, vcenter_host, vcenter_user, vcenter_p
         print(f"   - CPU: {source_vm.config.hardware.numCPU}")
         print(f"   - Memory: {source_vm.config.hardware.memoryMB}MB")
 
+        # Get host information
+        if source_vm.runtime.host:
+            host_name = source_vm.runtime.host.name
+            print(f"   - Host: {host_name}")
+        else:
+            # If template is not powered on, try to get host from datastore
+            if source_vm.datastore:
+                print(f"   - Host: (Template VM - will use default/resource pool allocation)")
+
         # Prepare clone spec
         rel_spec = vim.vm.RelocateSpec()
 
-        # Use default resource pool
-        resource_pools = content.viewManager.CreateContainerView(
-            content.rootFolder,
-            [vim.ResourcePool],
-            True
-        )
-        if resource_pools.view:
-            rel_spec.pool = resource_pools.view[0]
-            print(f"✓ Using resource pool: {resource_pools.view[0].name}")
-        resource_pools.Destroy()
+        # If target host specified, find it and use its pool
+        if target_host_name:
+            print(f"\n🎯 Looking for target host: {target_host_name}")
+            hosts = content.viewManager.CreateContainerView(content.rootFolder, [vim.HostSystem], True)
+            target_host = None
 
-        # Use source VM's datastore
-        if source_vm.datastore:
-            rel_spec.datastore = source_vm.datastore[0]
-            print(f"✓ Using datastore: {source_vm.datastore[0].name}")
+            for host in hosts.view:
+                if host.name == target_host_name:
+                    target_host = host
+                    break
+
+            hosts.Destroy()
+
+            if target_host:
+                # Get resource pool from target host
+                resource_pool = target_host.parent.resourcePool
+                if resource_pool:
+                    rel_spec.pool = resource_pool
+                    rel_spec.host = target_host
+                    print(f"✓ Using target host: {target_host_name}")
+                    print(f"✓ Using resource pool: {resource_pool.name}")
+            else:
+                print(f"⚠️  Target host {target_host_name} not found, using default")
+
+        # If target datastore specified, find and use it
+        if target_datastore:
+            print(f"\n💾 Looking for target datastore: {target_datastore}")
+            datastores = content.viewManager.CreateContainerView(content.rootFolder, [vim.Datastore], True)
+            target_ds = None
+
+            for ds in datastores.view:
+                if ds.name == target_datastore:
+                    target_ds = ds
+                    break
+
+            datastores.Destroy()
+
+            if target_ds:
+                rel_spec.datastore = target_ds
+                print(f"✓ Using target datastore: {target_datastore}")
+                if target_ds.summary:
+                    free_gb = target_ds.summary.freeSpace // (1024**3)
+                    capacity_gb = target_ds.summary.capacity // (1024**3)
+                    print(f"  Free space: {free_gb}GB / {capacity_gb}GB")
+            else:
+                print(f"⚠️  Target datastore {target_datastore} not found, using default")
+
+        # If no target datastore specified, use source VM's datastore
+        if not target_datastore or not target_ds:
+            if source_vm.datastore:
+                rel_spec.datastore = source_vm.datastore[0]
+                print(f"✓ Using source datastore: {source_vm.datastore[0].name}")
+
+        # If no target host specified, use default resource pool
+        if not target_host_name or not target_host:
+            resource_pools = content.viewManager.CreateContainerView(
+                content.rootFolder,
+                [vim.ResourcePool],
+                True
+            )
+            if resource_pools.view:
+                rel_spec.pool = resource_pools.view[0]
+                print(f"✓ Using default resource pool: {resource_pools.view[0].name}")
+            resource_pools.Destroy()
+
+        # Try to get and display available hosts
+        print(f"\n📊 Available ESXi Hosts:")
+        hosts = content.viewManager.CreateContainerView(content.rootFolder, [vim.HostSystem], True)
+        if hosts.view:
+            for i, host in enumerate(hosts.view, 1):
+                host_summary = host.summary
+                cpu_usage = host_summary.quickStats.overallCpuUsage if host_summary.quickStats else 0
+                mem_usage = host_summary.quickStats.overallMemoryUsage if host_summary.quickStats else 0
+                
+                cpu_cores = host_summary.hardware.numCpuCores if host_summary.hardware else 0
+                cpu_mhz = host_summary.hardware.cpuMhz if host_summary.hardware else 0
+                memory_total_mb = (host_summary.hardware.memorySize // (1024 * 1024)) if host_summary.hardware else 0
+                
+                cpu_total_mhz = cpu_cores * cpu_mhz
+                cpu_percent = (cpu_usage * 100 // cpu_total_mhz) if cpu_total_mhz > 0 else 0
+                mem_percent = (mem_usage * 100 // memory_total_mb) if memory_total_mb > 0 else 0
+                mem_free_mb = memory_total_mb - mem_usage
+                
+                print(f"   [{i}] {host.name}")
+                print(f"       CPU: {cpu_usage:,}MHz / {cpu_total_mhz:,}MHz ({cpu_percent}%)")
+                print(f"       Memory: {mem_usage:,}MB / {memory_total_mb:,}MB ({mem_percent}%), Free: {mem_free_mb:,}MB")
+        hosts.Destroy()
 
         clone_spec = vim.vm.CloneSpec()
         clone_spec.location = rel_spec
@@ -210,6 +507,14 @@ def clone_vm(source_vm_name, dest_vm_name, vcenter_host, vcenter_user, vcenter_p
                 result['message'] = f"VM cloned successfully: {dest_vm_name}"
                 print(f"✅ Found cloned VM: {new_vm.name}")
                 print(f"   - ID: {new_vm.config.uuid}")
+
+                # Get host information where VM was cloned to
+                if new_vm.runtime.host:
+                    host_name = new_vm.runtime.host.name
+                    print(f"   - Host: {host_name}")
+                    result['host_name'] = host_name
+                else:
+                    print(f"   - Host: Unknown (VM may be provisioning)")
             else:
                 result['error'] = "Could not find cloned VM UUID"
                 print(f"⚠️  {result['error']}")
@@ -444,7 +749,61 @@ def create_vps_thread(vps_id, init_os_id, vps_name):
         else:
             print(f"  ❌ Failed to save progress to database")
 
-    clone_result = clone_vm(source_vm_name, dest_vm_name, vcenter_host, vcenter_user, vcenter_password, progress_callback=clone_progress_callback)
+    # ===== SELECT BEST HOST AND DATASTORE =====
+    print(f"\n🔍 Selecting best host and datastore for clone...")
+
+    # Get disk and memory requirements from database
+    vps_disk_gb = 0
+    vps_ram_gb = 0
+    with db_lock:
+        conn = get_db_connection()
+        if conn:
+            try:
+                with conn.cursor() as cursor:
+                    sql = "SELECT disk_gb, ram_gb FROM vps_instances WHERE id = %s"
+                    cursor.execute(sql, (vps_id,))
+                    result = cursor.fetchone()
+                    if result:
+                        vps_disk_gb = result.get('disk_gb', 0)
+                        vps_ram_gb = result.get('ram_gb', 0)
+            finally:
+                conn.close()
+
+    # Add some buffer
+    # Disk: 20% more than requested
+    required_space_gb = int(vps_disk_gb * 1.2) if vps_disk_gb else 50
+    # Memory: VM RAM + 5GB buffer for host OS + overhead
+    required_memory_gb = int(vps_ram_gb) + 5 if vps_ram_gb else 10
+    
+    print(f"  Disk requirement: {vps_disk_gb}GB (with 20% buffer: {required_space_gb}GB)")
+    print(f"  Memory requirement: {vps_ram_gb}GB VPS + 5GB buffer = {required_memory_gb}GB total free")
+
+    # Connect to vCenter to get host/datastore info
+    context = ssl._create_unverified_context()
+    si_select = SmartConnect(
+        host=vcenter_host,
+        user=vcenter_user,
+        pwd=vcenter_password,
+        sslContext=context
+    )
+
+    selected = None
+    if si_select:
+        selected = select_best_host_and_datastore(si_select, required_space_gb, required_memory_gb)
+        Disconnect(si_select)
+
+    if not selected:
+        print(f"⚠️  Could not select host/datastore automatically, using defaults")
+        target_host = None
+        target_datastore = None
+    else:
+        target_host = selected['host_name']
+        target_datastore = selected['datastore_name']
+        print(f"✅ Selected: {target_host} / {target_datastore}")
+    # ==========================================
+
+    clone_result = clone_vm(source_vm_name, dest_vm_name, vcenter_host, vcenter_user, vcenter_password,
+                           progress_callback=clone_progress_callback, target_host_name=target_host, target_datastore=target_datastore)
 
     # Add clone completion to progress steps
     progress['steps'].append({
@@ -458,6 +817,8 @@ def create_vps_thread(vps_id, init_os_id, vps_name):
     if clone_result['success']:
         print(f"✅ Clone successful!")
         print(f"   New VM ID: {clone_result['new_vm_id']}")
+        if clone_result.get('host_name'):
+            print(f"   Cloned to Host: {clone_result['host_name']}")
 
         # Get hardware info from database
         vps_hw = None
@@ -568,6 +929,70 @@ def create_vps_thread(vps_id, init_os_id, vps_name):
                 'status': f'Hardware/power warning: {str(e)}'
             })
 
+        # Insert initial record to vps_usages
+        print(f"\n📊 Creating usage record for VPS #{vps_id}...")
+        with db_lock:
+            conn = get_db_connection()
+            if conn:
+                try:
+                    with conn.cursor() as cursor:
+                        # First, get VPS instance info from database
+                        sql_select = """
+                        SELECT user_id, cpu, ram_gb, disk_gb, number_ip_address
+                        FROM vps_instances
+                        WHERE id = %s AND deleted_at IS NULL
+                        """
+                        cursor.execute(sql_select, (vps_id,))
+                        vps_info = cursor.fetchone()
+
+                        if vps_info:
+                            # Insert usage record with proper fields
+                            sql_insert = """
+                            INSERT INTO vps_usages
+                            (instance_id, name, last_host_ip, user_id, vmware_vm_id, bios_uuid, cpu, ram_gb, disk_gb,
+                             number_ip_address, timestamp_minute, power_state, created_at, updated_at)
+                            VALUES (%s , %s, %s, %s, %s, %s, %s, %s, %s, %s, NOW(), %s, NOW(), NOW())
+                            """
+                            # Get host name if available
+                            host_ip = clone_result.get('host_name', "10.0.1.11")  # Use host name if available, else placeholder
+
+                            cursor.execute(sql_insert, (
+                                vps_id,
+                                vps_name,
+                                host_ip,
+                                vps_info.get('user_id'),
+                                clone_result['new_vm_id'],
+                                clone_result['new_vm_id'],
+                                vps_info.get('cpu'),
+                                vps_info.get('ram_gb'),
+                                vps_info.get('disk_gb'),
+                                vps_info.get('number_ip_address'),
+                                'POWERED_ON'
+                            ))
+                            conn.commit()
+                            print(f"  ✅ Created usage record for VPS #{vps_id}")
+                            print(f"     - Instance ID: {vps_id}")
+                            print(f"     - User ID: {vps_info.get('user_id')}")
+                            print(f"     - Host: {host_ip}")
+                            print(f"     - CPU: {vps_info.get('cpu')}, RAM: {vps_info.get('ram_gb')}GB, Disk: {vps_info.get('disk_gb')}GB")
+                            progress['steps'].append({
+                                'stage': 'usage_record',
+                                'timestamp': datetime.now().isoformat(),
+                                'status': 'Initial usage record created'
+                            })
+                        else:
+                            print(f"  ⚠️  Could not get VPS instance info for #{vps_id}")
+                except Exception as e:
+                    print(f"  ⚠️  Failed to create usage record: {e}")
+                    progress['steps'].append({
+                        'stage': 'warning',
+                        'timestamp': datetime.now().isoformat(),
+                        'status': f'Usage record creation failed: {str(e)}'
+                    })
+                finally:
+                    conn.close()
+
+
         # Final progress with all steps
         final_progress = {
             'vps_id': vps_id,
@@ -609,6 +1034,10 @@ def create_vps_thread(vps_id, init_os_id, vps_name):
                         ))
                     conn.commit()
                     print(f"✅ VPS #{vps_id} creation completed!")
+                    
+                    # Send email notification to user (in background thread)
+                    print(f"\n🔔 Queuing email notification for VPS #{vps_id}")
+                    send_vps_created_notification_async(vps_id)
                 except Exception as e:
                     print(f"❌ Error updating VPS: {e}")
                 finally:
@@ -628,8 +1057,47 @@ def create_vps_thread(vps_id, init_os_id, vps_name):
         }
         update_vps_status(vps_id, 'vps_create_error', json.dumps(error_progress))
 
+def send_vps_created_notification(vps_id):
+    """Send email notification to user about VPS creation in background thread"""
+    try:
+        import urllib.request
+        
+        url = f"https://glx.com.vn/_site/hosting_site/send-mail-vps-created.php?instance_id={vps_id}"
+        
+        print(f"\n📧 Sending VPS created notification...")
+        print(f"   URL: {url}")
+        
+        # Create SSL context to ignore certificate verification
+        context = ssl._create_unverified_context()
+        
+        # Send request with timeout
+        req = urllib.request.Request(
+            url,
+            headers={'User-Agent': 'VPS-Creation-Daemon/1.0'}
+        )
+        
+        with urllib.request.urlopen(req, context=context, timeout=10) as response:
+            response_text = response.read().decode('utf-8')
+            print(f"   ✅ Notification sent, Response: {response_text[:100]}")
+            return True
+    
+    except Exception as e:
+        print(f"   ⚠️  Failed to send notification: {e}")
+        return False
+
+
+def send_vps_created_notification_async(vps_id):
+    """Send VPS created notification in background thread"""
+    thread = Thread(
+        target=send_vps_created_notification,
+        args=(vps_id,),
+        daemon=True
+    )
+    thread.start()
+    return thread
+
 def get_pending_vps_creations():
-    """Get VPS instances with create_status = 'vps_new_create'"""
+    """Fetch list of VPS instances pending creation"""
     conn = get_db_connection()
     if not conn:
         return []
@@ -644,6 +1112,110 @@ def get_pending_vps_creations():
         return []
     finally:
         conn.close()
+
+def test_select_host_datastore():
+    """Test function to verify host and datastore selection"""
+    print("=" * 100)
+    print("🧪 TEST: Select Best Host and Datastore")
+    print("=" * 100)
+    
+    vcenter_host = os.getenv('VCENTER_DOMAIN')
+    vcenter_user = os.getenv('VCENTER_UID')
+    vcenter_password = os.getenv('VCENTER_PW')
+    
+    if not vcenter_host or not vcenter_user or not vcenter_password:
+        print("❌ Missing vCenter credentials in .env")
+        return
+    
+    try:
+        context = ssl._create_unverified_context()
+        print(f"\n🔗 Connecting to vCenter: {vcenter_host}")
+        si = SmartConnect(
+            host=vcenter_host,
+            user=vcenter_user,
+            pwd=vcenter_password,
+            sslContext=context
+        )
+        
+        if not si:
+            print(f"❌ Failed to connect to vCenter")
+            return
+        
+        print(f"✅ Connected to vCenter\n")
+        
+        # First, display all hosts and datastores
+        print("=" * 100)
+        print("📊 ALL HOSTS AND DATASTORES IN VCENTER")
+        print("=" * 100)
+        
+        all_hosts = get_hosts_and_datastores(si)
+        
+        if not all_hosts:
+            print("❌ No hosts found")
+            Disconnect(si)
+            return
+        
+        for host in all_hosts:
+            print(f"\n🖥️  Host: {host['name']}")
+            print(f"    CPU: {host['cpu_cores']} cores @ {host['cpu_mhz_per_core']/1000:.2f} GHz")
+            print(f"        Total MHz: {host['cpu_total_mhz']:,} MHz")
+            print(f"        Usage: {host['cpu_usage_mhz']:,} MHz ({host['cpu_usage_mhz']*100//max(host['cpu_total_mhz'], 1)}%)" if host['cpu_total_mhz'] > 0 else "        Usage: N/A")
+            
+            memory_total_gb = host['memory_mb'] / 1024
+            memory_used_gb = host['memory_usage_mb'] / 1024
+            memory_free_gb = host['memory_free_mb'] / 1024
+            memory_percent = (host['memory_usage_mb'] * 100 // host['memory_mb']) if host['memory_mb'] > 0 else 0
+            
+            print(f"    Memory: {memory_total_gb:.1f}GB total")
+            print(f"        Usage: {memory_used_gb:.1f}GB / {memory_total_gb:.1f}GB ({memory_percent}%)")
+            print(f"        Free: {memory_free_gb:.1f}GB")
+            
+            if not host['datastores']:
+                print(f"    ⊘ No datastores")
+                continue
+            
+            print(f"    📦 Datastores ({len(host['datastores'])} total):")
+            for ds in sorted(host['datastores'], key=lambda x: x['free_space_gb'], reverse=True):
+                ds_name = ds['name']
+                ds_type = ds['type']
+                free = ds['free_space_gb']
+                capacity = ds['capacity_gb']
+                used = ds['used_gb']
+                percent = ds['percent_used']
+                
+                # Mark NVMe datastores
+                nvme_marker = "🔥" if 'nvme' in ds_name.lower() else "  "
+                print(f"       {nvme_marker} {ds_name} ({ds_type}): {free}GB free / {capacity}GB total (used: {percent}%)")
+        
+        print("\n" + "=" * 100)
+        
+        # Now test selection with different space requirements
+        test_cases = [20, 50, 100, 200]
+        
+        for required_gb in test_cases:
+            print(f"\n🧪 TEST CASE: Required space = {required_gb}GB, memory = 10GB free")
+            print("-" * 100)
+            
+            selected = select_best_host_and_datastore(si, required_gb, required_memory_gb=10)
+            
+            if selected:
+                print(f"\n✅ SELECTED:")
+                print(f"   Host: {selected['host_name']}")
+                print(f"   Datastore: {selected['datastore_name']}")
+                print(f"   Free Space: {selected['free_space_gb']}GB / {selected['capacity_gb']}GB")
+            else:
+                print(f"\n❌ No suitable NVMe datastore found")
+        
+        Disconnect(si)
+        
+        print("\n" + "=" * 100)
+        print("✅ TEST COMPLETED")
+        print("=" * 100)
+        
+    except Exception as e:
+        print(f"❌ Test error: {e}")
+        import traceback
+        traceback.print_exc()
 
 def main():
     """Main loop - continuously check for VPS creation requests"""
@@ -699,3 +1271,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+    
+    # Test function to check host and datastore selection
+    # test_select_host_datastore()

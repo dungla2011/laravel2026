@@ -25,6 +25,7 @@ use App\Models\SiteMng;
 use App\Models\User;
 use App\Models\ZaloUser;
 use App\Repositories\EventInfoRepositoryInterface;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use LadLib\Common\cstring2;
 use LadLib\Common\UrlHelper1;
@@ -1456,6 +1457,15 @@ class EventInfoControllerApi extends BaseApiController
 
                 $eventId = $eventSendAction->event_id;
 
+
+
+
+                $data = [];
+                $data['message'] = "Bắt đầu gửi tin, mã lệnh $eventSendAction->id";
+                $data['event_id'] = $eventId;
+                $pusher->trigger($chanelPusher, "my-event-pusher-web-$eventId", $data);
+
+
                 ol1($eventSendAction, "\n---$cc/$tt. EventIdx = $eventId, SendId CMD: $eventSendAction->id", $ignoreEcho);
 
                 if (!$ev = EventInfo::find($eventId)) {
@@ -1553,6 +1563,13 @@ class EventInfoControllerApi extends BaseApiController
 //                        ol1($eventSendAction," send override ",$ignoreEcho);
 //                    getch("...... $user_email_send_override ");
                         //Nếu email ko có trog list user_email_send_override, thì bỏ qua
+                        if(is_numeric($user_email_send_override)){
+                            //Có trường hợp gửi phone, thì đây là số uid
+                            if($evUser->id != $user_email_send_override){
+                                $ignore++;
+                                continue;
+                            }
+                        }else
                         if (!$evUser->email || !in_array($evUser->email, $mmEmailOverride)) {
                             //ol1($eventSendAction," * Không gửi, vỉ không nằm trong mail limit: $evUser->email",$ignoreEcho);
                             $ignore++;
@@ -1667,6 +1684,14 @@ class EventInfoControllerApi extends BaseApiController
                         continue;
                     }
 
+                    $ct = urldecode($ct);
+                    if(str_contains($ct, EventInfo::$DEF_CMD_UPDATE_USER_INFO[0])){
+                        $mcTime = round(microtime(1));
+                        $evUser->command_ex = $evUser->id ."-" . $mcTime;
+                        $ct = str_replace(EventInfo::$DEF_CMD_UPDATE_USER_INFO, eth1b($evUser->command_ex) . " \n ", $ct);
+                        $evUser->update();
+                    }
+
                     $eventSendAction->list_uid_send_done .= ",$evUser->id,";
                     $eventSendAction->list_uid_send_done = str_replace(',,', ',', $eventSendAction->list_uid_send_done);
 
@@ -1720,19 +1745,21 @@ class EventInfoControllerApi extends BaseApiController
 //                    $ct = removeHtmlComments($ct);
 
 
-
-
 //                $ctSMS = cstring2::convert_codau_khong_dau($ct);
 
                     if ($eventSendAction->type == EventInfo_Meta::$typeZalo) {
-                        sleep(3);
+                        usleep(500000);
                         $zlh = new \App\Helpers\ZaloHelper('http://localhost:30000', 'admin', '938475wufo87908u09');
                         $evsL->count_retry_send++;
-                        $evsL->save();
                         $ct = removeSMSTextComments($ct);
                         $ct = strip_tags($ct);
+                        $evsL->content = $ct;
+                        $evsL->save();
 
-                        if(\clsValidate::isPhone($evUser->phone)){
+                        if(!\clsValidate::isPhone($evUser->phone)){
+
+                        }
+                        else{
 
                             $zluId = 0; $zlu = null; $haveIndb = 0;
                             if($phone = EventUserInfo::fixPhoneNumber($evUser->phone)){
@@ -1750,8 +1777,9 @@ class EventInfoControllerApi extends BaseApiController
                             if(!$zluId){
 //                                $zlh = new ZaloHelper();
 //                                $zlh = new \App\Helpers\ZaloHelper('http://localhost:30000', 'admin', '938475wufo87908u09');
+                                sleep(2);
                                 if($retZl = $zlh->findUserByPhone('event1', $phone)){
-                                    sleep(5);
+
                                     echo "<pre> >>> " . __FILE__ . "(" . __LINE__ . ")<br/>";
                                     print_r($retZl);
                                     echo "</pre>";
@@ -1773,13 +1801,11 @@ class EventInfoControllerApi extends BaseApiController
                                     }
                                 }
                                 if(!$zluId){
-                                    sleep(5);
+                                    sleep(1);
                                     ol1($eventSendAction, "*** Error: Không lấy được zl uid? ($phone)", $ignoreEcho);
                                 }
-
-
                             }
-                            sleep(5);
+
                             ol1($eventSendAction, "Zl UID = $zluId, ($phone)", $ignoreEcho);
                             if(!$zluId)
                                 ol1($eventSendAction, "*** Error: Không có zalo ID ($phone)", $ignoreEcho);
@@ -1787,16 +1813,23 @@ class EventInfoControllerApi extends BaseApiController
                                 $result = $zlh->sendMessage('event1', $zluId, $ct);
                                 // Kiểm tra kết quả
                                 if ($result['success'] ?? '') {
-                                    sleep(5);
+                                    sleep(1);
+                                    $done++;
+
                                     ol1($eventSendAction, "Gui zalo thanh cong ($phone)", $ignoreEcho);
+
+                                    $data['message'] = " Gui thanh cong $phone ";
+                                    $pusher->trigger($chanelPusher, "my-event-pusher-web-$eventId", $data);
+                                    sleep(15);
 
                                     $evsL->addLog(" send ok zalo");
                                     $evsL->status = 1;
                                     $evsL->done_at = nowyh();
                                     $evsL->save();
+
 //                                    echo "✅ Gửi thành công! msgId: " . $result['data']['msgId'];
                                 } else {
-                                    sleep(5);
+                                    sleep(1);
                                     ol1($eventSendAction, "***Error: Gui zalo khong thanh cong ($phone) - " . serialize($result), $ignoreEcho);
 
                                     $evsL->addLog("Error send zalo" . substr($result['error'] ?? '' , 0 ,500));
@@ -1804,6 +1837,13 @@ class EventInfoControllerApi extends BaseApiController
 //                                    echo "❌ Lỗi: " . $result['error'];
                                 }
                             }
+
+                            $data['message'] = " <i class='fa fa-spinner fa-spin'></i>  (Lệnh: $eventSendAction->id) Sending $cc/$tt: $phone";
+                            if ($cc == $tt) {
+                                $data['message'] = "Đã hoàn thành $done/$tt email";
+                            }
+
+                            $pusher->trigger($chanelPusher, "my-event-pusher-web-$eventId", $data);
 
                         }
 
@@ -1899,6 +1939,7 @@ class EventInfoControllerApi extends BaseApiController
                         $eventAndUser->sent_mail_at = nowyh();
                         $eventAndUser->save();
                         ol1($eventSendAction, " Pushing done to Web , chanel = $chanelPusher...", $ignoreEcho);
+
                         $data['message'] = " <i class='fa fa-spinner fa-spin'></i>  (Lệnh: $eventSendAction->id) Sending $cc/$tt: $evUser->email";
                         if ($cc == $tt) {
                             $data['message'] = "Đã hoàn thành $done/$tt email, bỏ qua : $ignore";

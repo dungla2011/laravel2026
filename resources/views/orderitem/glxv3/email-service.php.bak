@@ -1,0 +1,376 @@
+<div class="cart-body">
+
+            <div class="header-lined">
+                <h1 class="font-size-36">
+                                            Email Server
+                                    </h1>
+                            </div>
+            
+            <div class="sidebar-collapsed">
+
+            <div class="panel card panel-default">
+                <div class="m-0 panel-heading card-header">
+        <h3 class="panel-title">
+                            <i class="fas fa-shopping-cart"></i>&nbsp;
+            
+            Dịch Vụ
+
+                    </h3>
+    </div>
+
+    <div class="panel-body card-body">
+        <form role="form">
+            <select class="form-control custom-select" onchange="selectChangeNavigate(this)">
+                                                    <option menuitemname="LV Cloud VPS" value="/store/lv-cloud-vps" class="list-group-item">
+                        LV Cloud VPS
+
+                                            </option>
+                                                        <option menuitemname="Dedicate Cloud (PCI SSD)" value="/store/dedicate-cloud" class="list-group-item">
+                        Dedicate Cloud (PCI SSD)
+
+                                            </option>
+                                                        <option menuitemname="IN Cloud-Linux-VPS" value="/store/cloud-vps-in" class="list-group-item">
+                        IN Cloud-Linux-VPS
+
+                                            </option>
+                                                        <option menuitemname="IN Cloud-VPS High" value="/store/in-cloud-vps-high" class="list-group-item">
+                        IN Cloud-VPS High
+
+                                            </option>
+                                                        <option menuitemname="IN Cloud-Win-VPS" value="/store/in-cloud-win-vps" class="list-group-item">
+                        IN Cloud-Win-VPS
+
+                                            </option>
+                                                        <option menuitemname="Cloud VPS Quốc Tế (SSD/NVMe)" value="/store/cloud-vps-quoc-te" class="list-group-item">
+                        Cloud VPS Quốc Tế (SSD/NVMe)
+
+                                            </option>
+                                                        <option menuitemname="Chỗ Đặt Máy Chủ" value="/store/cho-dat-may-chu" class="list-group-item">
+                        Chỗ Đặt Máy Chủ
+
+                                            </option>
+                                                        <option menuitemname="Máy chủ vật lý" value="/store/may-ch-vt-l" class="list-group-item">
+                        Máy chủ vật lý
+
+                                            </option>
+                                                        <option menuitemname="NVMe Linux Hosting" value="/store/nvme-linux-hosting" class="list-group-item">
+                        NVMe Linux Hosting
+
+                                            </option>
+                                                        <option menuitemname="SSD Linux Hosting" value="/store/ssd-linux-hosting" class="list-group-item">
+                        SSD Linux Hosting
+
+                                            </option>
+                                                        <option menuitemname="Email Server" value="/store/email-server" class="list-group-item" selected="selected">
+                        Email Server
+
+                                            </option>
+                                                                                                    <option menuitemname="Google Workspace" value="/store/gsuite" class="list-group-item">
+                        Google Workspace
+
+                                            </option>
+                                                        <option menuitemname="Google Workspace Giá Rẻ" value="/store/google-workspace-gia-re" class="list-group-item">
+                        Google Workspace Giá Rẻ
+
+                                            </option>
+                                                        <option menuitemname="Google Relay Email" value="/store/google-relay-email" class="list-group-item">
+                        Google Relay Email
+
+                                            </option>
+                                                        <option menuitemname="Object Storage VN" value="/store/s3-storage-vn" class="list-group-item">
+                        Object Storage VN
+
+                                            </option>
+                                                        <option menuitemname="Object Storage Quốc Tế" value="/store/s3-storage-quoc-te" class="list-group-item">
+                        Object Storage Quốc Tế
+
+                                            </option>
+                                                        <option menuitemname="Chứng Chỉ SSL" value="/store/chung-chi-ssl" class="list-group-item">
+                        Chứng Chỉ SSL
+
+                                            </option>
+                                                        <option menuitemname="License Chính Hãng" value="/store/license" class="list-group-item">
+                        License Chính Hãng
+
+                                            </option>
+                                                        <option menuitemname="License Giá Rẻ" value="/store/license-shared" class="list-group-item">
+                        License Giá Rẻ
+
+                                            </option>
+                                                        <option menuitemname="Proxy VN" value="/store/proxy-vn" class="list-group-item">
+                        Proxy VN
+
+                                            </option>
+                                                        <option menuitemname="Dịch Vụ Quản Trị" value="/store/dich-vu-quan-tri" class="list-group-item">
+                        Dịch Vụ Quản Trị
+
+                                            </option>
+                                                                </select>
+        </form>
+    </div>
+
+            </div>
+            <div class="panel card panel-default">
+                <div class="m-0 panel-heading card-header">
+        <h3 class="panel-title">
+                            <i class="fas fa-plus"></i>&nbsp;
+            
+            Thao tác
+
+                    </h3>
+    </div>
+
+    <div class="panel-body card-body">
+        <form role="form">
+            <select class="form-control custom-select" onchange="selectChangeNavigate(this)">
+                                                    <option menuitemname="Domain Registration" value="/cart.php?a=add&amp;domain=register" class="list-group-item">
+                        Đăng ký Domain
+
+                                            </option>
+                                                        <option menuitemname="Domain Transfer" value="/cart.php?a=add&amp;domain=transfer" class="list-group-item">
+                        Transfer Domain
+
+                                            </option>
+                                                        <option menuitemname="View Cart" value="/cart.php?a=view" class="list-group-item">
+                        Xem giỏ hàng
+
+                                            </option>
+                                                                        <option value="" class="list-group-item" selected="">- Chọn danh mục khác -</option>
+                            </select>
+        </form>
+    </div>
+
+            </div>
+    
+    
+</div>
+
+            <div class="products" id="products">
+                <div class="row row-eq-height">
+                                                                <div class="col-md-6">
+                        <div class="product clearfix" id="product41">
+                            <header>
+                                <span id="product41-name">MV-SV-01</span>
+                                                            </header>
+                            <div class="product-desc">
+                                                                    <p id="product41-description">
+                                        IMAP/POP<br>
+Webmail<br>
+Antispam, Anti Virus<br>
+
+                                    </p>
+                                                                <ul>
+                                                                            <li id="product41-feature1">
+                                            <span class="feature-value">2</span>
+                                            Users
+                                        </li>
+                                                                            <li id="product41-feature2">
+                                            <span class="feature-value">2GB</span>
+                                            Dung lượng
+                                        </li>
+                                                                    </ul>
+                            </div>
+                            <footer>
+                                <div class="product-pricing" id="product41-price">
+                                                                                                                        Giá từ
+                                            <br>
+                                                                                <span class="price">108,000 VNĐ</span>
+                                        <br>
+                                                                                    6 tháng
+                                                                                <br>
+                                                                                                            </div>
+                                <a href="/store/email-server/sv-01" class="btn btn-success btn-sm btn-order-now" id="product41-order-button">
+                                    <i class="fas fa-shopping-cart"></i>
+                                    Đăng ký
+                                </a>
+                            </footer>
+                        </div>
+                    </div>
+                                                                                    <div class="col-md-6">
+                        <div class="product clearfix" id="product42">
+                            <header>
+                                <span id="product42-name">MV-SV-02</span>
+                                                            </header>
+                            <div class="product-desc">
+                                                                    <p id="product42-description">
+                                        IMAP/POP<br>
+Webmail<br>
+Antispam, Anti Virus<br>
+
+                                    </p>
+                                                                <ul>
+                                                                            <li id="product42-feature1">
+                                            <span class="feature-value">10</span>
+                                            Users
+                                        </li>
+                                                                            <li id="product42-feature2">
+                                            <span class="feature-value">5GB</span>
+                                            Dung lượng
+                                        </li>
+                                                                    </ul>
+                            </div>
+                            <footer>
+                                <div class="product-pricing" id="product42-price">
+                                                                                                                        Giá từ
+                                            <br>
+                                                                                <span class="price">270,000 VNĐ</span>
+                                        <br>
+                                                                                    6 tháng
+                                                                                <br>
+                                                                                                            </div>
+                                <a href="/store/email-server/sv-02" class="btn btn-success btn-sm btn-order-now" id="product42-order-button">
+                                    <i class="fas fa-shopping-cart"></i>
+                                    Đăng ký
+                                </a>
+                            </footer>
+                        </div>
+                    </div>
+                                    </div>
+                <div class="row row-eq-height">
+                                                                                    <div class="col-md-6">
+                        <div class="product clearfix" id="product53">
+                            <header>
+                                <span id="product53-name">MV-SV-03</span>
+                                                            </header>
+                            <div class="product-desc">
+                                                                    <p id="product53-description">
+                                        IMAP/POP<br>
+Webmail<br>
+Antispam, Anti Virus<br>
+
+                                    </p>
+                                                                <ul>
+                                                                            <li id="product53-feature1">
+                                            <span class="feature-value">20</span>
+                                            Users
+                                        </li>
+                                                                            <li id="product53-feature2">
+                                            <span class="feature-value">10GB</span>
+                                            Dung lượng
+                                        </li>
+                                                                    </ul>
+                            </div>
+                            <footer>
+                                <div class="product-pricing" id="product53-price">
+                                                                                                                        Giá từ
+                                            <br>
+                                                                                <span class="price">540,000 VNĐ</span>
+                                        <br>
+                                                                                    6 tháng
+                                                                                <br>
+                                                                                                            </div>
+                                <a href="/store/email-server/sv-03" class="btn btn-success btn-sm btn-order-now" id="product53-order-button">
+                                    <i class="fas fa-shopping-cart"></i>
+                                    Đăng ký
+                                </a>
+                            </footer>
+                        </div>
+                    </div>
+                                                                                    <div class="col-md-6">
+                        <div class="product clearfix" id="product28">
+                            <header>
+                                <span id="product28-name">MV-SV-04</span>
+                                                            </header>
+                            <div class="product-desc">
+                                                                    <p id="product28-description">
+                                        IMAP/POP<br>
+Webmail<br>
+Antispam, Anti Virus<br>
+
+                                    </p>
+                                                                <ul>
+                                                                            <li id="product28-feature1">
+                                            <span class="feature-value">50</span>
+                                            Users
+                                        </li>
+                                                                            <li id="product28-feature2">
+                                            <span class="feature-value">20GB</span>
+                                            Dung lượng
+                                        </li>
+                                                                    </ul>
+                            </div>
+                            <footer>
+                                <div class="product-pricing" id="product28-price">
+                                                                                                                        Giá từ
+                                            <br>
+                                                                                <span class="price">960,000 VNĐ</span>
+                                        <br>
+                                                                                    6 tháng
+                                                                                <br>
+                                                                                                            </div>
+                                <a href="/store/email-server/sv04" class="btn btn-success btn-sm btn-order-now" id="product28-order-button">
+                                    <i class="fas fa-shopping-cart"></i>
+                                    Đăng ký
+                                </a>
+                            </footer>
+                        </div>
+                    </div>
+                                    </div>
+                <div class="row row-eq-height">
+                                                                                    <div class="col-md-6">
+                        <div class="product clearfix" id="product157">
+                            <header>
+                                <span id="product157-name">MV-SV-X</span>
+                                                            </header>
+                            <div class="product-desc">
+                                                                    <p id="product157-description">
+                                        IMAP/POP<br>
+Webmail<br>
+Antispam, Anti Virus<br>
+
+                                    </p>
+                                                                <ul>
+                                                                            <li id="product157-feature1">
+                                            <span class="feature-value">x</span>
+                                            Users
+                                        </li>
+                                                                            <li id="product157-feature2">
+                                            <span class="feature-value">x GB</span>
+                                            Dung lượng
+                                        </li>
+                                                                    </ul>
+                            </div>
+                            <footer>
+                                <div class="product-pricing" id="product157-price">
+                                                                                                                        Giá từ
+                                            <br>
+                                                                                <span class="price">0 VNĐ</span>
+                                        <br>
+                                                                                    Hàng tháng
+                                                                                <br>
+                                                                                                            </div>
+                                <a href="/store/email-server/mv-sv-x" class="btn btn-success btn-sm btn-order-now" id="product157-order-button">
+                                    <i class="fas fa-shopping-cart"></i>
+                                    Đăng ký
+                                </a>
+                            </footer>
+                        </div>
+                    </div>
+                                                                                    <div class="col-md-6">
+                        <div class="product clearfix" id="product165">
+                            <header>
+                                <span id="product165-name">Clean IP Relay</span>
+                                                            </header>
+                            <div class="product-desc">
+                                                                <ul>
+                                                                    </ul>
+                            </div>
+                            <footer>
+                                <div class="product-pricing" id="product165-price">
+                                                                                                                    <span class="price">100,000 VNĐ</span>
+                                        <br>
+                                                                                    Hàng tháng
+                                                                                <br>
+                                                                                                            </div>
+                                <a href="/store/email-server/clean-ip-relay" class="btn btn-success btn-sm btn-order-now" id="product165-order-button">
+                                    <i class="fas fa-shopping-cart"></i>
+                                    Đăng ký
+                                </a>
+                            </footer>
+                        </div>
+                    </div>
+                                    </div>
+                <div class="row row-eq-height">
+                                                        </div>
+            </div>
+        </div>

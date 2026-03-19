@@ -6,6 +6,22 @@ use App\Models\Product_Meta;
 use Illuminate\Support\Facades\DB;
 
 
+require '/var/www/html/vendor/autoload.php';
+$app = require_once '/var/www/html/bootstrap/app.php';
+$kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
+$response = $kernel->handle(
+    $request = Illuminate\Http\Request::capture()
+);
+
+// Get user ID
+$uid = getCurrentUserId();
+$email = getCurrentUserEmail();
+if (!$uid) {
+    http_response_code(401);
+    die(json_encode(['success' => false, 'message' => 'User not authenticated']));
+}
+
+
 // Define IP ranges for VPS allocation
 $IP_RANGES = [
     [
@@ -19,7 +35,7 @@ $IP_RANGES = [
     [
         'ip_range' => '103.163.217.0/24',
         'ip_skip' => '103.163.217.1-103.163.217.30,103.163.217.220-103.163.217.255,103.163.217.50',
-        'gateway' => '103.163.216.1',
+        'gateway' => '103.163.217.1',
         'subnet' => '255.255.254.0',
         'dns1' => '8.8.8.8',
         'dns2' => '8.8.4.4'
@@ -185,23 +201,13 @@ if (!($isAjax || $isPost)) {
 }
 
 
-require '/var/www/html/vendor/autoload.php';
-$app = require_once '/var/www/html/bootstrap/app.php';
-$kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
-$response = $kernel->handle(
-    $request = Illuminate\Http\Request::capture()
-);
+// Tính số VPS đang bật (power_state = 'POWER_ON')
+$runningVpsCount = VpsInstance::where('user_id', $uid)
+    ->where('power_state', 'POWERED_ON')
+    ->count();
 
-// Get user ID
-$uid = getCurrentUserId();
-$email = getCurrentUserEmail();
-if (!$uid) {
-    http_response_code(401);
-    die(json_encode(['success' => false, 'message' => 'User not authenticated']));
-}
-
-$freeMoney = 500000;
-if(\App\Services\VpsBillingReportService::getFreeMoneyVpsBilling($uid, $freeMoney) < $freeMoney){
+$freeMoney = $runningVpsCount * 100000;
+if(\App\Services\VpsBillingReportService::getFreeMoneyVpsBilling($uid) < $freeMoney){
     die(json_encode([
         'success' => false,
         'error_code' => 'FREE_MONEY_VPS',
@@ -210,11 +216,15 @@ if(\App\Services\VpsBillingReportService::getFreeMoneyVpsBilling($uid, $freeMone
     ]));
 }
 
+$timeDelay = 60;
+if(isAdminCookie())
+    $timeDelay = 10;
 
 // Anti-spam: Check if user already created instance in last 30 seconds
 $recentInstance = VpsInstance::where('user_id', $uid)
-    ->where('created_at', '>', now()->subSeconds(60))
+    ->where('created_at', '>', now()->subSeconds($timeDelay))
     ->first();
+
 
 if ($recentInstance) {
     http_response_code(429);
@@ -245,95 +255,134 @@ if ($dailyCount >= 10) {
 // Get request data
 $postData = $_REQUEST;
 
-// Extract VPS specs
-$nCpuCore = isset($postData['n_cpu_core']) ? intval($postData['n_cpu_core']) : 1;
-$nRamGb = isset($postData['n_ram_gb']) ? intval($postData['n_ram_gb']) : 1;
-$nGbDisk = isset($postData['n_gb_disk']) ? intval($postData['n_gb_disk']) : 20;
-$nNetworkMbit = isset($postData['n_network_mbit']) ? intval($postData['n_network_mbit']) : 200;
-$nNetworkDedicatedMbit = isset($postData['n_network_dedicated_mbit']) ? intval($postData['n_network_dedicated_mbit']) : 0;
-$nIpAddress = isset($postData['n_ip_address']) ? intval($postData['n_ip_address']) : 1;
-$planId = isset($postData['plan_id']) ? intval($postData['plan_id']) : null;
-$initOs = isset($postData['init_os']) ? intval($postData['init_os']) : null;
-
-
-// die("OS = $initOs);
-
-//Kiểm tra initOs có trong  VpsOsVersion không:
-$validOs = \App\Models\VpsOsVersion::where('id', $initOs)->first();
-if (!$validOs) {
-    http_response_code(400);
-    die(json_encode([
-        'success' => false,
-        'error_code' => 'INVALID_OS',
-        'message' => '❌ Hệ điều hành khởi tạo không hợp lệ.'
-    ]));
-}
-
-//Lấy slug để đưa vào name
-$osSlug = $validOs->slug ?? 'unknown-os';
-
-// Calculate price
-$price = Product_Meta::calculateVpsPrice(
-    $nCpuCore,
-    $nRamGb,
-    $nGbDisk,
-    $nNetworkMbit,
-    $nNetworkDedicatedMbit,
-    $nIpAddress
-);
-
-// Load pricing config to calculate breakdown
+// Load VPS config for validation
 $vpsConfig = include('/var/www/html/config/vps_config.php');
 $vpsConfigSpecs = $vpsConfig['specs'];
 
-// Get specs and prices
-$cpuSpec = $vpsConfigSpecs['n_cpu_core'] ?? [];
-$ramSpec = $vpsConfigSpecs['n_ram_gb'] ?? [];
-$diskSpec = $vpsConfigSpecs['n_gb_disk'] ?? [];
-$networkSpec = $vpsConfigSpecs['n_network_dedicated_mbit'] ?? [];
-$ipSpec = $vpsConfigSpecs['n_ip_address'] ?? [];
+// Helper function to validate spec value against config
+function validateSpecValue($value, $spec, $specName) {
+    $value = intval($value);
+    $min = $spec['min'] ?? 0;
+    $max = $spec['max'] ?? PHP_INT_MAX;
 
-// Get free quantities
-$freeCPU = $cpuSpec['free'] ?? 0;
-$freeRAM = $ramSpec['free'] ?? 0;
-$freeDisk = $diskSpec['free'] ?? 0;
-$freeNetwork = $networkSpec['free'] ?? 0;
-$freeIps = $ipSpec['free'] ?? 0;
+    if ($value < $min || $value > $max) {
+        throw new \Exception(
+            "Invalid $specName: $value. Must be between $min and $max.",
+            1007 // VALIDATION_ERROR
+        );
+    }
 
-// Get rounding and prices
-$diskRounding = $diskSpec['rounding'] ?? 10;
-$networkRounding = $networkSpec['rounding'] ?? 100;
-
-$cpuPrice = $cpuSpec['price'] ?? 50;
-$ramPrice = $ramSpec['price'] ?? 30;
-$diskPrice = $diskSpec['price'] ?? 1;
-$networkPrice = $networkSpec['price'] ?? 1000;
-$ipPrice = $ipSpec['price'] ?? 50;
-
-// Calculate breakdown in K (thousands), applying free quantities
-$chargedCPU = max(0, $nCpuCore - $freeCPU);
-$cpuPriceK = $chargedCPU * $cpuPrice;
-
-$chargedRAM = max(0, $nRamGb - $freeRAM);
-$ramPriceK = $chargedRAM * $ramPrice;
-
-$diskRounded = ceil($nGbDisk / $diskRounding) * $diskRounding;
-$chargedDisk = max(0, $diskRounded - $freeDisk);
-$diskPriceK = $chargedDisk * $diskPrice;
-
-$networkPriceK = 0;
-$networkRounded = 0;
-if ($nNetworkDedicatedMbit > $freeNetwork) {
-    $networkRounded = ceil($nNetworkDedicatedMbit / $networkRounding) * $networkRounding;
-    $chargedNetwork = $networkRounded - $freeNetwork;
-    $networkPriceK = ($chargedNetwork / 100) * $networkPrice;
+    return $value;
 }
 
-$extraIps = max(0, $nIpAddress - $freeIps);
-$ipPriceK = $extraIps * $ipPrice;
+try {
+    // Extract VPS specs with validation
+    $nCpuCore = validateSpecValue(
+        $postData['n_cpu_core'] ?? 1,
+        $vpsConfigSpecs['n_cpu_core'],
+        'n_cpu_core'
+    );
 
-// Build breakdown array
-$breakdown = [
+    $nRamGb = validateSpecValue(
+        $postData['n_ram_gb'] ?? 1,
+        $vpsConfigSpecs['n_ram_gb'],
+        'n_ram_gb'
+    );
+
+    $nGbDisk = validateSpecValue(
+        $postData['n_gb_disk'] ?? 20,
+        $vpsConfigSpecs['n_gb_disk'],
+        'n_gb_disk'
+    );
+
+    $nNetworkMbit = validateSpecValue(
+        $postData['n_network_mbit'] ?? 200,
+        $vpsConfigSpecs['n_network_mbit'],
+        'n_network_mbit'
+    );
+
+    $nNetworkDedicatedMbit = validateSpecValue(
+        $postData['n_network_dedicated_mbit'] ?? 0,
+        $vpsConfigSpecs['n_network_dedicated_mbit'],
+        'n_network_dedicated_mbit'
+    );
+
+    $nIpAddress = validateSpecValue(
+        $postData['n_ip_address'] ?? 1,
+        $vpsConfigSpecs['n_ip_address'],
+        'n_ip_address'
+    );
+
+    $planId = isset($postData['plan_id']) ? intval($postData['plan_id']) : null;
+    $initOs = isset($postData['init_os']) ? intval($postData['init_os']) : null;
+
+    // Kiểm tra initOs có trong  VpsOsVersion không:
+    $validOs = \App\Models\VpsOsVersion::where('id', $initOs)->first();
+    if (!$validOs) {
+        throw new \Exception('Hệ điều hành khởi tạo không hợp lệ', 1008);
+    }
+
+    //Lấy slug để đưa vào name
+    $osSlug = $validOs->slug ?? 'unknown-os';
+
+    // Calculate price
+    $price = Product_Meta::calculateVpsPrice(
+        $nCpuCore,
+        $nRamGb,
+        $nGbDisk,
+        $nNetworkMbit,
+        $nNetworkDedicatedMbit,
+        $nIpAddress
+    );
+
+    // Get specs and prices
+    $cpuSpec = $vpsConfigSpecs['n_cpu_core'] ?? [];
+    $ramSpec = $vpsConfigSpecs['n_ram_gb'] ?? [];
+    $diskSpec = $vpsConfigSpecs['n_gb_disk'] ?? [];
+    $networkSpec = $vpsConfigSpecs['n_network_dedicated_mbit'] ?? [];
+    $ipSpec = $vpsConfigSpecs['n_ip_address'] ?? [];
+
+    // Get free quantities
+    $freeCPU = $cpuSpec['free'] ?? 0;
+    $freeRAM = $ramSpec['free'] ?? 0;
+    $freeDisk = $diskSpec['free'] ?? 0;
+    $freeNetwork = $networkSpec['free'] ?? 0;
+    $freeIps = $ipSpec['free'] ?? 0;
+
+    // Get rounding and prices
+    $diskRounding = $diskSpec['rounding'] ?? 10;
+    $networkRounding = $networkSpec['rounding'] ?? 100;
+
+    $cpuPrice = $cpuSpec['price'] ?? 50;
+    $ramPrice = $ramSpec['price'] ?? 30;
+    $diskPrice = $diskSpec['price'] ?? 1;
+    $networkPrice = $networkSpec['price'] ?? 1000;
+    $ipPrice = $ipSpec['price'] ?? 50;
+
+    // Calculate breakdown in K (thousands), applying free quantities
+    $chargedCPU = max(0, $nCpuCore - $freeCPU);
+    $cpuPriceK = $chargedCPU * $cpuPrice;
+
+    $chargedRAM = max(0, $nRamGb - $freeRAM);
+    $ramPriceK = $chargedRAM * $ramPrice;
+
+    $diskRounded = ceil($nGbDisk / $diskRounding) * $diskRounding;
+    $chargedDisk = max(0, $diskRounded - $freeDisk);
+    $diskPriceK = $chargedDisk * $diskPrice;
+
+    $networkPriceK = 0;
+    $networkRounded = 0;
+    if ($nNetworkDedicatedMbit > $freeNetwork) {
+        $networkRounded = ceil($nNetworkDedicatedMbit / $networkRounding) * $networkRounding;
+        $chargedNetwork = $networkRounded - $freeNetwork;
+        $networkPriceK = ($chargedNetwork / 100) * $networkPrice;
+    }
+
+    $extraIps = max(0, $nIpAddress - $freeIps);
+    $ipPriceK = $extraIps * $ipPrice;
+
+    // Build breakdown array
+    $breakdown = [
     'cpu' => [
         'quantity' => $chargedCPU,
         'unit_price' => $cpuPrice * 1000,
@@ -401,7 +450,6 @@ $infos = [
     'created_at' => now()->toDateTimeString()
 ];
 
-try {
     // Validate required fields
     if ($nCpuCore < 1 || $nRamGb < 1 || $nGbDisk < 1 || $nIpAddress < 1) {
         throw new \Exception('Invalid VPS specifications', 1001); // INVALID_SPECS
@@ -411,12 +459,9 @@ try {
         throw new \Exception('Invalid calculated price', 1002); // INVALID_PRICE
     }
 
-    // Security: Validate specs are within reasonable limits
-    if ($nCpuCore > 128 || $nRamGb > 512 || $nGbDisk > 5000 || $nNetworkDedicatedMbit > 100000) {
-        throw new \Exception('Specifications exceed maximum allowed limits', 1003); // SPECS_TOO_HIGH
-    }
-
+    $duplicateCheck = 0;
     // Security: Prevent duplicate creation with same specs in short timeframe
+    if(!isAdminCookie())
     $duplicateCheck = VpsInstance::where('user_id', $uid)
         ->where('cpu', $nCpuCore)
         ->where('ram_gb', $nRamGb)
@@ -442,7 +487,7 @@ try {
     $emailFirst = explode("@", $email)[0];
     $instanceName = $osSlug .'_' . date("Ymd-His") ."-". substr($emailFirst, 0,20);
 
-    //Lấy tên trong
+    //Lấy tên trong
 
     // Calculate price per minute from monthly price
     $pricePerMinute = $price / (30 * 24 * 60);
@@ -507,10 +552,11 @@ try {
     $errorCodeMap = [
         1001 => ['code' => 'INVALID_SPECS', 'message' => '❌ Cấu hình VPS không hợp lệ. Tất cả thông số phải lớn hơn 0.', 'http_code' => 400],
         1002 => ['code' => 'INVALID_PRICE', 'message' => '💰 Lỗi tính giá. Vui lòng kiểm tra lại cấu hình.', 'http_code' => 400],
-        1003 => ['code' => 'SPECS_TOO_HIGH', 'message' => '⚡ Cấu hình vượt quá giới hạn cho phép. CPU max 128 cores, RAM max 512 GB, Disk max 5000 GB, Network max 100 Gbps.', 'http_code' => 400],
         1004 => ['code' => 'DUPLICATE_INSTANCE', 'message' => '⚠️ Bạn đã tạo instance với cùng cấu hình trong 5 phút. Vui lòng chờ hoặc thay đổi cấu hình.', 'http_code' => 429],
         1005 => ['code' => 'CREATION_FAILED', 'message' => '🔴 Lỗi tạo instance. Vui lòng thử lại.', 'http_code' => 500],
         1006 => ['code' => 'NO_AVAILABLE_IP', 'message' => '🌐 Không còn IP khả dụng. Vui lòng liên hệ hỗ trợ.', 'http_code' => 503],
+        1007 => ['code' => 'VALIDATION_ERROR', 'message' => '❌ Thông số cấu hình nằm ngoài khoảng cho phép.', 'http_code' => 400],
+        1008 => ['code' => 'INVALID_OS', 'message' => '❌ Hệ điều hành khởi tạo không hợp lệ.', 'http_code' => 400],
     ];
 
     $errorCode = $e->getCode();

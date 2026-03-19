@@ -45,6 +45,21 @@
             border: 0px solid #ccc; padding: 5px 10px; height: 36px; vertical-align: bottom;
             margin-right: 20px
         }
+        /* Seletor cho data-id */
+        div.glxv3 h2
+        {
+            color: white;
+            font-size: 220%;
+            text-shadow:
+                1px 1px 0 #ccc,
+                2px 2px 0 #ccc,
+                3px 3px 0 #ccc,
+                3px 4px 0 #ccc,
+                1px 5px 0 #ccc,
+                1px 5px 5px rgba(0,0,0,0.1); /* Tạo độ sâu và bóng */
+            transform: rotateX(5deg) rotateY(5deg); /* Xoay 3D */
+        }
+
         input.search-top {
             height: 38px; padding: 5px 10px;
             /*margin-top:2px;*/
@@ -97,11 +112,11 @@ $currentLocale = app()->getLocale();
 //bl('Current language: '.$currentLocale);
 ?>
 <div class="content-wrapper">
-    <header class="wrapper" data-code-pos='ppp1759642251' style="">
+    <header class="wrapper" data-code-pos='ppp1759611142251' style="">
 
         <nav class="navbar navbar-expand-lg center-nav transparent navbar-light">
             <div class="container flex-lg-row flex-nowrap align-items-center">
-                <div class="navbar-brand w-100 qqqq1111" style="" data-code-pos='ppp17598501574321'>
+                <div class="navbar-brand w-100 qqqq1111 glxv3" style="" data-code-pos='ppp1754321'>
                     <a href="/">
                         <h2 style="margin-top: 8px; margin-left: 10px">
                             <?php
@@ -130,7 +145,7 @@ $currentLocale = app()->getLocale();
                         <button type="button" class="btn-close btn-close-white offcanvas-close offcanvas-nav-close" aria-label="Close"></button>
                     </div>
 
-                    <ul class="navbar-nav qqqq1111" data-code-pos='ppp17597140259861'>
+                    <ul class="navbar-nav qqqq1111" data-code-pos='ppp1750259861'>
 
                     <?php
 

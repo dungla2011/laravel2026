@@ -95,6 +95,16 @@
         box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
         color: white;
     }
+    .amount-in-words {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #667eea;
+        margin-top: 10px;
+        padding: 12px;
+        background: #f0f4ff;
+        border-radius: 8px;
+        border-left: 4px solid #667eea;
+    }
 </style>
 @endsection
 
@@ -115,14 +125,13 @@
                             <label for="amountMoney" class="form-label">
                                 <i class="fas fa-coins"></i> Nhập số tiền nạp <span class="text-danger">*</span>
                             </label>
-                            <input type="number" class="form-control form-control-lg text-center text-danger" id="amountMoney"
-                                   name="total_amount" required min="50000" step="50000"
+                            <input type="number" class="form-control form-control-sm text-center text-danger" id="amountMoney"
+                                   name="total_amount" required min="50000" step="50000" style="width: 390px; margin: 0 auto;"
                                    placeholder="Nhập số tiền (VNĐ)">
-{{--                            <div class="text-danger" id="amountInWords">Số tiền tối thiểu: 5,000 VNĐ</div>--}}
+                            <div class="amount-in-words mt-2" id="amountInWords">Chọn hoặc nhập số tiền cần nạp</div>
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Chọn nhanh:</label>
                             <div class="d-flex gap-2 flex-wrap justify-content-center">
                                 @php
                                     $quickAmounts = [
@@ -289,10 +298,10 @@
         if (amount && amount >= 5000) {
             const words = numberToVietnamese(amount);
             amountInWordsElement.textContent = words;
-        } else if (amount > 0 && amount < 5000) {
-            amountInWordsElement.textContent = 'Số tiền tối thiểu: 5,000 VNĐ';
+        } else if (amount > 0 && amount < 100000) {
+            amountInWordsElement.textContent = 'Số tiền tối thiểu: 100.000 VNĐ';
         } else {
-            amountInWordsElement.textContent = 'Số tiền tối thiểu: 5,000 VNĐ';
+            amountInWordsElement.textContent = 'Số tiền tối thiểu: 100.000 VNĐ';
         }
     });
 

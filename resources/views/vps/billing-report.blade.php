@@ -89,7 +89,7 @@ $uid = getCurrentUserId();
 
 @section('content')
     <?php
-    $totalCostVND = $totalCost * 1000;
+    $totalCostVND = $totalCost;
     ?>
     <div class="content-wrapper" style="padding-top: 1px!important;">
 
@@ -200,7 +200,7 @@ $uid = getCurrentUserId();
                         </div>
                     </div>
 
-                    
+
                 </div>
 
                 <!-- Info boxes -->
@@ -232,7 +232,7 @@ $uid = getCurrentUserId();
                             <div class="info-box-content">
 
                                 <div style="margin-top: 8px;">
-                                    <input type="date" id="paymentDate" class="form-control form-control-sm" 
+                                    <input type="date" id="paymentDate" class="form-control form-control-sm"
                                         value="{{ request('to_time') }}" style="font-size: 100%; {{ request('to_time') ? 'color:white; border: 1px solid red; background-color: red;' : '' }}"
                                         placeholder="Chọn thời điểm báo cáo"
                                         >
@@ -241,7 +241,7 @@ $uid = getCurrentUserId();
                                     <button class="btn btn-primary btn-sm flex-grow-1" onclick="filterByDate()">
                                         <i class="fas fa-search"></i> Chọn ngày
                                     </button>
-                                    <button class="btn btn-secondary btn-sm" onclick="clearDate()" 
+                                    <button class="btn btn-secondary btn-sm" onclick="clearDate()"
                                         {{ !request('to_time') ? 'disabled' : '' }}>
                                         <i class="fas fa-times"></i> Xoá
                                     </button>
@@ -303,15 +303,19 @@ $uid = getCurrentUserId();
                                     <thead>
                                         <tr class="bg-light">
                                             <th>STT</th>
+                                            <th style="text-align: center; width: 50px;">
+                                                <input type="checkbox" id="selectAllVps" onchange="selectAllVpsCheckboxes(this)" title="Select/Deselect all">
+                                                <br><small>Filter</small>
+                                            </th>
                                             <th>Mã số</th>
                                             <th>Tên Vps</th>
                                             <th>Địa chỉ IP</th>
                                             <th>Ngày tính phí</th>
                                             <th>Tính phí đến</th>
                                             <th>Thời gian sử dụng</th>
-                                            <th>Phí/Tháng (nghìn) </th>
+                                            <th>Phí/Tháng </th>
                                             <th>Trạng thái</th>
-                                            <th class="text-right"> Tổng số (Nghìn)</th>
+                                            <th class="text-right"> Tổng số </th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -338,6 +342,9 @@ $uid = getCurrentUserId();
                                         @endphp
                                         <tr @if($isNewInstance) class="new-instance" @endif data-instance-id="{{ $row['instance_id'] }}" data-created-at="{{ $row['created_at'] }}" data-timestamp="{{ $row['timestamp'] }}">
                                             <td class="stt {{ $isCrossed ? 'row-crossed' : '' }}">{{ $loop->iteration }}</td>
+                                            <td class="filter-checkbox" style="text-align: center;">
+                                                <input type="checkbox" class="vps-filter-checkbox" value="{{ $row['instance_id'] }}" onchange="updateFilterButton()" title="Select this VPS">
+                                            </td>
                                             <td class="instance-id {{ $isCrossed ? 'row-crossed' : '' }}"><span class="badge1 badge-secondary1">{{ $row['instance_id'] }}</span></td>
                                             <td class="name {{ $isCrossed ? 'row-crossed' : '' }}">
                                                 <a href="/member/vps-instance/edit/{{$row['instance_id']}}" target="_blank" data-code-pos='ppp17720149046371'>
@@ -368,14 +375,14 @@ $uid = getCurrentUserId();
                                             <td class="time-usage {{ $isCrossed ? 'row-crossed' : '' }}"><small class="text-muted">{{ $row['time_usage'] }}</small></td>
                                             <td class="price-month {{ $isCrossed ? 'row-crossed' : '' }}">
                                                 @php
-                                                    $displayPrice = (float)($row['price_month'] ?? $row['price_config']);
+                                                    $displayPrice = number_formatvn0($row['price_month'] ?? $row['price_config']);
                                                     $isChangeConfig = !$row['is_latest_config'];
                                                 @endphp
                                                 @if ($displayPrice && !$isPoweredOff)
                                                     @if (!$isChangeConfig)
-                                                    <span class="color-primary">{{ ($displayPrice) }} K </span>
+                                                    <span class="color-primary">{{ ($displayPrice) }} VND </span>
                                                     @else
-                                                    <span class="color-primary">{{($displayPrice) }} K </span>
+                                                    <span class="color-primary">{{($displayPrice) }} VND </span>
                                                     @endif
                                                 @elseif ($isPoweredOff)
                                                 <small class="text-muted">-</small>
@@ -384,15 +391,15 @@ $uid = getCurrentUserId();
                                                 @endif
                                             </td>
                                             <td class="power-state {{ $isCrossed ? 'row-crossed' : '' }}">
-                                                
+
                                                     <span class="{{ strtoupper($row['power_state']) === 'POWERED_ON' ? 'badge badge-success' : 'badge badge-secondary' }}">
                                                         {{ $row['power_state'] }}
                                                     </span>
-                                                
+
                                             </td>
                                             <td class="text-right fee {{ $isCrossed ? 'row-crossed' : '' }}">
                                                 <a href="{{ route('vps.billing.detail', $row['usage_id']) }}" class="text-primary" title="Click to view detailed calculation">
-                                                    <strong>{{ number_format($row['calculated_fee'], 0, ',', '.') }} K </strong>
+                                                    <strong>{{ number_format($row['calculated_fee'], 0, ',', '.') }} VND </strong>
                                                     <i class="fas fa-external-link-alt ml-1" style="font-size: 10px;"></i>
                                                 </a>
                                             </td>
@@ -402,19 +409,28 @@ $uid = getCurrentUserId();
                                     </tbody>
                                     <tfoot class="bg-light">
                                         <tr>
-                                            <th colspan="7" class="text-right" title="Chỉ lấy các Cấu hình cuối cùng nếu có thay đổi">TỔNG CỘNG:</th>
+                                            <th colspan="8" class="text-right" title="Chỉ lấy các Cấu hình cuối cùng nếu có thay đổi">TỔNG CỘNG:</th>
                                             <th class="text-left">
-                                                
-                                                    <span class="" style=" padding: 5px 5px;">{{ $formatted = number_format($totalPriceMonth, 0, ',', '.') }} K / Tháng</span>
-                                                
+
+                                                    <span class="" style=" padding: 5px 5px;">{{ $formatted = number_format($totalPriceMonth, 0, ',', '.') }} VND / Tháng</span>
+
                                             </th>
                                             <th>{{ number_format(count($results), 0, ',', '.') }} records</th>
                                             <th class="text-right">
-                                                <strong class="text-danger">{{ number_format($totalCost, 0, ',', '.') }} K </strong>
+                                                <strong class="text-danger">{{ number_format($totalCost, 0, ',', '.') }} VND </strong>
                                             </th>
                                         </tr>
                                     </tfoot>
                                 </table>
+                            </div>
+                            <!-- Filter Button Section -->
+                            <div class="card-footer" style="background-color: #f8f9fa; padding: 10px; border-top: 1px solid #ddd;">
+                                <button type="button" class="btn btn-primary" id="filterVpsBtn" onclick="applyVpsFilter()" disabled>
+                                    <i class="fas fa-filter"></i> Filter VPS (0 selected)
+                                </button>
+                                <button type="button" class="btn btn-secondary" id="clearFilterBtn" onclick="clearVpsFilter()" style="display: none;">
+                                    <i class="fas fa-times"></i> Clear Filter
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -433,17 +449,17 @@ $uid = getCurrentUserId();
             <div class="col-12">
 
                 <button type="button" class="btn btn-success ml-2 mb-3 float-right" id="exportExcelBtn111">
-                    <a href="{{ route('vps.billing.excel', array_merge(['email' => $user->email], request()->only(['to_time', 'from_time']))) }}" class="text-white" style="text-decoration: none;">
+                    <a href="{{ route('vps.billing.excel', request()->query()) }}" class="text-white" style="text-decoration: none;">
                     Export Excel
                     </a>
                 </button>
 
-                
+
                 <?php
                 if(isAdminCookie())
                  {
 ?>
-                <a href="{{ route('vps.billing.send-email-form', array_merge(['email' => $user->email], request()->only(['to_time', 'from_time', 'date_from', 'date_to']))) }}" class="btn btn-primary ml-2 mb-3 float-right">
+                <a href="{{ route('vps.billing.send-email-form', request()->query()) }}" class="btn btn-primary ml-2 mb-3 float-right">
                     <i class="fas fa-envelope mr-2"></i> Send Mail
                 </a>
 
@@ -469,16 +485,80 @@ $uid = getCurrentUserId();
 
 
     <script>
+    // VPS Filter Functions
+    function selectAllVpsCheckboxes(selectAllCheckbox) {
+        const checkboxes = document.querySelectorAll('.vps-filter-checkbox');
+        checkboxes.forEach(cb => cb.checked = selectAllCheckbox.checked);
+        updateFilterButton();
+    }
+
+    function updateFilterButton() {
+        const checkboxes = document.querySelectorAll('.vps-filter-checkbox:checked');
+        const filterBtn = document.getElementById('filterVpsBtn');
+        const clearBtn = document.getElementById('clearFilterBtn');
+
+        const count = checkboxes.length;
+        filterBtn.disabled = count === 0;
+        filterBtn.innerHTML = `<i class="fas fa-filter"></i> Filter VPS (${count} selected)`;
+
+        // Show current filter status if any
+        const urlParams = new URLSearchParams(window.location.search);
+        const hasFilter = urlParams.has('limit_vps_id');
+        if (hasFilter) {
+            clearBtn.style.display = 'inline-block';
+        }
+    }
+
+    function applyVpsFilter() {
+        const checkboxes = document.querySelectorAll('.vps-filter-checkbox:checked');
+        const selectedIds = Array.from(checkboxes).map(cb => cb.value).join(',');
+
+        if (!selectedIds) {
+            alert('Vui lòng chọn ít nhất một VPS!');
+            return;
+        }
+
+        // Get current URL and add/update limit_vps_id parameter
+        const url = new URL(window.location);
+        url.searchParams.set('limit_vps_id', selectedIds);
+        window.location.href = url.toString();
+    }
+
+    function clearVpsFilter() {
+        const url = new URL(window.location);
+        url.searchParams.delete('limit_vps_id');
+        window.location.href = url.toString();
+    }
+
+    // Check if there's an active filter and highlight checkboxes
+    document.addEventListener('DOMContentLoaded', function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const limitId = urlParams.get('limit_vps_id');
+
+        if (limitId) {
+            const ids = limitId.split(',');
+            const checkboxes = document.querySelectorAll('.vps-filter-checkbox');
+            checkboxes.forEach(cb => {
+                if (ids.includes(cb.value)) {
+                    cb.checked = true;
+                }
+            });
+            document.getElementById('clearFilterBtn').style.display = 'inline-block';
+        }
+
+        updateFilterButton();
+    });
+
     // Filter by payment date
     function filterByDate() {
         const dateInput = document.getElementById('paymentDate');
         const dateValue = dateInput.value;
-        
+
         if (!dateValue) {
             alert('Vui lòng chọn ngày!');
             return;
         }
-        
+
         // Get current URL and add/update to_time parameter
         const url = new URL(window.location);
         url.searchParams.set('to_time', dateValue);
@@ -884,10 +964,10 @@ $uid = getCurrentUserId();
         // Get current URL parameters
         const url = new URL(window.location);
         const params = new URLSearchParams(url.search);
-        
+
         // Build download URL with parameters
         let downloadUrl = '{{ route("vps.billing.excel") }}?email={{ $user->email }}';
-        
+
         // Add filter parameters if they exist
         if (params.has('to_time')) {
             downloadUrl += '&to_time=' + params.get('to_time');
@@ -895,7 +975,7 @@ $uid = getCurrentUserId();
         if (params.has('from_time')) {
             downloadUrl += '&from_time=' + params.get('from_time');
         }
-        
+
         // Trigger download
         window.location.href = downloadUrl;
     }

@@ -26,60 +26,71 @@ try {
     $nNetworkMbit = isset($_REQUEST['n_network_mbit']) ? intval($_REQUEST['n_network_mbit']) : 200;
     $nNetworkDedicatedMbit = isset($_REQUEST['n_network_dedicated_mbit']) ? intval($_REQUEST['n_network_dedicated_mbit']) : 0;
     $nIPAddress = isset($_REQUEST['n_ip_address']) ? intval($_REQUEST['n_ip_address']) : 1;
-    $priceElementId = isset($_REQUEST['price_element_id']) ? intval($_REQUEST['price_element_id']) : 8;
+//    $priceElementId = isset($_REQUEST['price_element_id']) ? intval($_REQUEST['price_element_id']) : 8;
 
     // Validate parameters
     if ($nCore < 1 || $nGBRam < 1 || $nGBDisk < 1) {
         throw new Exception('Invalid parameters: n_core, n_gb_ram, n_gb_disk must be >= 1');
     }
 
-    // Gọi hàm calculateVpsPrice từ Product_Meta (trả về VND)
-    $totalPrice = \App\Models\Product_Meta::calculateVpsPrice($nCore, $nGBRam, $nGBDisk, $nNetworkMbit, $nNetworkDedicatedMbit, $nIPAddress, $priceElementId);
+    $planId =intval($_REQUEST['plan_id']);
+    $pl = \App\Models\VpsPlan::find($planId);
+    if(!$pl){
+        throw new Exception('Invalid plan id: ' . ($planId));
+    }
 
-    // Lấy config specs
-    $vpsConfigSpecs = config('vps_config.specs');
-    
-    // Get specs
-    $cpuSpec = $vpsConfigSpecs['n_cpu_core'] ?? [];
-    $ramSpec = $vpsConfigSpecs['n_ram_gb'] ?? [];
-    $diskSpec = $vpsConfigSpecs['n_gb_disk'] ?? [];
-    $networkSpec = $vpsConfigSpecs['n_network_dedicated_mbit'] ?? [];
-    $ipSpec = $vpsConfigSpecs['n_ip_address'] ?? [];
-    
-    // Get rounding and prices
-    $diskRounding = $diskSpec['rounding'] ?? 10;
-    $networkRounding = $networkSpec['rounding'] ?? 100;
-    
-    $cpuPrice = $cpuSpec['price'] ?? 50;
-    $ramPrice = $ramSpec['price'] ?? 30;
-    $diskPrice = $diskSpec['price'] ?? 1;
-    $networkPrice = $networkSpec['price'] ?? 1000;
-    $ipPrice = $ipSpec['price'] ?? 50;
-    
-    $freeCPU = $cpuSpec['free'] ?? 0;
-    $freeRAM = $ramSpec['free'] ?? 0;
-    $freeDisk = $diskSpec['free'] ?? 0;
-    $freeNetwork = $networkSpec['free'] ?? 0;
-    $freeIP = $ipSpec['free'] ?? 0;
+
+    //Sample of: $planId->price_config:
+    //{"n_cpu_core_price":50,"n_ram_gb_price":30,"n_gb_disk_price":1,"n_ip_address_price":50,"n_network_dedicated_mbit_price":1000}
+    if(!$pl->price_config){
+        throw new Exception("Error price config of plan: " . ($planId));
+    }
+
+    if(!$planConfigStd = json_decode($pl->price_config)){
+        throw new Exception("Error not valid  price_config of " . ($planId));
+    }
+
+
+    // Gọi hàm calculateVpsPrice từ Product_Meta (trả về VND)
+    $totalPrice = \App\Models\Product_Meta::calculateVpsPrice($nCore, $nGBRam, $nGBDisk, $nNetworkMbit, $nNetworkDedicatedMbit, $nIPAddress, $planConfigStd);
+
+    // Lấy giá từ $planConfigStd (từ VpsPlan->price_config)
+    // Sample: {"n_cpu_core_price":50,"n_ram_gb_price":30,"n_gb_disk_price":1,"n_ip_address_price":50,"n_network_dedicated_mbit_price":1000}
+    $cpuPrice = $planConfigStd->n_cpu_core_price ?? 111111;
+    $ramPrice = $planConfigStd->n_ram_gb_price ?? 111111;
+    $diskPrice = $planConfigStd->n_gb_disk_price ?? 111111;
+    $networkPrice = $planConfigStd->n_network_dedicated_mbit_price ?? 111111;
+    $ipPrice = $planConfigStd->n_ip_address_price ?? 111111;
+
+    // Rounding steps (fixed defaults)
+    $diskRounding = 10;
+    $networkRounding = 100;
+
+    // Tất cả free = 0 theo yêu cầu
+    $freeCPU = 0;
+    $freeRAM = 0;
+    $freeDisk = 0;
+    $freeNetwork = 0;
+    $freeIP = 0;
 
     // Áp dụng rounding (giống như calculateVpsPrice)
     $nGBDiskRounded = ceil($nGBDisk / $diskRounding) * $diskRounding;
     $nNetworkDedicatedMbitRounded = ceil($nNetworkDedicatedMbit / $networkRounding) * $networkRounding;
 
     // Convert K to VND
-    $price_1core_cpu = $cpuPrice * 1000;
-    $price_1gb_ram = $ramPrice * 1000;
-    $price_1gb_disk = $diskPrice * 1000;
-    $price_100mbit_network = $networkPrice * 1000;
-    $price_1_ip = $ipPrice * 1000;
+    $price_1core_cpu = $cpuPrice;
+    $price_1gb_ram = $ramPrice;
+    $price_1gb_disk = $diskPrice;
+    $price_100mbit_network = $networkPrice;
+    $price_1_ip = $ipPrice ;
 
     // Tính chi tiết từng phần (áp dụng free quantity)
     $chargedCPU = max(0, $nCore - $freeCPU);
     $priceFromCPU = $chargedCPU * $price_1core_cpu;
-    
+
     $chargedRAM = max(0, $nGBRam - $freeRAM);
     $priceFromRam = $chargedRAM * $price_1gb_ram;
-    
+
     $chargedDisk = max(0, $nGBDiskRounded - $freeDisk);
     $priceFromDisk = $chargedDisk * $price_1gb_disk;
 

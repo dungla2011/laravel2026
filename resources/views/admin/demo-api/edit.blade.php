@@ -303,8 +303,10 @@ if ($objMeta instanceof \LadLib\Common\Database\MetaOfTableInDb) ;
                 <?php
 
                 $isCreateNew = 0;
-                if(getCurrentActionMethod() == 'create'){
+
+                if(getCurrentActionMethod() == 'create' || str_ends_with(LadLib\Common\UrlHelper1::getUriWithoutParam(), '/create')){
                     $isCreateNew = 1;
+
                 }
                 $mFieldShow = $objMeta->getShowGetOneAllowFieldList($objPr->set_gid);
 
@@ -576,6 +578,7 @@ if ($objMeta instanceof \LadLib\Common\Database\MetaOfTableInDb) ;
                                                 ?>
                                             <?php
                                             } elseif ($objMeta->isTreeMultiSelect($field)) {
+
                                                 $joinVal = $objMeta->callJoinFunction($objData, $objData->$field, $field);
 
                                                 $allNodeName = $joinVal;
@@ -626,7 +629,7 @@ if ($objMeta instanceof \LadLib\Common\Database\MetaOfTableInDb) ;
                                                 //$mm = call_user_func($joinFunc);
                                                 $joinFunc = $objMeta->checkJoinFuncExistAndGetName();
 
-                                                $mm = $objMeta->callJoinFunction();
+                                                if($joinFunc && $mm = $objMeta->callJoinFunction())
                                                 if($mm) {
                                                     echo "<select $readOnly title='$fullDes / $field' data-code-pos='ppp1665495425433' data-id='$dataId' data-joinfunc='$joinFunc'
 class='sl_option $field $objMeta->css_class' style='$objMeta->css;' data-field='$field' >";
@@ -731,48 +734,48 @@ class='sl_option $field $objMeta->css_class' style='$objMeta->css;' data-field='
                                                 //echo "<input data-code-pos='ppp169995589' type='text' value='$valDateFormat' placeholder='Input $desc' class='for_up_down_key edit_date_time' data-field='$field'/>";
                                             }
 
-                                            {
 
-                                                if($field[0] == '_'){
+
+                                            if($field[0] == '_'){
+                                                $displayInput = "; display: none; ";
+                                                if(is_array($valueField) && isset($valueField['value_show'])){
+                                                    echo $valueField['value_show'];
+                                                    $valueField = $valueField['value_post'];
+                                                }
+                                            }
+
+                                            $typeText='text';
+                                            if($objMeta->isPassword($field))
+                                                $typeText = 'password';
+
+
+                                            if($mRandField)
+                                            if(!in_array($field, $mRandField))
+                                                //Đoạn này làm hỏng rand?
+                                            if ($objMeta->isNumberField($field) || $objMeta->isNumberFieldDb($field))
+                                                $typeText = 'number';
+
+                                            //Không hiển thị input nếu là area, rich
+                                            if($isTextArea){
+                                            }
+                                            else{
+
+                                                //Nếu chưa showJoin ở trên thì ở đây mới show lần nữa, tránh bị 2 lần
+                                                if(!$isShowJoin)
+                                                {
+                                                    if($objMeta->checkJoinFuncExistAndGetName())
+                                                    if($valJoin = $objMeta->callJoinFunction($objData, $valueField, $field))
+                                                    if(is_numeric($valJoin) || is_string($valJoin))
+                                                        $isShowJoin = $valJoin;
+                                                }
+                                                else
+                                                    $isShowJoin = '';
+
+                                                $valueField = htmlentities(($valueField));
+
+                                                if(!$objMeta->isShowGetOne($field, $gid)){
                                                     $displayInput = "; display: none; ";
-                                                    if(is_array($valueField) && isset($valueField['value_show'])){
-                                                        echo $valueField['value_show'];
-                                                        $valueField = $valueField['value_post'];
-                                                    }
                                                 }
-
-                                                $typeText='text';
-                                                if($objMeta->isPassword($field))
-                                                    $typeText = 'password';
-
-
-                                                if($mRandField)
-                                                if(!in_array($field, $mRandField))
-                                                    //Đoạn này làm hỏng rand?
-                                                if ($objMeta->isNumberField($field) || $objMeta->isNumberFieldDb($field))
-                                                    $typeText = 'number';
-
-                                                //Không hiển thị input nếu là area, rich
-                                                if($isTextArea){
-                                                }
-                                                else{
-
-                                                    //Nếu chưa showJoin ở trên thì ở đây mới show lần nữa, tránh bị 2 lần
-                                                    if(!$isShowJoin)
-                                                    {
-                                                        if($objMeta->checkJoinFuncExistAndGetName())
-                                                        if($valJoin = $objMeta->callJoinFunction($objData, $valueField, $field))
-                                                        if(is_numeric($valJoin) || is_string($valJoin))
-                                                            $isShowJoin = $valJoin;
-                                                    }
-                                                    else
-                                                        $isShowJoin = '';
-
-                                                    $valueField = htmlentities(($valueField));
-
-                                                    if(!$objMeta->isShowGetOne($field, $gid)){
-                                                        $displayInput = "; display: none; ";
-                                                    }
 
 
 
@@ -785,37 +788,31 @@ class='sl_option $field $objMeta->css_class' style='$objMeta->css;' data-field='
 //                                                        }
 //                                                    }
 
-                                                    $valueField0 = $valueField;
-                                                    if($field[0] == '_'){
-                                                        $valueField0 = "";
-                                                    }
-
-                                                    echo "\n
-
-                                        <input data-lpignore='true' autocomplete='off' $readOnly data-code-pos='ppp1648374970' title='$fullDes / $field'
-    class='$padOneValue input_value_to_post for_up_down_key $padClassDate' data-autocomplete-id='$dataId-$field' data-id='$dataId'
-    style='$displayInput $extraCss $cssRo $objMeta->css'
-    placeholder='Input $desc ($fullDes)' name='$field' data-field='$field' type='$typeText' value='$valueField0'>";
-                                                    if($field[0] == '_' && $tmpx = $objMeta->$field($objData, null, null)){
-                                                        if(!is_string($tmpx) && !is_numeric($tmpx))
-                                                            $tmpx = '';
-
-                                                        ?>
-                                        {!!  $tmpx !!}
-                                        <?php
-                                                    }
-
-//                                                    {{$isShowJoin}} <input data-lpignore='true' autocomplete='off' {{$readOnly}} data-code-pos='ppp1666148374970' title='{{$fullDes}} / {{$field}}'
-//    class='input_value_to_post for_up_down_key' data-autocomplete-id='{{$dataId}}-{{$field}}' data-id='{{$dataId}}'
-//    style='{{$displayInput}} {{$extraCss}} {{$cssRo}}'
-//    placeholder='Input {{$desc}}' name='{{$field}}' data-field='{{$field}}' type='{{$typeText}}' value='{{$valueField}}'>
-                                                    ?>
-
-
-
-                                            <?php
+                                                $valueField0 = $valueField;
+                                                if($field[0] == '_'){
+                                                    $valueField0 = "";
                                                 }
-                                            }
+
+                                                echo "\n
+
+                                    <input data-lpignore='true' autocomplete='off' $readOnly data-code-pos='ppp1648374970' title='$fullDes / $field'
+class='$padOneValue input_value_to_post for_up_down_key $padClassDate' data-autocomplete-id='$dataId-$field' data-id='$dataId'
+style='$displayInput $extraCss $cssRo $objMeta->css'
+placeholder='Input $desc ($fullDes)' name='$field' data-field='$field' type='$typeText' value='$valueField0'>";
+                                                if(isAdminCookie() && method_exists($objMeta, "_$field"))
+                                                if($tmpx = $objMeta->{"_".$field}($objData, null, null)){
+                                                    if(!is_string($tmpx) && !is_numeric($tmpx))
+                                                        $tmpx = '';
+
+//                                                    echo "$field - " . $tmpx;
+                                                    ?>
+                                    {!!  $tmpx !!}
+                                    <?php
+                                                }
+
+
+                                                }
+
 
                                         } else {
 
@@ -869,7 +866,7 @@ class='sl_option $field $objMeta->css_class' style='$objMeta->css;' data-field='
                                                 $displayInput = "; display: none; ";
                                                 //$mm = call_user_func($joinFunc);
                                                 $joinFunc = $objMeta->checkJoinFuncExistAndGetName();
-                                                $mm = $objMeta->callJoinFunction();
+                                                if($joinFunc && $mm = $objMeta->callJoinFunction())
                                                 if($mm) {
                                                     echo "<select readonly disabled title='$fullDes / $field' data-code-pos='ppp1665433' data-id='$dataId' data-joinfunc='$joinFunc'
 class='sl_option $field $objMeta->css_class' style='$objMeta->css;' data-field='$field' >";
@@ -882,8 +879,15 @@ class='sl_option $field $objMeta->css_class' style='$objMeta->css;' data-field='
                                                     echo "</select>";
                                                 }
                                             }
-                                            else
-                                                echo "<div data-pos='3245343352345' title='$fullDes / $field' class='one_item_edit'> $valueField  $joinSpan </div>"; //$joinSpan
+                                            else {
+                                                $joinSpan = '';
+
+                                                if ($tmp1 = $objMeta->checkJoinFuncExistAndGetName($field))
+                                                    if ($joinSpan = $objMeta->callJoinFunction($objData, $valueField, $field)) ;
+                                                $tmp2 = get_class($objMeta);
+
+                                                echo "<div data-pos='3245343352345' title='$fullDes / $field' class='one_item_edit'> $valueField  $joinSpan  </div>"; //$joinSpan
+                                            }
 
                                            // $isTextArea = 1;
                                         }

@@ -18,6 +18,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Sriracha&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Charm&family=Sriracha&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Afacad&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
+    <link rel="stylesheet" href="/vendor/toastr/toastr.min.css">
 </head>
 
 <style>
@@ -488,8 +490,18 @@ $linkVn = str_replace("$domain/en/", "$domain/vi/", $linkVn);
 
 </body>
 </html>
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+
+<script src="/adminlte/plugins/jquery/jquery.min.js"></script>
+
+<script src="/admins/jctool.js?v=1685495857"></script>
+<script src="/vendor/toastr/toastr.min.js"></script>
+<script src="/admins/toast-show.js"></script>
 
 
+<!-- jQuery UI 1.11.4 -->
+<script src="/adminlte/plugins/jquery-ui/jquery-ui.min.js"></script>
+<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>

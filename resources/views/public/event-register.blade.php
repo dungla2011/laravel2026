@@ -343,10 +343,10 @@ if($id ?? ''){
                 $bank_acc_number = trim(request('bank_acc_number'));
                 $bank_name_text = trim(request('bank_name_text'));
 
-
-
                 //Thay thế tất cả ký tự không phải số bằng rỗng
                 $phone = preg_replace('/\D/', '', $phone);
+
+                $phone = \App\Models\EventUserInfo::fixPhoneNumber($phone);
 
                 $address = trim(request('address'));
                 $organization = trim(request('organization'));

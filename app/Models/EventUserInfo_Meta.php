@@ -30,7 +30,7 @@ class EventUserInfo_Meta extends MetaOfTableInDb
 
     public static $titleAfterFolderButton = "Danh bạ";
 
-    static $limitRecord = 50;
+//    static $limitRecord = 50;
 
     /**
      * @return MetaOfTableInDb

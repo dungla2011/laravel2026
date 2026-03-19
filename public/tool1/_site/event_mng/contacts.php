@@ -18,6 +18,9 @@ $response = $kernel->handle(
 
 $ret = [];
 $mm = \App\Models\EventUserInfo::select([ 'id', 'last_name', 'first_name', 'phone'])->limit(1000000)->get();
+
+$limit = request("limit");
+$cc = 0;
 foreach ($mm AS $obj){
 
     if($obj instanceof \App\Models\EventUserInfo);
@@ -36,6 +39,9 @@ foreach ($mm AS $obj){
         $phone='no_phone';
 
     $ret[] = ['name' => "$obj->id.$fn.$phone.planed", 'phone'=>$phone];
+    $cc++;
+    if($limit && $cc > $limit)
+        break;
 
 //    echo "<br/>\n $fn.$phone.$obj->id";
 }

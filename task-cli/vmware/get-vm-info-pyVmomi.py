@@ -16,6 +16,11 @@ import json
 import os
 import time
 from dotenv import load_dotenv
+from threading import Thread, Lock
+
+# Global lock for thread-safe operations
+results_lock = Lock()
+print_lock = Lock()
 
 # Load environment variables from .env
 load_dotenv()
@@ -23,6 +28,11 @@ load_dotenv()
 def get_timestamp():
     """Get current timestamp in Y-m-d H:i:s format"""
     return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+def thread_safe_print(msg):
+    """Thread-safe print to console"""
+    with print_lock:
+        print(msg)
 
 def get_obj(content, vimtype, name=None):
     """
@@ -195,7 +205,7 @@ def get_vm_info(vm, host_ip=None):
                     })
 
         return {
-            'honnection_state': vm.runtime.connectionState if hasattr(vm.runtime, 'connectionState') else 'Unknown',
+            'connection_state': vm.runtime.connectionState if hasattr(vm.runtime, 'connectionState') else 'Unknown',
             'guest_state': vm.guest.guestState if vm.guest and hasattr(vm.guest, 'guestState') else 'Unknown',
             'host_ip': host_ip,
             'name': vm.name,
@@ -219,6 +229,94 @@ def get_vm_info(vm, host_ip=None):
     except Exception as e:
         print(f"Error getting VM info for {vm.name}: {e}")
         return None
+
+def fetch_vms_from_host(host_config, vm_name, all_vms_info, results_lock):
+    """
+    Worker function to fetch VMs from a single ESXi host
+    Thread-safe appends to all_vms_info
+    """
+    esxi_host = host_config['host']
+    esxi_user = host_config['user']
+    esxi_password = host_config['password']
+
+    if not all([esxi_host, esxi_user, esxi_password]):
+        thread_safe_print(f"[{get_timestamp()}] ⚠️  Skipping {esxi_host}: Missing credentials")
+        return
+
+    try:
+        # Disable SSL warning
+        context = ssl._create_unverified_context()
+
+        thread_safe_print(f"[{get_timestamp()}] 🔗 Connecting to ESXi host: {esxi_host}")
+
+        # Connect to ESXi host with timeout
+        si = SmartConnect(
+            host=esxi_host,
+            user=esxi_user,
+            pwd=esxi_password,
+            sslContext=context,
+            connectionPoolTimeout=60  # Add explicit timeout
+        )
+
+        if not si:
+            thread_safe_print(f"[{get_timestamp()}] ❌ Failed to connect to {esxi_host}")
+            return
+
+        thread_safe_print(f"[{get_timestamp()}] ✅ Connected to {esxi_host}")
+
+        content = si.RetrieveContent()
+
+        # Force refresh to avoid stale data
+        try:
+            content.propertyCollector.RefreshProperties()
+        except:
+            pass  # Ignore if not supported
+
+        host_vms = []  # Collect VMs for this host
+
+        # Get VMs from this host
+        if vm_name:
+            thread_safe_print(f"[{get_timestamp()}] 📋 Fetching VM: {vm_name} from {esxi_host}")
+            vm = None
+            for v in get_all_vms(content):
+                if v.name == vm_name:
+                    vm = v
+                    break
+
+            if not vm:
+                thread_safe_print(f"[{get_timestamp()}] ⚠️  VM '{vm_name}' not found on {esxi_host}")
+                Disconnect(si)
+                return
+
+            vm_info = get_vm_info(vm, host_ip=esxi_host)
+            if vm_info:
+                host_vms.append(vm_info)
+        else:
+            thread_safe_print(f"[{get_timestamp()}] 📋 Fetching all VMs from {esxi_host}")
+            vms = get_all_vms(content)
+            thread_safe_print(f"[{get_timestamp()}] ✅ Found {len(vms)} VMs on {esxi_host}\n")
+
+            for vm in vms:
+                vm_info = get_vm_info(vm, host_ip=esxi_host)
+
+                if vm_info:
+                    host_vms.append(vm_info)
+                    disk_info = f"Disk: {vm_info['disk_gb']}GB ({vm_info['disk_count']} disks, host= {vm_info['host_ip']})" if vm_info.get('disk_count') else f"Disk: {vm_info['disk_gb']}GB"
+                    thread_safe_print(f"[{get_timestamp()}]   ✓ {vm_info['name']} - {vm_info['power_state']} - CPU: {vm_info['cpu']} - RAM: {vm_info['memory_gb']:.1f}GB - {disk_info}")
+                    if vm_info['uptime_minutes'] is not None:
+                        thread_safe_print(f"[{get_timestamp()}]     ⏱️  Uptime: {vm_info['uptime_days']}d {vm_info['uptime_hours']}h")
+
+        # Thread-safe append to shared list
+        with results_lock:
+            all_vms_info.extend(host_vms)
+            thread_safe_print(f"[{get_timestamp()}] ✓ Thread finished for {esxi_host} ({len(host_vms)} VMs)")
+
+        Disconnect(si)
+
+    except vmodl.MethodFault as e:
+        thread_safe_print(f"[{get_timestamp()}] ❌ vSphere API error on {esxi_host}: {e.msg}")
+    except Exception as e:
+        thread_safe_print(f"[{get_timestamp()}] ❌ Error connecting to {esxi_host}: {e}")
 
 def main():
     # Start timing
@@ -272,111 +370,31 @@ def main():
     all_vms_info = []
 
     try:
+        # Create threads for each host
+        threads = []
+
+        print(f"[{get_timestamp()}] 🚀 Starting {len(esxi_hosts)} threads to fetch VMs from all hosts...\n")
+
         for host_config in esxi_hosts:
-            esxi_host = host_config['host']
-            esxi_user = host_config['user']
-            esxi_password = host_config['password']
+            thread = Thread(
+                target=fetch_vms_from_host,
+                args=(host_config, vm_name, all_vms_info, results_lock),
+                daemon=False
+            )
+            threads.append(thread)
+            thread.start()
 
-            if not all([esxi_host, esxi_user, esxi_password]):
-                print(f"[{get_timestamp()}] ⚠️  Skipping {esxi_host}: Missing credentials")
-                continue
+        # Wait for all threads to complete
+        for thread in threads:
+            thread.join()
 
-            try:
-                # Disable SSL warning
-                context = ssl._create_unverified_context()
-
-                print(f"[{get_timestamp()}] 🔗 Connecting to ESXi host: {esxi_host}")
-
-                # Connect to ESXi host with timeout
-                si = SmartConnect(
-                    host=esxi_host,
-                    user=esxi_user,
-                    pwd=esxi_password,
-                    sslContext=context,
-                    connectionPoolTimeout=60  # Add explicit timeout
-                )
-
-                if not si:
-                    print(f"[{get_timestamp()}] ❌ Failed to connect to {esxi_host}")
-                    continue
-
-                print(f"[{get_timestamp()}] ✅ Connected to {esxi_host}")
-
-                # Ensure we disconnect when done
-                atexit.register(Disconnect, si)
-
-                content = si.RetrieveContent()
-
-                # Force refresh to avoid stale data
-                try:
-                    content.propertyCollector.RefreshProperties()
-                except:
-                    pass  # Ignore if not supported
-
-                # Get VMs from this host
-                if vm_name:
-                    print(f"[{get_timestamp()}] 📋 Fetching VM: {vm_name} from {esxi_host}")
-                    vm = None
-                    for v in get_all_vms(content):
-                        if v.name == vm_name:
-                            vm = v
-                            break
-
-                    if not vm:
-                        print(f"[{get_timestamp()}] ⚠️  VM '{vm_name}' not found on {esxi_host}")
-                        continue
-
-                    vm_info = get_vm_info(vm, host_ip=esxi_host)
-                    if vm_info:
-                        all_vms_info.append(vm_info)
-                else:
-                    print(f"[{get_timestamp()}] 📋 Fetching all VMs from {esxi_host}")
-                    vms = get_all_vms(content)
-                    print(f"[{get_timestamp()}] ✅ Found {len(vms)} VMs on {esxi_host}\n")
-
-                    for vm in vms:
-                        vm_info = get_vm_info(vm, host_ip=esxi_host)
-
-                        # Retry logic if disk_gb = 0 but cpu and ram are not 0
-#                         if  vm_info and vm_info['cpu'] > 0 and vm_info['memory_gb'] > 0 and vm_info['disk_gb'] == 0:
-#                             print(f"[{get_timestamp()}]     🔄 Disk = 0 but CPU/RAM detected. Retrying up to 3 times...")
-#                             max_retries = 3
-#                             for retry in range(1, max_retries + 1):
-#                                 print(f"[{get_timestamp()}]     ⏳ Retry {retry}/{max_retries} - waiting 5 seconds...")
-#                                 time.sleep(5)
-#                                 vm_info_retry = get_vm_info(vm, host_ip=esxi_host)
-#                                 if vm_info_retry and vm_info_retry['disk_gb'] > 0:
-#                                     print(f"[{get_timestamp()}]     ✅ Retry {retry} success! Disk: {vm_info_retry['disk_gb']}GB")
-#                                     vm_info = vm_info_retry
-#                                     break
-#                                 else:
-#                                     retry_disk = vm_info_retry['disk_gb'] if vm_info_retry else 0
-#                                     print(f"[{get_timestamp()}]     ⚠️  Retry {retry} failed. Disk still: {retry_disk}GB")
-#
-#                             if vm_info['disk_gb'] == 0:
-#                                 print(f"[{get_timestamp()}]     ❌ All {max_retries} retries failed. Accepting disk_gb = 0")
-
-                        if vm_info:
-                            all_vms_info.append(vm_info)
-                            disk_info = f"Disk: {vm_info['disk_gb']}GB ({vm_info['disk_count']} disks db1 , host= {vm_info['host_ip']})" if vm_info.get('disk_count') else f"Disk: {vm_info['disk_gb']}GB"
-                            print(f"[{get_timestamp()}]   ✓ {vm_info['name']} - {vm_info['power_state']} - CPU: {vm_info['cpu']} - RAM: {vm_info['memory_gb']:.1f}GB - {disk_info}")
-                            if vm_info['uptime_minutes'] is not None:
-                                print(f"[{get_timestamp()}]     ⏱️  Uptime: {vm_info['uptime_days']}d {vm_info['uptime_hours']}h")
-
-                Disconnect(si)
-
-            except vmodl.MethodFault as e:
-                print(f"[{get_timestamp()}] ❌ vSphere API error on {esxi_host}: {e.msg}")
-                continue
-            except Exception as e:
-                print(f"[{get_timestamp()}] ❌ Error connecting to {esxi_host}: {e}")
-                continue
+        print(f"\n[{get_timestamp()}] ✅ All threads completed")
 
         # Output results
         if all_vms_info:
-            print(f"[{get_timestamp()}] " + "=" * 60)
-            print(f"[{get_timestamp()}] 📊 Total VMs collected: {len(all_vms_info)}")
-            print(f"[{get_timestamp()}] " + "=" * 60)
+            print(f"[{get_timestamp()}] " + "=" * 80)
+            print(f"[{get_timestamp()}] 📊 SUMMARY: Total VMs collected: {len(all_vms_info)} from {len(esxi_hosts)} hosts")
+            print(f"[{get_timestamp()}] " + "=" * 80)
 
             json_output = json.dumps(all_vms_info, indent=2, default=str)
 

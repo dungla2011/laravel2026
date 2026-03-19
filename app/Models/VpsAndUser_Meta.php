@@ -46,6 +46,7 @@ class VpsAndUser_Meta extends MetaOfTableInDb
     {
         return [
             'users.email'  => "like",
+            'vps_instances.name'  => "like",
         ];
     }
 

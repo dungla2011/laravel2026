@@ -75,6 +75,10 @@ $domain = UrlHelper1::getDomainHostName();
 @section('content')
     <div class="container pt-5 mt-5 " style="min-height: 500px">
 
+        <?php
+//        bl("Xin lỗi bạn, Dịch vụ đang bảo dưỡng từng phần, Dự kiến đến 21h hôm nay- 9.3.2026 ");
+        ?>
+
         <div data-code-pos='ppp172829542511' STYLE="text-align: center; max-width: 800px;
         position: relative;
         background-color: #eee;

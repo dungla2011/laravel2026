@@ -24,6 +24,7 @@ class VpsBillingReportService
     {
 
 
+
         // Number format for VND currency
         $decimal = 0;
         $dec_separator = ',';
@@ -43,6 +44,13 @@ class VpsBillingReportService
 
         if (!empty($options['date_to'])) {
             $query->where('created_at', '<=', $options['date_to']);
+        }
+
+        // Add VPS ID filter if provided (limit_vps_id or limit_vps_id)
+        if (!empty($options['limit_vps_id'])) {
+            $limitIds = is_string($options['limit_vps_id']) ? explode(',', $options['limit_vps_id']) : $options['limit_vps_id'];
+            $limitIds = array_map('intval', $limitIds);
+            $query->whereIn('instance_id', $limitIds);
         }
 
         $usages = $query
@@ -196,6 +204,9 @@ class VpsBillingReportService
             ];
         }
 
+        if($options['limit_vps_id'] ?? ''){
+            $totalRecharge = 0;
+        }
         $ret = [
             'user' => $user,
             'results' => $results,
@@ -407,7 +418,7 @@ class VpsBillingReportService
         $mm = $billS->generateReportData($userIdOrObj, [], null, nowyh());
 
         $totalCost = $mm['totalCost'] ?? 0;
-        $totalCost1000 = $totalCost * 1000;
+        $totalCost1000 = $totalCost;
 
         $totalRecharge = $mm['totalRecharge'] ?? 0;
         $totalRechargeNoVAt = $totalRecharge / 1.1;
@@ -431,6 +442,10 @@ class VpsBillingReportService
      */
     public function generateExcel(User $user, array $options = [], $fromTime = null, $toTime = null)
     {
+//        echo "<pre> >>> " . __FILE__ . "(" . __LINE__ . ")<br/>";
+//        print_r($options);
+//        echo "</pre>";
+//        die();
         $data = $this->generateReportData($user, $options, $fromTime, $toTime);
 
         // if(@request('dump'))
@@ -476,7 +491,11 @@ class VpsBillingReportService
         $rows[] = ['ĐỐI SOÁT DỊCH VỤ - CÔNG TY CÔNG NGHỆ SỐ GALAXY VIETNAM - GLX.COM.VN'];
         $rows[] = [$kh];
         $timeDoiSoat = $data['results'][0]['timestamp'] ?? nowyh();
-        $rows[] = ["Thời điểm đối soát: " . $timeDoiSoat];
+        if($timeDoiSoat > nowy())
+            $rows[] = ["Thời hạn sử dụng: " . $timeDoiSoat];
+        else
+            $rows[] = ["Thời điểm đối soát: " . $timeDoiSoat];
+
         if ($data['date_from']) {
             $rows[] = ['Date From', $data['date_from']];
         }
@@ -487,10 +506,10 @@ class VpsBillingReportService
 
         // Summary
         $rows[] = ['Tổng hợp (Chưa gồm thuế VAT)'];
-        $rows[] = ['Tổng sử dụng (VND): ', ($data['totalCost'] * 1000), cstring2::toTienVietNamString3($data['totalCost'] * 1000)];
+        $rows[] = ['Tổng sử dụng (VND): ', ($data['totalCost']), cstring2::toTienVietNamString3($data['totalCost'])];
         $rows[] = ['Tổng đã thanh toán (VND)', round($data['totalRecharge'] / 1.1), cstring2::toTienVietNamString3(round($data['totalRecharge'] / 1.1))];
 
-        $canThanhToan = round($data['totalRecharge'] / 1.1) - $data['totalCost'] * 1000;
+        $canThanhToan = round($data['totalRecharge'] / 1.1) - $data['totalCost'] ;
         $txt = "Cần thanh toán: ";
         if($canThanhToan > 0)
             $txt = "Số dư: ";
@@ -524,8 +543,8 @@ class VpsBillingReportService
 
         if($data['results'] )
         foreach ($data['results'] as $key => $row) {
-            $monthlyPrice = ($row['power_state']) === 'OLD_CONFIG' ? 0 : ($row['price_month'] * 1000 ?: $row['price_config'] * 1000);
-            // $monthlyPrice = ($row['price_month'] * 1000 ?: $row['price_config'] * 1000);
+            $monthlyPrice = ($row['power_state']) === 'OLD_CONFIG' ? 0 : ($row['price_month']  ?: $row['price_config']);
+            // $monthlyPrice = ($row['price_month']  ?: $row['price_config'] );
             $monthlyPriceSum += $monthlyPrice;
             $rows[] = [
                 $key + 1,
@@ -540,14 +559,14 @@ class VpsBillingReportService
                 $row['disk_gb'],
                 $row['ip_count'],
                 $monthlyPrice,
-                ($row['power_state']) === 'OLD_CONFIG' ? ($row['price_month'] * 1000 ?: $row['price_config'] * 1000) : '',
+                ($row['power_state']) === 'OLD_CONFIG' ? ($row['price_month']  ?: $row['price_config'] ) : '',
                 $row['power_state'],
-                $row['calculated_fee'] * 1000
+                $row['calculated_fee']
             ];
         }
 
         // Subtotals row for Monthly Price and Total Fee columns
-        $rows[] = ['', '', '', '', '', '', '', '', '', '', 'Monthly:', $monthlyPriceSum, '', 'Total Fees', ($data['totalCost'] * 1000)];
+        $rows[] = ['', '', '', '', '', '', '', '', '', '', 'Monthly:', $monthlyPriceSum, '', 'Total Fees', ($data['totalCost'] )];
 
         return $rows;
     }
@@ -562,7 +581,7 @@ class VpsBillingReportService
         $totalCost = $data['totalCost'] ?? 0;
         $totalRechargeNoVat = $totalRecharge / 1.1;
 
-        $needPay = $totalCost * 1000 - $totalRechargeNoVat;
+        $needPay = $totalCost - $totalRechargeNoVat;
         $needPayDot = number_formatvn0($needPay);
         $needPayStrVn = cstring2::toTienVietNamString3($needPay);
         $needPayVAT = $needPay / 10;
@@ -786,6 +805,11 @@ class VpsBillingReportService
     public function sendEmail(User $user, array $options = [], $title = null, $content = null, $fromTime = null, $toTime = null): bool
     {
         try {
+
+//            echo "<pre> >>>  $toTime " . __FILE__ . "(" . __LINE__ . ")<br/>";
+//            print_r($options);
+//            echo "</pre>";
+//            die();;
             $data = $this->generateReportData($user, $options, $fromTime, $toTime);
 
             $partner_name  = 'Quý khách';

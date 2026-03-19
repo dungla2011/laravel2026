@@ -35,19 +35,30 @@ foreach ($json AS $one){
     $em = $one->email;
     $username = $one->username;
 //    continue;
-    echo "<br/>\n $em, $username";
+//    echo "<br/>\n $em, $username";
     if(!$user = \App\Models\User::where("email", $em)->first()){
 
         \App\Models\User::addUserAndPassword($em, $username, time());
 
     }
     else{
-        echo "<br/>\n Đã tồn tại!";;
-        if(!$user->old_uid){
-            $user->old_uid = $one->id;
-            $user->update();
-            echo "<br/>\n Update UID;";
+
+        if($em == 'thuyph@eportal.vn') {
+            \Illuminate\Support\Facades\DB::table('users')
+                ->where('id', $user->id)
+                ->update([
+                    'password' => $one->password
+                ]);
+//            \Illuminate\Support\Facades\DB::raw("UPDATE table users SET password = '$one->password' WHERE id = $user->id LIMIT 1");
+            echo "<br/>\n Update ok $em / $one->password";
         }
+
+//        echo "<br/>\n Đã tồn tại! $em";;
+//        if(!$user->old_uid){
+//            $user->old_uid = $one->id;
+//            $user->update();
+//            echo "<br/>\n Update UID;";
+//        }
     }
 
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PartnerInfo;
 use App\Models\User;
 use App\Services\VpsBillingReportService;
 use Illuminate\Http\Request;
@@ -40,6 +41,14 @@ class VpsBillingController extends Controller
         if ($request->has('date_to')) {
             $options['date_to'] = $request->get('date_to');
         }
+        if ($request->has('limit_vps_id')) {
+            $options['limit_vps_id'] = $request->get('limit_vps_id');
+        }
+
+//        echo "<pre> >>> " . __FILE__ . "(" . __LINE__ . ")<br/>";
+//        print_r($options);
+//        echo "</pre>";
+//        die();
 
         $data = $this->billingService->generateReportData($user, $options, $fromTime = null, $request->get('to_time') );
 
@@ -69,6 +78,9 @@ class VpsBillingController extends Controller
         }
         if ($request->has('date_to')) {
             $options['date_to'] = $request->get('date_to');
+        }
+        if ($request->has('limit_vps_id')) {
+            $options['limit_vps_id'] = $request->get('limit_vps_id');
         }
 
         $pdf = $this->billingService->generatePdf($user, $options, $request->from_time, $request->to_time);
@@ -105,6 +117,9 @@ class VpsBillingController extends Controller
         }
         if ($request->has('date_to')) {
             $options['date_to'] = $request->get('date_to');
+        }
+        if ($request->has('limit_vps_id')) {
+            $options['limit_vps_id'] = $request->get('limit_vps_id');
         }
 
         return $this->billingService->generateExcel($user, $options, $request->from_time, $request->to_time);
@@ -193,14 +208,41 @@ class VpsBillingController extends Controller
         }
 
         $sv = new VpsBillingReportService();
-        $data = $sv->generateReportData($user, [], $request->from_time, $request->to_time);
+        $data = $sv->generateReportData($user, $request->toArray(), $request->from_time, $request->to_time);
+
+        // Handle limit_vps_id filter if provided
+        if ($request->has('limit_vps_id')) {
+            $options = ['limit_vps_id' => $request->get('limit_vps_id')];
+            $data = $sv->generateReportData($user, $options, $request->from_time, $request->to_time);
+        }
 
         $totalRecharge = $data['totalRecharge'];
         $totalCost = $data['totalCost'];
 
+        $pnName = $user->email;
+        if($pn = PartnerInfo::where('user_id', $user->id)->first()){
+            if($pn->name){
+                $pnName = $pn->name;
+            }
+            else
+            if($pn->partner_name ){
+                $pnName = $pn->partner_name ;
+            }
+        }
+
+        $data['user'] = '';
+//        echo "<pre> >>> " . __FILE__ . "(" . __LINE__ . ")<br/>";
+//        print_r($data);
+//        echo "</pre>";
+//
+//        echo "<pre> >>> " . __FILE__ . "(" . __LINE__ . ")<br/>";
+//        print_r($options);
+//        echo "</pre>";
+
+//        die();
         $totalRechargeNoVat = $totalRecharge / 1.1;
 
-        $needPay = $totalCost * 1000 - $totalRechargeNoVat;
+        $needPay = $totalCost - $totalRechargeNoVat;
         $needPayDot = number_formatvn0($needPay);
         $needPayStrVn = cstring2::toTienVietNamString3($needPay);
 
@@ -216,26 +258,30 @@ class VpsBillingController extends Controller
 //        die("$needPay , $toTimeVN , $needPayDot, $needPayStrVn , $user->email, Total = $totalRechargeNoVat ,  $totalCost, toTime = $request->to_time");
 
         // Default email content
-        $title = "GalaxyCloud - Đối soát thanh toán dịch vụ - $toTimeVN";
-        $content = "Kính chào quý khách hàng!\n\nCông ty Công nghệ số Galaxy Việt Nam xin thông báo phí dịch vụ!" .
+        $title = "GalaxyCloud - Thanh toán dịch vụ - $toTimeVN - $pnName";
+        $content = "Kính chào Quý khách!\n\nGalaxyCloud xin thông báo phí dịch vụ Server!" .
             "\nChi phí thanh toán: $needPayDot + $needPayVATDot (VAT) = $needPayFullVATDot VND\n($needPayFullVATDotStr)".
             "\nThời gian sử dụng: $toTimeVN".
 
             "\n\nQuý khách vui lòng thanh toán qua Số tài khoản thanh toán:".
             "\n110389898, Công ty TNHH Công nghệ số Galaxy Việt nam".
             "\nTại: Ngân hàng Thương mại Cổ phần Á Châu (ACB)".
-            "\n\nChi tiết vui lòng xem trong File đính kèm.".
-            "\n\nXin trân trọng cảm ơn Quý khách hàng!"
+            "\n\nChi tiết vui lòng xem trong File đính kèm email.".
+            "\n\nXin trân trọng cảm ơn Quý khách!"
            ;
 
 //        die($title . $content);
-
+//        echo "<pre> >>> " . __FILE__ . "(" . __LINE__ . ")<br/>";
+//        print_r($request->all());
+//        echo "</pre>";
+//
+//        die();
         return view('vps.send-email-form', [
             'user' => $user,
             'title' => $title,
             'content' => $content,
-            'filters' => $request->only(['to_time', 'from_time', 'date_from', 'date_to']),
-            'report_url' => route('vps.billing.report', $request->only(['to_time', 'from_time', 'date_from', 'date_to']))
+            'filters' => $request->all(),
+            'report_url' => route('vps.billing.report', $request->all())
         ]);
     }
 
@@ -254,7 +300,7 @@ class VpsBillingController extends Controller
         }
 
         // Get title and content from form
-        $title = $request->get('title', 'GalaxyCloud - Đối soát thanh toán dịch vụ');
+        $title = $request->get('title', 'GalaxyCloud - Thanh toán dịch vụ');
         $content = $request->get('content', '');
 
         // Get filter options
@@ -265,11 +311,17 @@ class VpsBillingController extends Controller
         if ($request->has('date_to')) {
             $options['date_to'] = $request->get('date_to');
         }
+        if ($request->has('limit_vps_id')) {
+            $options['limit_vps_id'] = $request->get('limit_vps_id');
+        }
 
         if ($request->has('debug')) {
             $options['debug'] = 1;
         }
 
+//        echo "<pre> >>> " . __FILE__ . "(" . __LINE__ . ")<br/>";
+//        print_r($request->all());
+//        echo "</pre>";
 
 
         // Send email with custom title and content

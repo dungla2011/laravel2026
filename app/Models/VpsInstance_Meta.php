@@ -15,7 +15,7 @@ class VpsInstance_Meta extends MetaOfTableInDb
     public function getHardCodeMetaObj($field) {
 
         $objMeta = new MetaOfTableInDb();
-        if($field == 'log' || $field == 'note' || $field == 'comment' || $field == 'create_vps_progress1') {
+        if($field == 'log' || $field == 'note' || $field == 'comment' ||$field == 'user_comment' || $field == 'create_vps_progress1') {
             $objMeta->dataType = DEF_DATA_TYPE_TEXT_AREA;
         }
         if ($field == 'image_list')
@@ -47,6 +47,27 @@ class VpsInstance_Meta extends MetaOfTableInDb
         return $objMeta;
     }
 
+    public function extraHtmlIncludeEdit0($obj = null, $v2 = null, $v3 = null){
+
+        if(!$obj)
+            return;
+        $obj1 = $obj->find($obj->id);
+//        echo "<br/>\n $obj1->created_at " . nowyh(time() - 10000);
+        if($obj1->create_status == 'vps_new_create' || $obj1->create_status == 'vps_creating' )
+            echo "<div class='mb-3 p-2 px-3 bg-primary'> Sau khi VPS tạo xong, một email thông tin đăng nhập VPS sẽ được gửi đến bạn! F5 để cập nhật trạng thái Tạo VPS - xem bên dưới</div>";
+        if($obj1->create_status == 'vps_create_done' && $obj1->created_at > nowyh(time() - 3600 * 24 * 3)){
+            echo "<div class='mb-3 p-2 px-3 bg-primary'> VPS đã tạo xong, Bạn vui lòng xem email để có thông tin truy cập! </div>";
+            echo "<div class='mb-3 p-2 px-3 bg-orange' style='color: white!important;'>Bạn nên đổi mật khẩu được cấp ban đầu để bảo mật VPS!</div>";
+        }
+        if($obj1->create_status == 'vps_create_done'){
+
+        }
+        if($obj1->create_status == 'vps_create_error'){
+            echo "<div class='mb-3 p-2 px-3 bg-orange' style='color: white!important;'> Có lỗi tạo VPS vui lòng liên hệ admin, mã số VPS: $obj->id !</div>";
+        }
+
+    }
+
 
     public function extraHtmlIncludeEdit1($v1 = null, $v2 = null, $v3 = null)
     {
@@ -63,9 +84,15 @@ class VpsInstance_Meta extends MetaOfTableInDb
 
     function _name($obj, $val, $field)
     {
+//        if(isAdminCookie())
+//            return "11111";
+
         $vpsUsage = VpsUsage::where('instance_id', $obj->id)->orderBy('id', "DESC")->first();
 
         $vpsInDB = VpsInstance::find($obj->id);
+
+        if(!$vpsInDB)
+            return;
 
         $consoleText = '';
 //        if($obj->power_state == 'POWERED_ON')
@@ -80,7 +107,7 @@ class VpsInstance_Meta extends MetaOfTableInDb
             $username = $vpsOs->username;
         }
 
-        $ipList = '';
+        $ipList = "IP Khởi tạo: $vpsInDB->init_ip";
         if($vpsUsage){
 
             $ips = $vpsUsage->list_ip_address ?? '';
@@ -114,6 +141,10 @@ class VpsInstance_Meta extends MetaOfTableInDb
             }
             if(!$lastFoundIP)
                 $display = '';
+
+            if(!$ips){
+                $ips = " Khởi tạo: $vpsInDB->init_ip ";
+            }
 
             $ipList = " <div style='color: $color; font-size: smaller; margin-left: 10px'> IP:<span> $ips  </span>| Update $display</div> ";
 

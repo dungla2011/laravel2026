@@ -12,7 +12,8 @@
 
 </style>
 <!-- Main Sidebar Container -->
-<aside class="main-sidebar sidebar-dark-cyan elevation-4" data-code-pos="ppp1681392990292">
+<aside class="main-sidebar sidebar-dark-cyan elevation-4" data-code-pos="ppp160292">
+
 
 
     <!-- Brand Logo -->
@@ -28,6 +29,7 @@
 
     <!-- Sidebar -->
     <div class="sidebar">
+        <a href="/member" style="position: fixed; top: 1px; left: 5px; color: #ccc; z-index: 100000" data-code-pos='ppp17734001565831'> . </a>
         <!-- Sidebar user panel (optional) -->
 
 

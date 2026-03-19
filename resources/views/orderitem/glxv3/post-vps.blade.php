@@ -18,18 +18,66 @@ if ($post !== 'vps') {
     die('Invalid request');
 }
 
-// Extract VPS specs
-$nCpuCore = isset($postData['n_cpu_core']) ? intval($postData['n_cpu_core']) : 1;
-$nRamGb = isset($postData['n_ram_gb']) ? intval($postData['n_ram_gb']) : 1;
-$nGbDisk = isset($postData['n_gb_disk']) ? intval($postData['n_gb_disk']) : 20;
-$nNetworkMbit = isset($postData['n_network_mbit']) ? intval($postData['n_network_mbit']) : 200;
-$nNetworkDedicatedMbit = isset($postData['n_network_dedicated_mbit']) ? intval($postData['n_network_dedicated_mbit']) : 0;
-$nIpAddress = isset($postData['n_ip_address']) ? intval($postData['n_ip_address']) : 0;
-$productId = isset($postData['product_id']) ? intval($postData['product_id']) : 5;
-
-// Load config
+// Load config first
 $vpsConfig = config('vps_config');
 $vpsConfigSpecs = $vpsConfig['specs'];
+
+// Helper function to validate and clamp value
+function validateSpecValue($value, $spec, $specName) {
+    $value = intval($value);
+    $min = $spec['min'] ?? 0;
+    $max = $spec['max'] ?? PHP_INT_MAX;
+
+    // If value is out of range, clamp it to valid range
+    if ($value < $min) {
+        return $min;
+    }
+    if ($value > $max) {
+        return $max;
+    }
+    return $value;
+}
+
+// Extract VPS specs with validation
+$nCpuCore = validateSpecValue(
+    $postData['n_cpu_core'] ?? 1,
+    $vpsConfigSpecs['n_cpu_core'],
+    'n_cpu_core'
+);
+
+$nRamGb = validateSpecValue(
+    $postData['n_ram_gb'] ?? 1,
+    $vpsConfigSpecs['n_ram_gb'],
+    'n_ram_gb'
+);
+
+$nGbDisk = validateSpecValue(
+    $postData['n_gb_disk'] ?? 20,
+    $vpsConfigSpecs['n_gb_disk'],
+    'n_gb_disk'
+);
+
+$nNetworkMbit = validateSpecValue(
+    $postData['n_network_mbit'] ?? 200,
+    $vpsConfigSpecs['n_network_mbit'],
+    'n_network_mbit'
+);
+
+$nNetworkDedicatedMbit = validateSpecValue(
+    $postData['n_network_dedicated_mbit'] ?? 0,
+    $vpsConfigSpecs['n_network_dedicated_mbit'],
+    'n_network_dedicated_mbit'
+);
+
+$nIpAddress = validateSpecValue(
+    $postData['n_ip_address'] ?? 1,
+    $vpsConfigSpecs['n_ip_address'],
+    'n_ip_address'
+);
+
+$productId = isset($postData['product_id']) ? intval($postData['product_id']) : 5;
+
+// Already loaded above
 
 // Get specs and prices
 $cpuSpec = $vpsConfigSpecs['n_cpu_core'] ?? [];
@@ -86,6 +134,7 @@ if ($extraIps > 0) {
 // Total price (in K)
 $totalPriceK = $cpuPriceTotal + $ramPriceTotal + $diskPriceTotal + $networkPriceTotal + $ipPriceTotal;
 $totalPrice = $totalPriceK * 1000; // Convert to VND
+$totalPriceHour = round($totalPriceK * 1000 / 24 / 30); // Convert to VND
 
 // Format prices
 $formatPrice = function($priceK) {
@@ -99,10 +148,10 @@ $formatPriceK = function($priceK) {
 ?>
 
 
-<div class="container my-5" style="max-width: 600px;">
+<div class="container my-5" style="max-width: 800px;">
     <div class="card shadow-sm">
-        <div class="card-body">
-            <h5 class="card-title mb-4">Chi tiết đơn hàng VPS</h5>
+        <div class="card-body1">
+            <h5 class="card-title mb-4">Chi tiết dịch vụ VPS</h5>
 
             <!-- Price Breakdown Table -->
             <table class="table table-sm mb-3" style="font-size: 0.9rem;">
@@ -118,24 +167,24 @@ $formatPriceK = function($priceK) {
                     <!-- CPU -->
                     <tr>
                         <td><?php echo $cpuSpec['desc']; ?></td>
-                        <td class="text-right"><?php echo $formatPriceK($cpuPrice); ?>đ</td>
-                        <td class="text-center"><?php echo $chargedCPU; ?><?php echo ($freeCPU > 0 ? ' (+' . $freeCPU . ' free)' : ''); ?></td>
+                        <td class="text-right"><?php echo $formatPriceK($cpuPrice); ?>K / tháng</td>
+                        <td class="text-center"><?php echo $chargedCPU; ?><?php echo ($freeCPU > 0 ? ' (+' . $freeCPU . ' free)' : ''); ?> Core</td>
                         <td class="text-right font-weight-bold"><?php echo $formatPrice($cpuPriceTotal); ?>đ</td>
                     </tr>
 
                     <!-- RAM -->
                     <tr>
                         <td><?php echo $ramSpec['desc']; ?></td>
-                        <td class="text-right"><?php echo $formatPriceK($ramPrice); ?>đ</td>
-                        <td class="text-center"><?php echo $chargedRAM; ?><?php echo ($freeRAM > 0 ? ' (+' . $freeRAM . ' free)' : ''); ?></td>
+                        <td class="text-right"><?php echo $formatPriceK($ramPrice); ?>K / tháng</td>
+                        <td class="text-center"><?php echo $chargedRAM; ?><?php echo ($freeRAM > 0 ? ' (+' . $freeRAM . ' free)' : ''); ?>  GB </td>
                         <td class="text-right font-weight-bold"><?php echo $formatPrice($ramPriceTotal); ?>đ</td>
                     </tr>
 
                     <!-- Disk -->
                     <tr>
                         <td><?php echo $diskSpec['desc']; ?></td>
-                        <td class="text-right"><?php echo $formatPriceK($diskPrice); ?>đ</td>
-                        <td class="text-center"><?php echo $chargedDisk; ?><?php echo ($freeDisk > 0 ? ' (+' . $freeDisk . ' free)' : ''); ?></td>
+                        <td class="text-right"><?php echo $formatPriceK($diskPrice *  10 ); ?>K /10GB/tháng</td>
+                        <td class="text-center"><?php echo $chargedDisk; ?> <?php echo ($freeDisk > 0 ? ' (+' . $freeDisk . ' free)' : ''); ?> GB</td>
                         <td class="text-right font-weight-bold"><?php echo $formatPrice($diskPriceTotal); ?>đ</td>
                     </tr>
 
@@ -143,7 +192,7 @@ $formatPriceK = function($priceK) {
                     <?php if ($nNetworkDedicatedMbit > 0): ?>
                     <tr>
                         <td><?php echo $networkSpec['desc']; ?></td>
-                        <td class="text-right"><?php echo $formatPriceK($networkPrice); ?>đ/100Mbps</td>
+                        <td class="text-right"><?php echo $formatPriceK($networkPrice); ?>K/100Mbps</td>
                         <td class="text-center"><?php echo ($networkRounded - $freeNetwork); ?> Mbps<?php echo ($freeNetwork > 0 ? ' (+' . $freeNetwork . ' free)' : ''); ?></td>
                         <td class="text-right font-weight-bold"><?php echo $formatPrice($networkPriceTotal); ?>đ</td>
                     </tr>
@@ -160,21 +209,38 @@ $formatPriceK = function($priceK) {
                     <!-- Total Row -->
                     <tr style="background: #e8f4f8; font-weight: bold; border-top: 2px solid #dee2e6;">
                         <td colspan="3">Tổng cộng</td>
-                        <td class="text-right" style="color: #dc3545; font-size: 1.1rem;"><?php echo number_format($totalPrice, 0, ',', '.'); ?>đ</td>
+                        <td class="text-right" style="color: #dc3545; font-size: 1.1rem;">
+                              <span class="small"> {{$totalPriceHour}} đ/giờ
+                            </span>
+                            <br>
+                            <b class=""> {{number_format($totalPrice, 0, ',', '.'); }} đ / tháng </b>
+
+
+                        </td>
                     </tr>
                 </tbody>
             </table>
 
-            <div class="text-muted text-right" style="font-size: 0.8rem; margin-bottom: 20px;">/tháng</div>
 
             <hr class="my-3">
 
             <?php
-                $money = 500000;
-                if(($free = \App\Services\VpsBillingReportService::getFreeMoneyVpsBilling($uid)) < $money){
+
+
+
+                // Tính số VPS đang bật (power_state = 'POWER_ON')
+                use App\Models\VpsInstance;
+                $runningVpsCount = VpsInstance::where('user_id', $uid)
+                    ->where('power_state', 'POWERED_ON')
+                    ->count();
+//                die("xxx = $uid / $runningVpsCount");
+
+                $moneyNeed = $runningVpsCount * 100000;
+
+                if(($free = \App\Services\VpsBillingReportService::getFreeMoneyVpsBilling($uid)) < $moneyNeed){
                 ?>
 <div class="text-center">
-                <div class="text-red">  Bạn có {{ number_formatvn0($free) }} VND - không có đủ số dư {{ number_formatvn0($money)  }} VND </div>
+                <div class="text-red">  Bạn có {{ number_formatvn0($free) }} VND - không có đủ số dư tối thiểu {{ number_formatvn0($moneyNeed)  }} VND </div>
 
     <p></p>
             <a href="/vi/deposit">
@@ -194,7 +260,7 @@ $formatPriceK = function($priceK) {
                 <button id="confirmBtn" class="btn btn-success btn-sm flex-grow-1">Xác nhận</button>
             </div>
 
-            <div class="text-red text-center my-3">  Bạn đang có số dư tài khoản: {{ number_formatvn0($free) }} VND </div>
+            <div class="text-red text-center my-3">  Bạn đang có số dư tài khoản: {{ number_formatvn0($free) }} VND <br> (Cần tối thiểu: {{ number_formatvn0($moneyNeed) }} VND)</div>
 
             <?php
             }
@@ -234,7 +300,7 @@ $formatPriceK = function($priceK) {
         .then(data => {
             if (data.success) {
                 alert('✅ Đơn hàng đã được lưu thành công!\nMã VPS: ' + data.instance_id);
-                window.location.href = '/member/vps-instance/edit/' + + data.instance_id;
+                window.location.href = '/member/vps-instance/edit/' + + data.instance_id
             } else {
                 alert('❌ Lỗi: ' + data.message);
                 confirmBtn.disabled = false;

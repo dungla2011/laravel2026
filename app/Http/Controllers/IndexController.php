@@ -649,5 +649,14 @@ class IndexController extends Controller {
         return view('index.affiliate-program');
     }
 
+    public function cloudVps()
+    {
+        return view("orderitem.glxv3.vps");
+    }
+
+    public function basicVps()
+    {
+        return view('orderitem.glxv3.vps');
+    }
 
 }
