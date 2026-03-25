@@ -1,5 +1,5 @@
 -- Table: permissions
--- Generated: 2026-02-28 23:12:35
+-- Generated: 2026-03-20 12:01:05
 
 CREATE TABLE `permissions` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -17,4 +17,4 @@ CREATE TABLE `permissions` (
   UNIQUE KEY `permissions_route_name_code_unique` (`route_name_code`),
   KEY `permissions_old_id_index` (`old_id`),
   KEY `permissions_old_parent_id_index` (`old_parent_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3178 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3224 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

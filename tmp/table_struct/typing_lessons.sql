@@ -1,5 +1,5 @@
 -- Table: typing_lessons
--- Generated: 2026-02-28 23:12:43
+-- Generated: 2026-03-20 12:01:14
 
 CREATE TABLE `typing_lessons` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

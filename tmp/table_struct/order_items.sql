@@ -1,5 +1,5 @@
 -- Table: order_items
--- Generated: 2026-02-28 23:12:33
+-- Generated: 2026-03-20 12:01:04
 
 CREATE TABLE `order_items` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

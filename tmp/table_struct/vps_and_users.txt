@@ -1,0 +1,16 @@
+-- Table: vps_and_users
+-- Generated: 2026-03-20 12:01:16
+
++----------------+---------------------+------+-----+---------+----------------+
+| Field          | Type                | Null | Key | Default | Extra          |
++----------------+---------------------+------+-----+---------+----------------+
+| id             | bigint(20) unsigned | NO   | PRI |         | auto_increment |
+| user_id_vendor | bigint(20) unsigned | NO   | MUL |         |                |
+| instance_id    | bigint(20)          | NO   | MUL |         |                |
+| role           | varchar(255)        | NO   |     | owner   |                |
+| created_at     | timestamp           | YES  |     |         |                |
+| updated_at     | timestamp           | YES  |     |         |                |
+| deleted_at     | timestamp           | YES  |     |         |                |
++----------------+---------------------+------+-----+---------+----------------+
+
+7 columns

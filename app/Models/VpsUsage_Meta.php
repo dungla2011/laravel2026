@@ -128,6 +128,7 @@ class VpsUsage_Meta extends MetaOfTableInDb
             "" => "-change-",
             "POWERED_OFF" => "POWERED_OFF",
             "POWERED_ON" => "POWERED_ON",
+            "SUSPENDED" => "SUSPENDED",
             "OLD_CONFIG" => "OLD_CONFIG",
         ];
         return $mm;

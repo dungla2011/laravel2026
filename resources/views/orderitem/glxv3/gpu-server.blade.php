@@ -227,21 +227,21 @@ $packages = [
 
                     <!-- Card Body -->
                     <div class="card-body">
-                        <div class="specs">
+                        <div class="specs" data-code-pos='ppp17742211005741'>
                             <!-- GPUs -->
                             <div class="spec-item d-flex justify-content-between align-items-center py-2 border-bottom">
                                 <span class="spec-label font-weight-500">
-                                    <i class="fas fa-cube" style="margin-right: 5px;"></i>GPU
+                                    GPU
                                 </span>
-                                <span class="badge" style="background-color: #667eea; color: white; font-size: 0.8rem; word-break: break-word;">{{ $pkg['gpus'] }}</span>
+                                <span class="badge" style="background-color: #667eea; color: white; font-size: 0.6rem; word-break: break-word;">{{ $pkg['gpus'] }}</span>
                             </div>
 
                             <!-- CPU -->
-                            <div class="spec-item d-flex justify-content-between align-items-center py-2 border-bottom">
+                            <div class="spec-item d-flex justify-content-between align-items-center py-2 border-bottom" data-code-pos='ppp17742211057891'>
                                 <span class="spec-label font-weight-500">
-                                    <i class="fas fa-processor" style="margin-right: 5px;"></i>CPU
+                                    CPU
                                 </span>
-                                <span class="badge" style="background-color: #764ba2; color: white; font-size: 0.8rem;">{{ $pkg['cpu'] }}</span>
+                                <span class="badge" style="background-color: #764ba2; color: white; font-size: 0.6rem;">{{ $pkg['cpu'] }}</span>
                             </div>
 
                             <!-- RAM -->

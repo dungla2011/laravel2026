@@ -5,19 +5,29 @@ setLogFile("/var/glx/weblog/baokim_$siteId.log");
 $params = request()->all();
 $domain = \LadLib\Common\UrlHelper1::getDomainHostName();
 
+$ui = null;
+$routeName = request()->route()->getName();
+if($routeName == 'service.cloud-vps')
+    $ui = \App\Models\BlockUi::getObjByName('vps_cloud');
+if($routeName == 'service.standard-vps')
+    $ui = \App\Models\BlockUi::getObjByName('vps_basic');
+
+//echo "<pre> >>> " . __FILE__ . "(" . __LINE__ . ")<br/>";
+//print_r($ui->toArray());
+//echo "</pre>";
+
 ?>
 @extends(getLayoutNameMultiReturnDefaultIfNull())
 
 @section('title')
     {{
-    \App\Models\SiteMng::getTitle()
+    ($ui->extra1 ?? '') &&  $ui->extra1 ? $ui->extra1 : \App\Models\SiteMng::getTitle()
     }}
 @endsection
 
-@section('meta-description')
-    <?php
-    \App\Models\SiteMng::getDesc()
-    ?>
+@section('description'){{
+    ($ui->extra2 ?? '') &&  $ui->extra2 ? $ui->extra2 : \App\Models\SiteMng::getDesc()
+    }}
 @endsection
 
 @section('content')
@@ -29,8 +39,14 @@ $domain = \LadLib\Common\UrlHelper1::getDomainHostName();
 
 
         <?php
-$keyAndName = config('vps_config.specs');
-?>
+
+            //service.cloud-vps
+            //service.standard-vps
+//            bl("RNAME = $routeName");
+
+
+        $keyAndName = config('vps_config.specs');
+        ?>
 
 <style>
     .pricing-header {
@@ -90,7 +106,10 @@ $keyAndName = config('vps_config.specs');
     <?php
 
 
-    $ui = \App\Models\BlockUi::showEditButtonStatic('vps_vip');
+    if($routeName == 'service.cloud-vps')
+        $ui = \App\Models\BlockUi::showEditButtonStatic('vps_cloud');
+    if($routeName == 'service.standard-vps')
+        $ui = \App\Models\BlockUi::showEditButtonStatic('vps_basic');
 //                            $ui->showEditButton();
 
     $str =  $ui->getExtra();
@@ -99,19 +118,18 @@ $keyAndName = config('vps_config.specs');
 //                            echo "<pre> >>> " . __FILE__ . "(" . __LINE__ . ")<br/>";
 //                            print_r($mm);
 //                            echo "</pre>";
-
     ?>
     <div style="white-space: normal;">
         <!-- <i class="fas fa-rocket" style="font-size: 2.2rem; color: orange; animation: pulse 2s infinite;"></i> -->
         <span class="badge" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 8px 16px; font-size: 0.9rem; border-radius: 20px;">
             <i class="fas fa-tachometer-alt" style="margin-right: 5px;"></i>
-            {{$mm[0]}}
+            {{$mm[0] ?? ''}}
         </span>
         <h2 class="mb-0" style="text-shadow: 5px 2px 4px rgba(0,0,0,0.2); font-weight: 800; font-size: 2.5rem; color: orange;">
-            {{$mm[1]}}
+            {{$mm[1] ?? ''}}
         </h2>
         <span class="badge" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); padding: 8px 16px; font-size: 0.9rem; border-radius: 20px;">
-            <i class="fas fa-crown" style="margin-right: 5px;"></i> {{$mm[2]}}
+            <i class="fas fa-crown" style="margin-right: 5px;"></i> {{$mm[2] ?? ''}}
         </span>
         <!-- <i class="fas fa-bolt" style="font-size: 2.2rem; color: orange; animation: pulse 2s infinite;"></i> -->
     </div>
@@ -138,10 +156,10 @@ $keyAndName = config('vps_config.specs');
                                 </div>
                                 <div class="flex-grow-1 ms-3">
                                     <h6 class="mb-2" style="color: #333; font-weight: 600;">
-                                        <i class="fas fa-check-circle text-success"></i> {{ $mm[3]  }}
+                                        <i class="fas fa-check-circle text-success"></i> {{ $mm[3]  ?? '' }}
                                     </h6>
                                     <p class="mb-0 text-muted small" style="font-size: 0.9rem;">
-                                        {{ $mm[4]  }}
+                                        {{ $mm[4]  ?? '' }}
                                     </p>
                                 </div>
                             </div>
@@ -157,10 +175,10 @@ $keyAndName = config('vps_config.specs');
                                 </div>
                                 <div class="flex-grow-1 ms-3">
                                     <h6 class="mb-2" style="color: #333; font-weight: 600;">
-                                        <i class="fas fa-check-circle text-success"></i>  {{ $mm[5]  }}
+                                        <i class="fas fa-check-circle text-success"></i>  {{ $mm[5]  ?? '' }}
                                     </h6>
                                     <p class="mb-0 text-muted small" style="font-size: 0.9rem;">
-                                        {{ $mm[6]  }}
+                                        {{ $mm[6]  ?? '' }}
                                     </p>
                                 </div>
                             </div>
@@ -177,10 +195,10 @@ $keyAndName = config('vps_config.specs');
                                 <div class="flex-grow-1 ms-3">
                                     <h6 class="mb-2" style="color: #333; font-weight: 600;">
                                         <i class="fas fa-check-circle text-success"></i>
-                                        {{ $mm[7]  }}
+                                        {{ $mm[7]   ?? '' }}
                                     </h6>
                                     <p class="mb-0 text-muted small" style="font-size: 0.9rem;">
-                                        {{ $mm[8]  }}
+                                        {{ $mm[8]   ?? ''}}
                                     </p>
                                 </div>
                             </div>
@@ -228,7 +246,13 @@ $keyAndName = config('vps_config.specs');
         <div class="row g-4">
             @php
                 // Lấy tất cả VPS plans từ bảng vps_plans
-                $vpsPlans = \App\Models\VpsPlan::where('status', 1)
+                    //service.cloud-vps
+            //service.standard-vps
+            if($routeName == 'service.cloud-vps')
+                $vpsPlans = \App\Models\VpsPlan::where('status', 1)->where("type", 'vps_cloud')
+                    ->get();
+            if($routeName == 'service.standard-vps')
+                $vpsPlans = \App\Models\VpsPlan::where('status', 1)->where("type", 'vps_standard')
                     ->get();
             @endphp
 

@@ -1,5 +1,5 @@
 -- Table: role_user
--- Generated: 2026-02-28 23:12:40
+-- Generated: 2026-03-20 12:01:10
 
 CREATE TABLE `role_user` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -16,4 +16,4 @@ CREATE TABLE `role_user` (
   KEY `role_user_user_id_index` (`user_id`),
   KEY `role_user_old_user_id_index` (`old_user_id`),
   KEY `role_user_role_id_index` (`role_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10762 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10771 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

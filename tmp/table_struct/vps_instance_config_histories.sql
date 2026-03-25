@@ -1,5 +1,5 @@
 -- Table: vps_instance_config_histories
--- Generated: 2026-02-28 23:12:45
+-- Generated: 2026-03-20 12:01:16
 
 CREATE TABLE `vps_instance_config_histories` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,

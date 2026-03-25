@@ -1,0 +1,22 @@
+-- Table: mail_logs
+-- Generated: 2026-03-20 12:00:57
+
++--------------+--------------+------+-----+---------------------+-------------------------------+
+| Field        | Type         | Null | Key | Default             | Extra                         |
++--------------+--------------+------+-----+---------------------+-------------------------------+
+| id           | int(11)      | NO   | PRI |                     | auto_increment                |
+| name         | varchar(256) | YES  |     |                     |                               |
+| user_id      | int(11)      | YES  | MUL |                     |                               |
+| status       | int(11)      | YES  | MUL |                     |                               |
+| created_at   | timestamp    | YES  |     | current_timestamp() |                               |
+| updated_at   | timestamp    | YES  |     |                     | on update current_timestamp() |
+| deleted_at   | timestamp    | YES  |     |                     |                               |
+| image_list   | varchar(256) | YES  |     |                     |                               |
+| log          | text         | YES  |     |                     |                               |
+| mail_title   | varchar(256) | YES  |     |                     |                               |
+| mail_content | text         | YES  |     |                     |                               |
+| to_email     | varchar(256) | YES  | MUL |                     |                               |
+| param        | varchar(64)  | YES  | MUL |                     |                               |
++--------------+--------------+------+-----+---------------------+-------------------------------+
+
+13 columns

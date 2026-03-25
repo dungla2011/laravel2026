@@ -1,5 +1,5 @@
 -- Table: uploader_infos
--- Generated: 2026-02-28 23:12:44
+-- Generated: 2026-03-20 12:01:14
 
 CREATE TABLE `uploader_infos` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

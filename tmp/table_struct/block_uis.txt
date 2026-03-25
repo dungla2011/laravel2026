@@ -1,5 +1,5 @@
 -- Table: block_uis
--- Generated: 2026-02-28 23:12:18
+-- Generated: 2026-03-20 12:00:47
 
 +------------------------+---------------+------+-----+---------------------+-------------------------------+
 | Field                  | Type          | Null | Key | Default             | Extra                         |
@@ -30,6 +30,12 @@
 | extra_color_background | varchar(10)   | YES  |     |                     |                               |
 | extra_color_text       | varchar(10)   | YES  |     |                     |                               |
 | group_name             | varchar(32)   | YES  |     |                     |                               |
+| extra1                 | text          | YES  |     |                     |                               |
+| extra2                 | text          | YES  |     |                     |                               |
+| extra3                 | text          | YES  |     |                     |                               |
+| extra4                 | text          | YES  |     |                     |                               |
+| extra5                 | text          | YES  |     |                     |                               |
+| extra6                 | text          | YES  |     |                     |                               |
 +------------------------+---------------+------+-----+---------------------+-------------------------------+
 
-26 columns
+32 columns

@@ -1,5 +1,5 @@
 -- Table: affiliate_logs
--- Generated: 2026-02-28 23:12:17
+-- Generated: 2026-03-20 12:00:46
 
 CREATE TABLE `affiliate_logs` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

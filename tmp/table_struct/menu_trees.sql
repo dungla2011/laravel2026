@@ -1,5 +1,5 @@
 -- Table: menu_trees
--- Generated: 2026-02-28 23:12:29
+-- Generated: 2026-03-20 12:00:59
 
 CREATE TABLE `menu_trees` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -21,4 +21,4 @@ CREATE TABLE `menu_trees` (
   KEY `menu_trees_old_id_index` (`old_id`),
   KEY `menu_trees_old_parent_id_index` (`old_parent_id`),
   KEY `menu_trees_id_news_index` (`id_news`)
-) ENGINE=InnoDB AUTO_INCREMENT=568 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=579 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

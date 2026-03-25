@@ -46,6 +46,20 @@ class SyncVmwareInstancesCommand extends Command
             $this->info("\n📋 Fetching VM list from vCenter...");
             $vms = VmwareHelper::getVMListV2();
 
+            //Tim tat cac cac bios_uuid xuất hiện 2 lần, là do 2 vm có trùng , và tạo mảng bios_uuid đó
+            $biosUUID_dublicated = [];
+            foreach ($vms as $vm) {
+                if (!$vm->bios_uuid) {
+                    continue;
+                }
+                if (isset($biosUUID_dublicated[$vm->bios_uuid])) {
+                    $biosUUID_dublicated[$vm->bios_uuid][] = $vm;
+                } else {
+                    $biosUUID_dublicated[$vm->bios_uuid] = [$vm];
+                }
+            }
+
+
 
 
             if (empty($vms)) {
@@ -64,6 +78,15 @@ class SyncVmwareInstancesCommand extends Command
             $tt = count($vms);
             foreach ($vms as $vm) {
                 try {
+
+                    //Nếu bios_uuid có trong mảng biosUUID_dublicated
+                    //Thì cờ dubUUid = 1;
+                    $dubUuid = 0;
+                    if (isset($biosUUID_dublicated[$vm->bios_uuid]) && count($biosUUID_dublicated[$vm->bios_uuid]) > 1) {
+                        $dubUuid = 1;
+                    }
+
+
 
                     $cc++;
 
@@ -98,7 +121,11 @@ class SyncVmwareInstancesCommand extends Command
                     ];
 
                     // Upsert to vps_instances (by bios_uuid - unique identifier)
-                    $instance = VpsInstance::where('bios_uuid', $vm->bios_uuid)->first();
+                    $instance = VpsInstance::where('bios_uuid', $vm->bios_uuid);
+                    if($dubUuid) {
+                        $instance = $instance->where('name', $vm->name);
+                    }
+                    $instance = $instance->first();
 
                     if ($instance) {
                         $instance->update($instanceData);
@@ -117,10 +144,14 @@ class SyncVmwareInstancesCommand extends Command
 //                            ->latest('created_at')
 //                            ->first();
 
-                        $lastUsage = VpsUsage::where('bios_uuid', $vm->bios_uuid)
-                            ->orderBy('created_at', 'desc')
+                        $lastUsage = VpsUsage::where('bios_uuid', $vm->bios_uuid);
+                        if($dubUuid) {
+                            $lastUsage = $lastUsage->where('name', $vm->name); // Thêm name đề phòng Restore tu Veeam?  hoad dem bios_uuid, neu >1 thi moi can name?
+                        }
+                        $lastUsage = $lastUsage->orderBy('created_at', 'desc')
                             ->orderBy('id', 'desc')
                             ->first();
+
 //                        if($lastUsage->user_id != $instance->user_id){
 //                            $this->warn("  ⚠️  User ID mismatch between vps_instances and vps_usages for BIOS UUID {$vm->bios_uuid}. Updating usage record to match instance user_id.");
 //                            $lastUsage->update(['user_id' => $instance->user_id]);
@@ -179,7 +210,7 @@ class SyncVmwareInstancesCommand extends Command
                             //  VpsPricingService::getPricingConfigForInstance($instance);
                         $currentPricingConfig = $instance->price_config;
 
-                        if ($lastUsage && ($lastUsage->power_state == "POWERED_ON" || $lastUsage->power_state == "POWERED_OFF")) {
+                        if ($lastUsage && ($lastUsage->power_state == "POWERED_ON" || $lastUsage->power_state == "POWERED_OFF" || $lastUsage->power_state == "SUSPENDED")) {
 
                             $currentPricingConfig = $lastUsage->price_config;
 
@@ -193,6 +224,8 @@ class SyncVmwareInstancesCommand extends Command
                                 // Create new record for new billing session
                                 $this->createNewVpsUsageRecord($vm, $instance, $powerState, $listIpAddress, $lastFoundIpTime, $currentPricingConfig, $lastUsage->end_time_used);
                                 $this->line("  ⏰ end_time_used expired! Updated old record end_time_used = now(), inserted new vps_usages record");
+                                $lastUsage->addLog("Create end_time_used expired!");
+                                $lastUsage->update();
                                 continue; // Skip to next VM
                             }
 
@@ -335,7 +368,12 @@ class SyncVmwareInstancesCommand extends Command
 //                            getch(" new vps 2");
                             // No previous record, insert new one - calculated_fee is 0 on first insert
                             $this->createNewVpsUsageRecord($vm, $instance, $powerState, $listIpAddress, $lastFoundIpTime, $currentPricingConfig);
+
                             $this->line("  📊 Inserted vps_usages snapshot (first record)");
+                            if($lastUsage){
+                                $lastUsage->addLog("New Instance OR last not ON/OFF?");
+                                $lastUsage->update();
+                            }
                         }
 
                         // Check if config changed - only insert to history if it did
@@ -358,7 +396,7 @@ class SyncVmwareInstancesCommand extends Command
                             // 'number_ip_address' => $lastHistory->number_ip_address,
                             'power_state' => $lastHistory->power_state,
                         ])) : null;
- 
+
                         // Insert only if config changed or no history exists
                         if (!$lastHistory || $configHash !== $lastConfigHash) {
                             // Calculate price_per_minute from daily fee

@@ -1,5 +1,5 @@
 -- Table: user_clouds
--- Generated: 2026-02-28 23:12:44
+-- Generated: 2026-03-20 12:01:15
 
 CREATE TABLE `user_clouds` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -25,4 +25,4 @@ CREATE TABLE `user_clouds` (
   KEY `user_clouds_old_id_index` (`old_id`),
   KEY `user_clouds_old_user_id_index` (`old_user_id`),
   KEY `user_clouds_deleted_at_index` (`deleted_at`)
-) ENGINE=InnoDB AUTO_INCREMENT=46 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

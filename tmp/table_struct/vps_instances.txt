@@ -1,5 +1,5 @@
 -- Table: vps_instances
--- Generated: 2026-02-28 23:12:45
+-- Generated: 2026-03-20 12:01:16
 
 +-----------------------+---------------------+------+-----+---------------------+-------------------------------+
 | Field                 | Type                | Null | Key | Default             | Extra                         |
@@ -34,6 +34,7 @@
 | price_month           | decimal(18,2)       | YES  |     |                     |                               |
 | last_billing_start_at | datetime            | YES  |     |                     |                               |
 | image_list            | varchar(512)        | YES  |     |                     |                               |
+| user_comment          | varchar(1024)       | YES  |     |                     |                               |
 +-----------------------+---------------------+------+-----+---------------------+-------------------------------+
 
-30 columns
+31 columns

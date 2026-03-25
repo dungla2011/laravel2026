@@ -42,9 +42,9 @@ Route2::prefix('{locale}')
 $registerAffiliateProgramRoutes = function ($localized = false) {
     $suffix = $localized ? '.localized' : '';
 
-    Route2::get('/service/basic-vps', [
+    Route2::get('/service/standard-vps', [
         \App\Http\Controllers\IndexController::class, 'basicVps',
-    ])->name('service.basic-vps' . $suffix);
+    ])->name('service.standard-vps' . $suffix);
 };
 
 // Routes WITHOUT locale prefix (default vi)

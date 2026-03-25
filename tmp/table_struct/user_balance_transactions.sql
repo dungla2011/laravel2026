@@ -1,5 +1,5 @@
 -- Table: user_balance_transactions
--- Generated: 2026-02-28 23:12:44
+-- Generated: 2026-03-20 12:01:14
 
 CREATE TABLE `user_balance_transactions` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,

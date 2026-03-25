@@ -1,5 +1,5 @@
 -- Table: block_uis
--- Generated: 2026-02-28 23:12:18
+-- Generated: 2026-03-20 12:00:47
 
 CREATE TABLE `block_uis` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -28,8 +28,14 @@ CREATE TABLE `block_uis` (
   `extra_color_background` varchar(10) DEFAULT NULL,
   `extra_color_text` varchar(10) DEFAULT NULL,
   `group_name` varchar(32) DEFAULT NULL,
+  `extra1` text DEFAULT NULL,
+  `extra2` text DEFAULT NULL,
+  `extra3` text DEFAULT NULL,
+  `extra4` text DEFAULT NULL,
+  `extra5` text DEFAULT NULL,
+  `extra6` text DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `block_uis_sname_unique` (`sname`),
   KEY `block_uis_old_id_index` (`old_id`),
   KEY `block_uis_old_image_list_index` (`old_image_list`(768))
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

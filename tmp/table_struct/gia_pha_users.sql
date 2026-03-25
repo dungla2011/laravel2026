@@ -1,5 +1,5 @@
 -- Table: gia_pha_users
--- Generated: 2026-02-28 23:12:27
+-- Generated: 2026-03-20 12:00:57
 
 CREATE TABLE `gia_pha_users` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

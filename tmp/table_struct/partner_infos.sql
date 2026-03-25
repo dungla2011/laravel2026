@@ -1,5 +1,5 @@
 -- Table: partner_infos
--- Generated: 2026-02-28 23:12:34
+-- Generated: 2026-03-20 12:01:04
 
 CREATE TABLE `partner_infos` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -21,4 +21,4 @@ CREATE TABLE `partner_infos` (
   KEY `partner_infos_old_id_index` (`old_id`),
   KEY `partner_infos_user_id_foreign` (`user_id`),
   CONSTRAINT `partner_infos_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=70813486804 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=72675396814 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

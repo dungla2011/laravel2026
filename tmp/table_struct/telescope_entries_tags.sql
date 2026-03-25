@@ -1,5 +1,5 @@
 -- Table: telescope_entries_tags
--- Generated: 2026-02-28 23:12:42
+-- Generated: 2026-03-20 12:01:12
 
 CREATE TABLE `telescope_entries_tags` (
   `entry_uuid` char(36) NOT NULL,

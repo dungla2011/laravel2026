@@ -9,12 +9,12 @@
         @yield('title')
     </title>
 
-    <meta name="description" content="{{ \App\Models\SiteMng::getDesc()  }}">
-    <meta name="keywords" content="{{ \App\Models\SiteMng::getKeyword()  }}">
+    <meta name="description" content= "@yield('description') ">
+    <meta name="keywords" content= "@yield('description')">
 
     <meta property="og:image" content="/public/images/logo/logo-glx-tech-trans-square-200.png?v=1">
-    <meta property="og:title" content="{{ \App\Models\SiteMng::getTitle()  }}">
-    <meta property="og:description" content="{{ \App\Models\SiteMng::getDesc()  }}">
+    <meta property="og:title" content="@yield('title')">
+    <meta property="og:description" content="@yield('description')">
 
     <link rel="stylesheet" href="/template/sandbo/assets/css/plugins.css">
     <link rel="stylesheet" href="/template/sandbo/assets/css/style.css">
@@ -32,7 +32,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.0.0/css/flag-icons.min.css" />
 {{--    <link rel="apple-touch-icon" href="/_site/dna/chatbot/logo192.png" />--}}
     <link rel="manifest" href="/_site/dna/chatbot/manifest.json" />
-    <title>React App</title>
+
 
 {{--    <script defer="defer" src="/_site/dna/chatbot/static/js/main.e14b1c83.js"></script>--}}
 
@@ -45,21 +45,28 @@
             border: 0px solid #ccc; padding: 5px 10px; height: 36px; vertical-align: bottom;
             margin-right: 20px
         }
-        /* Seletor cho data-id */
-        div.glxv3 h2
-        {
-            color: white;
-            font-size: 220%;
-            text-shadow:
-                1px 1px 0 #ccc,
-                2px 2px 0 #ccc,
-                3px 3px 0 #ccc,
-                3px 4px 0 #ccc,
-                1px 5px 0 #ccc,
-                1px 5px 5px rgba(0,0,0,0.1); /* Tạo độ sâu và bóng */
-            transform: rotateX(5deg) rotateY(5deg); /* Xoay 3D */
+
+
+        @keyframes scrollText {
+            0% { transform: translateX(-200px); }
+            100% { transform: translateX(120px); }
         }
 
+        .glx-text {
+            fill: #fab758;
+        }
+
+        .scroll-line {
+            animation: scrollText 10s linear infinite;
+            fill: #fab758;
+            font-family: Arial, sans-serif;
+            font-size: 8px;
+            font-weight: bold;
+        }
+
+        div.glxv3 svg{
+            margin-bottom: 6px;
+        }
         input.search-top {
             height: 38px; padding: 5px 10px;
             /*margin-top:2px;*/
@@ -72,6 +79,9 @@
             border: 1px solid #ccc;
             border-right: 0px;
             vertical-align: bottom;
+        }
+        .nav-item a {
+            cursor: pointer;
         }
         #chatbot {
             z-index: 10000000;
@@ -118,7 +128,6 @@ $currentLocale = app()->getLocale();
             <div class="container flex-lg-row flex-nowrap align-items-center">
                 <div class="navbar-brand w-100 qqqq1111 glxv3" style="" data-code-pos='ppp1754321'>
                     <a href="/">
-                        <h2 style="margin-top: 8px; margin-left: 10px">
                             <?php
                             $ui = \App\Models\BlockUi::showEditButtonStatic('header_logo');
                             if($ui->getThumbInImageList())
@@ -126,7 +135,6 @@ $currentLocale = app()->getLocale();
                             else
                                 echo $ui->getSummary();
                             ?>
-                        </h2>
                     </a>
                 </div>
 
@@ -388,6 +396,32 @@ if(getCurrentUserId()){
         @endif
     });
 </script>
+
+<script>
+      window.ChatWidgetConfig = {
+        apiBase:           'https://your-api.com',   // URL gốc của API
+        messagesEndpoint:  '/api/messages',           // GET  → lấy lịch sử
+        sendEndpoint:      '/api/chat',               // POST → gửi tin nhắn
+        botName:           'Trợ lý AI',
+        primaryColor:      '#0084ff',
+        welcomeMessage:    'Xin chào! Tôi có thể giúp gì cho bạn?',
+        placeholder:       'Nhập tin nhắn...',
+        headers: {                                    // header tuỳ chọn (auth, v.v.)
+          'Authorization': 'Bearer YOUR_TOKEN'
+        },
+        // Mapping field trong JSON trả về (tuỳ chỉnh nếu API khác chuẩn)
+        messagesField:    'messages',       // mảng messages trong response history
+        roleField:        'role',           // "user" | "assistant"
+        contentField:     'content',
+        timestampField:   'timestamp',
+       replyField:       'reply',          // field chứa câu trả lời từ /send
+       convIdField:      'conversation_id',
+       msgField:         'message',        // field tên khi POST tin nhắn
+     };
+</script>
+
+<script src="/js/chat/chat-widget.js"></script>
+
 
 <?php
 }

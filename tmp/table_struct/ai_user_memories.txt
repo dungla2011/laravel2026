@@ -1,0 +1,18 @@
+-- Table: ai_user_memories
+-- Generated: 2026-03-24 22:33:08
+
++------------+--------------+------+-----+---------------------+-------------------------------+
+| Field      | Type         | Null | Key | Default             | Extra                         |
++------------+--------------+------+-----+---------------------+-------------------------------+
+| id         | int(11)      | NO   | PRI |                     | auto_increment                |
+| name       | varchar(256) | YES  |     |                     |                               |
+| user_id    | int(11)      | YES  | MUL |                     |                               |
+| status     | int(11)      | YES  | MUL |                     |                               |
+| created_at | timestamp    | YES  |     | current_timestamp() |                               |
+| updated_at | timestamp    | YES  |     |                     | on update current_timestamp() |
+| deleted_at | timestamp    | YES  |     |                     |                               |
+| image_list | varchar(256) | YES  |     |                     |                               |
+| log        | text         | YES  |     |                     |                               |
++------------+--------------+------+-----+---------------------+-------------------------------+
+
+9 columns

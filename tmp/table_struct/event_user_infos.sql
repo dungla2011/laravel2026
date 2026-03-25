@@ -1,5 +1,5 @@
 -- Table: event_user_infos
--- Generated: 2026-02-28 23:12:25
+-- Generated: 2026-03-20 12:00:55
 
 CREATE TABLE `event_user_infos` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

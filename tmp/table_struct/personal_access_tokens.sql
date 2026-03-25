@@ -1,5 +1,5 @@
 -- Table: personal_access_tokens
--- Generated: 2026-02-28 23:12:35
+-- Generated: 2026-03-20 12:01:05
 
 CREATE TABLE `personal_access_tokens` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,

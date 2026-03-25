@@ -1,5 +1,5 @@
 -- Table: media_folders
--- Generated: 2026-02-28 23:12:28
+-- Generated: 2026-03-20 12:00:58
 
 CREATE TABLE `media_folders` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

@@ -1,5 +1,5 @@
 -- Table: skus
--- Generated: 2026-02-28 23:12:40
+-- Generated: 2026-03-20 12:01:11
 
 CREATE TABLE `skus` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

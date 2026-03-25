@@ -1,5 +1,5 @@
 -- Table: members_members
--- Generated: 2026-02-28 23:12:29
+-- Generated: 2026-03-20 12:00:59
 
 CREATE TABLE `members_members` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

@@ -1,5 +1,5 @@
 -- Table: users
--- Generated: 2026-02-28 23:12:45
+-- Generated: 2026-03-20 12:01:16
 
 CREATE TABLE `users` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,

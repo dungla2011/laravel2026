@@ -1,0 +1,21 @@
+-- Table: ai_documents
+-- Generated: 2026-03-24 22:33:08
+
++-------------------+--------------+------+-----+---------------------+-------+
+| Field             | Type         | Null | Key | Default             | Extra |
++-------------------+--------------+------+-----+---------------------+-------+
+| id                | varchar(100) | NO   | PRI |                     |       |
+| category_id       | varchar(100) | NO   | MUL |                     |       |
+| filename          | varchar(255) | NO   |     |                     |       |
+| original_filename | varchar(255) | YES  |     |                     |       |
+| file_type         | varchar(20)  | YES  |     |                     |       |
+| file_size         | int(11)      | YES  |     |                     |       |
+| description       | text         | YES  |     |                     |       |
+| total_chunks      | int(11)      | YES  |     | 0                   |       |
+| uploaded_by       | varchar(255) | YES  |     |                     |       |
+| is_active         | tinyint(4)   | YES  |     | 1                   |       |
+| created_at        | timestamp    | YES  |     | current_timestamp() |       |
+| deleted_at        | datetime     | YES  | MUL |                     |       |
++-------------------+--------------+------+-----+---------------------+-------+
+
+12 columns

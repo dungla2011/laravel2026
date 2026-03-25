@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use LadLib\Laravel\Database\TraitModelExtra;
+use function Sabre\HTTP\toDate;
 
 class VpsUsage extends ModelGlxBase
 {
@@ -110,6 +111,8 @@ class VpsUsage extends ModelGlxBase
     {
         $pricePerMonth = floatval($this->price_month);
 
+//        die("FRE = $pricePerMonth");
+
         // Use custom fromTime if provided, otherwise use last_billing_start_at or created_at
         $startTime = $fromTime ?: ($this->last_billing_start_at ?: $this->created_at);
 
@@ -133,8 +136,11 @@ class VpsUsage extends ModelGlxBase
         {
             $endTime = $this->timestamp_minute;
         }
-
+        $endTim0 = $endTime;
         $endDate = new \DateTime($endTime);
+
+
+
 
         // Calculate fee by counting full months using anniversary date logic
         $monthCount = 0;
@@ -160,14 +166,19 @@ class VpsUsage extends ModelGlxBase
         // If endDate is before the next anniversary, calculate pro-rata for remaining days
         if ($anniversaryDate < $endDate) {
             // There are remaining days after the last full month
+            // Calculate actual days used: from anniversaryDate to endDate inclusive
+            $interval = $anniversaryDate->diff($endDate);
+            $actualDaysUsed = $interval->days + 1; // +1 to include both start and end day
+            
+            // Get total days in the month of endDate
             $daysInMonth = (int)$endDate->format('t');
-            $daysUsed = (int)$endDate->format('d');
-            $partialMonthFee = $pricePerMonth * ($daysUsed / $daysInMonth);
+            
+            $partialMonthFee = $pricePerMonth * ($actualDaysUsed / $daysInMonth);
 
             $monthBreakdown[] = sprintf(
                 "%s (%.0f/%d days)",
                 $endDate->format('M Y'),
-                $daysUsed,
+                $actualDaysUsed,
                 $daysInMonth
             );
         }

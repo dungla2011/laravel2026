@@ -1,5 +1,5 @@
 -- Table: crm_app_infos
--- Generated: 2026-02-28 23:12:20
+-- Generated: 2026-03-20 12:00:50
 
 CREATE TABLE `crm_app_infos` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

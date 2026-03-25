@@ -1,5 +1,5 @@
 -- Table: quiz_folders
--- Generated: 2026-02-28 23:12:38
+-- Generated: 2026-03-20 12:01:08
 
 CREATE TABLE `quiz_folders` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

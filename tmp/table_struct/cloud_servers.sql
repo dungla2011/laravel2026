@@ -1,5 +1,5 @@
 -- Table: cloud_servers
--- Generated: 2026-02-28 23:12:19
+-- Generated: 2026-03-20 12:00:49
 
 CREATE TABLE `cloud_servers` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

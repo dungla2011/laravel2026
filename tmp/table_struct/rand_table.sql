@@ -1,5 +1,5 @@
 -- Table: rand_table
--- Generated: 2026-02-28 23:12:39
+-- Generated: 2026-03-20 12:01:10
 
 CREATE TABLE `rand_table` (
   `siteid` smallint(6) DEFAULT 0,

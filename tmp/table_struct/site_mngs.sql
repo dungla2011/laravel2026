@@ -1,5 +1,5 @@
 -- Table: site_mngs
--- Generated: 2026-02-28 23:12:40
+-- Generated: 2026-03-20 12:01:10
 
 CREATE TABLE `site_mngs` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

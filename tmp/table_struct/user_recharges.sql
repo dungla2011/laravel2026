@@ -1,5 +1,5 @@
 -- Table: user_recharges
--- Generated: 2026-02-28 23:12:45
+-- Generated: 2026-03-20 12:01:15
 
 CREATE TABLE `user_recharges` (
   `id` bigint(11) NOT NULL AUTO_INCREMENT,
@@ -27,4 +27,4 @@ CREATE TABLE `user_recharges` (
   KEY `user_recharges_status_index` (`status`),
   KEY `user_recharges_paid_at_index` (`paid_at`),
   KEY `user_recharges_created_at_index` (`created_at`)
-) ENGINE=InnoDB AUTO_INCREMENT=72280270480 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=73301503415 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

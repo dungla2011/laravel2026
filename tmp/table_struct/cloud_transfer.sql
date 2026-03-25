@@ -1,5 +1,5 @@
 -- Table: cloud_transfer
--- Generated: 2026-02-28 23:12:20
+-- Generated: 2026-03-20 12:00:49
 
 CREATE TABLE `cloud_transfer` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

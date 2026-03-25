@@ -5117,7 +5117,7 @@ class clsTreeTopDownCtrl {
             "</div>";
 
         let title = ''
-        if (objTop.title)
+        if (objTop?.title ?? '')
             title = objTop.title;
 
         if (this.objBannerTop && this.objBannerTop._image_list)
@@ -5129,7 +5129,7 @@ class clsTreeTopDownCtrl {
 
         if (this.objBannerTop && this.objBannerTop.title)
             title = this.objBannerTop.title;
-        let name = objTop.name
+        let name = objTop?.name ?? ''
         if (this.objBannerTop && this.objBannerTop.name)
             name = this.objBannerTop.name;
 

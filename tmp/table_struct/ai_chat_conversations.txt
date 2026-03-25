@@ -1,0 +1,16 @@
+-- Table: ai_chat_conversations
+-- Generated: 2026-03-24 22:33:07
+
++-----------------+--------------+------+-----+---------------------+-------------------------------+
+| Field           | Type         | Null | Key | Default             | Extra                         |
++-----------------+--------------+------+-----+---------------------+-------------------------------+
+| id              | int(11)      | NO   | PRI |                     | auto_increment                |
+| conversation_id | varchar(255) | NO   | UNI |                     |                               |
+| platform        | varchar(50)  | NO   | MUL |                     |                               |
+| user_id         | int(11)      | YES  | MUL |                     |                               |
+| created_at      | timestamp    | YES  |     | current_timestamp() |                               |
+| deleted_at      | datetime     | YES  | MUL |                     |                               |
+| updated_at      | timestamp    | YES  |     | current_timestamp() | on update current_timestamp() |
++-----------------+--------------+------+-----+---------------------+-------------------------------+
+
+7 columns

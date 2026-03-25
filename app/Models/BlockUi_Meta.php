@@ -62,7 +62,7 @@ class BlockUi_Meta extends MetaOfTableInDb
             $objMeta->dataType = DEF_DATA_TYPE_IS_MULTI_IMAGE_BROWSE;
         }
 
-        if ($field == 'guide_admin' || $field == 'extra_info') {
+        if ($field == 'guide_admin' || $field == 'extra_info'|| $field == 'extra5'|| $field == 'extra6') {
             $objMeta->dataType = DEF_DATA_TYPE_TEXT_AREA;
         }
 

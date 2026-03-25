@@ -1,5 +1,5 @@
 -- Table: vps_instances
--- Generated: 2026-02-28 23:12:45
+-- Generated: 2026-03-20 12:01:16
 
 CREATE TABLE `vps_instances` (
   `id` bigint(11) NOT NULL AUTO_INCREMENT,
@@ -32,10 +32,11 @@ CREATE TABLE `vps_instances` (
   `price_month` decimal(18,2) DEFAULT NULL COMMENT 'Fixed monthly price for old VPS billing (default null for new per-minute billing)',
   `last_billing_start_at` datetime DEFAULT NULL COMMENT 'Next billing period starts from this timestamp',
   `image_list` varchar(512) DEFAULT NULL COMMENT 'List of images (512 chars max)',
+  `user_comment` varchar(1024) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `vps_instances_bios_uuid_unique` (`bios_uuid`),
   KEY `vps_instances_user_id_index` (`user_id`),
   KEY `vps_instances_plan_id_index` (`plan_id`),
   KEY `vps_instances_deleted_at_index` (`deleted_at`),
   KEY `vps_instances_instance_uuid_index` (`instance_uuid`)
-) ENGINE=InnoDB AUTO_INCREMENT=72017101110 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=73965475907 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

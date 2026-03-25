@@ -1,5 +1,5 @@
 -- Table: assets
--- Generated: 2026-02-28 23:12:17
+-- Generated: 2026-03-20 12:00:47
 
 CREATE TABLE `assets` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

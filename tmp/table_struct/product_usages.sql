@@ -1,5 +1,5 @@
 -- Table: product_usages
--- Generated: 2026-02-28 23:12:36
+-- Generated: 2026-03-20 12:01:07
 
 CREATE TABLE `product_usages` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

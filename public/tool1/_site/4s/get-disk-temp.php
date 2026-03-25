@@ -16,10 +16,16 @@ if($server = $_GET['sv'] ?? ''){
     $ct = file_get_contents($link);
     $js = json_decode($ct);
 
+    echo "<pre> >>> " . __FILE__ . "(" . __LINE__ . ")<br/>";
+    print_r($js);
+    echo "</pre>";
+
+    $cc = 0;
     foreach ($js AS $mm){
+        $cc++;
         echo "\n<tr>";
         foreach ($mm AS $k=>$v){
-            echo "\n <td> $k => $v </td>";
+            echo "\n <td>$cc. $k => $v </td>";
         }
         echo "\n</tr>";
     }

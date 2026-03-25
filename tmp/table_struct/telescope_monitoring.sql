@@ -1,5 +1,5 @@
 -- Table: telescope_monitoring
--- Generated: 2026-02-28 23:12:42
+-- Generated: 2026-03-20 12:01:12
 
 CREATE TABLE `telescope_monitoring` (
   `tag` varchar(255) NOT NULL,

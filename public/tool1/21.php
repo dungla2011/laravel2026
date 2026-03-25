@@ -3,46 +3,36 @@
 //use App\Models\User_Meta;
 //
 //$GLOBALS['DISABLE_DEBUG_BAR'] = 0;
+use App\Models\SiteMng;
+
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-$_SERVER['HTTP_HOST'] = $_SERVER['SERVER_NAME'] = 'glx.com.vn';
-use App\Helpers\BkavEHoaDonAPI;
+// Try multiple temp directory options
+$fold = null;
+$temp_options = [
+    sys_get_temp_dir() . "/glx_web",
+    '/var/www/html/storage/temp',
+    '/tmp/glx_web',
+];
 
-//
-require "/var/www/html/vendor/autoload.php";
-$app = require_once '/var/www/html/bootstrap/app.php';
-$kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
-$response = $kernel->handle(
-    $request = Illuminate\Http\Request::capture()
-);
-
-$mm = \App\Models\VpsUsage::all();
-
-foreach ($mm AS $obj){
-
-        try{
-
-
-//    echo "<br/>\n $obj->price_config ";
-    $tmp = str_replace(
-         '{"n_cpu_core_price":50000,"n_ram_gb_price":30000,"n_gb_disk_price":1,"n_ip_address_price":50000,"n_network_dedicated_mbit_price":1000000}',
-         '{"n_cpu_core_price":50000,"n_ram_gb_price":30000,"n_gb_disk_price":1000,"n_ip_address_price":50000,"n_network_dedicated_mbit_price":1000000}',
-        $obj->price_config);
-
-    if($tmp != $obj->price_config){
-        echo "<br/>\n $tmp ";
-        echo "<br/>\n ***** == ";
-        $obj->price_config = $tmp;
-        $obj->update();
+foreach ($temp_options as $temp_dir) {
+    if (@mkdir($temp_dir, 0777, true) || @is_dir($temp_dir)) {
+        if (is_writable($temp_dir)) {
+            $fold = $temp_dir;
+            echo "✓ Using temp dir: $fold\n";
+            break;
+        }
     }
+}
 
-        }
-        catch (Throwable $e) { // For PHP 7
-            echo "<br/>\n Error1: ".$e->getMessage();
-        }
-        catch (Exception $exception){
-            echo "<br/>\n Error2: ".$exception->getMessage();
-        }
+if (!$fold) {
+    echo "⚠️  Warning: Could not create any writable temp directory\n";
+    // Use a failsafe - just use current temp without creating
+    $fold = sys_get_temp_dir();
+    echo "✓ Fallback to: $fold\n";
+}
 
+if(!file_exists($fold)) {
+    die("Can not create $fold");
 }

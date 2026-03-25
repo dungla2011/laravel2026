@@ -1,5 +1,5 @@
 -- Table: event_send_sms_logs
--- Generated: 2026-02-28 23:12:25
+-- Generated: 2026-03-20 12:00:54
 
 CREATE TABLE `event_send_sms_logs` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

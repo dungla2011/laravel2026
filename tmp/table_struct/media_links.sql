@@ -1,5 +1,5 @@
 -- Table: media_links
--- Generated: 2026-02-28 23:12:29
+-- Generated: 2026-03-20 12:00:59
 
 CREATE TABLE `media_links` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

@@ -1,5 +1,5 @@
 -- Table: event_settings
--- Generated: 2026-02-28 23:12:25
+-- Generated: 2026-03-20 12:00:54
 
 CREATE TABLE `event_settings` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

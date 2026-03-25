@@ -1,5 +1,5 @@
 -- Table: demo_tbls
--- Generated: 2026-02-28 23:12:22
+-- Generated: 2026-03-20 12:00:51
 
 CREATE TABLE `demo_tbls` (
   `deleted_at` timestamp NULL DEFAULT NULL,

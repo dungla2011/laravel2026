@@ -170,17 +170,39 @@ $newModel = 'VpsUsage';
 
 $newModel = 'MailLog';
 
+$newModel = 'AiChatConversation';
+//$newModel = 'AiChatMessage';
+//$newModel = 'AiDocument';
+//$newModel = 'AiDocCategory';
+//$newModel = 'AiDocChunk';
+//$newModel = 'AiUserMemory';
+
 getch(" Model: $newModel, press any key to con... ");
 
 // Ask if creating member module
 $createMember = false;
-echo "\n\nCó tạo module member không? (y/n): ";
-$handle = fopen("php://stdin", "r");
-$line = fgets($handle);
-fclose($handle);
-if (trim(strtolower($line)) == 'y') {
-    $createMember = true;
-    echo "✓ Sẽ tạo thêm module member\n";
+
+$setType = null;
+// Check if type=X is passed in argv (e.g., php script.php type=2)
+foreach ($_SERVER['argv'] as $arg) {
+    if (strpos($arg, 'type=') === 0) {
+        $setType = (int)substr($arg, 5); // Extract number after 'type='
+        echo "✓ Auto-selected option $setType (from argv: $arg)\n";
+        break;
+    }
+}
+
+if($setType == 2){
+
+}else {
+    echo "\n\nCó tạo module member không? (y/n): ";
+    $handle = fopen("php://stdin", "r");
+    $line = fgets($handle);
+    fclose($handle);
+    if (trim(strtolower($line)) == 'y') {
+        $createMember = true;
+        echo "✓ Sẽ tạo thêm module member\n";
+    }
 }
 
 $tblNew = \LadLib\Laravel\Database\DbHelperLaravel::getTableNameFromModelName($newModel);
@@ -191,8 +213,16 @@ $newModelKeba = Str::kebab($newModel);
 $lk1 = '/admin/'.$newModelKeba;
 $lk2 = '/_admin/'.$newModelKeba;
 
-$setMenu = getch("1 to create $lk1, 2 to create $lk2");
-if($setMenu == 1)
+
+
+
+
+// If not passed via argv, ask user
+if ($setType === null) {
+    $setType = getch("1 to create $lk1, 2 to create: $lk2");
+}
+
+if($setType == 1)
     $lk = $lk1;
 else
     $lk = $lk2;

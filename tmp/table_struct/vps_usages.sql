@@ -1,5 +1,5 @@
 -- Table: vps_usages
--- Generated: 2026-02-28 23:12:46
+-- Generated: 2026-03-20 12:01:17
 
 CREATE TABLE `vps_usages` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -46,5 +46,6 @@ CREATE TABLE `vps_usages` (
   KEY `vps_usages_instance_uuid_index` (`instance_uuid`),
   KEY `vps_usages_bios_uuid_index` (`bios_uuid`),
   KEY `vps_usages_created_at_index` (`created_at`),
-  KEY `vps_usages_bios_uuid_created_at_index` (`bios_uuid`,`created_at`)
-) ENGINE=InnoDB AUTO_INCREMENT=72288474688 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  KEY `vps_usages_bios_uuid_created_at_index` (`bios_uuid`,`created_at`),
+  KEY `lastest_time_the_same` (`lastest_time_the_same`)
+) ENGINE=InnoDB AUTO_INCREMENT=73965684557 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

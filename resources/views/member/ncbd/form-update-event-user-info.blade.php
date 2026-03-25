@@ -1,3 +1,7 @@
+@section("title")
+    Event Update User Information
+@endsection
+
 <?php
 use App\Models\EventUserInfo;
 use Illuminate\Support\Facades\Validator;

@@ -1,5 +1,5 @@
 -- Table: change_logs
--- Generated: 2026-02-28 23:12:19
+-- Generated: 2026-03-20 12:00:48
 
 CREATE TABLE `change_logs` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -23,4 +23,4 @@ CREATE TABLE `change_logs` (
   KEY `change_logs_user_id_admin_index` (`user_id_admin`),
   KEY `change_logs_tables_index` (`tables`),
   KEY `change_logs_id_row_index` (`id_row`)
-) ENGINE=InnoDB AUTO_INCREMENT=492066 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1100316 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

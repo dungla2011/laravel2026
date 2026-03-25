@@ -1,5 +1,5 @@
 -- Table: cache_key_value
--- Generated: 2026-02-28 23:12:18
+-- Generated: 2026-03-20 12:00:47
 
 CREATE TABLE `cache_key_value` (
   `key` varchar(255) NOT NULL,

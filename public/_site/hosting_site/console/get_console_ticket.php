@@ -66,7 +66,7 @@ if(!$vmi || ($vmi->user_id != $uid && !$belongVendor)){
 $vmValue = $vmi->bios_uuid;
 
 // Get ESXi host from vps_usage
-$vmUsage = \App\Models\VpsUsage::where("bios_uuid", $vmValue)->orderBy('id', 'DESC')->first();
+$vmUsage = \App\Models\VpsUsage::where("bios_uuid", $vmValue)->where('name',$vmi->name)->orderBy('id', 'DESC')->first();
 if(!$vmUsage){
     echo json_encode([
         'success' => false,

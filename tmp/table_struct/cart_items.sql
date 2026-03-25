@@ -1,5 +1,5 @@
 -- Table: cart_items
--- Generated: 2026-02-28 23:12:18
+-- Generated: 2026-03-20 12:00:48
 
 CREATE TABLE `cart_items` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

@@ -27,11 +27,18 @@ foreach ($argv as $arg) {
 }
 
 if (!$tableName) {
-    echo "Usage: php 01.get_table_struct.php table=<tablename> [force] [zip]\n";
-    echo "Example: php 01.get_table_struct.php table=vps_instances\n";
-    echo "         php 01.get_table_struct.php table=all force\n";
-    echo "         php 01.get_table_struct.php table=all force zip\n";
-    echo "         php 01.get_table_struct.php table=all zip\n";
+    echo "Usage: php 01.get_table_struct.php table=<tablename|pattern> [force] [zip]\n";
+    echo "\nExamples:\n";
+    echo "  Single table:\n";
+    echo "    php 01.get_table_struct.php table=vps_instances\n";
+    echo "\n  All tables:\n";
+    echo "    php 01.get_table_struct.php table=all force\n";
+    echo "    php 01.get_table_struct.php table=all force zip\n";
+    echo "\n  Wildcard patterns:\n";
+    echo "    php 01.get_table_struct.php table=*vps*        (tables containing 'vps')\n";
+    echo "    php 01.get_table_struct.php table=hr_*         (tables starting with 'hr_')\n";
+    echo "    php 01.get_table_struct.php table=*_log        (tables ending with '_log')\n";
+    echo "    php 01.get_table_struct.php table=*vps* force zip\n";
     exit(1);
 }
 
@@ -44,6 +51,30 @@ if ($tableName === 'all') {
     }, $tables);
     
     echo "Found " . count($tableNames) . " tables\n";
+} elseif (strpos($tableName, '*') !== false) {
+    // Handle wildcard patterns: *abc*, abc*, *abc
+    $pattern = $tableName;
+    $pattern = str_replace('*', '%', $pattern); // Convert * to %
+    
+    // Use PDO directly for SHOW TABLES LIKE
+    $pdo = DB::connection()->getPdo();
+    $stmt = $pdo->query("SHOW TABLES LIKE '$pattern'");
+    $tables = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Extract table names from results
+    $tableNames = array_map(function($row) {
+        return current($row); // Get first value from each row
+    }, $tables);
+    
+    if (empty($tableNames)) {
+        echo "No tables found matching pattern: $tableName\n";
+        exit(1);
+    }
+    
+    echo "Found " . count($tableNames) . " tables matching pattern '$tableName':\n";
+    foreach ($tableNames as $tbl) {
+        echo "  - $tbl\n";
+    }
 } else {
     $tableNames = [$tableName];
 }

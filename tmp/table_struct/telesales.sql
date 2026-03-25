@@ -1,5 +1,5 @@
 -- Table: telesales
--- Generated: 2026-02-28 23:12:41
+-- Generated: 2026-03-20 12:01:12
 
 CREATE TABLE `telesales` (
   `id` bigint(20) NOT NULL,

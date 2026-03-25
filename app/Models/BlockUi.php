@@ -71,6 +71,13 @@ class BlockUi extends ModelGlxBase
         return null;
     }
 
+    static function getObjByName($sname)
+    {
+        $obj = BlockUi::where('sname', $sname)->first();
+
+        return $obj;
+    }
+
     public function getName($lang = '')
     {
         return strip_tags($this->name);

@@ -386,7 +386,7 @@ $domain = \LadLib\Common\UrlHelper1::getDomainHostName();
                                     <h6 class="mb-2" style="color: #333; font-weight: 700;">Thêm RAM</h6>
                                     <p class="text-muted small mb-3">(32GB)</p>
                                     <p style="font-size: 1.4rem; color: #f5576c; font-weight: 700;">
-                                        200K
+                                        350K
                                     </p>
                                     <small class="text-muted">/tháng</small>
                                 </div>

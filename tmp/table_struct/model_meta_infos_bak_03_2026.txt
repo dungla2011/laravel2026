@@ -1,0 +1,52 @@
+-- Table: model_meta_infos_bak_03_2026
+-- Generated: 2026-03-20 12:01:00
+
++--------------------------------+---------------------+------+-----+---------------------+----------------+
+| Field                          | Type                | Null | Key | Default             | Extra          |
++--------------------------------+---------------------+------+-----+---------------------+----------------+
+| id                             | bigint(20) unsigned | NO   | PRI |                     | auto_increment |
+| old_id                         | bigint(20) unsigned | YES  | MUL |                     |                |
+| created_at                     | timestamp           | YES  |     | current_timestamp() |                |
+| updated_at                     | timestamp           | YES  |     |                     |                |
+| table_name_model               | varchar(255)        | NO   | MUL |                     |                |
+| field                          | varchar(255)        | YES  | MUL |                     |                |
+| sname                          | varchar(255)        | YES  |     |                     |                |
+| name                           | varchar(255)        | YES  |     |                     |                |
+| full_desc                      | varchar(255)        | YES  |     |                     |                |
+| order_field                    | bigint(20)          | YES  |     | 0                   |                |
+| dataType                       | bigint(20)          | YES  |     |                     |                |
+| is_hiden_input                 | bigint(20)          | YES  |     |                     |                |
+| show_in_index                  | varchar(255)        | YES  |     |                     |                |
+| show_get_one                   | varchar(255)        | YES  |     |                     |                |
+| searchable                     | varchar(255)        | YES  |     |                     |                |
+| sortable                       | varchar(255)        | YES  |     |                     |                |
+| editable                       | varchar(255)        | YES  |     |                     |                |
+| editable_get_one               | varchar(255)        | YES  |     |                     |                |
+| show_index_mobile              | tinyint(4)          | YES  |     | 0                   |                |
+| readOnly                       | varchar(255)        | YES  |     |                     |                |
+| limit_user_edit                | varchar(255)        | YES  |     |                     |                |
+| limit_dev_edit                 | varchar(255)        | YES  |     |                     |                |
+| insertable                     | varchar(255)        | YES  |     |                     |                |
+| join_func                      | varchar(255)        | YES  |     |                     |                |
+| join_api                       | varchar(255)        | YES  |     |                     |                |
+| join_api_field                 | varchar(255)        | YES  |     |                     |                |
+| admin_url                      | varchar(255)        | YES  |     |                     |                |
+| func_foreign_key_insert_update | varchar(255)        | YES  |     |                     |                |
+| is_select                      | varchar(255)        | YES  |     |                     |                |
+| css_class                      | varchar(255)        | YES  |     |                     |                |
+| css_cell_class                 | varchar(255)        | YES  |     |                     |                |
+| css                            | varchar(255)        | YES  |     |                     |                |
+| link_to_view                   | varchar(255)        | YES  |     |                     |                |
+| link_to_edit                   | varchar(255)        | YES  |     |                     |                |
+| primary                        | varchar(255)        | YES  |     |                     |                |
+| is_multilangg                  | varchar(255)        | YES  |     |                     |                |
+| get_not_show                   | varchar(50)         | YES  |     |                     |                |
+| join_relation_func             | varchar(255)        | YES  |     |                     |                |
+| data_type_in_db                | varchar(128)        | YES  |     |                     |                |
+| opt_field                      | bigint(20)          | YES  |     |                     |                |
+| join_func_model                | varchar(128)        | YES  |     |                     |                |
+| width_col                      | mediumint(9)        | YES  |     |                     |                |
+| translations                   | longtext            | YES  |     |                     |                |
++--------------------------------+---------------------+------+-----+---------------------+----------------+
+
+43 columns

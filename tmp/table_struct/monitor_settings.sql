@@ -1,5 +1,5 @@
 -- Table: monitor_settings
--- Generated: 2026-02-28 23:12:31
+-- Generated: 2026-03-20 12:01:02
 
 CREATE TABLE `monitor_settings` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

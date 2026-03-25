@@ -28,6 +28,7 @@ class GiaPhaUser extends ModelGlxBase
 
     static function getCountBuyedNode($uid)
     {
+
         $nBuyed = 0;
         if($billAndPro = \App\Models\OrderItem::where('user_id', $uid)->get()){
             foreach ($billAndPro as $item){
@@ -35,6 +36,8 @@ class GiaPhaUser extends ModelGlxBase
                     $nBuyed += $item->param1;
             }
         }
+
+
         return $nBuyed;
     }
 

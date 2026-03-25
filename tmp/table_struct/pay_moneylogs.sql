@@ -1,5 +1,5 @@
 -- Table: pay_moneylogs
--- Generated: 2026-02-28 23:12:34
+-- Generated: 2026-03-20 12:01:04
 
 CREATE TABLE `pay_moneylogs` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

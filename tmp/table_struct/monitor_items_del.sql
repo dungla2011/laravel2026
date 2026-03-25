@@ -1,5 +1,5 @@
 -- Table: monitor_items_del
--- Generated: 2026-02-28 23:12:31
+-- Generated: 2026-03-20 12:01:01
 
 CREATE TABLE `monitor_items_del` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

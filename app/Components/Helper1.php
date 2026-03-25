@@ -528,7 +528,7 @@ data-id='$objFile->id' data-field='$field'>  </span> </span>";
         ?>
                 // skin: 'borderless',
                 selector: '<?php echo $id ?>',
-                content_style: '.img-responsive-glx {max-width: 1200px; height: auto; }',
+                content_style: '.img-responsive-glx {max-width: 1200px; height: auto; } svg { max-width: 100%; height: auto; }',
                 // content_css: '/public/css/font-awesome.min.css',
                 fontsize_formats:"6pt 8pt 9pt 10pt 11pt 12pt 13pt 14pt 15pt 16pt 18pt 20pt 22pt 24pt 30pt 36pt 48pt 60pt 72pt 96pt",
                 image_dimensions: false,
@@ -541,8 +541,24 @@ data-id='$objFile->id' data-field='$field'>  </span> </span>";
                     " searchreplace table template textcolor visualblocks wordcount tiny_mce_wiris"
                 ], //removed:  charmap insertdatetime print
                 //extended_valid_elements : "script[src|async|defer|type|charset],style,link,i[class|style],a[id|href|style|class],img[class|src|style]",
-                extended_valid_elements : "pre,style,link,i[class|style],a[id|target|href|style|class],img[class|src|style],",
-                custom_elements:"style,link",
+                extended_valid_elements : "pre,style,link,i[class|style],a[id|target|href|style|class],img[class|src|style]," +
+                    "svg[class|width|height|viewbox|style|xmlns]," +
+                    "ellipse[class|cx|cy|rx|ry|fill|stroke|stroke-width|style|transform|transform-origin]," +
+                    "circle[class|cx|cy|r|fill|stroke|stroke-width|style]," +
+                    "rect[class|x|y|width|height|fill|stroke|stroke-width|style]," +
+                    "path[class|d|fill|stroke|stroke-width|style]," +
+                    "text[class|x|y|font-size|font-weight|text-anchor|fill|letter-spacing|style]," +
+                    "tspan[class|x|y|font-size|fill|style]," +
+                    "g[class|style|transform]," +
+                    "line[class|x1|y1|x2|y2|stroke|stroke-width|style]," +
+                    "polyline[class|points|fill|stroke|stroke-width|style]," +
+                    "polygon[class|points|fill|stroke|stroke-width|style]," +
+                    "defs[class],symbol[class|id|viewbox]," +
+                    "use[class|href|x|y|width|height|style]," +
+                    "image[class|href|x|y|width|height|style]," +
+                    "animate[class|attributename|from|to|dur|repeatcount|style]," +
+                    "animatetransform[class|attributename|type|from|to|dur|repeatcount|style],",
+                custom_elements:"style,link,svg,ellipse,circle,rect,path,text,tspan,g,line,polyline,polygon,defs,symbol,use,image,animate,animatetransform",
                 //valid_children: 'pre[code|ul|p|li|span|a|div],p[strong|img|a]',
                 entity_encoding : "raw",
                  external_plugins: { tiny_mce_wiris: '/vendor/tinymce/mathtype-tinymce4/plugin.min.js' },

@@ -1,0 +1,21 @@
+-- Table: ai_chat_messages
+-- Generated: 2026-03-24 22:33:07
+
++-----------------+---------------+------+-----+---------------------+----------------+
+| Field           | Type          | Null | Key | Default             | Extra          |
++-----------------+---------------+------+-----+---------------------+----------------+
+| id              | int(11)       | NO   | PRI |                     | auto_increment |
+| user_id         | int(11)       | YES  | MUL |                     |                |
+| conversation_id | varchar(255)  | NO   | MUL |                     |                |
+| sender          | varchar(20)   | NO   | MUL | user                |                |
+| channel         | varchar(50)   | YES  | MUL |                     |                |
+| content         | longtext      | NO   |     |                     |                |
+| prompt          | longtext      | YES  |     |                     |                |
+| input_tokens    | int(11)       | YES  |     |                     |                |
+| output_tokens   | int(11)       | YES  |     |                     |                |
+| cost_usd        | decimal(10,6) | YES  |     |                     |                |
+| created_at      | timestamp     | YES  |     | current_timestamp() |                |
+| deleted_at      | datetime      | YES  | MUL |                     |                |
++-----------------+---------------+------+-----+---------------------+----------------+
+
+12 columns

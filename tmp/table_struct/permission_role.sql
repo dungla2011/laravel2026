@@ -1,5 +1,5 @@
 -- Table: permission_role
--- Generated: 2026-02-28 23:12:35
+-- Generated: 2026-03-20 12:01:05
 
 CREATE TABLE `permission_role` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -12,4 +12,4 @@ CREATE TABLE `permission_role` (
   PRIMARY KEY (`id`),
   KEY `permission_role_old_id_index` (`old_id`),
   KEY `permission_role_permission_id_index` (`permission_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=92531 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=92534 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
