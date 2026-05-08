@@ -7,7 +7,7 @@ ini_set('display_errors', 1);
 
 define("DEF_TOOL_CMS", 1);
 
-$_SERVER['HTTP_HOST'] = $_SERVER['SERVER_NAME'] = 'ncbd.mytree.vn';
+$_SERVER['HTTP_HOST'] = $_SERVER['SERVER_NAME'] = 'events.dav.edu.vn';
 require_once "/var/www/html/public/index.php";;
 
 sendMailNcbd("nguyenhungson2005@yahoo.com", "Mời họp lần 2" , " Kính mời ông bà đến dự buổi họp tổng kết dự án NCBD tại phòng họp tầng 7. Vui lòng trả lời mail này!");
