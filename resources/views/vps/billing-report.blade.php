@@ -231,10 +231,14 @@ $uid = getCurrentUserId();
                             <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-calendar"></i></span>
                             <div class="info-box-content">
 
-                                <div style="margin-top: 8px;">
+                                <div style="margin-top: 8px; display: flex; gap: 5px;">
+                                    <input type="date" id="fromDate" class="form-control form-control-sm"
+                                        value="{{ request('from_time') }}" style="font-size: 100%; width: 50%; {{ request('from_time') ? 'color:white; border: 1px solid #17a2b8; background-color: #17a2b8;' : '' }}"
+                                        placeholder="Từ ngày"
+                                        >
                                     <input type="date" id="paymentDate" class="form-control form-control-sm"
-                                        value="{{ request('to_time') }}" style="font-size: 100%; {{ request('to_time') ? 'color:white; border: 1px solid red; background-color: red;' : '' }}"
-                                        placeholder="Chọn thời điểm báo cáo"
+                                        value="{{ request('to_time') }}" style="font-size: 100%; width: 50%; {{ request('to_time') ? 'color:white; border: 1px solid red; background-color: red;' : '' }}"
+                                        placeholder="Đến ngày"
                                         >
                                 </div>
                                 <div style="margin-top: 8px; display: flex; gap: 5px;">
@@ -242,7 +246,7 @@ $uid = getCurrentUserId();
                                         <i class="fas fa-search"></i> Chọn ngày
                                     </button>
                                     <button class="btn btn-secondary btn-sm" onclick="clearDate()"
-                                        {{ !request('to_time') ? 'disabled' : '' }}>
+                                        {{ (!request('to_time') && !request('from_time')) ? 'disabled' : '' }}>
                                         <i class="fas fa-times"></i> Xoá
                                     </button>
                                 </div>
@@ -310,7 +314,7 @@ $uid = getCurrentUserId();
                                             <th>Mã số</th>
                                             <th>Tên Vps</th>
                                             <th>Địa chỉ IP</th>
-                                            <th>Ngày tính phí</th>
+                                            <th>Tính phí từ</th>
                                             <th>Tính phí đến</th>
                                             <th>Thời gian sử dụng</th>
                                             <th>Phí/Tháng </th>
@@ -322,6 +326,15 @@ $uid = getCurrentUserId();
                                         @php $currentInstanceId = null; $previousRow = null; @endphp
                                         @foreach ($results as $row)
                                         @php
+
+                                            $startTime = \Carbon\Carbon::parse($row['created_at'])->format('Y-m-d H:i');
+                                            if($fromTime = request('from_time') ?? ''){
+                                                $fromTime = "$fromTime 00:00";
+                                                if($fromTime > $startTime)
+                                                    $startTime = $fromTime;
+                                            }
+
+
                                             $isNewInstance = $currentInstanceId !== $row['instance_id'];
                                             $currentInstanceId = $row['instance_id'];
                                             $isPoweredOff = strtoupper($row['power_state']) === 'POWERED_OFF';
@@ -366,13 +379,13 @@ $uid = getCurrentUserId();
                                                     <small class="text">{{ \Carbon\Carbon::parse($row['last_billing_start_at'])->format('Y-m-d H:i') }}</small><br>
                                                     <small class="text" title="Ngày tạo - Created date"><i>({{ \Carbon\Carbon::parse($row['created_at'])->format('Y-m-d H:i') }})</i></small>
                                                 @else
-                                                    <small>{{ \Carbon\Carbon::parse($row['created_at'])->format('Y-m-d H:i') }}</small>
+                                                    <small>{{$startTime}}</small>
                                                 @endif
                                             </td>
                                             <td class="timestamp {{ $isCrossed ? 'row-crossed' : '' }}">
                                                 <small>{{ \Carbon\Carbon::parse($row['timestamp'])->format('Y-m-d H:i') }}  </small>
                                             </td>
-                                            <td class="time-usage {{ $isCrossed ? 'row-crossed' : '' }}"><small class="text-muted">{{ $row['time_usage'] }}</small></td>
+                                            <td class="time-usage {{ $isCrossed ? 'row-crossed' : '' }}"><small class="text-muted">{{ $row['time_text'] }}</small></td>
                                             <td class="price-month {{ $isCrossed ? 'row-crossed' : '' }}">
                                                 @php
                                                     $displayPrice = number_formatvn0($row['price_month'] ?? $row['price_config']);
@@ -398,7 +411,7 @@ $uid = getCurrentUserId();
 
                                             </td>
                                             <td class="text-right fee {{ $isCrossed ? 'row-crossed' : '' }}">
-                                                <a href="{{ route('vps.billing.detail', $row['usage_id']) }}" class="text-primary" title="Click to view detailed calculation">
+                                                <a href="{{ route('vps.billing.detail', $row['usage_id']) }}{{ http_build_query(array_filter(['from_time' => request('from_time'), 'to_time' => request('to_time')])) ? '?' . http_build_query(array_filter(['from_time' => request('from_time'), 'to_time' => request('to_time')])) : '' }}" class="text-primary" title="Click to view detailed calculation">
                                                     <strong>{{ number_format($row['calculated_fee'], 0, ',', '.') }} VND </strong>
                                                     <i class="fas fa-external-link-alt ml-1" style="font-size: 10px;"></i>
                                                 </a>
@@ -551,17 +564,27 @@ $uid = getCurrentUserId();
 
     // Filter by payment date
     function filterByDate() {
-        const dateInput = document.getElementById('paymentDate');
-        const dateValue = dateInput.value;
+        const fromInput = document.getElementById('fromDate');
+        const toInput = document.getElementById('paymentDate');
+        const fromValue = fromInput.value;
+        const toValue = toInput.value;
 
-        if (!dateValue) {
-            alert('Vui lòng chọn ngày!');
+        if (!fromValue && !toValue) {
+            alert('Vui lòng chọn ít nhất một ngày!');
             return;
         }
 
-        // Get current URL and add/update to_time parameter
         const url = new URL(window.location);
-        url.searchParams.set('to_time', dateValue);
+        if (fromValue) {
+            url.searchParams.set('from_time', fromValue);
+        } else {
+            url.searchParams.delete('from_time');
+        }
+        if (toValue) {
+            url.searchParams.set('to_time', toValue);
+        } else {
+            url.searchParams.delete('to_time');
+        }
         window.location.href = url.toString();
     }
 
@@ -569,6 +592,7 @@ $uid = getCurrentUserId();
     function clearDate() {
         const url = new URL(window.location);
         url.searchParams.delete('to_time');
+        url.searchParams.delete('from_time');
         window.location.href = url.toString();
     }
 

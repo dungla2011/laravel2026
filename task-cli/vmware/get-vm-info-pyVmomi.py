@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""" LAD
 Connect to ESXi host directly using pyVmomi
 Get VM information including boot time, uptime, etc.
 
@@ -50,169 +50,145 @@ def get_obj(content, vimtype, name=None):
         container.Destroy()
     return None
 
-def get_all_vms(content):
-    """Get all VMs from ESXi host"""
-    container = content.viewManager.CreateContainerView(content.rootFolder, [vim.VirtualMachine], True)
-    vms = [vm for vm in container.view]
-    container.Destroy()
-    return vms
+def fetch_all_vm_props(content, host_ip, vm_name=None):
+    """Fetch all VM properties in a single PropertyCollector API call"""
+    property_paths = [
+        'name',
+        'config.hardware.numCPU',
+        'config.hardware.memoryMB',
+        'config.hardware.device',
+        'config.uuid',
+        'config.instanceUuid',
+        'config.guestFullName',
+        'runtime.powerState',
+        'runtime.connectionState',
+        'runtime.bootTime',
+        'guest.guestState',
+        'guest.hostName',
+        'storage.perDatastoreUsage',
+    ]
 
-def get_vm_uptime(vm):
-    """
-    Calculate VM uptime in seconds
-    Returns uptime in minutes
-    """
+    container = content.viewManager.CreateContainerView(
+        content.rootFolder, [vim.VirtualMachine], True
+    )
+
+    traversal = vmodl.query.PropertyCollector.TraversalSpec(
+        name='containerView',
+        type=vim.view.ContainerView,
+        path='view',
+        skip=False
+    )
+
+    obj_spec = vmodl.query.PropertyCollector.ObjectSpec(
+        obj=container,
+        skip=True,
+        selectSet=[traversal]
+    )
+
+    prop_spec = vmodl.query.PropertyCollector.PropertySpec(
+        type=vim.VirtualMachine,
+        pathSet=property_paths
+    )
+
+    filter_spec = vmodl.query.PropertyCollector.FilterSpec(
+        objectSet=[obj_spec],
+        propSet=[prop_spec]
+    )
+
     try:
-        # Get VM boot time from guest info
-        if vm.guest and vm.guest.hostName:
-            # Get last boot time from VM runtime info
-            if hasattr(vm.runtime, 'bootTime'):
-                boot_time = vm.runtime.bootTime
-                if boot_time:
-                    uptime_seconds = (datetime.now(boot_time.tzinfo) - boot_time).total_seconds()
-                    uptime_minutes = int(uptime_seconds / 60)
-                    return {
-                        'boot_time': boot_time.isoformat() if boot_time else None,
-                        'uptime_minutes': uptime_minutes,
-                        'uptime_hours': uptime_minutes // 60,
-                        'uptime_days': uptime_minutes // (60 * 24)
-                    }
-    except Exception as e:
-        print(f"Error getting uptime: {e}")
+        result = content.propertyCollector.RetrieveContents([filter_spec])
+    finally:
+        container.Destroy()
 
-    return {
-        'boot_time': None,
-        'uptime_minutes': None,
-        'uptime_hours': None,
-        'uptime_days': None
-    }
+    vms_info = []
+    for obj_content in result:
+        if not obj_content.propSet:
+            continue
 
-def get_vm_info(vm, host_ip=None):
-    """Get detailed VM information"""
-    try:
-        # Check if VM has running tasks
-        vm_tasks = []
-        try:
-            if hasattr(vm, 'recentTask') and vm.recentTask:
-                for task in vm.recentTask:
-                    if hasattr(task, 'info'):
-                        task_info = task.info
-                        if hasattr(task_info, 'state') and task_info.state not in ['success', 'error']:
-                            vm_tasks.append({
-                                'name': task_info.name if hasattr(task_info, 'name') else 'Unknown',
-                                'state': task_info.state if hasattr(task_info, 'state') else 'Unknown',
-                                'progress': task_info.progress if hasattr(task_info, 'progress') else None
-                            })
-        except:
-            pass
+        props = {p.name: p.val for p in obj_content.propSet}
+        vm_name_val = props.get('name', '')
 
-        # Refresh VM state to avoid stale data
-        try:
-            vm.Reload()  # Reload entire VM object including config
-        except:
-            pass
+        if vm_name and vm_name_val != vm_name:
+            continue
 
-        try:
-            vm.RefreshRuntime()
-        except:
-            pass  # Some ESXi versions don't support this
+        # Hardware
+        cpu_count = props.get('config.hardware.numCPU', 0) or 0
+        memory_mb = props.get('config.hardware.memoryMB', 0) or 0
 
-        uptime_info = get_vm_uptime(vm)
-
-        # Get hardware info
-        cpu_count = vm.config.hardware.numCPU if vm.config else 0
-        memory_mb = vm.config.hardware.memoryMB if vm.config else 0
-
-        # Get disk size - with retry and better error handling
+        # Disk and NIC - single pass
         disk_size_gb = 0
         disk_count = 0
         disk_details = []
-        if vm.config and vm.config.hardware.device:
-            for device in vm.config.hardware.device:
-                if isinstance(device, vim.vm.device.VirtualDisk):
-                    disk_count += 1
-                    disk_size = 0
-                    disk_label = device.deviceInfo.label if device.deviceInfo else f"Disk {disk_count}"
+        nics = []
+        devices = props.get('config.hardware.device', []) or []
+        for device in devices:
+            if isinstance(device, vim.vm.device.VirtualDisk):
+                disk_count += 1
+                disk_size = 0
+                disk_label = device.deviceInfo.label if device.deviceInfo else f"Disk {disk_count}"
+                if hasattr(device, 'capacityInKB') and device.capacityInKB:
+                    disk_size = device.capacityInKB / (1024 * 1024)
+                elif hasattr(device, 'capacityInBytes') and device.capacityInBytes:
+                    disk_size = device.capacityInBytes / (1024 * 1024 * 1024)
+                else:
+                    try:
+                        if hasattr(device, 'backing') and device.backing:
+                            if hasattr(device.backing, 'capacityInKB') and device.backing.capacityInKB:
+                                disk_size = device.backing.capacityInKB / (1024 * 1024)
+                            elif hasattr(device.backing, 'capacityInBytes') and device.backing.capacityInBytes:
+                                disk_size = device.backing.capacityInBytes / (1024 * 1024 * 1024)
+                    except:
+                        pass
+                disk_size_gb += disk_size
+                disk_details.append({
+                    'label': disk_label,
+                    'size_gb': round(disk_size, 2),
+                    'capacity_kb': device.capacityInKB if hasattr(device, 'capacityInKB') else None
+                })
+            elif isinstance(device, vim.vm.device.VirtualEthernetCard):
+                nics.append({
+                    'label': device.deviceInfo.label if device.deviceInfo else 'Unknown',
+                    'mac_address': device.macAddress,
+                    'network_name': device.backing.deviceName if hasattr(device.backing, 'deviceName') else 'Unknown'
+                })
 
-                    # Try multiple methods to get disk size
-                    if hasattr(device, 'capacityInKB') and device.capacityInKB:
-                        disk_size = device.capacityInKB / (1024 * 1024)
-                    elif hasattr(device, 'capacityInBytes') and device.capacityInBytes:
-                        disk_size = device.capacityInBytes / (1024 * 1024 * 1024)
-                    else:
-                        # Try to get size from backing file
-                        try:
-                            if hasattr(device, 'backing') and device.backing:
-                                if hasattr(device.backing, 'capacityInKB') and device.backing.capacityInKB:
-                                    disk_size = device.backing.capacityInKB / (1024 * 1024)
-                                elif hasattr(device.backing, 'capacityInBytes') and device.backing.capacityInBytes:
-                                    disk_size = device.backing.capacityInBytes / (1024 * 1024 * 1024)
-                        except:
-                            pass
-
-                    disk_size_gb += disk_size
-                    disk_details.append({
-                        'label': disk_label,
-                        'size_gb': round(disk_size, 2),
-                        'capacity_kb': device.capacityInKB if hasattr(device, 'capacityInKB') else None
-                    })
-
-        # If disk is 0 but VM has config, log warning with details
-        if disk_size_gb == 0 and vm.config and disk_count > 0:
-            print(f"    ⚠️  Warning: {vm.name} - disk_size=0 (found {disk_count} disk devices)")
+        # Fallback disk size from storage if disk is 0
+        if disk_size_gb == 0 and props.get('config.uuid'):
+            print(f"    ⚠️  Warning: {vm_name_val} - disk_size=0 (found {disk_count} disk devices)")
             for idx, disk in enumerate(disk_details, 1):
                 print(f"        Disk {idx}: {disk['label']}, capacityInKB={disk['capacity_kb']}")
+            storage_usage = props.get('storage.perDatastoreUsage') or []
+            for usage in storage_usage:
+                if hasattr(usage, 'committed'):
+                    disk_size_gb += usage.committed / (1024 * 1024 * 1024)
+            if disk_size_gb > 0:
+                print(f"    ✓ Retrieved disk size from storage usage: {disk_size_gb:.2f}GB")
 
-            # Check for running tasks
-            if vm_tasks:
-                print(f"    🔧 VM has {len(vm_tasks)} running task(s):")
-                for task in vm_tasks:
-                    progress_str = f" ({task['progress']}%)" if task['progress'] is not None else ""
-                    print(f"        - {task['name']}: {task['state']}{progress_str}")
-
-            # Try alternative method - storage info
+        # Uptime calculation
+        boot_time = props.get('runtime.bootTime')
+        uptime_info = {'boot_time': None, 'uptime_minutes': None, 'uptime_hours': None, 'uptime_days': None}
+        if props.get('guest.hostName') and boot_time:
             try:
-                if hasattr(vm, 'storage') and vm.storage and hasattr(vm.storage, 'perDatastoreUsage'):
-                    for usage in vm.storage.perDatastoreUsage:
-                        if hasattr(usage, 'committed'):
-                            disk_size_gb += usage.committed / (1024 * 1024 * 1024)
-                    if disk_size_gb > 0:
-                        print(f"    ✓ Retrieved disk size from storage usage: {disk_size_gb:.2f}GB")
+                uptime_seconds = (datetime.now(boot_time.tzinfo) - boot_time).total_seconds()
+                uptime_minutes = int(uptime_seconds / 60)
+                uptime_info = {
+                    'boot_time': boot_time.isoformat(),
+                    'uptime_minutes': uptime_minutes,
+                    'uptime_hours': uptime_minutes // 60,
+                    'uptime_days': uptime_minutes // (60 * 24)
+                }
             except Exception as e:
-                print(f"    ⚠️  Could not get storage usage: {e}")
-        elif disk_size_gb == 0 and vm.config:
-            print(f"    ⚠️  Warning: {vm.name} - disk_size=0 (found {disk_count} disk devices)")
-            # Try alternative method - storage info
-            try:
-                if hasattr(vm, 'storage') and vm.storage and hasattr(vm.storage, 'perDatastoreUsage'):
-                    for usage in vm.storage.perDatastoreUsage:
-                        if hasattr(usage, 'committed'):
-                            disk_size_gb += usage.committed / (1024 * 1024 * 1024)
-                    if disk_size_gb > 0:
-                        print(f"    ✓ Retrieved disk size from storage usage: {disk_size_gb:.2f}GB")
-            except Exception as e:
-                print(f"    ⚠️  Could not get storage usage: {e}")
+                print(f"Error getting uptime for {vm_name_val}: {e}")
 
-        # Get network info
-        nics = []
-        if vm.config and vm.config.hardware.device:
-            for device in vm.config.hardware.device:
-                if isinstance(device, vim.vm.device.VirtualEthernetCard):
-                    nics.append({
-                        'label': device.deviceInfo.label if device.deviceInfo else 'Unknown',
-                        'mac_address': device.macAddress,
-                        'network_name': device.backing.deviceName if hasattr(device.backing, 'deviceName') else 'Unknown'
-                    })
-
-        return {
-            'connection_state': vm.runtime.connectionState if hasattr(vm.runtime, 'connectionState') else 'Unknown',
-            'guest_state': vm.guest.guestState if vm.guest and hasattr(vm.guest, 'guestState') else 'Unknown',
+        vms_info.append({
+            'connection_state': props.get('runtime.connectionState', 'Unknown'),
+            'guest_state': props.get('guest.guestState', 'Unknown') or 'Unknown',
             'host_ip': host_ip,
-            'name': vm.name,
-            'vm_id': vm.config.uuid if vm.config else 'Unknown',
-            'bios_uuid': vm.config.uuid if vm.config else 'Unknown',
-            'instance_uuid': vm.config.instanceUuid if vm.config else 'Unknown',
-            'power_state': vm.runtime.powerState,
+            'name': vm_name_val,
+            'vm_id': props.get('config.uuid', 'Unknown') or 'Unknown',
+            'bios_uuid': props.get('config.uuid', 'Unknown') or 'Unknown',
+            'instance_uuid': props.get('config.instanceUuid', 'Unknown') or 'Unknown',
+            'power_state': props.get('runtime.powerState', 'Unknown'),
             'cpu': cpu_count,
             'memory_mb': memory_mb,
             'memory_gb': memory_mb / 1024,
@@ -220,15 +196,14 @@ def get_vm_info(vm, host_ip=None):
             'disk_count': disk_count,
             'nics': nics,
             'mac_addresses': [nic['mac_address'] for nic in nics],
-            'guest_os': vm.config.guestFullName if vm.config else 'Unknown',
+            'guest_os': props.get('config.guestFullName', 'Unknown') or 'Unknown',
             'boot_time': uptime_info['boot_time'],
             'uptime_minutes': uptime_info['uptime_minutes'],
             'uptime_hours': uptime_info['uptime_hours'],
             'uptime_days': uptime_info['uptime_days'],
-        }
-    except Exception as e:
-        print(f"Error getting VM info for {vm.name}: {e}")
-        return None
+        })
+
+    return vms_info
 
 def fetch_vms_from_host(host_config, vm_name, all_vms_info, results_lock):
     """
@@ -266,45 +241,26 @@ def fetch_vms_from_host(host_config, vm_name, all_vms_info, results_lock):
 
         content = si.RetrieveContent()
 
-        # Force refresh to avoid stale data
-        try:
-            content.propertyCollector.RefreshProperties()
-        except:
-            pass  # Ignore if not supported
-
-        host_vms = []  # Collect VMs for this host
-
-        # Get VMs from this host
+        # Fetch all VM properties in a single PropertyCollector call
         if vm_name:
             thread_safe_print(f"[{get_timestamp()}] 📋 Fetching VM: {vm_name} from {esxi_host}")
-            vm = None
-            for v in get_all_vms(content):
-                if v.name == vm_name:
-                    vm = v
-                    break
-
-            if not vm:
-                thread_safe_print(f"[{get_timestamp()}] ⚠️  VM '{vm_name}' not found on {esxi_host}")
-                Disconnect(si)
-                return
-
-            vm_info = get_vm_info(vm, host_ip=esxi_host)
-            if vm_info:
-                host_vms.append(vm_info)
         else:
             thread_safe_print(f"[{get_timestamp()}] 📋 Fetching all VMs from {esxi_host}")
-            vms = get_all_vms(content)
-            thread_safe_print(f"[{get_timestamp()}] ✅ Found {len(vms)} VMs on {esxi_host}\n")
 
-            for vm in vms:
-                vm_info = get_vm_info(vm, host_ip=esxi_host)
+        host_vms = fetch_all_vm_props(content, esxi_host, vm_name)
 
-                if vm_info:
-                    host_vms.append(vm_info)
-                    disk_info = f"Disk: {vm_info['disk_gb']}GB ({vm_info['disk_count']} disks, host= {vm_info['host_ip']})" if vm_info.get('disk_count') else f"Disk: {vm_info['disk_gb']}GB"
-                    thread_safe_print(f"[{get_timestamp()}]   ✓ {vm_info['name']} - {vm_info['power_state']} - CPU: {vm_info['cpu']} - RAM: {vm_info['memory_gb']:.1f}GB - {disk_info}")
-                    if vm_info['uptime_minutes'] is not None:
-                        thread_safe_print(f"[{get_timestamp()}]     ⏱️  Uptime: {vm_info['uptime_days']}d {vm_info['uptime_hours']}h")
+        if vm_name and not host_vms:
+            thread_safe_print(f"[{get_timestamp()}] ⚠️  VM '{vm_name}' not found on {esxi_host}")
+            Disconnect(si)
+            return
+
+        if not vm_name:
+            thread_safe_print(f"[{get_timestamp()}] ✅ Found {len(host_vms)} VMs on {esxi_host}\n")
+            for vm_info in host_vms:
+                disk_info = f"Disk: {vm_info['disk_gb']}GB ({vm_info['disk_count']} disks, host= {vm_info['host_ip']})" if vm_info.get('disk_count') else f"Disk: {vm_info['disk_gb']}GB"
+                thread_safe_print(f"[{get_timestamp()}]   ✓ {vm_info['name']} - {vm_info['power_state']} - CPU: {vm_info['cpu']} - RAM: {vm_info['memory_gb']:.1f}GB - {disk_info}")
+                if vm_info['uptime_minutes'] is not None:
+                    thread_safe_print(f"[{get_timestamp()}]     ⏱️  Uptime: {vm_info['uptime_days']}d {vm_info['uptime_hours']}h")
 
         # Thread-safe append to shared list
         with results_lock:

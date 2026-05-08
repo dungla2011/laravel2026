@@ -1484,10 +1484,23 @@ class EventInfoControllerApi extends BaseApiController
                 //Tìm all mail để gửi:
                 $mmEAU = EventAndUser::where(['event_id' => $eventId])->get();
 
+                //////////////////////////////
+                //Thêm email override cho user khong co trong SK, khi gửi trường hop gui Email thong bao cap nhat thong tin
+                foreach ($mmEmailOverride AS $em1){
+                    $evUser1 = EventUserInfo::where('email', $em1)->first();
+                    if($evUser1){
+                        ol1($eventSendAction, "--- Add user not belong event: $em1", $ignoreEcho);
+                        $evAU1 = new EventAndUser();
+                        $evAU1->user_event_id = $evUser1->id;
+                        $mmEAU[] = $evAU1;
+                    }
+                }
+
                 $domain = UrlHelper1::getDomainHostName();
 
                 $fromMail = SiteMng::getEmailAdmin(1);
                 $fromName = SiteMng::getSiteCode(1);
+
 
 
                 //Chi lay cac user phu hop
@@ -1501,7 +1514,7 @@ class EventInfoControllerApi extends BaseApiController
                 //Tất cả user của evAndUser
                 foreach ($mmEAU as $eventAndUser) {
 
-                    ol1($eventSendAction, "--- $cc/$tt. check User $eventAndUser->user_event_id", $ignoreEcho);
+                    ol1($eventSendAction, "--- $cc/$tt. check User: $eventAndUser->user_event_id", $ignoreEcho);
                     $cc++;
                     if (!$evUser = EventUserInfo::find($eventAndUser->user_event_id)) {
                         ol1($eventSendAction, "  *** Not found user ev: $eventAndUser->user_event_id, so Ignore", $ignoreEcho);
@@ -1661,14 +1674,22 @@ class EventInfoControllerApi extends BaseApiController
 
                     //Nếu ngôn ngũ cửa user là TA thì chuyển sang TA
                     //Cho cả email và sms
+                    $select_content0 = $select_content;
                     if ($languageUser == 'en') {
                         $select_content .= "_en";
                     }
 
+                    //Neu ko co content EN thi quay lai content VI
+                    $ct = trim($ev->$select_content);
+                    if (!$ct) {
+                        $ct = trim($ev->$select_content0);
+                        if (!$ct) {
+                            ol1($eventSendAction, "*** Error: empty content $select_content / $select_content0, ev = $eventId", $ignoreEcho);
+                            continue;
+                        }
+                    }
+
                     ol1($eventSendAction, "Select content  x: $select_content", $ignoreEcho);
-
-
-
 
                     if($evP = EventUserPayment::where('user_event_id', $evUser->id)->where('event_id', $ev->id)->first()){
                         if(!$evP->payed)
@@ -1678,11 +1699,7 @@ class EventInfoControllerApi extends BaseApiController
                         }
                     }
 
-                    $ct = trim($ev->$select_content);
-                    if (!$ct) {
-                        ol1($eventSendAction, "*** Error: empty content $select_content, ev = $eventId", $ignoreEcho);
-                        continue;
-                    }
+
 
                     $ct = urldecode($ct);
                     if(str_contains($ct, EventInfo::$DEF_CMD_UPDATE_USER_INFO[0])){
@@ -1905,12 +1922,50 @@ class EventInfoControllerApi extends BaseApiController
                         $obj->Port = "587";
                         $obj->SMTPSecure = 'tls';
                         $obj->From = $fromMail;
-                        $obj->addReplyTo($fromMail, $fromName);
                         $obj->FromName = $fromName;
+
+                        if($ev->email_reply_to && checkMailValidNcbd($ev->email_reply_to)){
+                            $obj->addReplyTo($ev->email_reply_to, $ev->email_reply_to_name ?? $fromName );
+                            $obj->FromName = $ev->email_reply_to_name ?? $fromName;
+                        }
+
                         $obj->toAddress = $evUser->email;
                         $obj->Body = $ct;
                         $obj->Subject = $titleMail;
                         $obj->debug = 0;
+
+                        if($eventAndUser->cc_email){
+
+                            ol1($eventSendAction, "CC Email eventAndUser: $eventAndUser->cc_email", $ignoreEcho);
+                            //Validate từng email nếu có cc_email, nếu cc_email không hợp lệ thì bỏ cc_email đó, chứ không bỏ email chính
+                            $ccEmails = explode(",", $eventAndUser->cc_email);
+                            $validCcEmails = [];
+                            foreach ($ccEmails as $ccEmail) {
+                                $ccEmail = trim($ccEmail);
+                                if (filter_var($ccEmail, FILTER_VALIDATE_EMAIL)) {
+                                    $validCcEmails[] = $ccEmail;
+                                } else {
+                                    ol1($eventSendAction, "Invalid CC email: $ccEmail, bỏ email này", $ignoreEcho);
+                                }
+                            }
+                            $obj->addCC(implode(",", $validCcEmails));
+                        }
+
+                        if($evUser->cc_email){
+                            ol1($eventSendAction, "CC Email evUser: $evUser->cc_email", $ignoreEcho);
+                            //Validate từng email nếu có cc_email, nếu cc_email không hợp lệ thì bỏ cc_email đó, chứ không bỏ email chính
+                            $ccEmails = explode(",", $evUser->cc_email);
+                            $validCcEmails = [];
+                            foreach ($ccEmails as $ccEmail) {
+                                $ccEmail = trim($ccEmail);
+                                if (filter_var($ccEmail, FILTER_VALIDATE_EMAIL)) {
+                                    $validCcEmails[] = $ccEmail;
+                                } else {
+                                    ol1($eventSendAction, "Invalid CC email: $ccEmail, bỏ email này", $ignoreEcho);
+                                }
+                            }
+                            $obj->addCC(implode(",", $validCcEmails));
+                        }
 
                         $attachFileField = str_replace("content", 'attached_files_email', $select_content);
                         ol1($eventSendAction, " -- attachFileField = $attachFileField", $ignoreEcho);
@@ -1937,7 +1992,8 @@ class EventInfoControllerApi extends BaseApiController
 
                         ClassMail1::$attachedFile = [];
                         $eventAndUser->sent_mail_at = nowyh();
-                        $eventAndUser->save();
+                        if($eventAndUser->id)
+                            $eventAndUser->save();
                         ol1($eventSendAction, " Pushing done to Web , chanel = $chanelPusher...", $ignoreEcho);
 
                         $data['message'] = " <i class='fa fa-spinner fa-spin'></i>  (Lệnh: $eventSendAction->id) Sending $cc/$tt: $evUser->email";
@@ -2004,6 +2060,7 @@ class EventInfoControllerApi extends BaseApiController
 
                                 {
                                     $eventAndUser->sent_sms_at = nowyh();
+                                    if($eventAndUser->id)
                                     $eventAndUser->save();
                                     $log = (' Pushing done to Web ...');
                                 }

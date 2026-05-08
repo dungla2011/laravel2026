@@ -190,6 +190,7 @@ class VpsBillingReportService
                 'created_at' => $usage->created_at,
                 'last_billing_start_at' => $usage->last_billing_start_at,
                 'time_usage' => $timeUsage,
+                'time_text' => $feeResult['details']['time_text'] ?? '?????',
                 'cpu' => $usage->cpu,
                 'ram_gb' => $usage->ram_gb,
                 'disk_gb' => $usage->disk_gb,
@@ -487,6 +488,11 @@ class VpsBillingReportService
 
         $rows = [];
 
+//        echo "<pre> >>> " . __FILE__ . "(" . __LINE__ . ")<br/>";
+//        print_r($data);
+//        echo "</pre>";
+//        die();
+
         // Header
         $rows[] = ['ĐỐI SOÁT DỊCH VỤ - CÔNG TY CÔNG NGHỆ SỐ GALAXY VIETNAM - GLX.COM.VN'];
         $rows[] = [$kh];
@@ -546,10 +552,17 @@ class VpsBillingReportService
             $monthlyPrice = ($row['power_state']) === 'OLD_CONFIG' ? 0 : ($row['price_month']  ?: $row['price_config']);
             // $monthlyPrice = ($row['price_month']  ?: $row['price_config'] );
             $monthlyPriceSum += $monthlyPrice;
+
+            $usage_id =  $row['usage_id'];
+            $namex = null;
+            if($tmp1 = VpsUsage::find($usage_id)){
+                $namex = $tmp1->name;
+            }
+
             $rows[] = [
                 $key + 1,
                 $row['instance_id'],
-                $row['instance_name'],
+                $namex ?? $row['instance_name'],
                 $row['list_ip_address'],
                 $row['last_billing_start_at'] ?: $row['created_at'],
                 $row['timestamp'],
@@ -568,6 +581,11 @@ class VpsBillingReportService
         // Subtotals row for Monthly Price and Total Fee columns
         $rows[] = ['', '', '', '', '', '', '', '', '', '', 'Monthly:', $monthlyPriceSum, '', 'Total Fees', ($data['totalCost'] )];
 
+//        echo "<pre> >>> " . __FILE__ . "(" . __LINE__ . ")<br/>";
+//        print_r($row);
+//        echo "</pre>";
+//
+//        die();
         return $rows;
     }
 

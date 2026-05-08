@@ -29,9 +29,9 @@
 @endsection
 @section('title')
     <?php
-//    echo \App\Models\SiteMng::getTitle();
+    echo \App\Models\SiteMng::getTitle();
     ?>
-    VTim
+
 
 @endsection
 
@@ -47,7 +47,7 @@
 
 @section('content')
 
-    <header class="py-5 py-lg-6">
+    <header class="py-3 py-lg-6">
       <div class="container py-lg-5">
         <div class="row align-items-center g-4 g-lg-5">
           <div class="col-lg-7">
@@ -55,7 +55,7 @@
               <i class="bi bi-stars"></i> AI Assistant + Automation Platform
             </div>
             <h1 class="hero-title mt-3 fade-up delay-1">
-              Biến website thành <span>AI Chatbot</span> làm việc 24/7.
+              Biến website thành <span>AI Chatbot</span> 24/7.
             </h1>
             <p class="soft mt-3 fs-5 fade-up delay-2">
               Tự động trả lời khách hàng, chốt lead, đồng bộ CRM và kích hoạt workflow chỉ trong vài phút.

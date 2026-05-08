@@ -32,70 +32,16 @@ class VpsUsage extends ModelGlxBase
     {
         // Check if using fixed monthly price
         if ($this->price_month && $this->price_month > 0) {
-            return $this->calculateFeeFixedMonthly($fromTime, $toTime);
+
+            $ret = $this->calculateFeeFixedMonthly($fromTime, $toTime);
+            if(isAdminCookie()){
+
+            }
+            return $ret;
         }
 
         // Otherwise use config-based calculation
         return $this->calculateFeeConfigBased($fromTime, $toTime);
-    }
-
-     private function calculateFeeFixedMonthly_Old($fromTime = null, $toTime = null)
-    {
-        $pricePerMonth = floatval($this->price_month);
-
-        // Use custom fromTime if provided, otherwise use last_billing_start_at or created_at
-        $startTime = $fromTime ?: ($this->last_billing_start_at ?: $this->created_at);
-        $createdTime = new \DateTime($startTime);
-
-        // Use custom toTime if provided, otherwise use timestamp_minute
-        $endTime = $toTime ?: $this->timestamp_minute;
-
-        //Nếu ko còn dùng nữa, là đã hết hạn, thì $endTime tính đến lúc dùng thôi
-//        if($this->end_time_used)
-        if($this->power_state == 'OLD_CONFIG')
-        {
-            $endTime = $this->timestamp_minute;
-        }
-
-        $timestampTime = new \DateTime($endTime);
-        $interval = $createdTime->diff($timestampTime);
-        $durationMinutes = ($interval->days * 1440) + ($interval->h * 60) + $interval->i;
-
-        $fee = $pricePerMonth * ($durationMinutes / 43200);
-        $fee = round($fee, 0);
-
-        // Convert duration to text
-        $days = floor($durationMinutes / 1440);
-        $remainingMinutes = $durationMinutes % 1440;
-        $hours = floor($remainingMinutes / 60);
-        $minutes = $remainingMinutes % 60;
-
-        $durationText = '';
-        if ($days > 0) $durationText .= $days . ' ngày ';
-        if ($hours > 0 || $days > 0) $durationText .= $hours . ' giờ ';
-        $durationText .= $minutes . ' phút';
-
-        $text = sprintf(
-            "Fixed: %s K/month × %s = %s K",
-            number_format($pricePerMonth, 0, ',', '.'),
-            $durationText,
-            number_format($fee, 0, ',', '.')
-        );
-
-        return [
-            'text' => $text,
-            'fee' => $fee,
-            'details' => [
-                'type' => 'fixed_monthly',
-                'price_month' => $pricePerMonth,
-                'duration_minutes' => $durationMinutes,
-                'duration_days' => $days,
-                'duration_hours' => $hours,
-                'duration_mins' => $minutes,
-                'period_fee' => $fee,
-                'power_state' => $this->power_state
-            ]
-        ];
     }
 
 
@@ -114,7 +60,12 @@ class VpsUsage extends ModelGlxBase
 //        die("FRE = $pricePerMonth");
 
         // Use custom fromTime if provided, otherwise use last_billing_start_at or created_at
-        $startTime = $fromTime ?: ($this->last_billing_start_at ?: $this->created_at);
+        $startTime = $fromTime > ($this->last_billing_start_at ?: $this->created_at) ? $fromTime : ($this->last_billing_start_at ?: $this->created_at);
+//        $startTime = ($this->last_billing_start_at ?: $this->created_at) ?: $fromTime;
+
+        if(isAdminCookie()){
+//            bl(" StTime= $startTime  | $fromTime > " . ($this->last_billing_start_at ?: $this->created_at) ) ;
+        }
 
         // Ensure fromTime has time component, default to 00:00:00
         if (!preg_match('/\d{2}:\d{2}:\d{2}/', $startTime)) {
@@ -163,16 +114,19 @@ class VpsUsage extends ModelGlxBase
             $firstAnniversary->add(new \DateInterval('P1M'));
         }
 
+        $nLastDay = 0;
         // If endDate is before the next anniversary, calculate pro-rata for remaining days
         if ($anniversaryDate < $endDate) {
             // There are remaining days after the last full month
             // Calculate actual days used: from anniversaryDate to endDate inclusive
             $interval = $anniversaryDate->diff($endDate);
-            $actualDaysUsed = $interval->days + 1; // +1 to include both start and end day
-            
+            $actualDaysUsed = $interval->days ; // bỏ +1 to include both start and end day
+
             // Get total days in the month of endDate
             $daysInMonth = (int)$endDate->format('t');
-            
+            //Neu tinh theo thang thi luôn la 30 ngay:
+            $daysInMonth = 30;
+
             $partialMonthFee = $pricePerMonth * ($actualDaysUsed / $daysInMonth);
 
             $monthBreakdown[] = sprintf(
@@ -181,6 +135,7 @@ class VpsUsage extends ModelGlxBase
                 $actualDaysUsed,
                 $daysInMonth
             );
+            $nLastDay = $actualDaysUsed;
         }
 
         // Total fee: full months + partial month pro-rata
@@ -196,9 +151,19 @@ class VpsUsage extends ModelGlxBase
             number_format($fee, 0, ',', '.')
         );
 
+
         // Duration text for reference
         $interval = $startDate->diff($endDate);
+
+
+
+
+
         $days = $interval->days;
+        if(isAdminCookie()){
+            $st = $startDate->format('Y-m-d');
+//            bl(" $days / $fee / $st -> END = " . $endDate->format('Y-m-d'));
+        }
         $remainingMinutes = ($interval->h * 60) + $interval->i;
         $hours = floor($remainingMinutes / 60);
         $minutes = $remainingMinutes % 60;
@@ -208,10 +173,18 @@ class VpsUsage extends ModelGlxBase
         if ($hours > 0 || $days > 0) $durationText .= $hours . ' giờ ';
         $durationText .= $minutes . ' phút';
 
+        if(isAdminCookie()){
+//            echo "<pre> >>> " . __FILE__ . "(" . __LINE__ . ")<br/>";
+//            print_r($text);
+//            echo "</pre>";
+        }
+
         return [
             'text' => $text,
             'fee' => $fee,
             'details' => [
+                'time_text' => "$monthCount tháng, $nLastDay ngày $minutes phút",
+                'nLastDay'=>$nLastDay,
                 'type' => 'fixed_monthly',
                 'price_month' => $pricePerMonth,
                 'full_months' => $monthCount,
@@ -247,23 +220,38 @@ class VpsUsage extends ModelGlxBase
 
         // Calculate duration in minutes
         // Use custom fromTime if provided, otherwise use last_billing_start_at or created_at
-        if ($fromTime) {
-            $startTime = strtotime($fromTime);
-        } else {
-            $startTime = $this->last_billing_start_at ? strtotime($this->last_billing_start_at) : strtotime($this->created_at);
-        }
+//        if ($fromTime) {
+//            $startTime = strtotime($fromTime);
+//        } else {
+//            $startTime = $this->last_billing_start_at ? strtotime($this->last_billing_start_at) : strtotime($this->created_at);
+//        }
+
+        $startTime = $fromTime > ($this->last_billing_start_at ?: $this->created_at) ? $fromTime : ($this->last_billing_start_at ?: $this->created_at);
 
         ////////////////////
         $endTime = $toTime ?: $this->timestamp_minute;
+
+        if($startTime && !is_numeric($startTime))
+            $startTime = strtotime($startTime);
+        if($endTime && !is_numeric($endTime))
+            $endTime = strtotime($endTime);
+
+
+
         //Nếu ko còn dùng nữa, là đã hết hạn, thì $endTime tính đến lúc dùng thôi
         if($this->power_state == 'OLD_CONFIG')
         {
             $endTime = ($this->timestamp_minute);
+            $endTime = strtotime($endTime);
         }
-        $endTime = strtotime($endTime);
+
 
         $durationMinutes = max(0, floor(($endTime - $startTime) / 60));
-
+        if(isAdminCookie()){
+//            echo "<br/>\n";echo "<br/>\n";
+//            bl(".....$durationMinutes  $startTime / $endTime " . ($endTime - $startTime));
+//            return;
+        }
         // Determine CPU and RAM for fee calculation (0 if powered off)
         $feeCpu = (strtoupper($this->power_state) === 'POWERED_OFF') ? 0 : $this->cpu;
         $feeRam = (strtoupper($this->power_state) === 'POWERED_OFF') ? 0 : $this->ram_gb;
@@ -324,6 +312,8 @@ class VpsUsage extends ModelGlxBase
             'text' => $text,
             'fee' => $periodFee,
             'details' => [
+                'time_text' => "$durationMinutes phút",
+                'type' => 'fixed_cost',
                 'cpu_count' => $feeCpu,
                 'cpu_price' => $priceCpu,
                 'cpu_daily_fee' => $dailyCpuFee,

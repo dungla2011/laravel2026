@@ -38,7 +38,7 @@ $uid = getCurrentUserId();
 
         <section class="content">
             <div class="container-fluid">
-                
+
                 <div class="row">
                     <!-- Left: Info -->
                     <div class="col-md-4">
@@ -62,11 +62,11 @@ $uid = getCurrentUserId();
                                     </tr>
                                     <tr>
                                         <th>Created</th>
-                                        <td>{{ \Carbon\Carbon::parse($usage->created_at)->format('m-d H:i') }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($usage->created_at)->format('Y-m-d H:i') }}</td>
                                     </tr>
                                     <tr>
                                         <th>Timestamp</th>
-                                        <td>{{ \Carbon\Carbon::parse($usage->timestamp_minute)->format('m-d H:i') }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($usage->timestamp_minute)->format('Y-m-d H:i') }}</td>
                                     </tr>
                                     <tr>
                                         <th>Config</th>
@@ -86,21 +86,29 @@ $uid = getCurrentUserId();
                     <div class="col-md-8">
                         <div class="card">
                             <div class="card-header p-2">
+                                <p>
                                 <strong><i class="fas fa-calculator"></i> Công thức tính phí</strong>
+                                </p>
+                                <?php
+                                    if(request('from_time'))
+                                        echo " Tính từ: " . request('from_time') . " - ";
+                                    if(request('to_time'))
+                                        echo "\n Tính đến: " . request('to_time') . "";
+                                ?>
                             </div>
                             <div class="card-body p-3">
 
-                                @if($details['type'] === 'fixed_monthly')
+                                @if(($details['type'] ?? '') && $details['type'] === 'fixed_monthly')
                                     <div class="formula-box">
                                         <strong>Fixed Monthly:</strong><br>
                                         Price: {{ number_format($details['price_month'], 0) }} K/tháng<br>
-                                        Duration: {{ $details['duration_minutes'] }} phút ({{ $details['duration_days'] }}d {{ $details['duration_hours'] }}h {{ $details['duration_mins'] }}m)<br>
+                                        Duration: {{ $details['full_months'] }} Tháng , {{ $details['nLastDay'] }} ngày <br>
                                         <br>
-                                        Fee = {{ number_format($details['price_month'], 0) }} × {{ $details['duration_minutes'] }} / 43200 = <strong class="text-primary">{{ number_format($details['fee'], 0) }} K</strong>
+                                        Fee = {{ number_format($details['price_month'], 0) }} * ({{ $details['full_months']  }}  + {{ $details['nLastDay']  }}/30)   = <strong class="text-primary">{{ number_format($details['fee'], 0) }} VND </strong>
                                     </div>
                                 @else
                                     @php $priceConfig = json_decode($usage->price_config, true); @endphp
-                                    
+
                                     <table class="table table-sm table-bordered compact-table mb-2">
                                         <tr>
                                             <th>Resource</th>
@@ -111,38 +119,38 @@ $uid = getCurrentUserId();
                                         <tr>
                                             <td>CPU</td>
                                             <td>{{ number_format($priceConfig['n_cpu_core_price'] ?? 0, 0) }}K</td>
-                                            <td>{{ $details['cpu_count'] }}</td>
-                                            <td>{{ number_format($details['cpu_daily_fee'], 1) }}K</td>
+                                            <td>{{ $details['cpu_count'] ??  ''}}</td>
+                                            <td>{{ number_format($details['cpu_daily_fee']  ??  0, 1) }}K</td>
                                         </tr>
                                         <tr>
                                             <td>RAM</td>
                                             <td>{{ number_format($priceConfig['n_ram_gb_price'] ?? 0, 0) }}K</td>
-                                            <td>{{ $details['ram_gb'] }}</td>
-                                            <td>{{ number_format($details['ram_daily_fee'], 1) }}K</td>
+                                            <td>{{ $details['ram_gb']  ??  ''}}</td>
+                                            <td>{{ number_format($details['ram_daily_fee'] ?? 0, 1)  ??  0}}K</td>
                                         </tr>
                                         <tr>
                                             <td>Disk</td>
                                             <td>{{ number_format($priceConfig['n_gb_disk_price'] ?? 0, 0) }}K</td>
-                                            <td>{{ $details['disk_gb'] }}</td>
-                                            <td>{{ number_format($details['disk_daily_fee'], 1) }}K</td>
+                                            <td>{{ $details['disk_gb']  ??  '' }}</td>
+                                            <td>{{ number_format($details['disk_daily_fee']  ??  0, 1) }}K</td>
                                         </tr>
                                         <tr>
                                             <td>IP</td>
                                             <td>{{ number_format($priceConfig['n_ip_address_price'] ?? 0, 0) }}K</td>
-                                            <td>{{ $details['ip_count'] }}</td>
-                                            <td>{{ number_format($details['ip_daily_fee'], 1) }}K</td>
+                                            <td>{{ $details['ip_count']  ?? 0 }}</td>
+                                            <td>{{ number_format($details['ip_daily_fee'] ?? 0, 1) }}K</td>
                                         </tr>
                                         <tr class="bg-light">
                                             <td colspan="3"><strong>Total Daily</strong></td>
-                                            <td><strong>{{ number_format($details['daily_total_fee'], 1) }}K</strong></td>
+                                            <td><strong>{{ number_format($details['daily_total_fee'] ?? 0, 1) }}K</strong></td>
                                         </tr>
                                     </table>
 
                                     <div class="formula-box">
-                                        Duration: {{ $details['duration_minutes'] }} phút = {{ number_format($details['duration_minutes'] / 1440, 4) }} days<br>
+                                        Duration: {{ $details['duration_minutes']  ?? 0 }} phút = {{ number_format($details['duration_minutes']  ?? 0 / 1440, 4) }} days<br>
                                         <br>
-                                        Fee = {{ number_format($details['daily_total_fee'], 1) }} K/day × {{ number_format($details['duration_minutes'] / 1440, 4) }} days<br>
-                                        = <strong class="text-primary">{{ number_format($details['fee'], 0) }} K VND</strong>
+                                        Fee = {{ number_format($details['daily_total_fee'] ?? 0, 1) }} K/day × {{ number_format($details['duration_minutes']  ?? 0 / 1440, 4) }} days<br>
+                                        = <strong class="text-primary">{{ number_format($details['fee']  ?? 0, 0) }} K VND</strong>
                                     </div>
                                 @endif
 

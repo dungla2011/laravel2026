@@ -144,7 +144,7 @@ function checkMailValidNcbd($email)
     return 1;
 }
 
-function sendMailNcbd($toAddress, $subject, $body, $attachFile = null){
+function sendMailNcbd($toAddress, $subject, $body, $attachFile = null, $debug = 0, $from = null,){
 
     $toAddress = trim($toAddress);
     $toAddress = str_replace(" ", "", $toAddress);
@@ -164,6 +164,7 @@ function sendMailNcbd($toAddress, $subject, $body, $attachFile = null){
 
     //Chua co cho luu password
     $obj->Password = dfh1b(explode(',', env('NCBD_ACC'))[1]);
+    $obj->debug = $debug;
 
     $obj->Host = "smtp.office365.com";
     $obj->Port = "587";
@@ -182,6 +183,13 @@ function sendMailNcbd($toAddress, $subject, $body, $attachFile = null){
 
     $obj->toAddress = $toAddress;
     $obj->Body = $body;
+    if($from) {
+        //check valid email $from
+        if(!checkMailValidNcbd($from)) {
+
+        }else
+            $obj->From = $from;
+    }
     $obj->Subject = $subject;
     $admin = SiteMng::getEmailAdmin(1);
     $obj->addReplyTo($admin);

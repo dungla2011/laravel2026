@@ -44,7 +44,12 @@ class SyncVmwareInstancesCommand extends Command
         try {
             // Get all VMs
             $this->info("\n📋 Fetching VM list from vCenter...");
-            $vms = VmwareHelper::getVMListV2();
+
+            $dir = "/dev/shm";
+            if(file_exists($dir))
+                $vms = VmwareHelper::getVMListV2($dir."/vps_glx_list_v3.json");
+            else
+                $vms = VmwareHelper::getVMListV2();
 
             //Tim tat cac cac bios_uuid xuất hiện 2 lần, là do 2 vm có trùng , và tạo mảng bios_uuid đó
             $biosUUID_dublicated = [];
@@ -540,7 +545,7 @@ class SyncVmwareInstancesCommand extends Command
         }
 
         echo "\n FOUNDIP = " . $result['last_found_ip'];
-        outputT("/var/glx/weblog/_debug_last_ip_found.log", " $fileModTime " . date("Y-m-d H:i:s", $fileModTime) . " IPX =  ". serialize($foundIps));
+//        outputT("/var/glx/weblog/_debug_last_ip_found.log", " $fileModTime " . date("Y-m-d H:i:s", $fileModTime) . " IPX =  ". serialize($foundIps));
 
         if (!empty($foundIps)) {
             // Sort IPs for consistency

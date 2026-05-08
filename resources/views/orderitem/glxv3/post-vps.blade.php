@@ -1,4 +1,5 @@
-<?php
+
+    <?php
 
 use App\Models\OrderInfo;
 use App\Models\Product_Meta;
@@ -147,8 +148,23 @@ $formatPriceK = function($priceK) {
 
 ?>
 
+    @extends(getLayoutNameMultiReturnDefaultIfNull())
 
-<div class="container my-5" style="max-width: 800px;">
+    @section('title')
+        {{
+        \App\Models\SiteMng::getTitle()
+        }}
+    @endsection
+
+    @section('meta-description')
+        <?php
+        \App\Models\SiteMng::getDesc()
+        ?>
+    @endsection
+
+    @section('content')
+
+        <div class="container my-5" style="max-width: 800px;">
     <div class="card shadow-sm">
         <div class="card-body1">
             <h5 class="card-title mb-4">Chi tiết dịch vụ VPS</h5>
@@ -274,10 +290,12 @@ $formatPriceK = function($priceK) {
     const cancelBtn = document.getElementById('cancelBtn');
 
     // Cancel button - go back
+    if(cancelBtn)
     cancelBtn.addEventListener('click', function() {
         window.history.back();
     });
 
+    if(confirmBtn)
     // Confirm button - save to database
     confirmBtn.addEventListener('click', function() {
         confirmBtn.disabled = true;
@@ -317,3 +335,4 @@ $formatPriceK = function($priceK) {
         });
     });
 </script>
+    @endsection

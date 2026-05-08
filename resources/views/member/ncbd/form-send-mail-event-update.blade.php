@@ -55,7 +55,6 @@
 
         if($tmp = ($_POST['search_term'] ?? '')){
 
-//    bl(" TTMP = $tmp");
             if(str_contains($tmp, "@")){
                 $type = 'email';
                 $evU = EventUserInfo::where("email", $tmp)->first();
@@ -78,7 +77,7 @@
                 $evSend->pusher_chanel = 'ev000';
                 $evSend->select_content = 'content4';
                 $evSend->select_user_type = 'all_user';
-                $evSend->user_email_send_override = "$evU->id";
+                $evSend->user_email_send_override = "$evU->email";
 
                 $ok = 0;
                 if($check = \App\Models\EventSendAction::where('user_id' , $evSend->user_id)->where('type', $type)->where('user_email_send_override', "$evU->id")->orderBy('id','DESC')->first() ){
@@ -90,7 +89,9 @@
                         $ok = 1;
                 }
 
-                if($ok){
+//                bl("OK123  ; $ok / $check / $tmp");
+
+                if(!$check || $ok){
                     $evSend->save();
                     $showText = ("Quý khách vui lòng kiểm tra <b>$type</b> và làm theo hướng dẫn!");
                 }

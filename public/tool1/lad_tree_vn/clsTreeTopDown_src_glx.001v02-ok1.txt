@@ -5117,9 +5117,9 @@ $(function () {
 
             if (key == 'view_list_child') {
                 if (clsTreeTopDownCtrl.doingNodeObj.married_with)
-                    window.location.href = '/member/tree-mng?seby_s2=' + clsTreeTopDownCtrl.doingNodeObj.married_with;
+                    window.location.href = '/member/tree-mng?seby_s4=' + clsTreeTopDownCtrl.doingNodeObj.married_with;
                 else
-                    window.location.href = '/member/tree-mng?seby_s2=' + idItem;
+                    window.location.href = '/member/tree-mng?seby_s4=' + idItem;
             }
 
             if (key == 'view_content') {
@@ -5139,7 +5139,7 @@ $(function () {
 
             if (key == 'view_list_brother') {
                 if (clsTreeTopDownCtrl.doingNodeObj)
-                    window.location.href = '/member/tree-mng?seby_s2=' + clsTreeTopDownCtrl.doingNodeObj.parent_id;
+                    window.location.href = '/member/tree-mng?seby_s4=' + clsTreeTopDownCtrl.doingNodeObj.parent_id;
             }
 
             if (key == 'add_parent') {

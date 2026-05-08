@@ -8,12 +8,12 @@
 
 @endsection
 
-@section('meta-description')<?php
+@section('description')<?php
                             echo \App\Models\SiteMng::getDesc()
                             ?>
 @endsection
 
-@section('meta-keywords')<?php
+@section('keywords')<?php
                          echo \App\Models\SiteMng::getKeyword()
                          ?>
 @endsection

@@ -252,7 +252,15 @@ return $GLOBALS['mMapDomainDb'] = [
         'force_fallback_language'=>'vi',
         'dbadmin' => "/phpmyadmin6868",
         'enable_multi_language' =>1],
-    ];
+    'ai.lad.vn' => ['siteid' => 65, 'db_name' => 'DB_RM_HOST-9', 'layout_name' => 'ai_lad_vn',
+        'use_own_meta_table'=>1,
+        'force_fallback_language'=>'vi',
+        'dbadmin' => "/phpmyadmin6868",
+        'enable_multi_language' =>1],
+
+
+];
+
 
 
 

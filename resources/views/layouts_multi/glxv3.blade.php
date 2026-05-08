@@ -397,35 +397,27 @@ if(getCurrentUserId()){
     });
 </script>
 
-<script>
-      window.ChatWidgetConfig = {
-        apiBase:           'https://your-api.com',   // URL gốc của API
-        messagesEndpoint:  '/api/messages',           // GET  → lấy lịch sử
-        sendEndpoint:      '/api/chat',               // POST → gửi tin nhắn
-        botName:           'Trợ lý AI',
-        primaryColor:      '#0084ff',
-        welcomeMessage:    'Xin chào! Tôi có thể giúp gì cho bạn?',
-        placeholder:       'Nhập tin nhắn...',
-        headers: {                                    // header tuỳ chọn (auth, v.v.)
-          'Authorization': 'Bearer YOUR_TOKEN'
-        },
-        // Mapping field trong JSON trả về (tuỳ chỉnh nếu API khác chuẩn)
-        messagesField:    'messages',       // mảng messages trong response history
-        roleField:        'role',           // "user" | "assistant"
-        contentField:     'content',
-        timestampField:   'timestamp',
-       replyField:       'reply',          // field chứa câu trả lời từ /send
-       convIdField:      'conversation_id',
-       msgField:         'message',        // field tên khi POST tin nhắn
-     };
-</script>
-
-<script src="/js/chat/chat-widget.js"></script>
 
 
 <?php
 }
 ?>
+
+    <!-- ─── Config & Widget ─── -->
+<script>
+    window.ChatWidgetConfig = {
+        apiBase:          'https://glx.com.vn/glx',               /* fetch interceptor xử lý path tương đối */
+        messagesEndpoint: '/chat-gw.php?get_conversation=',
+        sendEndpoint:     '/chat-gw.php',
+        // sendEndpoint:     '/api/chat',
+        botName:          'Trợ lý AI Galaxy',
+        primaryColor:     '#0084ff',
+        welcomeMessage:   'Xin chào! Đây là demo offline. Gõ bất kỳ điều gì!',
+        placeholder:      'Nhập tin nhắn...',
+    };
+</script>
+<script src="https://ai01.glx.com.vn/chat-widget.js"></script>
+
 
 @yield('js')
 

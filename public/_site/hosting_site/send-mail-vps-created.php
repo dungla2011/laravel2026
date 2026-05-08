@@ -71,9 +71,10 @@ Mã số VPS: $iid <br>
 Username: $username <br>
 Password: $upw <br>
 <br>
-Quản trị VPS:  https://glx.com.vn/member/vps-instance/edit/$iid <br>
+(Bạn vui lòng đổi mật khẩu VPS để bảo mật!)<br>
 <br>
-Bạn vui lòng đổi mật khẩu VPS để bảo mật!<br>
+Quản trị VPS:  https://glx.com.vn/member/vps-instance/edit/$iid <br>
+
 Xin cảm ơn bạn!<br>
 ----------------------<br>
 https://glx.com.vn/member

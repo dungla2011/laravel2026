@@ -12,6 +12,8 @@ $formAction = '';
 $validationErrors = [];
 $successMessage = '';
 
+$ignore_re_check_email = 1;
+
 $phoneOK = $emailOK = '';
 $isConfirmPhone = $isConfirmEmail = 0;
 
@@ -77,6 +79,11 @@ if(request('update_user_info') ){
             }
         }
 
+    // Bypass confirmation if ignore_re_check_email is set
+    if ($ignore_re_check_email) {
+        $isConfirmPhone = 1;
+        $isConfirmEmail = 1;
+    }
 }
 
 // Handle form POST submission
@@ -115,6 +122,7 @@ if (request('update_user_info') && request()->isMethod('POST') && request('first
         'address' => 'nullable|string',
         'bank_name_text' => 'nullable|string|max:100',
         'bank_acc_number' => 'nullable|string|max:50',
+        'cc_email' => 'nullable|string|max:500',
     ]);
 
     // Validate
@@ -127,6 +135,21 @@ if (request('update_user_info') && request()->isMethod('POST') && request('first
             // Fix phone number if provided
             if (!empty($input['phone'])) {
                 $input['phone'] = EventUserInfo::fixPhoneNumber($input['phone']);
+            }
+
+            // Clean and validate cc_email (comma-separated emails)
+            if (!empty($input['cc_email'])) {
+                $ccEmails = array_map('trim', explode(',', $input['cc_email']));
+                $validEmails = [];
+                foreach ($ccEmails as $email) {
+                    // Remove invalid characters
+                    $email = preg_replace('/[^a-zA-Z0-9@._-]/', '', $email);
+                    // Validate email format
+                    if (!empty($email) && filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                        $validEmails[] = $email;
+                    }
+                }
+                $input['cc_email'] = implode(', ', $validEmails);
             }
 
             // Fill and save
@@ -153,6 +176,7 @@ if (request('update_user_info') && request()->isMethod('POST') && request('first
     </h4>
 
     <?php
+
     if(request('update_user_info') && !$isConfirmPhone && !$isConfirmEmail){
 
         ?>
@@ -212,9 +236,11 @@ if (request('update_user_info') && request()->isMethod('POST') && request('first
                 <label for="title">Danh xưng</label>
                 <select class="form-control" id="title" name="title">
                     <option value="">---</option>
-                    <option value="Mr" <?= ($eventUserInfo->title ?? '') == 'Mr' ? 'selected' : '' ?>>Mr</option>
-                    <option value="Ms" <?= ($eventUserInfo->title ?? '') == 'Ms' ? 'selected' : '' ?>>Ms</option>
-                    <option value="Mrs" <?= ($eventUserInfo->title ?? '') == 'Mrs' ? 'selected' : '' ?>>Mrs</option>
+                    <option value="Mr" <?= (str_replace('.', '', $eventUserInfo->title) ?? '') == 'Mr' ? 'selected' : '' ?>>Mr</option>
+                    <option value="Ms" <?= (str_replace('.', '', $eventUserInfo->title) ?? '') == 'Ms' ? 'selected' : '' ?>>Ms</option>
+                    <option value="Mrs" <?= (str_replace('.', '', $eventUserInfo->title) ?? '') == 'Mrs' ? 'selected' : '' ?>>Mrs</option>
+                    <option value="Ông" <?= (str_replace('.', '', $eventUserInfo->title) ?? '') == 'Ông' ? 'selected' : '' ?>>Ông</option>
+                    <option value="Bà" <?= (str_replace('.', '', $eventUserInfo->title) ?? '') == 'Bà' ? 'selected' : '' ?>>Bà</option>
                 </select>
             </div>
 
@@ -242,6 +268,14 @@ if (request('update_user_info') && request()->isMethod('POST') && request('first
                 <label for="phone">Số điện thoại</label>
                 <input type="tel" class="form-control" id="phone" name="phone"
                         value="<?= $eventUserInfo->phone ?? '' ?>" placeholder="0912345678">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-md-12">
+                <label for="cc_email">Email CC (cách nhau bởi dấu phẩy, ví dụ: test1@gmail.com, test2@yahoo.com)</label>
+                <input type="text" class="form-control" id="cc_email" name="cc_email"
+                        value="<?= $eventUserInfo->cc_email ?? '' ?>" placeholder="email1@example.com, email2@example.com">
             </div>
         </div>
 
@@ -329,6 +363,14 @@ if (request('update_user_info') && request()->isMethod('POST') && request('first
     }
     ?>
 </div>
+
+<style>
+
+#updateUserInfoForm label {
+    margin-top: 15px;
+}
+
+</style>
 
 <script>
     window.addEventListener('DOMContentLoaded', function() {

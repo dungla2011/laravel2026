@@ -1691,9 +1691,14 @@ use App\Models\EventInfo_Meta;
                         return;
                     }
 
-
+                    if(select_content !='content4' && select_content !='content5')
                     if(lang1 == 'en'){
                         contentx = contentx2;
+                    }
+
+                    if(!contentx){
+                        contentx = '';
+                        alert(`Nội dung trống? ${select_content}  Lang = ${lang1} `)
                     }
 
                     contentx = contentx.trim()

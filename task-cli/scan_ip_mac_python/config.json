@@ -1,6 +1,6 @@
 {
   "service_name": "glxScanIpMac",
-  "networks": "10.0.0.0-ens192,10.0.1.0-ens192,10.0.21.0-ens192,103.163.216.0-ens160,103.163.217.0-ens160,103.74.121.0-ens224",
+  "networks": "10.0.0.0-ens192,10.0.1.0-ens192,10.0.21.0-ens192,103.163.216.0-ens161,103.163.217.0-ens161,103.74.121.0-ens224",
   "output_file": "/var/glx/weblog/_glx_ip_mac.json",
   "loop_interval": 10,
   "threads": 100,

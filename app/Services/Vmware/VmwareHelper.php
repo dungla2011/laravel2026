@@ -9,7 +9,7 @@ use App\Services\Vmware\Hardware\{
 
 /**
  * VMware vCenter Integration Service
- * 
+ *
  * Provides complete API wrapper for VMware vSphere REST API
  * Handles authentication, VM discovery, and hardware information retrieval
  */
@@ -19,7 +19,7 @@ class VmwareHelper {
 
     /**
      * Login to VMware vCenter and obtain session ID
-     * 
+     *
      * @param string $domain vCenter domain/IP
      * @param string $uid Username (e.g., administrator@vsphere.local)
      * @param string $pw Password
@@ -32,7 +32,7 @@ class VmwareHelper {
         }
 
         echo "🔐 Attempting login to https://$domain/rest/com/vmware/cis/session\n";
-        
+
         $ch = curl_init("https://$domain/rest/com/vmware/cis/session");
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
@@ -53,7 +53,7 @@ class VmwareHelper {
 
         echo "Response length: " . strlen($ret) . " bytes\n";
         echo "HTTP Code: $httpCode\n";
-        
+
         if ($curlError) {
             echo "❌ cURL error: $curlError\n";
             return false;
@@ -91,7 +91,7 @@ class VmwareHelper {
 
     /**
      * Get list of hosts
-     * 
+     *
      * @return array List of hosts
      */
     public static function getHostList() {
@@ -123,7 +123,7 @@ class VmwareHelper {
 
     /**
      * Get list of VMs
-     * 
+     *
      * @param string|null $powerState Filter by power state (POWERED_ON, POWERED_OFF, SUSPENDED)
      * @param string|null $orderBy Sort order ('name' or null)
      * @param string|null $filterString URL filter string (e.g., ?filter.hosts.1=host-123)
@@ -173,7 +173,7 @@ class VmwareHelper {
 
     /**
      * Get only powered-on VMs
-     * 
+     *
      * @param string|null $orderBy Sort order
      * @param string|null $filterString Filter string
      * @return array List of POWERED_ON VMs
@@ -184,7 +184,7 @@ class VmwareHelper {
 
     /**
      * Get VM detailed information
-     * 
+     *
      * @param string $vmId VM ID (e.g., vm-12345)
      * @return VmHardwareInfo|null VM hardware information
      */
@@ -219,7 +219,7 @@ class VmwareHelper {
 
     /**
      * Get all VMs from all hosts
-     * 
+     *
      * @return array All VMs across all hosts
      */
     public static function getVMListAllHosts() {
@@ -238,7 +238,7 @@ class VmwareHelper {
 
     /**
      * Get list of datastores
-     * 
+     *
      * @param string $nameFilter Name filter (optional)
      * @return array List of datastores
      */
@@ -281,7 +281,7 @@ class VmwareHelper {
 
     /**
      * Get VM boot time (uptime) from event logs
-     * 
+     *
      * @param string $vmId VM ID
      * @return string|null Boot time (ISO 8601 format) or null if not found
      */
@@ -347,13 +347,13 @@ class VmwareHelper {
 
     /**
      * Get VM uptime in minutes
-     * 
+     *
      * @param string $vmId VM ID
      * @return int|null Uptime in minutes, or null if cannot determine
      */
     public static function getVMUptime($vmId) {
         $bootTime = self::getVMBootTime($vmId);
-        
+
         if (!$bootTime) {
             return null;
         }
@@ -362,10 +362,10 @@ class VmwareHelper {
             $bootDateTime = new \DateTime($bootTime, new \DateTimeZone('UTC'));
             $now = new \DateTime('now', new \DateTimeZone('UTC'));
             $diff = $now->diff($bootDateTime);
-            
+
             // Calculate total minutes
             $uptimeMinutes = ($diff->days * 24 * 60) + ($diff->h * 60) + $diff->i;
-            
+
             echo "✓ VM uptime: $uptimeMinutes minutes (" . floor($uptimeMinutes / 60) . "h " . ($uptimeMinutes % 60) . "m)\n";
             return $uptimeMinutes;
         } catch (\Exception $e) {
@@ -376,53 +376,53 @@ class VmwareHelper {
 
     /**
      * Get VM list using Python pyVmomi script
-     * 
+     *
      * Executes Python script to fetch VMs directly from ESXi hosts
      * More reliable than REST API for getting complete VM information
-     * 
+     *
      * @param string $outputFile JSON file path for output (default: /var/glx/weblog/vps_glx.json)
      * @return array Array of VMs from JSON file, empty array on failure
      */
     public static function getVMListV2($outputFile = '/var/glx/weblog/vps_glx_list_v3.json') {
         $pythonScript = '/var/www/html/task-cli/vmware/get-vm-info-pyVmomi.py';
-        
+
         // Verify Python script exists
         if (!file_exists($pythonScript)) {
             echo "❌ Python script not found: $pythonScript\n";
             return [];
         }
-        
+
         // Handle old JSON file - archive to zip if zip is old enough
         if (file_exists($outputFile)) {
-            $zipFile = $outputFile . '.zip';
+            $zipFile = "/var/glx/weblog/vps_glx_list_v3.zip";
             $shouldArchive = true;
-            
+
             // Check if zip file exists and is recent (within 180 minutes)
             if (file_exists($zipFile)) {
                 $zipModTime = filemtime($zipFile);
                 $zipAge = (time() - $zipModTime) / 60; // in minutes
-                
+
                 if ($zipAge < 180) {
-                    // $shouldArchive = false;
-                    echo "⏭️  Zip file is recent ({$zipAge} min old), skipping archive\n";
+                     $shouldArchive = false;
+                     echo "⏭️  Zip file is recent ({$zipAge} min old), skipping archive\n";
                 }
             }
-            
+
             if ($shouldArchive) {
                 // Rename old file with timestamp
                 $timestamp = date('Y-m-d_H-i-s');
                 $archivedFile = $outputFile . '.' . $timestamp;
-                
+
                 if (@rename($outputFile, $archivedFile)) {
                     echo "📝 Renamed to: {$archivedFile}\n";
-                    
+
                     // Add to zip archive (CREATE only - don't OVERWRITE to keep all old files)
                     $zip = new \ZipArchive();
                     if ($zip->open($zipFile, \ZipArchive::CREATE) === true) {
                         if ($zip->addFile($archivedFile, basename($archivedFile))) {
                             $zip->close();
                             echo "📦 Archived to: {$zipFile}\n";
-                            
+
                             // Delete the renamed file
                             if (@unlink($archivedFile)) {
                                 echo "🗑️  Deleted archived file: {$archivedFile}\n";
@@ -439,34 +439,34 @@ class VmwareHelper {
                 }
             }
         }
-        
+
         // Execute Python script with realtime output
         // Use -u flag to make Python unbuffered (flush output immediately)
         $command = "/var/www/html/task-cli/vmware/vmware_env/bin/python3 -u {$pythonScript} output={$outputFile}";
         echo "🔄 Executing: {$command}\n";
         echo "📡 Streaming output:\n";
-        
+
         // Use passthru for direct realtime output streaming
         $returnCode = 0;
         passthru($command, $returnCode);
-        
+
         // Check if execution was successful
         if ($returnCode !== 0) {
             echo "❌ Python script failed with return code: {$returnCode}\n";
             return [];
         }
-        
+
         // Check if JSON file was created
         if (!file_exists($outputFile)) {
             echo "❌ Output file not created: {$outputFile}\n";
             return [];
         }
-        
+
         // Verify file was created recently (within 15 seconds)
         $fileModTime = filemtime($outputFile);
         $currentTime = time();
         $fileAge = $currentTime - $fileModTime;
-        
+
         if ($fileAge > 15) {
             echo "❌ Output file is stale (created {$fileAge} seconds ago, max 15s allowed)\n";
             echo "   File path: {$outputFile}\n";
@@ -474,24 +474,24 @@ class VmwareHelper {
             echo "   Current time: " . date('Y-m-d H:i:s', $currentTime) . "\n";
             return [];
         }
-        
+
         echo "✓ File created {$fileAge} seconds ago (fresh data)\n";
-        
+
         // Read and parse JSON file
         try {
             $jsonContent = file_get_contents($outputFile);
             $vmsData = json_decode($jsonContent, true);
-            
+
             if (json_last_error() !== JSON_ERROR_NONE) {
                 echo "❌ JSON parse error: " . json_last_error_msg() . "\n";
                 return [];
             }
-            
+
             if (!is_array($vmsData)) {
                 echo "❌ Invalid JSON format (not an array)\n";
                 return [];
             }
-            
+
             // Convert array data to objects compatible with getVMInfo output
             $vmsObjects = [];
             foreach ($vmsData as $vmData) {
@@ -501,8 +501,55 @@ class VmwareHelper {
                 $vmObj->vm = $vmData['vm_id'];
                 $vmsObjects[] = $vmObj;
             }
-            
+
             echo "✅ Loaded " . count($vmsObjects) . " VMs from {$outputFile}\n";
+
+            {
+                // getch(".....");
+                // Log old JSON content to DB if vps_logs table exists
+                $newContent = @file_get_contents($outputFile);
+                if ($newContent) {
+                    try {
+                        //  getch("....2.");
+                        if (\Illuminate\Support\Facades\Schema::hasTable('vps_logs') &&
+                            \Illuminate\Support\Facades\Schema::hasColumn('vps_logs', 'logs')) {
+                            $shouldInsert = true;
+                        // getch("....21.");
+                            // Check last row — only insert if older than 3 hours
+                            $lastRow = \Illuminate\Support\Facades\DB::table('vps_logs')
+                                ->orderByDesc('id')
+                                ->first();
+                            if ($lastRow && !empty($lastRow->created_at)) {
+                                $lastTime = strtotime($lastRow->created_at);
+                                $ageMinutes = (time() - $lastTime) / 60;
+                                if ($ageMinutes < 180) {
+                                    $shouldInsert = false;
+                                    echo "⏭️  vps_logs last row is " . round($ageMinutes) . " min old, skipping insert\n";
+                                }
+                            }
+
+                            if ($shouldInsert) {
+                                //  getch(".....3 ");
+                                $now = date('Y-m-d H:i:s');
+                                $inserted = \Illuminate\Support\Facades\DB::table('vps_logs')->insert([
+                                    'logs'       => $newContent
+                                ]);
+                                if ($inserted) {
+                                    echo "📝 Logged JSON to vps_logs table\n";
+                                } else {
+                                    echo "⚠️  Insert to vps_logs returned false\n";
+                                }
+                                //   getch(".....3 1");
+                            }
+                            // getch(".....3 2");
+                        }
+                    } catch (\Exception $e) {
+                        echo "⚠️  Could not log to vps_logs: " . $e->getMessage() . "\n";
+                        // getch(".....3 3");
+                    }
+                }
+            }
+
             return $vmsObjects;
         } catch (\Exception $e) {
             echo "❌ Error reading/parsing JSON: " . $e->getMessage() . "\n";

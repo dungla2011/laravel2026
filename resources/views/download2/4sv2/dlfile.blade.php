@@ -95,6 +95,14 @@ $obj = FileUpload::find($fid);
         <div class="jumbotron jumbotron-fluid bg-light py-3 mt-3" data-code-pos='ppp17282972542511'>
             <div class="container">
 
+
+
+            </div>
+        </div>
+
+        <div class="jumbotron jumbotron-fluid bg-light py-3 mt-3" data-code-pos='ppp17282972542511'>
+            <div class="container">
+
                 <?php
                 //Kiem tra xem file Remote co ton tai khong
 

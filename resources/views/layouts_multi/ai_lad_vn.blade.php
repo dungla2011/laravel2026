@@ -1,434 +1,502 @@
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="/template/sandbo/assets/img/favicon.png">
-    <title>
-        @yield('title')
-    </title>
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>@yield('title')</title>
 
-    <meta name="description" content= "@yield('description') ">
-    <meta name="keywords" content= "@yield('description')">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
 
-    <meta property="og:image" content="/public/images/logo/logo-glx-tech-trans-square-200.png?v=1">
-    <meta property="og:title" content="@yield('title')">
-    <meta property="og:description" content="@yield('description')">
-
-    <link rel="stylesheet" href="/template/sandbo/assets/css/plugins.css">
-    <link rel="stylesheet" href="/template/sandbo/assets/css/style.css">
-    <link rel="stylesheet" href="/template/sandbo/assets/css/colors/yellow.css">
-{{--    <link rel="preload" href="/template/sandbo/assets/css/fonts/thicccboi.css" as="style" onload="this.rel='stylesheet'">--}}
-    <link rel="stylesheet" href="/template/sandbo/custom.css">
-    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
-    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
-    <script src="/admins/jctool.js?v=<?php echo filemtime(public_path().'/admins/jctool.js');?>"></script>
-
-
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.0.0/css/flag-icons.min.css" />
-{{--    <link rel="apple-touch-icon" href="/_site/dna/chatbot/logo192.png" />--}}
-    <link rel="manifest" href="/_site/dna/chatbot/manifest.json" />
-
-
-{{--    <script defer="defer" src="/_site/dna/chatbot/static/js/main.e14b1c83.js"></script>--}}
-
-{{--    <script src="https://plugin.llmviet.one/static/js/main.js"></script>--}}
-
-{{--    <link href="/_site/dna/chatbot/static/css/main.1c851a49.css" rel="stylesheet" />--}}
-
+        @yield("css")
     <style>
-        button.search-top{
-            border: 0px solid #ccc; padding: 5px 10px; height: 36px; vertical-align: bottom;
-            margin-right: 20px
+      :root {
+        --bg-1: #071019;
+        --bg-2: #0f2434;
+        --bg-3: #15384b;
+        --accent: #00d1b2;
+        --accent-2: #2de2ff;
+        --text-main: #f3fbff;
+        --text-soft: #b9d5df;
+        --card-bg: rgba(255, 255, 255, 0.06);
+        --card-border: rgba(255, 255, 255, 0.2);
+      }
+
+      body {
+        font-family: "Space Grotesk", sans-serif;
+        color: var(--text-main);
+        min-height: 100vh;
+        background:
+          radial-gradient(circle at 20% 20%, rgba(45, 226, 255, 0.22), transparent 45%),
+          radial-gradient(circle at 78% 18%, rgba(0, 209, 178, 0.2), transparent 38%),
+          linear-gradient(150deg, var(--bg-1), var(--bg-2) 45%, var(--bg-3));
+      }
+
+      .navbar,
+      .glass {
+        backdrop-filter: blur(10px);
+        background: rgba(8, 20, 31, 0.45);
+        border: 0px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .brand-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.45rem 0.8rem;
+        border-radius: 999px;
+        border: 1px solid rgba(45, 226, 255, 0.55);
+        background: rgba(45, 226, 255, 0.08);
+        color: var(--accent-2);
+        font-weight: 600;
+      }
+
+      .hero-title {
+        font-weight: 700;
+        font-size: clamp(2rem, 4vw, 4rem);
+        line-height: 1.05;
+        letter-spacing: -0.02em;
+      }
+
+      .hero-title span {
+        color: var(--accent);
+      }
+
+      .soft {
+        color: var(--text-soft);
+      }
+
+      .border-bottom{
+        border-bottom: 0px solid #ccc !important;
+      }
+      
+      .btn-main {
+        --bs-btn-color: #001f1b;
+        --bs-btn-bg: var(--accent);
+        --bs-btn-border-color: var(--accent);
+        --bs-btn-hover-bg: #00b49a;
+        --bs-btn-hover-border-color: #00b49a;
+        --bs-btn-active-bg: #0ecab0;
+        --bs-btn-active-border-color: #0ecab0;
+        font-weight: 600;
+      }
+
+      .btn-outline-light {
+        border-width: 1.5px;
+      }
+
+      .nav-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .chat-widget {
+        position: fixed;
+        right: 1.2rem;
+        bottom: 1.2rem;
+        z-index: 1080;
+      }
+
+      .chat-toggle {
+        width: 60px;
+        height: 60px;
+        border: 0;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        font-size: 1.45rem;
+        color: #03211c;
+        background: linear-gradient(135deg, var(--accent), #65f2df);
+        box-shadow: 0 12px 30px rgba(0, 209, 178, 0.4);
+      }
+
+      .chat-box {
+        position: absolute;
+        right: 0;
+        bottom: 78px;
+        width: min(360px, calc(100vw - 1.2rem));
+        border-radius: 1rem;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        background: rgba(6, 16, 25, 0.95);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 20px 45px rgba(0, 0, 0, 0.5);
+        overflow: hidden;
+        transform: translateY(10px) scale(0.98);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.22s ease, transform 0.22s ease;
+      }
+
+      .chat-box.is-open {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      .chat-header {
+        padding: 0.85rem 1rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(45, 226, 255, 0.08);
+      }
+
+      .chat-close {
+        color: #fff;
+        border: 0;
+        background: transparent;
+        font-size: 1.2rem;
+        line-height: 1;
+      }
+
+      .chat-body {
+        padding: 0.95rem;
+      }
+
+      .chat-bubble {
+        max-width: 90%;
+        padding: 0.7rem 0.8rem;
+        border-radius: 0.85rem;
+        font-size: 0.92rem;
+      }
+
+      .chat-bubble.bot {
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+      }
+
+      .chat-bubble.user {
+        margin-left: auto;
+        background: rgba(0, 209, 178, 0.2);
+        border: 1px solid rgba(0, 209, 178, 0.4);
+      }
+
+      .chat-input {
+        border-top: 1px solid rgba(255, 255, 255, 0.12);
+        padding: 0.75rem;
+      }
+
+      .chat-input .form-control {
+        border-color: rgba(255, 255, 255, 0.2);
+        color: #fff;
+        background: rgba(255, 255, 255, 0.07);
+      }
+
+      .chat-input .form-control::placeholder {
+        color: rgba(255, 255, 255, 0.6);
+      }
+
+      .floating-card {
+        border-radius: 1.2rem;
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        box-shadow: 0 16px 45px rgba(0, 0, 0, 0.35);
+      }
+
+      .feature-card {
+        height: 100%;
+        border-radius: 1rem;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .feature-card:hover {
+        transform: translateY(-8px);
+        border-color: rgba(45, 226, 255, 0.6);
+        box-shadow: 0 14px 35px rgba(4, 19, 33, 0.45);
+      }
+
+      .icon-badge {
+        width: 52px;
+        height: 52px;
+        display: grid;
+        place-items: center;
+        border-radius: 14px;
+        background: linear-gradient(135deg, rgba(45, 226, 255, 0.2), rgba(0, 209, 178, 0.2));
+        border: 1px solid rgba(45, 226, 255, 0.4);
+        font-size: 1.4rem;
+        color: var(--accent-2);
+      }
+
+      .counter {
+        font-size: clamp(1.6rem, 2.6vw, 2.2rem);
+        font-weight: 700;
+      }
+
+      .step {
+        position: relative;
+        padding-left: 3rem;
+      }
+
+      .step::before {
+        content: attr(data-step);
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 2rem;
+        height: 2rem;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        background: rgba(0, 209, 178, 0.16);
+        border: 1px solid rgba(0, 209, 178, 0.6);
+        color: var(--accent);
+        font-weight: 700;
+      }
+
+      .fade-up {
+        opacity: 0;
+        transform: translateY(16px);
+        animation: fadeUp 0.8s forwards;
+      }
+
+      .delay-1 {
+        animation-delay: 0.15s;
+      }
+
+      .delay-2 {
+        animation-delay: 0.3s;
+      }
+
+      .delay-3 {
+        animation-delay: 0.45s;
+      }
+
+      @keyframes fadeUp {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @media (max-width: 991px) {
+        .hero-visual {
+          margin-top: 1.5rem;
         }
 
-
-        @keyframes scrollText {
-            0% { transform: translateX(-200px); }
-            100% { transform: translateX(120px); }
+        .navbar-collapse {
+          margin-top: 0.75rem;
+          padding: 0.9rem;
+          border-radius: 0.8rem;
+          background: rgba(6, 16, 25, 0.88);
+          border: 1px solid rgba(255, 255, 255, 0.12);
         }
 
-        .glx-text {
-            fill: #fab758;
+        .nav-actions {
+          margin-top: 0.8rem;
+          flex-direction: column;
+          align-items: stretch;
         }
 
-        .scroll-line {
-            animation: scrollText 10s linear infinite;
-            fill: #fab758;
-            font-family: Arial, sans-serif;
-            font-size: 8px;
-            font-weight: bold;
+        .nav-actions .btn {
+          width: 100%;
         }
 
-        div.glxv3 svg{
-            margin-bottom: 6px;
-        }
-        input.search-top {
-            height: 38px; padding: 5px 10px;
-            /*margin-top:2px;*/
-            color: red;
-            float: right;
-            width: 250px;
-            font-size: small;
-            margin-left: 20px;
-            /*border-radius: 10px 0px 0px 5px;*/
-            border: 1px solid #ccc;
-            border-right: 0px;
-            vertical-align: bottom;
-        }
-        .nav-item a {
-            cursor: pointer;
-        }
-        #chatbot {
-            z-index: 10000000;
-        }
-        .one_news img{
-            width: 100%;
-        }
-        .navbar.transparent .navbar-nav>.nav-item.language-select>.dropdown-menu, .navbar[class*=navbar-bg-] .navbar-nav>.nav-item.language-select{
-            margin-top: 0px!important;
+        .chat-widget {
+          right: 0.75rem;
+          bottom: 0.9rem;
         }
 
-        header.wrapper {
-            background-color: #fab758;
+        .chat-box {
+          width: calc(100vw - 1.5rem);
+          max-width: 370px;
         }
-        header.wrapper a {
-            color: white!important;
-        }
-        ul.dropdown-menu {
-            background-color: #fab758;
-        }
-
+      }
     </style>
-</head>
+  </head>
 
-<?php
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top border-bottom border-secondary-subtle">
+      <div class="container py-1">
+        <a class="navbar-brand text-light fw-semibold" href="#">
+          <i class="bi bi-cpu text-info me-2"></i>AIFlow
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#mainNav"
+          aria-controls="mainNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
 
-    \App\Models\BlockUi::showCssHoverBlock();
-
-?>
-
-<body>
-<div id="chatbot"></div>
-
-<?php
-
-$currentLocale = app()->getLocale();
-
-//bl('Current language: '.$currentLocale);
-?>
-<div class="content-wrapper">
-    <header class="wrapper" data-code-pos='ppp1759611142251' style="">
-
-        <nav class="navbar navbar-expand-lg center-nav transparent navbar-light">
-            <div class="container flex-lg-row flex-nowrap align-items-center">
-                <div class="navbar-brand w-100 qqqq1111 glxv3" style="" data-code-pos='ppp1754321'>
-                    <a href="/">
-                            <?php
-                            $ui = \App\Models\BlockUi::showEditButtonStatic('header_logo');
-                            if($ui->getThumbInImageList())
-                                echo '<img src="'.$ui->getThumbInImageList().'" style="height: 40px">';
-                            else
-                                echo $ui->getSummary();
-                            ?>
-                    </a>
-                </div>
-
-
-                <div class="navbar-collapse offcanvas-nav" data-code-pos='ppp17597140147511'>
-                    <div class="offcanvas-header d-lg-none d-xl-none">
-                        <a href="/">
-                            <?php
-                            $ui = \App\Models\BlockUi::showEditButtonStatic('header_logo');
-                            if($ui->getThumbInImageList())
-                                echo '<img src="'.$ui->getThumbInImageList().'" style="height: 40px">';
-                            else
-                                echo $ui->getExtra();
-                            ?>
-                        </a>
-                        <button type="button" class="btn-close btn-close-white offcanvas-close offcanvas-nav-close" aria-label="Close"></button>
-                    </div>
-
-                    <ul class="navbar-nav qqqq1111" data-code-pos='ppp1750259861'>
-
-                    <?php
-
-                        $mm = \App\Models\MenuTree::showMenuPublicSandBox(null,null, $currentLocale );
-                    ?>
-                    </ul>
-
-                    <!-- /.navbar-nav -->
-                </div>
-                <!-- /.navbar-collapse -->
-                <div class="navbar-other w-100 d-flex ms-auto" data-code-pos='ppp17598184715501'>
-                    <ul class="navbar-nav flex-row align-items-center ms-auto" data-sm-skip="true">
-                        <li class="nav-item dropdown language-select text-uppercase">
-                            <?php
-
-                            $languageList = \clang1::getLanguageList();
-                            $currentFlag = \clang1::$flagMap[$currentLocale] ?? 'us';
-                            $currentName = $languageList[$currentLocale] ?? 'EN';
-                            ?>
-
-                            <a class="nav-link dropdown-item dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="fi fi-{{ $currentFlag }} navbar-badge-flag"></span>
-                                <span class="current-lang-text">{{ strtoupper($currentLocale) }}</span>
-                            </a>
-                            <ul class="dropdown-menu">
-                                @foreach($languageList as $code => $name)
-                                    <li class="nav-item">
-                                        <a class="dropdown-item {{ $currentLocale === $code ? 'active' : '' }} language-switch-link"
-                                           href="{{ switch_locale($code) }}"
-                                           data-locale="{{ $code }}"
-                                           data-name="{{ $name }}"
-                                           data-flag="{{ \clang1::$flagMap[$code] ?? 'us' }}">
-                                            <span class="fi fi-{{ \clang1::$flagMap[$code] ?? 'us' }}"></span>
-                                            {{ $name }}
-                                            @if($currentLocale === $code)
-                                                <i class="fas fa-check ms-2 text-success"></i>
-                                            @endif
-                                        </a>
-                                    </li>
-                                @endforeach
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <?php
-                            if($objU = getCurrentUserId(1)){
-                                $em = substr(explode("@", $objU->email)[0], 0,15) ;
-                                echo "<span style='font-size: ;'> <a href='/member'>  $em </a></span> ";
-                            }
-                            else
-                                echo '<a href="/login"><b>Login</b></a>';
-                            ?>
-                        </li>
-                        <li class="nav-item d-lg-none">
-                            <div class="navbar-hamburger"><button class="hamburger animate plain" data-toggle="offcanvas-nav"><span></span></button></div>
-                        </li>
-
-                    </ul>
-                    <!-- /.navbar-nav -->
-                </div>
-                <!-- /.navbar-other -->
-                <div class="offcanvas-info text-inverse">
-                    <button type="button" class="btn-close btn-close-white offcanvas-close offcanvas-info-close" aria-label="Close"></button>
-                    <a href="/">
-                        4SHARE
-                    </a>
-                    <div class="mt-4 widget">
-                        <p>Sandbox is a multipurpose HTML5 template with various layouts which will be a great solution for your business.</p>
-                    </div>
-                    <!-- /.widget -->
-                    <div class="widget">
-                        <h4 class="widget-title text-white mb-3">Contact Info</h4>
-                        <address> Moonshine St. 14/05 <br /> Light City, London </address>
-                        <a href="mailto:first.last@email.com">info@email.com</a><br /> +00 (123) 456 78 90
-                    </div>
-                    <!-- /.widget -->
-                    <div class="widget">
-                        <h4 class="widget-title text-white mb-3">Learn More</h4>
-                        <ul class="list-unstyled">
-                            <li><a href="#">Our Story</a></li>
-                            <li><a href="#">Terms of Use</a></li>
-                            <li><a href="#">Privacy Policy</a></li>
-                            <li><a href="#">Contact Us</a></li>
-                        </ul>
-                    </div>
-                    <!-- /.widget -->
-                    <div class="widget">
-                        <h4 class="widget-title text-white mb-3">Follow Us</h4>
-                        <nav class="nav social social-white">
-                            <a href="#"><i class="uil uil-twitter"></i></a>
-                            <a href="#"><i class="uil uil-facebook-f"></i></a>
-                            <a href="#"><i class="uil uil-dribbble"></i></a>
-                            <a href="#"><i class="uil uil-instagram"></i></a>
-                            <a href="#"><i class="uil uil-youtube"></i></a>
-                        </nav>
-                        <!-- /.social -->
-                    </div>
-                    <!-- /.widget -->
-                </div>
-                <!-- /.offcanvas-info -->
-            </div>
-            <!-- /.container -->
-        </nav>
-        <!-- /.navbar -->
-    </header>
-    <!-- /header -->
-
-    @yield('content')
-
-    <!-- /section -->
-</div>
-<!-- /.content-wrapper -->
-<footer class="bg-navy text-inverse">
-    <div class="container pt-8 pt-md-8 pb-8 pb-md-8">
-        <!--/div -->
-
-        <div class="row gy-6 gy-lg-0">
-            <div class="col-md-4 col-lg-3">
-                <div class="widget qqqq1111">
-                    <?php
-                    $ui = \App\Models\BlockUi::showEditButtonStatic('footer1');
-
-                    echo $ui->getSummary();
-                    ?>
-
-
-                    <nav class="nav social social-white">
-                        <a href="#"><i class="uil uil-twitter"></i></a>
-                        <a href="#"><i class="uil uil-facebook-f"></i></a>
-                        <a href="#"><i class="uil uil-dribbble"></i></a>
-                        <a href="#"><i class="uil uil-instagram"></i></a>
-                        <a href="#"><i class="uil uil-youtube"></i></a>
-                    </nav>
-                    <!-- /.social -->
-                </div>
-                <!-- /.widget -->
-            </div>
-            <!-- /column -->
-            <div class="col-md-4 col-lg-3 qqqq1111">
-                <div class="widget ">
-                    <?php
-                    $ui = \App\Models\BlockUi::showEditButtonStatic('footer2');
-                    echo $ui->getSummary();
-                    ?>
-
-                </div>
-                <!-- /.widget -->
-            </div>
-            <!-- /column -->
-            <div class="col-md-4 col-lg-3 qqqq1111">
-                <div class="widget">
-                    <?php
-                    $ui = \App\Models\BlockUi::showEditButtonStatic('footer3');
-                    echo $ui->getSummary();
-                    ?>
-
-
-                </div>
-                <!-- /.widget -->
-            </div>
-            <!-- /column -->
-            <div class="col-md-12 col-lg-3 qqqq1111">
-                <div class="widget">
-                    <?php
-                    $ui = \App\Models\BlockUi::showEditButtonStatic('footer4');
-                    echo $ui->getSummary();
-                    ?>
-
-                    <!-- /.newsletter-wrapper -->
-                </div>
-                <!-- /.widget -->
-            </div>
-            <!-- /column -->
+        <div class="collapse navbar-collapse" id="mainNav">
+          <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+            <li class="nav-item"><a class="nav-link text-light" href="#features">Tính năng</a></li>
+            <li class="nav-item"><a class="nav-link text-light" href="#workflow">Quy trình</a></li>
+            <li class="nav-item"><a class="nav-link text-light" href="#about">Giới thiệu</a></li>
+          </ul>
+          <div class="nav-actions ms-lg-3">
+            <a class="btn btn-outline-light" href="/login">Login</a>
+          </div>
         </div>
-        <!--/.row -->
+      </div>
+    </nav>
+
+        @yield('content')
+
+    <!-- Content -->
+
+    <footer class="pt-5 pb-4 soft" style="background: rgba(5, 13, 21, 0.55); border-top: 1px solid rgba(255, 255, 255, 0.1);">
+      <div class="container">
+        <div class="row g-4 text-start">
+          <div class="col-12 col-md-6 col-lg-3">
+            <h6 class="text-light fw-semibold mb-3">AIFlow</h6>
+            <p class="mb-0">
+              Công ty dịch vụ AI, Chatbot và Automation, đồng hành cùng doanh nghiệp xây hệ thống vận hành thông minh.
+            </p>
+          </div>
+          <div class="col-12 col-md-6 col-lg-3">
+            <h6 class="text-light fw-semibold mb-3">Dịch vụ</h6>
+            <ul class="list-unstyled mb-0">
+              <li class="mb-2">Tư vấn chiến lược AI</li>
+              <li class="mb-2">Thiết kế AI Chatbot</li>
+              <li class="mb-2">Tự động hóa quy trình</li>
+              <li>Đào tạo vận hành nội bộ</li>
+            </ul>
+          </div>
+          <div class="col-12 col-md-6 col-lg-3">
+            <h6 class="text-light fw-semibold mb-3">Giải pháp</h6>
+            <ul class="list-unstyled mb-0">
+              <li class="mb-2">Chatbot chăm sóc khách hàng</li>
+              <li class="mb-2">Lead qualification tự động</li>
+              <li class="mb-2">CRM integration workflow</li>
+              <li>Dashboard phân tích hội thoại</li>
+            </ul>
+          </div>
+          <div class="col-12 col-md-6 col-lg-3">
+            <h6 class="text-light fw-semibold mb-3">Liên hệ</h6>
+            <ul class="list-unstyled mb-0">
+              <li class="mb-2"><i class="bi bi-geo-alt me-2"></i>Hà Nội, Việt Nam</li>
+              <li class="mb-2"><i class="bi bi-telephone me-2"></i>0901 234 567</li>
+              <li class="mb-2"><i class="bi bi-envelope me-2"></i>hello@aiflow.vn</li>
+              <li><i class="bi bi-globe2 me-2"></i>www.aiflow.vn</li>
+            </ul>
+          </div>
+        </div>
+        <hr class="my-4 border-secondary" />
+        <small class="d-block text-center">© 2026 AIFlow. Build smart systems, not manual tasks.</small>
+      </div>
+    </footer>
+
+    <div class="chat-widget" id="chatWidget">
+      <div class="chat-box" id="chatBox" aria-hidden="true">
+        <div class="chat-header d-flex align-items-center justify-content-between">
+          <div>
+            <div class="fw-semibold">AI Support</div>
+            <small class="soft">Online 24/7</small>
+          </div>
+          <button class="chat-close" id="chatClose" aria-label="Đóng chatbox">
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+        <div class="chat-body d-grid gap-2">
+          <div class="chat-bubble bot">Xin chào, bạn muốn tư vấn về Chatbot hay Automation?</div>
+          <div class="chat-bubble user">Cho mình xem giải pháp cho đội sales.</div>
+          <div class="chat-bubble bot">Mình có thể gửi nhanh lộ trình triển khai trong 3 bước cho bạn.</div>
+        </div>
+        <div class="chat-input">
+          <div class="input-group">
+            <input type="text" class="form-control" placeholder="Nhập câu hỏi của bạn..." />
+            <button class="btn btn-main" type="button">Gửi</button>
+          </div>
+        </div>
+      </div>
+      <button class="chat-toggle" id="chatToggle" aria-label="Mở chatbox" aria-expanded="false">
+        <i class="bi bi-chat-dots-fill"></i>
+      </button>
     </div>
-    <!-- /.container -->
-</footer>
-<div class="progress-wrap" style="display: none">
-    <svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
-        <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98" />
-    </svg>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"></script>
-<script src="/template/sandbo/assets/js/plugins.js"></script>
-<script src="/template/sandbo/assets/js/theme.js"></script>
 
-<?php
-if(getCurrentUserId()){
-?>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      const chatToggle = document.getElementById("chatToggle");
+      const chatClose = document.getElementById("chatClose");
+      const chatBox = document.getElementById("chatBox");
+      const chatWidget = document.getElementById("chatWidget");
 
+      function setChatOpen(isOpen) {
+        chatBox.classList.toggle("is-open", isOpen);
+        chatToggle.setAttribute("aria-expanded", String(isOpen));
+        chatBox.setAttribute("aria-hidden", String(!isOpen));
+      }
+
+      chatToggle.addEventListener("click", () => {
+        setChatOpen(!chatBox.classList.contains("is-open"));
+      });
+
+      chatClose.addEventListener("click", () => setChatOpen(false));
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          setChatOpen(false);
+        }
+      });
+
+      document.addEventListener("click", (event) => {
+        if (!chatWidget.contains(event.target) && chatBox.classList.contains("is-open")) {
+          setChatOpen(false);
+        }
+      });
+    </script>
+  <!-- Code injected by live-server -->
 <script>
-    // Intercept language switch links for logged-in users
-    $(document).ready(function() {
-        // Only intercept if user is logged in
-        @if(getCurrentUserId())
-        $('.language-switch-link').on('click', function(e) {
-            e.preventDefault(); // Chặn default navigation
-
-            var $link = $(this);
-            var code = $link.data('locale');
-            var name = $link.data('name');
-            var flagCode = $link.data('flag');
-            var targetUrl = $link.attr('href'); // URL thật để redirect sau khi save
-
-            console.log("🔥 Language switch intercepted!", code, name, flagCode);
-
-            // Cập nhật UI ngay lập tức
-            $('.navbar-badge-flag').attr('class', 'fi fi-' + flagCode + ' navbar-badge-flag');
-            $('.current-lang-text').text(code.toUpperCase());
-
-            // Gọi API để lưu vào database
-            $.ajax({
-                url: '/api/member-user/update-member',
-                method: 'POST',
-                data: {
-                    language: code,
-                    _token: $('meta[name="csrf-token"]').attr('content')
-                },
-                success: function(response) {
-                    console.log('✅ Language saved to database:', response);
-                    console.log('🔄 Redirecting to:', targetUrl);
-
-                    // Redirect đến URL đã được tính sẵn bởi switch_locale()
-                    setTimeout(function() {
-                        window.location.href = targetUrl;
-                    }, 300);
-                },
-                error: function(xhr, status, error) {
-                    console.error('❌ Error saving language:', error);
-
-                    // Nếu lỗi, vẫn redirect (fallback)
-                    alert("Error saving language preference!");
-                    setTimeout(function() {
-                        window.location.href = targetUrl;
-                    }, 500);
-                }
-            });
-        });
-        @endif
-    });
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
 </script>
-
-<script>
-      window.ChatWidgetConfig = {
-        apiBase:           'https://your-api.com',   // URL gốc của API
-        messagesEndpoint:  '/api/messages',           // GET  → lấy lịch sử
-        sendEndpoint:      '/api/chat',               // POST → gửi tin nhắn
-        botName:           'Trợ lý AI',
-        primaryColor:      '#0084ff',
-        welcomeMessage:    'Xin chào! Tôi có thể giúp gì cho bạn?',
-        placeholder:       'Nhập tin nhắn...',
-        headers: {                                    // header tuỳ chọn (auth, v.v.)
-          'Authorization': 'Bearer YOUR_TOKEN'
-        },
-        // Mapping field trong JSON trả về (tuỳ chỉnh nếu API khác chuẩn)
-        messagesField:    'messages',       // mảng messages trong response history
-        roleField:        'role',           // "user" | "assistant"
-        contentField:     'content',
-        timestampField:   'timestamp',
-       replyField:       'reply',          // field chứa câu trả lời từ /send
-       convIdField:      'conversation_id',
-       msgField:         'message',        // field tên khi POST tin nhắn
-     };
-</script>
-
-<script src="/js/chat/chat-widget.js"></script>
-
-
-<?php
-}
-?>
-
-@yield('js')
-
 </body>
-
 </html>

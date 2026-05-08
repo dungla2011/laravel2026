@@ -52,6 +52,8 @@ class VpsInstance_Meta extends MetaOfTableInDb
         if(!$obj)
             return;
         $obj1 = $obj->find($obj->id);
+        if(!$obj1)
+            return;
 //        echo "<br/>\n $obj1->created_at " . nowyh(time() - 10000);
         if($obj1->create_status == 'vps_new_create' || $obj1->create_status == 'vps_creating' )
             echo "<div class='mb-3 p-2 px-3 bg-primary'> Sau khi VPS tạo xong, một email thông tin đăng nhập VPS sẽ được gửi đến bạn! F5 để cập nhật trạng thái Tạo VPS - xem bên dưới</div>";
@@ -72,6 +74,8 @@ class VpsInstance_Meta extends MetaOfTableInDb
     public function extraHtmlIncludeEdit1($v1 = null, $v2 = null, $v3 = null)
     {
         $v2 = $v1->find($v1->id);
+        if(!$v2)
+            return;
         $status =json_decode($v2->create_vps_progress);
         // echo "<pre> >>> " . __FILE__ . "(" . __LINE__ . ")<br/>";
         // print_r($status);

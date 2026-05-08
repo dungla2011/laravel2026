@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\PartnerInfo;
 use App\Models\User;
+use App\Models\VpsUsage;
 use App\Services\VpsBillingReportService;
 use Illuminate\Http\Request;
 use LadLib\Common\cstring2;
@@ -50,7 +51,7 @@ class VpsBillingController extends Controller
 //        echo "</pre>";
 //        die();
 
-        $data = $this->billingService->generateReportData($user, $options, $fromTime = null, $request->get('to_time') );
+        $data = $this->billingService->generateReportData($user, $options, $fromTime = $request->get('from_time'), $request->get('to_time') );
 
         return view('vps.billing-report', $data);
     }
@@ -139,43 +140,48 @@ class VpsBillingController extends Controller
         $instance = \App\Models\VpsInstance::find($usage->instance_id);
 
         // Calculate fee with full details
-        if ($usage->price_month && $usage->price_month > 0) {
-            // Fixed monthly price calculation
-            $pricePerMonth = floatval($usage->price_month);
-            $createdTime = new \DateTime($usage->created_at);
-            $timestampTime = new \DateTime($usage->timestamp_minute);
-            $interval = $createdTime->diff($timestampTime);
-            $durationMinutes = ($interval->days * 1440) + ($interval->h * 60) + $interval->i;
-
-            $fee = $pricePerMonth * ($durationMinutes / 43200);
-            $fee = round($fee, 0);
-
-            // Convert duration to text
-            $days = floor($durationMinutes / 1440);
-            $remainingMinutes = $durationMinutes % 1440;
-            $hours = floor($remainingMinutes / 60);
-            $minutes = $remainingMinutes % 60;
-
-            $details = [
-                'type' => 'fixed_monthly',
-                'price_month' => $pricePerMonth,
-                'duration_minutes' => $durationMinutes,
-                'duration_days' => $days,
-                'duration_hours' => $hours,
-                'duration_mins' => $minutes,
-                'fee' => $fee,
-                'formula' => sprintf('%s K/tháng × %d phút / 43200 phút = %s K',
-                    number_format($pricePerMonth, 0, ',', '.'),
-                    $durationMinutes,
-                    number_format($fee, 0, ',', '.')
-                )
-            ];
-        } else {
+//        if(0)
+//        if ($usage->price_month && $usage->price_month > 0) {
+//            // Fixed monthly price calculation
+//            $pricePerMonth = floatval($usage->price_month);
+//            $createdTime = new \DateTime($usage->created_at);
+//            $timestampTime = new \DateTime($usage->timestamp_minute);
+//            $interval = $createdTime->diff($timestampTime);
+//            $durationMinutes = ($interval->days * 1440) + ($interval->h * 60) + $interval->i;
+//
+//            $fee = $pricePerMonth * ($durationMinutes / 43200);
+//            $fee = round($fee, 0);
+//
+//            // Convert duration to text
+//            $days = floor($durationMinutes / 1440);
+//            $remainingMinutes = $durationMinutes % 1440;
+//            $hours = floor($remainingMinutes / 60);
+//            $minutes = $remainingMinutes % 60;
+//
+//            $details = [
+//                'type' => 'fixed_monthly',
+//                'price_month' => $pricePerMonth,
+//                'duration_minutes' => $durationMinutes,
+//                'duration_days' => $days,
+//                'duration_hours' => $hours,
+//                'duration_minutes' => $minutes,
+//                'fee' => $fee ,
+//                'formula' => sprintf('%s K/tháng × %d phút / 43200 phút = %s K',
+//                    number_format($pricePerMonth, 0, ',', '.'),
+//                    $durationMinutes,
+//                    number_format($fee, 0, ',', '.')
+//                )
+//            ];
+//        }
+//        else
+        $details = [];
+        {
             // Use calculateFee() method
-            $feeResult = $usage->calculateFee();
+            if($usage instanceof  VpsUsage);
+            $feeResult = $usage->calculateFee(\request('from_time'), \request('to_time'));
             $details = array_merge($feeResult['details'], [
-                'type' => 'config_based',
-                'fee' => $feeResult['fee'],
+//                'type' => 'config_based',
+                'fee' => $feeResult['fee'] ,
                 'formula_text' => $feeResult['text']
             ]);
         }
@@ -185,6 +191,9 @@ class VpsBillingController extends Controller
             $details['fee'] = 0;
             $details['powered_off'] = true;
         }
+
+//        dump($details);
+//        return;
 
         return view('vps.billing-report-detail', [
             'usage' => $usage,
