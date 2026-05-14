@@ -14,6 +14,14 @@ if (!isSupperAdmin_()) {
     }
 }
 
+$cacheFile = sys_get_temp_dir() . '/sync_order_items_mytree.json';
+$cacheTtl  = 86400; // 1 ngày
+
+if (file_exists($cacheFile) && (time() - filemtime($cacheFile)) < $cacheTtl) {
+    echo file_get_contents($cacheFile);
+    exit;
+}
+
 $rows = \App\Models\OrderItem::orderBy('created_at')
     ->get(['user_id', 'created_at', 'price', 'param1']);
 
@@ -30,4 +38,7 @@ $result = $rows->map(function ($item) use ($users) {
     ];
 })->values()->toArray();
 
-echo json_encode($result, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+$json = json_encode($result, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+file_put_contents($cacheFile, $json);
+
+echo $json;
