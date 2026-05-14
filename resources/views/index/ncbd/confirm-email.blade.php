@@ -36,9 +36,14 @@
 
         }
         $idEv = qqgetIdFromRand_($idEv);
+        $lang = request('lang', 'vi'); // Default to Vietnamese
 
         if (!is_numeric($idEv)) {
-            bl("Not valid id event!");
+            if ($lang == 'en') {
+                bl("Not valid event ID!");
+            } else {
+                bl("ID sự kiện không hợp lệ!");
+            }
             return;
         }
 
@@ -47,12 +52,20 @@
             $emailOrUid = dfh1b($data);
 
         if (!filter_var($emailOrUid, FILTER_VALIDATE_EMAIL) && !is_numeric($emailOrUid)) {
-            bl("Not valid info: $emailOrUid");
+            if ($lang == 'en') {
+                bl("Invalid information: $emailOrUid");
+            } else {
+                bl("Thông tin không hợp lệ: $emailOrUid");
+            }
             return;
         }
 
         if (!$ev = \App\Models\EventInfo::find($idEv)) {
-            bl("Not found event!");
+            if ($lang == 'en') {
+                bl("Event not found!");
+            } else {
+                bl("Không tìm thấy sự kiện!");
+            }
             return;
         }
 
@@ -61,46 +74,63 @@
         else
             $eu = \App\Models\EventUserInfo::where("email", $emailOrUid)->first();
         if (!$eu) {
-            bl("Not found user: $emailOrUid");
+            if ($lang == 'en') {
+                bl("User not found: $emailOrUid");
+            } else {
+                bl("Không tìm thấy người dùng: $emailOrUid");
+            }
             return;
         }
 
         if (!$eau = \App\Models\EventAndUser::where(["user_event_id" => $eu->id, 'event_id' => $idEv])->first()) {
-            bl("Not found user with event!");
+            if ($lang == 'en') {
+                bl("User registration for this event not found!");
+            } else {
+                bl("Không tìm thấy đăng ký người dùng cho sự kiện này!");
+            }
             return;
         }
         ?>
 
         <br>
-        <div class='p-2 rounded text-left mt-3' style="background-color: lavender">
+        <div class='p-4 rounded text-left mt-3' style="background-color: lavender">
             <?php
 
-                $txt =  "\n Xin chào <b>  $eu->title $eu->last_name $eu->first_name </b>".
-             "<br/>\nMời quý vị bấm vào Link dưới đây để Xác nhận tham dự Sự kiện:  ".
-             "<br/>\n <b> $ev->name </b>".
-             "<p>\n <i style='font-size: small'> Thời gian: $ev->time_start | $ev->time_end</i> </p>".
-             "<p>\n <i> Xin cảm ơn Quý vị! </i>  </p>";
+                $lang = $eu->language ?? 'vi';
 
-                $confirmBtnText = 'Xác nhận Tham dự';
-                $notConfirmBtnText = 'Từ chối Tham dự';
-                if($eu->language == 'en'){
-                    $confirmBtnText = 'Yes, I will participate';
-                    $notConfirmBtnText = 'No, I cannot participate';
-                    if($ev->web_text_confirm_join_event_en){
-                        $txt = $ev->web_text_confirm_join_event_en;
-                    }
-                }
-                if($eu->language == 'vi'){
-                    if($ev->web_text_confirm_join_event_vi){
+                // Default messages for Vietnamese
+                if ($lang == 'vi') {
+                    $txt = "\n Xin chào <b>  $eu->title $eu->last_name $eu->first_name </b>".
+                         "<br/>\nMời quý vị Xác nhận tham dự Sự kiện:  ".
+                         "<br/>\n <b> $ev->name </b>".
+                         "<p>\n <i style='font-size: small'> Thời gian: $ev->time_start | $ev->time_end</i> </p>".
+                         "<p>\n <i> Xin cảm ơn Quý vị! </i>  </p>";
+
+                    if ($ev->web_text_confirm_join_event_vi) {
                         $txt = $ev->web_text_confirm_join_event_vi;
                     }
+                    $confirmBtnText = 'Xác nhận Tham dự';
+                    $notConfirmBtnText = 'Từ chối Tham dự';
+                }
+                // English version
+                else {
+                    $txt = "\nGreetings <b> $eu->title $eu->last_name $eu->first_name </b>".
+                         "<br/>\nPlease confirm participation to the event:  ".
+                         "<br/>\n <b> $ev->name </b>".
+                         "<p>\n <i style='font-size: small'> Time: $ev->time_start | $ev->time_end</i> </p>".
+                         "<p>\n <i> Thank you! </i>  </p>";
+
+                    if ($ev->web_text_confirm_join_event_en) {
+                        $txt = $ev->web_text_confirm_join_event_en;
+                    }
+                    $confirmBtnText = 'Yes, I will participate';
+                    $notConfirmBtnText = 'No, I cannot participate';
                 }
 
-            $txt = \App\Models\EventInfo::replaceAllMarkText($txt,  $ev, $eu);
+                $txt = \App\Models\EventInfo::replaceAllMarkText($txt, $ev, $eu);
+                $txt = str_replace("\n", "<br/>\n", $txt);
 
-            $txt = str_replace("\n", "<br/>\n", $txt);
-
-            echo $txt;
+                echo $txt;
 
 
             ?>
@@ -116,23 +146,34 @@
 
             <?php
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                $lang = $eu->language ?? 'vi';
+
                 if (isset($_POST['confirm'])) {
-                    // Xử lý khi nút "Xác nhận" được nhấn
+                    // Handle confirmation button
                     $eau->confirm_join_at = nowyh();
                     $eau->deny_join_at = null;
-                    $eau->addLog("Confirm join email");
+                    $eau->addLog("Confirm join via email");
                     $eau->save();
                     echo "<br/>\n";
-                    tb("Quý khách đã xác nhận tham gia!", "You have confirmed to join the event!");
+
+                    if ($lang == 'vi') {
+                        tb("Quý khách đã xác nhận tham gia!");
+                    } else {
+                        tb("You have confirmed to join the event!");
+                    }
                 } elseif (isset($_POST['reject'])) {
-                    // Xử lý khi nút "Từ chối" được nhấn
+                    // Handle rejection button
                     $eau->deny_join_at = nowyh();
                     $eau->confirm_join_at = null;
-                    $eau->addLog("Confirm join email");
+                    $eau->addLog("Rejected join via email");
                     $eau->save();
                     echo "<br/>\n";
-                    bl("Quý khách đã Từ chối tham gia!", "You have rejected to join the event!");
-                } else {
+
+                    if ($lang == 'vi') {
+                        bl("Quý khách đã từ chối tham gia!");
+                    } else {
+                        bl("You have rejected to join the event!");
+                    }
                 }
             }
             ?>

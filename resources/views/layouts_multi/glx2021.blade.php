@@ -1,3 +1,8 @@
+<div style="padding: 10px; text-align: center; background-color: lavender; color: red">
+    <a href="//app.mytree.vn" style="color: red">
+    Thông báo: Phiên bản mới đã có tại địa chỉ: <b> app.mytree.vn  </b> mời Quý khách trải nghiệm! Xin cảm ơn Quý khách!
+    </a>
+</div>
 <!DOCTYPE html>
 <html lang="en">
 

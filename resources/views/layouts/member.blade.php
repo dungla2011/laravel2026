@@ -71,12 +71,13 @@ if(\App\Models\SiteMng::isAdminSidebarCollapse())
 <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
 
 
-<script src="/admins/jctool.js?v=<?php echo filemtime(public_path().'/admins/jctool.js');?>"></script>
 
+<script src="/admins/jctool.js?v=<?php echo filemtime(public_path().'/admins/jctool.js');?>"></script>
+<script src="/admins/admin_lte_custom.js"></script>
 <script src="/vendor/toastr/toastr.min.js"></script>
 <script src="/admins/toast-show.js"></script>
-<script src="/admins/admin_lte_custom.js"></script>
 
+<script src="/vendor/galaxy/lib_base.js"></script>
 
 
 

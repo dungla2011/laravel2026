@@ -29,7 +29,7 @@ foreach ($mretAll AS &$one){
         if($one['child_type'])
             $one['parent_id'] = null;
     }
-    if($one['parent_id'] == 0)
+    if($one['parent_id'] == 0 || $one['married_with'])
         $one['parent_id'] = null;
     if($tmp = \App\Models\GiaPha::find($one['id'])){
         $one['content'] = $tmp['content'];

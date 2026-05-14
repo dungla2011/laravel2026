@@ -40,6 +40,7 @@ dinamicMenu = function() {
     }
 };
 
-$(function (){
-    dinamicMenu();
-})
+
+document.addEventListener("DOMContentLoaded", function() {
+    // dinamicMenu();
+});

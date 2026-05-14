@@ -490,6 +490,92 @@ if($uid){
 </script>
 
 <body>
+
+<!-- Popup thông báo chuyển app.mytree.vn -->
+<div id="popup-notify" style="
+    position:fixed; top:50px; right:20px; z-index:99999;
+    background:#fff; border-radius:10px; padding:16px 18px 14px;
+    max-width:340px; width:92%; box-shadow:0 4px 20px rgba(0,0,0,0.18);
+    border-left:4px solid royalblue; font-size:14px;">
+    <div style="margin-bottom:12px; line-height:1.6;">
+        <a href="//app.mytree.vn" style="color:royalblue; text-decoration:none;">
+            - Thông báo: Phiên bản mới đã có tại địa chỉ: <b>app.mytree.vn</b> 
+            với các cải tiến  <b>toàn diện</b> về tính năng, tốc độ và giao diện. Mời Quý khách trải nghiệm! 
+            <br>  
+            - Các dữ liệu phiên bản cũ có thể được chuyển sang phiên bản mới, Xem hướng dẫn nhập liệu!
+            <br>
+            - Bản cũ vẫn duy trì tiếp tục hoạt động trong thời gian tới bình thường, đảm bảo an toàn dữ liệu. 
+            <br>
+            - Các Tài khoản và thanh toán cũ cũng đã chuyển sang bản mới miễn phí với thời gian sử dụng tương ứng.
+            <br>  
+            Xin cảm ơn Quý khách!
+        </a>
+    </div>
+    <div style="margin-bottom:10px;">
+        <div style="background:#eee; border-radius:4px; height:6px; overflow:hidden;">
+            <div id="popup-progress" style="height:100%; width:100%; background:royalblue; border-radius:4px; transition:width 1s linear;"></div>
+        </div>
+        <div style="margin-top:4px; font-size:12px; color:#999;">Tự đóng sau <span id="popup-countdown">20</span> giây</div>
+    </div>
+    <a href="//app.mytree.vn" target='_blank' style="
+        display:inline-block; background:royalblue; color:#fff; text-decoration:none;
+        padding:5px 18px; border-radius:5px; font-size:13px; margin-right:8px;">Mở bản mới</a>
+    <button onclick="popupNotifyClose()" style="
+        background:#aaa; color:#fff; border:none; padding:5px 18px;
+        border-radius:5px; cursor:pointer; font-size:13px;">Đóng</button>
+
+</div>
+
+<!-- Nút New để mở lại popup -->
+<button id="btn-open-notify" onclick="popupNotifyOpen()" title="Xem thông báo" style="
+    position:fixed; top:100px; right:10px; z-index:99998;
+    width:42px; height:42px; border-radius:50%;
+    background:#fff; color:red; border:2px solid red;
+    font-weight:bold; font-size:10px; cursor:pointer;
+    display:none; box-shadow:0 2px 8px rgba(0,0,0,0.15);">New</button>
+
+<script>
+(function(){
+    var total = 30;
+    var remaining = total;
+    var bar = document.getElementById('popup-progress');
+    var countdown = document.getElementById('popup-countdown');
+    var popup = document.getElementById('popup-notify');
+    var btnOpen = document.getElementById('btn-open-notify');
+    var iv = null;
+
+    function startCountdown(){
+        remaining = total;
+        bar.style.width = '100%';
+        countdown.textContent = remaining;
+        clearInterval(iv);
+        iv = setInterval(function(){
+            remaining--;
+            countdown.textContent = remaining;
+            bar.style.width = (remaining / total * 100) + '%';
+            if(remaining <= 0){
+                clearInterval(iv);
+                popupNotifyClose();
+            }
+        }, 1000);
+    }
+
+    window.popupNotifyClose = function(){
+        popup.style.display = 'none';
+        btnOpen.style.display = 'block';
+        clearInterval(iv);
+    };
+
+    window.popupNotifyOpen = function(){
+        popup.style.display = 'block';
+        btnOpen.style.display = 'none';
+        startCountdown();
+    };
+
+    startCountdown();
+})();
+</script>
+
 <div class="menu_div" data-code-pos="qqq1710205740380">
     <?php
     if(\LadLib\Common\UrlHelper1::getDomainHostName() == 'mytree.vn')

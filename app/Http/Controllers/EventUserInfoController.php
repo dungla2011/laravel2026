@@ -34,7 +34,7 @@ class EventUserInfoController extends BaseController
                 die("Update userinfo: Not valid info?");
             }
 
-            if($timeStamp < time() - 3600){
+            if($timeStamp < time() - 10800){
 //                bl("Link cập nhật quá hạn, vui lòng Click vào đây để gửi lại link!");
                 return view('member.ncbd.form-send-mail-event-update', compact('eventUserInfo'));
             }

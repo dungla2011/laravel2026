@@ -1968,13 +1968,21 @@ class EventInfoControllerApi extends BaseApiController
                         }
 
                         $attachFileField = str_replace("content", 'attached_files_email', $select_content);
-                        ol1($eventSendAction, " -- attachFileField = $attachFileField", $ignoreEcho);
+                        ol1($eventSendAction, " -- attachFileField1 = $attachFileField", $ignoreEcho);
                         if ($mFile = $ev->getAllFileList($attachFileField, 2)) {
+                            ol1($eventSendAction, " -- Nfile=" . count($mFile), $ignoreEcho);
                             foreach ($mFile as $file) {
-                                if (file_exists($file->file_path)) {
-                                    $obj->attachFile[$file->file_path] = $file->name;
+                                ol1($eventSendAction, " -- Check File = $file->file_path / $file->name", $ignoreEcho);
+                                if($file instanceof  FileUpload);
+                                $clFile = FileUpload::getCloudObj($file->id);
+                                if (file_exists($clFile->file_path)) {
+                                    ol1($eventSendAction, " -- attachFileField 2 = $file->name", $ignoreEcho);
+                                    $obj->attachFile[$clFile->file_path] = $file->name;
                                 }
                             }
+                        }
+                        else{
+                            ol1($eventSendAction, " -- attachFileField No file attach?", $ignoreEcho);
                         }
 
                         $isErrorSendMail = 0;

@@ -98,7 +98,7 @@ if (request('update_user_info') && request()->isMethod('POST') && request('first
 
 //    die("TIME = $timeUpdate");
 
-    if($timeUpdate < time() - 3600){
+    if($timeUpdate < time() - 10800){
         die("Hết hạn update!");
     }
 
@@ -171,9 +171,17 @@ if (request('update_user_info') && request()->isMethod('POST') && request('first
 <div class="mt-2 form_update_event_user_info"
     style="border-bottom:  1px solid #ccc; margin: 0px auto ;max-width: 1200px ; background-color: #eee; padding : 30px; box-shadow : 0px 0px 5px 1px #6f6d6dab;  border-radius: 10px" data-code-pos='ppp17698573676521'>
 
-    <h4 class="mt-1 mb-4 text-center" style="border-bottom: 0px solid #ccc; padding-bottom: 10px;   border-radius: 10px"><i class="fa fa-fw fa-user-circle"></i>
+    <h4 class="mt-1 mb-2 text-center" style="border-bottom: 0px solid #ccc; padding-bottom: 10px;   border-radius: 10px"><i class="fa fa-fw fa-user-circle"></i>
         Cập nhật Thông tin cá nhân
     </h4>
+    <?php
+    $___ts = (int)(explode("-", $updateUI ?? '')[1] ?? 0);
+    if($___ts > 0):
+    ?>
+    <p class="text-center mb-4" style="font-size:12px; color:#888;">
+        Link cập nhật này có thời hạn đến: <b><?= date('H:i d/m/Y', $___ts + 10800) ?></b>
+    </p>
+    <?php endif; ?>
 
     <?php
 
@@ -261,7 +269,8 @@ if (request('update_user_info') && request()->isMethod('POST') && request('first
             <div class="form-group col-md-6">
                 <label for="email">Email <span class="text-danger">*</span></label>
                 <input type="email" class="form-control" id="email" name="email"
-                        value="<?= $email ?>" style="background-color: #f5f5f5;">
+                        value="<?= $email ?>" style="background-color: #f5f5f5;"
+                        autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
             </div>
 
             <div class="form-group col-md-6">
@@ -464,8 +473,7 @@ if (request('update_user_info') && request()->isMethod('POST') && request('first
                 data: JSON.stringify(data),
                 success: function(response) {
                     showToastInfoTop("Cập nhật thành công!");
-                    $msg.html('<div class="alert1 alert-success1 my-2" style="color: green"><i class="fa fa-check-circle"></i> Cập nhật thông tin thành công!</div>');
-                    // Don't reload page - just show success message
+                    $('#updateUserInfoForm').hide();
                 },
                 error: function(xhr) {
                     showToastWarningTop("Có lỗi cập nhật!");
