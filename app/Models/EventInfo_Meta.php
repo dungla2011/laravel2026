@@ -896,6 +896,34 @@ $str
                             }
                         </style>
 
+                        <div class="mb-2" style="font-size:13px; display:flex; align-items:center; flex-wrap:wrap; gap:6px 16px;">
+                            <label style="cursor:pointer; user-select:none;">
+                                <input type="checkbox" id="filter_not_email" style="margin-right:4px;">
+                                Chưa có email
+                            </label>
+                            <label style="cursor:pointer; user-select:none;">
+                                <input type="checkbox" id="filter_not_phone" style="margin-right:4px;">
+                                Chưa có phone
+                            </label>
+                            <label style="cursor:pointer; user-select:none;">
+                                <input type="checkbox" id="filter_not_id_number" style="margin-right:4px;">
+                                Chưa có CMND/CCCD
+                            </label>
+                            <label style="cursor:pointer; user-select:none;">
+                                <input type="checkbox" id="filter_not_tax_number" style="margin-right:4px;">
+                                Chưa có MST
+                            </label>
+                            <label style="cursor:pointer; user-select:none;">
+                                <input type="checkbox" id="filter_not_bank_acc_number" style="margin-right:4px;">
+                                Chưa có STK ngân hàng
+                            </label>
+                            <label style="cursor:pointer; user-select:none;">
+                                <input type="checkbox" id="filter_not_bank_name_text" style="margin-right:4px;">
+                                Chưa có tên ngân hàng
+                            </label>
+                            <span id="total_user_count" style="margin-left:auto; color:#555;"></span>
+                        </div>
+
                         <div class="user_list mt-0">
 
                         </div>

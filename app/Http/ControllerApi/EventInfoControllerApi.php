@@ -495,6 +495,33 @@ class EventInfoControllerApi extends BaseApiController
             return rtJsonApiError("Event ID is required");
         }
 
+        $notEmail         = request('not_email');
+        $notPhone         = request('not_phone');
+        $notIdNumber      = request('not_id_number');
+        $notTaxNumber     = request('not_tax_number');
+        $notBankAccNumber = request('not_bank_acc_number');
+        $notBankNameText  = request('not_bank_name_text');
+
+        $extraWhere = '';
+        if ($notEmail) {
+            $extraWhere .= " AND (eu.email IS NULL OR eu.email = '' OR eu.email LIKE '%khongcomail%' OR eu.email LIKE '%khongcoemail%')";
+        }
+        if ($notPhone) {
+            $extraWhere .= " AND (eu.phone IS NULL OR eu.phone = '')";
+        }
+        if ($notIdNumber) {
+            $extraWhere .= " AND (eu.id_number IS NULL OR eu.id_number = '')";
+        }
+        if ($notTaxNumber) {
+            $extraWhere .= " AND (eu.tax_number IS NULL OR eu.tax_number = '')";
+        }
+        if ($notBankAccNumber) {
+            $extraWhere .= " AND (eu.bank_acc_number IS NULL OR eu.bank_acc_number = '')";
+        }
+        if ($notBankNameText) {
+            $extraWhere .= " AND (eu.bank_name_text IS NULL OR eu.bank_name_text = ''  OR eu.bank_name_text = '0')";
+        }
+
         $results = DB::select('SELECT
             eu.id as user_id,
             eu.email,
@@ -519,6 +546,7 @@ class EventInfoControllerApi extends BaseApiController
             ea.event_id = ?
             AND ea.deleted_at IS NULL
             AND eu.deleted_at IS NULL
+            ' . $extraWhere . '
         ORDER BY
             eu.first_name, eu.last_name
         ', [$eventId]);

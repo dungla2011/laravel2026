@@ -453,8 +453,15 @@ use App\Models\EventInfo_Meta;
 
         // return;
 
+        const notEmail         = document.getElementById('filter_not_email')?.checked          ? '&not_email=1' : '';
+        const notPhone         = document.getElementById('filter_not_phone')?.checked          ? '&not_phone=1' : '';
+        const notIdNumber      = document.getElementById('filter_not_id_number')?.checked      ? '&not_id_number=1' : '';
+        const notTaxNumber     = document.getElementById('filter_not_tax_number')?.checked     ? '&not_tax_number=1' : '';
+        const notBankAcc       = document.getElementById('filter_not_bank_acc_number')?.checked? '&not_bank_acc_number=1' : '';
+        const notBankName      = document.getElementById('filter_not_bank_name_text')?.checked ? '&not_bank_name_text=1' : '';
+
         showWaittingIcon();
-        fetch('/api/event-info/getUserListEvent?eid=' + dataId)
+        fetch('/api/event-info/getUserListEvent?eid=' + dataId + notEmail + notPhone + notIdNumber + notTaxNumber + notBankAcc + notBankName)
             .then(response => response.json())
             .then(data => {
                 console.log("Get data...", data.payload);
@@ -462,6 +469,9 @@ use App\Models\EventInfo_Meta;
                 dataToExportExcel = data.payload;
 
                 hideWaittingIcon()
+
+                const totalEl = document.getElementById('total_user_count');
+                if (totalEl) totalEl.innerHTML = 'Tổng số: <b>' + data.payload.length + '</b>';
 
                 // Generate the HTML table
                 const htmlTable = buildHtmlTable(data.payload);
@@ -709,6 +719,12 @@ use App\Models\EventInfo_Meta;
         document.getElementById('exampleModalCenter')?.addEventListener('show.bs.modal', function (event) {
             // Make an AJAX request to fetch content from the API
             getUserDataList(<?php use App\Components\Helper1;echo $objData->id ?>);
+        });
+
+        ['filter_not_email', 'filter_not_phone', 'filter_not_id_number', 'filter_not_tax_number', 'filter_not_bank_acc_number', 'filter_not_bank_name_text'].forEach(function(id) {
+            document.getElementById(id)?.addEventListener('change', function() {
+                getUserDataList(<?php echo $objData->id ?>);
+            });
         });
 
     });
