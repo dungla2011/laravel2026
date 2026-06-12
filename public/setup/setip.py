@@ -1,4 +1,11 @@
-import subprocess
+# Lệnh	Tác dụng
+# python setip.py install	Cài service (Windows/Linux systemd)
+# python setip.py remove	Gỡ service
+# python setip.py start/stop/status	Quản lý service (Linux)
+# python setip.py mac	Lưu MAC hiện tại vào file template (dùng khi tạo VM template)
+# Script này được thiết kế chạy tự động khi boot để VPS clone từ template có thể tự nhận IP từ server quản lý qua MAC address.
+
+import subprocess 
 import sys
 import os
 import time
@@ -69,11 +76,11 @@ def setup_logging(console=False):
     # Remove any existing handlers
     logger = logging.getLogger()
     logger.handlers = []
-    logger.setLevel(logging.INFO)
+    logger.setLevel(logging.DEBUG)
     
     # File handler
     file_handler = logging.FileHandler(LOG_FILE)
-    file_handler.setLevel(logging.INFO)
+    file_handler.setLevel(logging.DEBUG)
     file_handler.setFormatter(formatter)
     logger.addHandler(file_handler)
     
@@ -109,36 +116,18 @@ def get_all_mac_addresses():
                         if mac not in mac_addresses:
                             mac_addresses.append(mac)
         else:
-            try:
-                result = subprocess.run(
-                    ["ip", "link", "show"],
-                    capture_output=True,
-                    text=True,
-                    timeout=5
-                )
-
-                for line in result.stdout.split('\n'):
-                    if 'link/ether' in line:
-                        match = re.search(r'link/ether\s+([0-9a-f:]{17})', line)
-                        if match:
-                            mac = match.group(1).strip().upper()
-                            if mac not in mac_addresses:
-                                mac_addresses.append(mac)
-            except FileNotFoundError:
-                result = subprocess.run(
-                    ["ifconfig"],
-                    capture_output=True,
-                    text=True,
-                    timeout=5
-                )
-
-                for line in result.stdout.split('\n'):
-                    if 'HWaddr' in line or 'ether' in line:
-                        match = re.search(r'(?:HWaddr|ether)\s+([0-9a-f:]{17})', line)
-                        if match:
-                            mac = match.group(1).strip().upper()
-                            if mac not in mac_addresses:
-                                mac_addresses.append(mac)
+            sys_net = '/sys/class/net'
+            logging.debug(f"Reading MAC from {sys_net}")
+            for iface in sorted(os.listdir(sys_net)):
+                if iface == 'lo':
+                    continue
+                mac_file = os.path.join(sys_net, iface, 'address')
+                if os.path.exists(mac_file):
+                    with open(mac_file) as f:
+                        mac = f.read().strip().upper()
+                    logging.debug(f"Interface {iface}: {mac}")
+                    if mac and mac not in ['00:00:00:00:00:00', '00-00-00-00-00-00'] and mac not in mac_addresses:
+                        mac_addresses.append(mac)
 
         return mac_addresses
 
@@ -236,44 +225,19 @@ def get_mac_address():
                         logging.info(f"MAC Address: {mac}")
                         return mac
         else:
-            try:
-                result = subprocess.run(
-                    ["ip", "link", "show"],
-                    capture_output=True,
-                    text=True,
-                    timeout=5
-                )
-
-                for line in result.stdout.split('\n'):
-                    if 'link/ether' in line:
-                        match = re.search(r'link/ether\s+([0-9a-f:]{17})', line)
-                        if match:
-                            mac = match.group(1).strip()
-                            # Bỏ qua MAC address all-zeros
-                            if mac.upper() in ['00-00-00-00-00-00', '00:00:00:00:00:00']:
-                                logging.info(f"Skipping invalid MAC: {mac}")
-                                continue
-                            logging.info(f"MAC Address: {mac}")
-                            return mac
-            except FileNotFoundError:
-                result = subprocess.run(
-                    ["ifconfig"],
-                    capture_output=True,
-                    text=True,
-                    timeout=5
-                )
-
-                for line in result.stdout.split('\n'):
-                    if 'HWaddr' in line or 'ether' in line:
-                        match = re.search(r'(?:HWaddr|ether)\s+([0-9a-f:]{17})', line)
-                        if match:
-                            mac = match.group(1).strip()
-                            # Bỏ qua MAC address all-zeros
-                            if mac.upper() in ['00-00-00-00-00-00', '00:00:00:00:00:00']:
-                                logging.info(f"Skipping invalid MAC: {mac}")
-                                continue
-                            logging.info(f"MAC Address: {mac}")
-                            return mac
+            sys_net = '/sys/class/net'
+            logging.debug(f"Reading MAC from {sys_net}")
+            for iface in sorted(os.listdir(sys_net)):
+                if iface == 'lo':
+                    continue
+                mac_file = os.path.join(sys_net, iface, 'address')
+                if os.path.exists(mac_file):
+                    with open(mac_file) as f:
+                        mac = f.read().strip()
+                    logging.debug(f"Interface {iface}: {mac}")
+                    if mac and mac.upper() not in ['00:00:00:00:00:00', '00-00-00-00-00-00']:
+                        logging.info(f"MAC Address: {mac}")
+                        return mac
 
         logging.error("Could not get MAC address")
         return None
@@ -454,7 +418,7 @@ def get_non_local_ip():
                             return ip
         else:
             result = subprocess.run(
-                ["ip", "addr", "show"],
+                ["/usr/sbin/ip", "addr", "show"],
                 capture_output=True,
                 text=True,
                 timeout=5
@@ -644,48 +608,37 @@ def set_user_password_linux(username, password):
 
 def get_first_ethernet_interface():
     """Get first found ethernet interface name on Linux (not loopback)"""
+    SKIP_IFACES = {'lo', 'docker0', 'virbr0', 'virbr0-nic', 'br-'}
     try:
         # Try 'ip link show' to list all interfaces
         result = subprocess.run(
-            ['ip', 'link', 'show'],
+            ['/usr/sbin/ip', 'link', 'show'],
             capture_output=True,
             text=True,
             timeout=5
         )
-        
+
         for line in result.stdout.split('\n'):
-            # Format: "1: lo: <LOOPBACK,UP,LOWER_UP> ..."
-            # or "2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> ..."
-            if ':' in line:
-                parts = line.split(':')
-                if len(parts) >= 2:
-                    # Skip loopback and other special interfaces
-                    iface_name = parts[1].strip()
-                    if iface_name and iface_name not in ['lo', 'docker0', 'virbr0', 'br-']:
-                        logging.info(f"Found ethernet interface: {iface_name}")
-                        return iface_name
-        
-        # Fallback: try ifconfig
-        try:
-            result = subprocess.run(
-                ['ifconfig', '-a'],
-                capture_output=True,
-                text=True,
-                timeout=5
-            )
-            
-            for line in result.stdout.split('\n'):
-                if line and not line.startswith((' ', '\t')):
-                    iface_name = line.split()[0]
-                    if iface_name and iface_name not in ['lo', 'docker0', 'virbr0']:
-                        logging.info(f"Found ethernet interface: {iface_name}")
-                        return iface_name
-        except:
-            pass
-    
+            # Only match interface index lines: "2: ens192: <FLAGS> ..."
+            # NOT sub-lines like "    link/ether 00:50:56:b7:fd:e9 brd ff:ff:ff:ff:ff:ff"
+            match = re.match(r'^\d+:\s+(\S+):', line)
+            if match:
+                iface_name = match.group(1).split('@')[0]  # Handle veth@eth0 format
+                if iface_name and iface_name not in SKIP_IFACES and not iface_name.startswith('br-'):
+                    logging.info(f"Found ethernet interface: {iface_name}")
+                    return iface_name
+
+        # Fallback: read from /sys/class/net
+        sys_net = '/sys/class/net'
+        if os.path.exists(sys_net):
+            for iface_name in sorted(os.listdir(sys_net)):
+                if iface_name not in SKIP_IFACES and not iface_name.startswith('br-'):
+                    logging.info(f"Found ethernet interface (sysfs): {iface_name}")
+                    return iface_name
+
     except Exception as e:
         logging.warning(f"Error detecting interface: {e}")
-    
+
     # Default fallback
     logging.warning("Could not detect interface name, using eth0 as default")
     return 'eth0'
@@ -746,6 +699,7 @@ def reset_interface_to_dhcp_linux():
                 f.write(netplan_config)
             subprocess.run(["netplan", "apply"], capture_output=True, timeout=30)
             logging.info("Interface reset to DHCP via netplan")
+            time.sleep(3)
             return True
         
         # Fallback to ifupdown
@@ -783,9 +737,13 @@ def apply_network_config_linux(config):
                 text=True,
                 timeout=5
             )
-            if result.returncode == 0 and result.stdout.strip() == 'active':
+            nm_status = result.stdout.strip()
+            if result.returncode == 0 and nm_status == 'active':
                 logging.info("NetworkManager detected")
-                return apply_networkmanager_config(config)
+                nm_result = apply_networkmanager_config(config)
+                if nm_result:
+                    return True
+                logging.warning("NetworkManager config failed, falling back to netplan/ifupdown")
         except:
             pass
 
@@ -921,6 +879,10 @@ network:
         subprocess.run(["netplan", "apply"], check=True, timeout=30)
         logging.info("Netplan configuration applied")
 
+        # Wait for interface to come up after netplan apply
+        logging.info("Waiting for interface to apply configuration...")
+        time.sleep(5)
+
         if config.get('hostname'):
             logging.info(f"Setting hostname: {config['hostname']}")
             subprocess.run(
@@ -992,7 +954,7 @@ def verify_ip_config(ip_address):
             )
         else:
             result = subprocess.run(
-                ["ip", "addr", "show"],
+                ["/usr/sbin/ip", "addr", "show"],
                 capture_output=True,
                 text=True,
                 timeout=5
@@ -1101,11 +1063,17 @@ def perform_network_config():
 
     logging.info("No non-local IP detected, proceeding with network configuration...")
 
-    # Step 2: Get MAC address
+    # Step 2: Get MAC address (retry up to 60s for interfaces to come up)
     logging.info("Step 2: Getting network adapter information...")
-    mac_address = get_mac_address()
+    mac_address = None
+    for attempt in range(12):
+        mac_address = get_mac_address()
+        if mac_address:
+            break
+        logging.warning(f"MAC not found (attempt {attempt + 1}/12), retrying in 5s...")
+        time.sleep(5)
     if not mac_address:
-        logging.error("Failed to get MAC address")
+        logging.error("Failed to get MAC address after 60s")
         return False
 
     # Step 3: Query metadata server
@@ -1266,7 +1234,8 @@ def create_systemd_service():
     """Create systemd service file for Linux"""
     service_content = f"""[Unit]
 Description=Glx Network Configuration Service
-After=network.target
+After=network-online.target
+Wants=network-online.target
 
 [Service]
 Type=simple

@@ -12,6 +12,8 @@ class VpsInstance_Meta extends MetaOfTableInDb
 
     public static $modelClass = VpsInstance::class;
 
+    public static $disableAddItem = true;
+
     public function getHardCodeMetaObj($field) {
 
         $objMeta = new MetaOfTableInDb();
@@ -84,6 +86,15 @@ class VpsInstance_Meta extends MetaOfTableInDb
         $renderer = new HtmlTableRenderer('Trạng thái Khởi tạo VPS');
         $renderer->render($status);
 
+    }
+
+    public function extraContentIndexButton2($v1 = null, $v2 = null, $v3 = null)
+    {
+        ?>
+        <a href="/service/cloud-vps">
+        <button class="float-right mt-2 ml-3 btn btn-sm btn-primary"> <i class="fa fa-plus"></i> Tạo </button>
+        </a>
+        <?php
     }
 
     function _name($obj, $val, $field)

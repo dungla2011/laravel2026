@@ -128,7 +128,7 @@ $domain = \LadLib\Common\UrlHelper1::getDomainHostName();
                     </div>
                 </div>
 
-                <div class="row">
+                <div class="row d-none">
                     <div class="col-sm-12" style="">
                         <div class="sec1" style="text-align: center">
                             Mã Affiliate của bạn:

@@ -376,14 +376,15 @@ class U4sHelper
         //Timeout
         $ctx = stream_context_create(array('http'=>
             array(
-                'timeout' => 10,  //1200 Seconds is 20 Minutes
+                'timeout' => 30,  //1200 Seconds is 20 Minutes
             )
         ));
 
-        $check = @file_get_contents($urlCheck, false, $ctx);
+//        $check = @file_get_contents($urlCheck, false, $ctx);
+        $check = @file_get_contents($urlCheck);
 
         if (!$check) {
-            echo("\nKhông thể kết nối File Server: $server! ");
+            echo("\nKhông thể kết nối File Server 1: $server! $urlCheck ");
             return false;
         }
 

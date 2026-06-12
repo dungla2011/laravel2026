@@ -498,16 +498,16 @@ if($uid){
     max-width:340px; width:92%; box-shadow:0 4px 20px rgba(0,0,0,0.18);
     border-left:4px solid royalblue; font-size:14px;">
     <div style="margin-bottom:12px; line-height:1.6;">
-        <a href="//app.mytree.vn" style="color:royalblue; text-decoration:none;">
-            - Thông báo: Phiên bản mới đã có tại địa chỉ: <b>app.mytree.vn</b> 
-            với các cải tiến  <b>toàn diện</b> về tính năng, tốc độ và giao diện. Mời Quý khách trải nghiệm! 
-            <br>  
+        <a href="//mytree.vn" style="color:royalblue; text-decoration:none;">
+            - Thông báo: Phiên bản mới đã có tại địa chỉ: <b>mytree.vn</b>
+            với các cải tiến  <b>toàn diện</b> về tính năng, tốc độ và giao diện. Mời Quý khách trải nghiệm!
+            <br>
             - Các dữ liệu phiên bản cũ có thể được chuyển sang phiên bản mới, Xem hướng dẫn nhập liệu!
             <br>
-            - Bản cũ vẫn duy trì tiếp tục hoạt động trong thời gian tới bình thường, đảm bảo an toàn dữ liệu. 
+            - Bản cũ vẫn duy trì tiếp tục hoạt động trong thời gian tới bình thường, đảm bảo an toàn dữ liệu.
             <br>
             - Các Tài khoản và thanh toán cũ cũng đã chuyển sang bản mới miễn phí với thời gian sử dụng tương ứng.
-            <br>  
+            <br>
             Xin cảm ơn Quý khách!
         </a>
     </div>
@@ -578,7 +578,7 @@ if($uid){
 
 <div class="menu_div" data-code-pos="qqq1710205740380">
     <?php
-    if(\LadLib\Common\UrlHelper1::getDomainHostName() == 'mytree.vn')
+    if(\LadLib\Common\UrlHelper1::getDomainHostName() == "v1.mytree.vn")
     {
         ?>
     <a href="/">
@@ -595,7 +595,7 @@ if($uid){
     <div class="menu_top" style="float: right; ">
 
         <?php
-        if(\LadLib\Common\UrlHelper1::getDomainHostName() == 'mytree.vn')
+        if(\LadLib\Common\UrlHelper1::getDomainHostName() == "v1.mytree.vn")
         {
         ?>
         <span style="" id="taiTro1" >
@@ -672,7 +672,7 @@ z-index: 100000; display: none; width: 250px; position: fixed; top: 60px; right:
         }
 
     } else {
-        if ($uid || $domain!='mytree.vn')
+        if ($uid || $domain!="v1.mytree.vn")
             require_once resource_path() . "/views/giapha/list_tree.php";
         else {
             echo "<div data-code-pos='ppp1676969284387' class='container'> <div class='jumbotron text-center ' style='margin-top: 30px'><a style='text-decoration: none' href='/login'><h2>Đăng nhập để tạo cây của bạn</h2></a>";
@@ -1080,7 +1080,7 @@ if(isset($mretAll) && isset($objTree)){
 
     <?php
     if(0)
-    if(getCurrentUserId()  && \LadLib\Common\UrlHelper1::getDomainHostName() == 'mytree.vn'){
+    if(getCurrentUserId()  && \LadLib\Common\UrlHelper1::getDomainHostName() == "v1.mytree.vn"){
     ?>
 
 
@@ -1145,7 +1145,7 @@ if (isset($pid)) {
 <div class="loader1"></div>
 
 <?php
-if(\LadLib\Common\UrlHelper1::getDomainHostName() == 'mytree.vn')
+if(\LadLib\Common\UrlHelper1::getDomainHostName() == "v1.mytree.vn")
 {
 ?>
 <a href="https://zalo.me/0904043689" id="linkzalo" target="_blank" rel="noopener noreferrer"><div id="fcta-zalo-tracking" class="fcta-zalo-mess">

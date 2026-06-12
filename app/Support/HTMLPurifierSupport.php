@@ -127,7 +127,8 @@ class HTMLPurifierSupport
                 // 'position', 'top', 'right', 'bottom', 'left', 'z-index',
                 // 'flex', 'flex-direction', 'justify-content', 'align-items',
                 // 'grid-template', 'grid-column', 'grid-row',
-                // 'box-shadow', 'text-shadow', 'line-height', 'text-align', 'vertical-align',
+                // 'box-shadow', 'text-shadow', 'line-height',
+                'text-align', 'vertical-align',
                 // 'white-space', 'direction', 'unicode-bidi', 'cursor', 'pointer-events'
             ));
 

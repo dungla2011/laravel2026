@@ -1,7 +1,15 @@
 <?php
 
 use Illuminate\Support\Str;
-
+{
+//    if($_SERVER['SERVER_NAME'] == 'v2up.4share.vn')
+    {
+//        die("ABC");
+//        print_r($_SERVER['argv']);
+//
+//        die("ABC1 '$domainName': $dbName , $hostname, $user, $pw, $dbPort, $dbDriver");
+    }
+}
 //if(isDebugIp())
 //    $GLOBALS['mMapDomainDb']['tapdanhmay.mytree.vn'] = ['siteid' => 26, 'db_name' => 'glx_typing_train', 'layout_name' => 'tap-danh-may2'];
 $dbConnection = env('DB_CONNECTION');
@@ -207,13 +215,8 @@ if (isDebugIp()) {
 }
 
 
-if(isCli()){
-    if(gethostname() == 'mon.lad.vn'){
-//        print_r($_SERVER['argv']);
+//if(isCli())
 
-//        die("ABC1 '$domainName': $dbName , $hostname, $user, $pw, $dbPort, $dbDriver");
-    }
-}
 
 $common_connection = [
     'driver' => $dbDriver,

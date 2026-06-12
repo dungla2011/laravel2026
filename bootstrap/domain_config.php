@@ -18,6 +18,12 @@ return $GLOBALS['mMapDomainDb'] = [
         'use_snowflake_models' => 'FileUpload,GiaPha,MyTreeInfo,User,OrderItem,OrderInfo',
 //        'use_unixtime_id_models'=> 'abc,xyz',
     ],
+    'v1.mytree.vn' => ['siteid' => 1, 'db_name' => env('DB_DATABASE'), 'layout_name' => 'glx2021',
+        'logo' => '/images/logo/mytree1.png',
+        'rand_in_redis'=> 0,
+        'use_snowflake_models' => 'FileUpload,GiaPha,MyTreeInfo,User,OrderItem,OrderInfo',
+//        'use_unixtime_id_models'=> 'abc,xyz',
+    ],
     'test1.mytree.vn' => ['siteid' => 1, 'db_name' => env('DB_DATABASE'), 'layout_name' => 'glx2021',
         'logo' => '/images/logo/mytree1.png',
         'rand_in_redis'=> 1,
@@ -63,7 +69,7 @@ return $GLOBALS['mMapDomainDb'] = [
     'acl.mytree.vn' => ['siteid' => 25, 'db_name' => 'glx_acl', 'layout_name' => 'hr1'],
     'alc.mytree.vn' => ['siteid' => 25, 'db_name' => 'glx_acl', 'layout_name' => 'hr1'],
 
-    'tapdanhmay.mytree.vn' => ['siteid' => 26, 'db_name' => 'glx_typing_train', 'layout_name' => 'tap-danh-may'],
+    'tapdanhmay1.mytree.vn' => ['siteid' => 26, 'db_name' => 'glx_typing_train', 'layout_name' => 'tap-danh-may'],
 
     'dieuhoa2023.mytree.vn' => ['siteid' => 27, 'db_name' => 'glx_dieuhoa', 'layout_name' => 'd-hoa-2023'],
     'suadieuhoabacninh.vn' => ['siteid' => 27, 'db_name' => 'glx_dieuhoa', 'layout_name' => 'd-hoa-2023'],

@@ -88,7 +88,7 @@ class AffiliateLog_Meta extends MetaOfTableInDb
 
         ?>
 
-<div class='row m-2 p-2 px-2' style="background-color: snow">
+<div class='row m-2 p-2 px-2 d-none' style="background-color: snow">
 
     <div class="">Mã Affiliate của bạn:
 

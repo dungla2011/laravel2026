@@ -39,7 +39,7 @@ use Illuminate\Support\Facades\Cache;
     $uid = getUserIdCurrent_();
 
     //Không phải mytree, thì list tất cả ra
-    if ($domain == 'mytree.vn' || $domain == 'v3.mytree.vn' || $domain == 'v5.mytree.vn') {
+    if ($domain == 'v1.mytree.vn' || $domain == 'mytree.vn' || $domain == 'v3.mytree.vn' || $domain == 'v5.mytree.vn') {
         if (!$uid)
             goto _END2;
         $totalItem = \App\Models\GiaPha::where(['user_id' => $uid])->count();
@@ -54,7 +54,7 @@ use Illuminate\Support\Facades\Cache;
         echo " <div style='text-align: center'> Bạn chưa có cây nào ! </div>";
     } else {
         $nTree = $mm0->count();
-        if ($domain == 'mytree.vn' || $domain == 'v3.mytree.vn' || $domain == 'v5.mytree.vn') {
+        if ($domain == 'mytree.vn' || $domain == 'v1.mytree.vn' || $domain == 'v3.mytree.vn' || $domain == 'v5.mytree.vn') {
 
 
             $obj = new \App\Models\GiaPha();

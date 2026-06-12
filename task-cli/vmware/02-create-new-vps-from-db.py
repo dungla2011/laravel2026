@@ -1015,6 +1015,21 @@ def create_vps_thread(vps_id, init_os_id, vps_name):
                         if mac_address_str:
                             print(f"  💾 Saving MAC addresses to DB: {mac_address_str}")
 
+                        # Clear bios_uuid from any other row that has the same value (e.g. stale record from
+                        # a previous failed clone, or template VM with the same BIOS UUID).
+                        new_bios_uuid = clone_result['new_vm_id']
+                        cursor.execute(
+                            "SELECT id FROM vps_instances WHERE bios_uuid = %s AND id != %s LIMIT 1",
+                            (new_bios_uuid, vps_id)
+                        )
+                        conflict = cursor.fetchone()
+                        if conflict:
+                            print(f"  ⚠️  bios_uuid conflict: VPS #{conflict['id']} already has this UUID — clearing it")
+                            cursor.execute(
+                                "UPDATE vps_instances SET bios_uuid = NULL WHERE id = %s",
+                                (conflict['id'],)
+                            )
+
                         sql = """
                         UPDATE vps_instances
                         SET create_status = %s,
@@ -1027,7 +1042,7 @@ def create_vps_thread(vps_id, init_os_id, vps_name):
                         cursor.execute(sql, (
                             'vps_create_done',
                             clone_result['new_vm_id'],
-                            clone_result['new_vm_id'],
+                            new_bios_uuid,
                             mac_address_str,
                             json.dumps(final_progress),
                             vps_id
@@ -1243,6 +1258,9 @@ def main():
                     vps_name = vps['name']
 
                     print(f"  → VPS #{vps_id}: init_os={init_os}, name={vps_name}")
+
+                    # Mark as creating immediately to prevent duplicate processing on next loop
+                    update_vps_status(vps_id, 'vps_creating')
 
                     # Start creation thread
                     thread = Thread(

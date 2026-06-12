@@ -1561,8 +1561,12 @@ class EventInfoControllerApi extends BaseApiController
                             continue;
                         }
 
-                        if($evsL->status){
-                            ol1($eventSendAction, "Skip send, send ok before?", $ignoreEcho);
+                        if($evsL->status == 1){
+                            ol1($eventSendAction, "Skip send, send ok before", $ignoreEcho);
+                            continue;
+                        }
+                        if($evsL->status == -1){
+                            ol1($eventSendAction, "Skip send, already sending (concurrent run)", $ignoreEcho);
                             continue;
                         }
                     }
@@ -1579,18 +1583,20 @@ class EventInfoControllerApi extends BaseApiController
 //                only_denied_user
 //                only_attended_user
 
-                    if (strstr($evUser->email, '@ymail.com')) {
-                        $ignore++;
-                        ol1($eventSendAction, "Ignore not valid $evUser->email ", $ignoreEcho);
-                        continue;
-                    }
+                    if ($eventSendAction->type == EventInfo_Meta::$typeEmail) {
+                        if (strstr($evUser->email, '@ymail.com')) {
+                            $ignore++;
+                            ol1($eventSendAction, "Ignore not valid $evUser->email ", $ignoreEcho);
+                            continue;
+                        }
 
-                    if (strstr($evUser->email, '@khongcomail')
-                    || strstr($evUser->email, '@khongcoemail')
-                    ) {
-                        $ignore++;
-                        ol1($eventSendAction, "Ignore not valid: $evUser->email ", $ignoreEcho);
-                        continue;
+                        if (strstr($evUser->email, '@khongcomail')
+                        || strstr($evUser->email, '@khongcoemail')
+                        ) {
+                            $ignore++;
+                            ol1($eventSendAction, "Ignore not valid: $evUser->email ", $ignoreEcho);
+                            continue;
+                        }
                     }
 
                     $select_user_type = $eventSendAction->select_user_type;
@@ -1694,6 +1700,11 @@ class EventInfoControllerApi extends BaseApiController
                     $evsL->session_id = $eventSendAction->id;
                     $evsL->type = $eventSendAction->type;
                     $evsL->count_retry_send = 0;
+                    // -1 = đang gửi, chỉ set cho email để ngăn concurrent run gửi trùng
+                    // SMS không set vì App SMS đọc queue có thể filter status=0
+                    if ($eventSendAction->type == EventInfo_Meta::$typeEmail) {
+                        $evsL->status = -1;
+                    }
                     //Save để lấy ID
                     $evsL->save();
 
@@ -1739,6 +1750,7 @@ class EventInfoControllerApi extends BaseApiController
 
                     $eventSendAction->list_uid_send_done .= ",$evUser->id,";
                     $eventSendAction->list_uid_send_done = str_replace(',,', ',', $eventSendAction->list_uid_send_done);
+                    $eventSendAction->save();
 
                     $eventIdEnc = qqgetRandFromId_($eventId);
                     $linkXacNhan = "https://$domain/user-confirm-event?id=$eventIdEnc&data_ev=" . eth1b($evUser->email);
@@ -1765,6 +1777,8 @@ class EventInfoControllerApi extends BaseApiController
                     $ct = str_replace(EventInfo::$DEF_TENKHACH[0], $nameFull, $ct);
                     $ct = str_replace(EventInfo::$DEF_LINKTHAMDU[0], $urlXacNhan, $ct);
                     $ct = str_replace(EventInfo::$DEF_USER_EMAIL[0], $evUser->email, $ct);
+
+                    $ct = str_replace(EventInfo::$DEF_USER_ID[0], $evUser->id, $ct);
 
                     if($evP = EventUserPayment::where('user_event_id', $evUser->id)->where('event_id', $ev->id)->first()){
 //                        $evP->bank_name;
@@ -1822,7 +1836,7 @@ class EventInfoControllerApi extends BaseApiController
                             if(!$zluId){
 //                                $zlh = new ZaloHelper();
 //                                $zlh = new \App\Helpers\ZaloHelper('http://localhost:30000', 'admin', '938475wufo87908u09');
-                                sleep(2);
+                                // sleep(2);
                                 if($retZl = $zlh->findUserByPhone('event1', $phone)){
 
                                     echo "<pre> >>> " . __FILE__ . "(" . __LINE__ . ")<br/>";
@@ -1865,7 +1879,7 @@ class EventInfoControllerApi extends BaseApiController
 
                                     $data['message'] = " Gui thanh cong $phone ";
                                     $pusher->trigger($chanelPusher, "my-event-pusher-web-$eventId", $data);
-                                    sleep(15);
+                                    // sleep(15);
 
                                     $evsL->addLog(" send ok zalo");
                                     $evsL->status = 1;
@@ -1934,6 +1948,7 @@ class EventInfoControllerApi extends BaseApiController
 
                         $titleMail = $ev->$selectTitle;
                         $titleMail = str_replace(EventInfo::$DEF_EVENT_NAME[0], $ev->getName(), $titleMail);
+                        $titleMail = str_replace(EventInfo::$DEF_USER_ID[0], $evUser->id, $titleMail);
 
 //                    $ct .= $strImg;
                         $evsL->content = $ct;

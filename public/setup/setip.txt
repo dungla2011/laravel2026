@@ -1,1 +1,21 @@
+# Lệnh	Tác dụng
+# python setip.py install	Cài service (Windows/Linux systemd)
+# python setip.py remove	Gỡ service
+# python setip.py start/stop/status	Quản lý service (Linux)
+# python setip.py mac	Lưu MAC hiện tại vào file template (dùng khi tạo VM template)
+# Script này được thiết kế chạy tự động khi boot để VPS clone từ template có thể tự nhận IP từ server quản lý qua MAC address.
+
+wget http://10.1.1.1/setup/setip.py
+
 netsh interface ip set address name="Ethernet0" source=dhcp ; Invoke-WebRequest http://10.1.1.1/setup/setip.zip -OutFile setup_glx.zip ; Expand-Archive .\setup_glx.zip -DestinationPath ./ -Force ; .\GlxService.exe install
+
+
+python3 -c "
+import subprocess, re
+result = subprocess.run(['ip', 'link', 'show'], capture_output=True, text=True, timeout=5)
+for line in result.stdout.split('\n'):
+    if 'link/ether' in line:
+        print('LINE:', repr(line))
+        match = re.search(r'link/ether\s+([0-9a-f:]{17})', line)
+        print('MATCH:', match)
+"

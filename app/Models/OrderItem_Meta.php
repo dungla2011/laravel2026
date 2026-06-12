@@ -127,7 +127,7 @@ class OrderItem_Meta extends MetaOfTableInDb
     {
         $domain = UrlHelper1::getDomainHostName();
 
-        if(!in_array($domain, ['mytree.vn']))
+        if(!in_array($domain, ['v1.mytree.vn']))
             return;
         if(!Helper1::isAdminModule())
             return;

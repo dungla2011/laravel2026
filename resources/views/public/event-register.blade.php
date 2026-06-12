@@ -746,7 +746,7 @@ reg_mail_02_en
 
                             <div class="form-group">
                                 <label for="tax_number">{{ __('reg_event_ncbd.tax_number') }}</label>
-                                <input type="input" class="form-control" id="tax_number" value="{{$tax_number ?? ''}}"
+                                <input required type="input" class="form-control" id="tax_number" value="{{$tax_number ?? ''}}"
                                        name="tax_number" pattern="[A-Za-z0-9]+" maxlength="32"
                                        title="{{ __('reg_event_ncbd.alphanumeric_only') }}">
                             </div>
@@ -757,7 +757,7 @@ reg_mail_02_en
                             <div class="form-group col-md-8">
 
                                     <label for="bankSelect">{{ __('reg_event_ncbd.bank_text_select') }}</label>
-                                    <select id="bankSelect">
+                                    <select required id="bankSelect">
                                         <option value="">-- {{ __('reg_event_ncbd.bank_text_select') }} --</option>
 
                                         <!--  Sort banks by code   -->
@@ -783,14 +783,14 @@ reg_mail_02_en
 {{--                                </div>--}}
 
 
-                                <input type="hidden" id="bank_name_text" name="bank_name_text" value="">
+                                <input required type="hidden" id="bank_name_text" name="bank_name_text" value="">
 
                             </div>
 
 
                             <div class="form-group col-md-4">
                                 <label for="bank_acc_number">{{ __('reg_event_ncbd.bank_acc_number') }}</label>
-                                <input type="number" class="form-control" id="bank_acc_number" value="{{$bank_acc_number}}"
+                                <input required type="number" class="form-control" id="bank_acc_number" value="{{$bank_acc_number}}"
                                        name="bank_acc_number" >
                             </div>
                             </div>

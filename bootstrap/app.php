@@ -12,21 +12,23 @@
 */
 
 //\//ladDebug::addTime("app___ ...", __LINE__);
-
-$app = new Illuminate\Foundation\Application(
-    $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__)
-);
-
-// Load .env early so env() works in domain_config.php
+ 
+// Load .env trước Application, để env() hoạt động trong domain_config.php
 try {
     if (class_exists(\Dotenv\Dotenv::class)) {
-        \Dotenv\Dotenv::createImmutable($app->environmentPath(), $app->environmentFile())->safeLoad();
+        \Dotenv\Dotenv::createImmutable(dirname(__DIR__))->safeLoad();
     }
 } catch (\Throwable $e) {
     // ignore if dotenv not available or .env missing
 }
 
+// Load domain_config TRƯỚC new Application() để $GLOBALS['mMapDomainDb']
+// được set trước khi database.php có thể chạy trong quá trình boot
 require __DIR__.'/domain_config.php';
+
+$app = new Illuminate\Foundation\Application(
+    $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__)
+);
 
 if (0) {
     if (isset($_SERVER['HTTP_HOST']) &&

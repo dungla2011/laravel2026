@@ -20,6 +20,7 @@ class EventInfo extends ModelGlxBase {
 
     static $DEF_USER_EMAIL = ['[USER_EMAIL]' , " User Email"];
 
+    static $DEF_USER_ID = ['[USER_ID]' , " ID của khách"];
     static $DEF_CHI_PHI_THANH_TOAN = ['[CHI_PHI_THANH_TOAN]' , "Chi phí thanh toán"];
     static $DEF_TAI_KHOAN_THANH_TOAN = ['[TAI_KHOAN_THANH_TOAN]' , "Tài khoản thanh toán"];
 

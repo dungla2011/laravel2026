@@ -3,6 +3,7 @@
 namespace App\Helpers;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
 
@@ -92,8 +93,47 @@ class ZaloHelper
      * @param array $data - Request data
      * @return array - Response
      */
+    /**
+     * Đợi đến khi được phép gửi request (rate limit 10 giây/request, dùng Cache chung giữa các thread).
+     * Trả về false nếu chờ quá 3 phút.
+     */
+    private function waitForRateLimit(): bool
+    {
+        $cacheKey   = 'zalo_last_request_time';
+        $minInterval = 10;      // giây tối thiểu giữa 2 request
+        $maxWait     = 180;     // 3 phút timeout
+        $poll        = 100000;  // 0.1 giây (microseconds)
+
+        $startWait = microtime(true);
+
+        while (true) {
+            $last    = (float) Cache::get($cacheKey, 0);
+            $elapsed = microtime(true) - $last;
+
+            if ($elapsed >= $minInterval) {
+                // Đánh dấu thời điểm request ngay để thread khác phải chờ
+                Cache::put($cacheKey, microtime(true), 300);
+                return true;
+            }
+
+            if (microtime(true) - $startWait >= $maxWait) {
+                Log::warning("ZaloHelper: waitForRateLimit timeout sau {$maxWait}s, bỏ qua request.");
+                return false;
+            }
+
+            usleep($poll);
+        }
+    }
+
     private function makeRequest($method, $url, $data = [])
     {
+        if (!$this->waitForRateLimit()) {
+            return [
+                'success' => false,
+                'error'   => 'Zalo rate limit: timeout chờ quá 3 phút, bỏ qua request.'
+            ];
+        }
+
         try {
             $ch = curl_init();
 

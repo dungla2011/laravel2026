@@ -314,6 +314,7 @@ $uid = getCurrentUserId();
                                             <th>Mã số</th>
                                             <th>Tên Vps</th>
                                             <th>Địa chỉ IP</th>
+                                            <th>Comment</th>
                                             <th>Tính phí từ</th>
                                             <th>Tính phí đến</th>
                                             <th>Thời gian sử dụng</th>
