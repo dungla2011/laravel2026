@@ -493,7 +493,7 @@ def apply_network_config_windows(config):
         logging.info(f"Interface Name: {interface_name}")
 
         # Check current IP configuration
-        check_cmd = ["netsh", "interface", "ipv4", "show", "config", f'name="{interface_name}"']
+        check_cmd = ["netsh", "interface", "ipv4", "show", "config", f"name={interface_name}"]
         result = subprocess.run(check_cmd, capture_output=True, text=True, timeout=10)
         config_output = result.stdout
 
@@ -518,7 +518,7 @@ def apply_network_config_windows(config):
         # Reset to DHCP first
         logging.info("Resetting interface to DHCP...")
         dhcp_cmd = ["netsh", "interface", "ipv4", "set", "address",
-                    f'name="{interface_name}"', "dhcp"]
+                    f"name={interface_name}", "dhcp"]
         subprocess.run(dhcp_cmd, capture_output=True, text=True, timeout=10)
 
         time.sleep(2)
@@ -528,7 +528,7 @@ def apply_network_config_windows(config):
 
         cmd = [
             "netsh", "interface", "ipv4", "set", "address",
-            f'name="{interface_name}"',
+            f"name={interface_name}",
             "static",
             config['ip_address'],
             config['subnet_mask'],

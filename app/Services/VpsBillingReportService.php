@@ -187,6 +187,7 @@ class VpsBillingReportService
                 'instance_name' => $instanceName,
                 'list_ip_address' => $usage->list_ip_address,
                 'timestamp' => $endTime,
+                'comment' => $usage->comment,
                 'created_at' => $usage->created_at,
                 'last_billing_start_at' => $usage->last_billing_start_at,
                 'time_usage' => $timeUsage,

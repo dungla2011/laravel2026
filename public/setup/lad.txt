@@ -7,6 +7,29 @@
 
 wget http://10.1.1.1/setup/setip.py
 
+# ============================================================
+# BUILD GlxService.exe từ setip.py
+# ============================================================
+# Yêu cầu: Python Windows + pywin32 + PyInstaller
+#
+# Bước 1: Cài dependencies
+#   pip install pyinstaller pywin32
+#
+# Bước 2: Build exe (chạy trong thư mục chứa setip.py)
+#   pyinstaller --onefile ^
+#     --hidden-import=win32serviceutil ^
+#     --hidden-import=win32service ^
+#     --hidden-import=win32event ^
+#     --hidden-import=servicemanager ^
+#     --hidden-import=win32timezone ^
+#     --name=GlxService setip.py
+#
+# Output: dist\GlxService.exe
+#
+# Lưu ý: --hidden-import=win32timezone bắt buộc, thiếu sẽ lỗi:
+#   ModuleNotFoundError: No module named 'win32timezone'
+# ============================================================
+
 netsh interface ip set address name="Ethernet0" source=dhcp ; Invoke-WebRequest http://10.1.1.1/setup/setip.zip -OutFile setup_glx.zip ; Expand-Archive .\setup_glx.zip -DestinationPath ./ -Force ; .\GlxService.exe install
 
 

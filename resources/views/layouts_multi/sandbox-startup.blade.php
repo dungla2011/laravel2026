@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head data-code-pos='ppp17370203296921'>
+<head data-code-pos='ppp173702032969211'>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -143,7 +143,7 @@
                     </H3>
                 </div>
                 <form action="/search-file" style="position: absolute; right: 0px">
-                    <input data-code-pos='ppp17364869693501'
+                    <input data-code-pos='ppp173648696501'
                            placeholder="Tìm kiếm..."
                            name="search_string"
                            value="{{request()->get('search_string')}}"

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head data-code-pos='ppp17370203296921'>
+<head data-code-pos='ppp173702032969212'>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -128,7 +128,7 @@
     <div class="marquee-container" data-code-pos='ppp17382416648041'>
         <div class="dl_page" style="">
 
-            <a target="_blank" href="//4share.download"> <i class="fa fa-download"> </i> Trang download Tổng hợp</a>
+{{--            <a target="_blank" href="//4share.download"> <i class="fa fa-download"> </i> Trang download Tổng hợp</a>--}}
         </div>
         <?php
 
@@ -163,12 +163,12 @@
                         </a>
                     </H3>
                 </div>
-                <form action="/search-file" style="position: absolute; right: 0px">
-                    <input data-code-pos='ppp17364869693501'
+                <form action="/search-file" style="position: absolute; right: 0px; display: none">
+                    <input data-code-pos='ppp17364693501'
                            placeholder="Tìm hàng triệu file, tài liệu, game, phim..."
                            name="search_string"
                            value="{{request()->get('search_string')}}"
-                           class="search-top" style="" type="text"/><button type="submit" class="search-top" style="">
+                           class="search-top d-none" style="" type="text"/><button type="submit" class="search-top" style="">
                         <input type='hidden' name='exactly' value='1'/>
                         <input type='hidden' name='sort_by' value='new'/>
                         <i class="uil uil-search"></i>

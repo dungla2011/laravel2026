@@ -285,7 +285,6 @@ Tìm file:  {{ $searchString ??''}}
                         </button>
                     </form>
 
-
                     <span style="display: inline-block; vertical-align: middle; ">
                     Tìm thấy <b> {{$total}} </b> kết quả
 </span>

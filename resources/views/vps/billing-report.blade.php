@@ -375,6 +375,9 @@ $uid = getCurrentUserId();
                                             <td class="list-ip-address {{ $isCrossed ? 'row-crossed' : '' }}">
                                                 <small>{!!  str_replace( ",", "<br>", $row['list_ip_address']) !!}</small>
                                             </td>
+                                            <td class="list-ip-address">
+                                                <small>{!!  str_replace( ",", "<br>", $row['comment']?? '') !!}</small>
+                                            </td>
                                             <td class="last-billing-start-at {{ $isCrossed ? 'row-crossed' : '' }}">
                                                 @if($row['last_billing_start_at'])
                                                     <small class="text">{{ \Carbon\Carbon::parse($row['last_billing_start_at'])->format('Y-m-d H:i') }}</small><br>
